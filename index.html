@@ -1126,175 +1126,148 @@ function updateKeyUI(){
 }
 updateKeyUI();
 
-/* ─── GEMINI CALL ─── */
+
+/* ─── GEMINI ─── */
 async function gemini(prompt){
-  const k=getKey();if(!k){openModal();return null;}
-  // gemini-1.5-flash é o mais confiável no tier gratuito
-  const models=['gemini-1.5-flash','gemini-2.0-flash-lite','gemini-2.0-flash'];
-  for(const m of models){
+  const k=getKey();
+  if(!k){openModal();return null;}
+
+  const MODELS=['gemini-1.5-flash','gemini-2.0-flash'];
+  let lastErr='Sem resposta da API.';
+
+  for(const model of MODELS){
+    let res,json;
     try{
-      const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${k}`,{
-        method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          contents:[{parts:[{text:prompt}]}],
-          generationConfig:{maxOutputTokens:900,temperature:.4}
-        })
-      });
-      const json=await r.json().catch(()=>({}));
-      if(!r.ok){
-        const msg=json?.error?.message||'';
-        const status=r.status;
-        if(status===400){
-          // chave inválida ou request malformado — não adianta tentar outro modelo
-          return`ERRO ${status}: ${msg||'Requisição inválida. Verifique a chave da API.'}`;
-        }
-        if(status===403){
-          return`ERRO 403: Chave sem permissão para este modelo (${m}). Tente gerar uma nova chave em aistudio.google.com/apikey`;
-        }
-        if(status===429){
-          // tenta próximo modelo antes de desistir
-          if(models.indexOf(m)<models.length-1)continue;
-          return`ERRO 429: Cota esgotada em todos os modelos.\n\nSoluções:\n• Aguarde 1 minuto e tente novamente\n• Verifique sua cota em aistudio.google.com\n• O plano gratuito permite 15 req/min no gemini-1.5-flash`;
-        }
-        if(status===503||status===500){
-          if(models.indexOf(m)<models.length-1)continue;
-          return`ERRO ${status}: Servidores do Google instáveis. Aguarde alguns segundos e tente novamente.`;
-        }
-        // outro erro — tenta próximo modelo
-        continue;
-      }
-      const t=json?.candidates?.[0]?.content?.parts?.[0]?.text;
-      if(t)return t;
-      // sem texto mas request ok — tenta próximo
+      res=await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${k}`,
+        {method:'POST',headers:{'Content-Type':'application/json'},
+         body:JSON.stringify({
+           contents:[{parts:[{text:prompt}]}],
+           generationConfig:{maxOutputTokens:800,temperature:0.3}
+         })}
+      );
+      json=await res.json().catch(()=>({}));
     }catch(e){
-      if(models.indexOf(m)===models.length-1)return`ERRO de conexão: ${e.message}`;
+      lastErr=`Erro de rede: ${e.message}`;
+      continue;
     }
+
+    if(!res.ok){
+      const code=res.status;
+      const msg=(json?.error?.message||'').slice(0,200);
+      // 400 = chave/request inválido — não adianta tentar outro modelo
+      if(code===400)return`❌ Chave inválida ou request malformado (400).\n${msg}\n\nGere uma nova chave em aistudio.google.com/apikey`;
+      // 403 = sem permissão — tenta próximo modelo
+      if(code===403){lastErr=`❌ Sem permissão para ${model} (403).\n${msg}`;continue;}
+      // 429 = cota — tenta próximo modelo
+      if(code===429){lastErr=`❌ Cota esgotada em ${model} (429).\n${msg||'Aguarde ~1 minuto e tente novamente. Plano gratuito: 15 req/min.'}`;continue;}
+      // 5xx — tenta próximo
+      if(code>=500){lastErr=`❌ Servidor Google instável (${code}). Tente novamente.`;continue;}
+      lastErr=`❌ Erro ${code}: ${msg}`;
+      continue;
+    }
+
+    const text=json?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if(text)return text;
+
+    // finish_reason pode ser SAFETY ou MAX_TOKENS
+    const reason=json?.candidates?.[0]?.finishReason;
+    if(reason==='SAFETY')return'❌ Conteúdo bloqueado por filtros de segurança do Google.';
+    if(reason==='MAX_TOKENS')return'❌ Resposta cortada (limite de tokens). Tente um texto menor.';
+    lastErr='Resposta vazia do modelo.';
   }
-  return'Sem resposta. Verifique sua conexão e tente novamente.';
+  return lastErr;
 }
 
 /* ─── CONTEXTS ─── */
-const ctxConfig={
+// Cada contexto define: label, desc, placeholder, exemplos, refs, e a função prompt(txt)->string
+const CTX={
   infantil:{
-    label:'Fala Infantilizada · Todos os contextos adultos',
-    desc:'Detecta patronizing speech, elderspeak e infantilização em qualquer texto adulto.',
-    placeholder:'Cole a transcrição da fala do cuidador, familiar, profissional ou colega para análise de padrões de infantilização…',
-    examples:[
-      'Vovozinha, a gente vai tomar o remedinho agora, tá bem meu amor?',
-      'Deixa eu te explicar devagarzinho, pode ficar tranquilo.',
-      'Ai que bonitinho, você conseguiu! Que orgulho do papai!',
-      'Ui, ficou bravo? Que lindinho o nervosinho dele!'
-    ],
+    label:'Fala Infantilizada',
+    desc:'Detecta patronizing speech, elderspeak e condescending communication. Analisa padrões linguísticos — tom de voz real não é avaliável por texto.',
+    ph:'Cole a transcrição da fala do cuidador, familiar, colega ou profissional de saúde…',
+    ex:['Vovozinha, a gente vai tomar o remedinho agora, tá bem meu amor?','Deixa eu te explicar devagarzinho, pode ficar tranquilo.','Ai que bonitinho, você conseguiu! Que orgulho do papai!','Ui, ficou bravo? Que nervosinho!'],
     refs:[{y:'Kemper 1994',t:'Elderspeak'},{y:'Ryan 1986',t:'Communication Predicament'},{y:'Williams 2003',t:'84% em ILPI'},{y:'Bombar 1996',t:'Baby talk adultos'}],
-    prompt:(txt)=>`Fonoaudióloga especialista em fala infantilizada (Kemper 1994, Ryan 1986). Analise APENAS o texto fornecido. Não invente marcadores ausentes. Se não houver, score baixo.
+    prompt:(txt)=>`Você é analista clínica de comunicação. Analise SOMENTE o texto abaixo. Não invente marcadores ausentes. Se o texto não tiver marcadores claros, o score deve ser baixo.
 
-Marcadores: diminutivos excessivos, superendereçamento afetivo, negação de agência ("a gente vai"), elogio patronizante, vocabulário infantilizado, dúvida na capacidade do adulto.
+Marcadores de infantilização: diminutivos excessivos, superendereçamento afetivo não solicitado, negação de agência ("a gente vai" em vez de "você vai"), elogio para ações básicas, vocabulário desnecessariamente simplificado, dúvida explícita na capacidade do adulto, tom condescendente explícito no texto.
 
-TEXTO: "${txt}"
+Texto: "${txt}"
 
-JSON sem markdown:
-{"score":0-100,"verdict":"Sem marcadores|Traços leves|Moderado|Severo","certezas":["só o que está no texto"],"suspeitas":["padrões que precisam de contexto"],"impacto":"impacto clínico destes padrões","alternativa":"reescreva sem infantilização","limitacao":"o que análise de texto não revela"}`
+Responda APENAS em JSON válido, sem markdown, sem texto fora do JSON:
+{"score":0,"verdict":"","certezas":[],"suspeitas":[],"impacto":"","alternativa":"","limitacao":""}`
   },
   voz:{
-    label:'Análise de Padrão Vocal',
-    desc:'Identifica padrões de disfonia, comportamentos compensatórios e sinais de alerta em transcrições.',
-    placeholder:'Cole a transcrição de fala do paciente, anamnese ou descrição dos sintomas vocais para análise…',
-    examples:[
-      'Minha voz cansa muito no final do dia, fico rouco depois de dar aula.',
-      'Tenho uma voz esganiçada que eu não consigo abaixar.',
-      'Desde a cirurgia de tireoide minha voz mudou, fica falhando.',
-      'Quando forço a voz sinto uma pressão no pescoço e dói um pouco.'
-    ],
-    refs:[{y:'Hirano 1974',t:'GRBAS Scale'},{y:'Ptacek & Sander 1966',t:'Voz senil'},{y:'Titze 2003',t:'SOVT'},{y:'Froeschels 1924',t:'Método Mastigado'}],
-    prompt:(txt)=>`Fonoaudióloga especialista em voz clínica. Analise APENAS o que está descrito no texto. Não invente sintomas. Não faça diagnóstico definitivo — levante hipóteses.
+    label:'Padrão Vocal',
+    desc:'Analisa relatos e transcrições para hipóteses diagnósticas de alteração vocal. Não substitui laringoscopia.',
+    ph:'Cole o relato do paciente sobre sintomas vocais, ou transcrição de anamnese de voz…',
+    ex:['Minha voz cansa no final do dia, fico rouco depois de dar aula.','Tenho uma voz muito esganiçada que não consigo abaixar.','Desde a cirurgia de tireoide minha voz mudou, fica falhando.','Quando forço a voz sinto pressão no pescoço.'],
+    refs:[{y:'Hirano 1974',t:'GRBAS'},{y:'Ptacek 1966',t:'Voz senil'},{y:'Froeschels 1924',t:'Método Mastigado'},{y:'Titze 2003',t:'SOVT'}],
+    prompt:(txt)=>`Você é fonoaudióloga clínica. Analise APENAS o que está descrito neste relato/transcrição. Não invente sintomas. Não diagnostique — levante hipóteses para investigação.
 
-Considere: disfonia hiperfuncional, DTM, nódulos, pólipo, paralisia de prega vocal, presbifonia, edema de Reinke, refluxo laringofaríngeo.
+Relato: "${txt}"
 
-TEXTO/RELATO: "${txt}"
-
-JSON sem markdown:
-{"presentes_no_relato":["dados mencionados"],"hipoteses_diagnosticas":[{"hipotese":"nome","justificativa":"por quê","probabilidade":"alta|moderada|baixa"}],"sinais_de_alerta":["flags urgentes se houver"],"ausentes_importantes":["dados que faltam para melhor análise"],"conduta_sugerida":"próximos passos","limitacao":"o que texto não permite determinar"}`
+Responda APENAS em JSON válido, sem markdown:
+{"dados_presentes":[],"hipoteses":[{"nome":"","justificativa":"","probabilidade":"alta|moderada|baixa"}],"sinais_alerta":[],"dados_ausentes":[],"conduta":"","limitacao":""}`
   },
   fluencia:{
-    label:'Análise de Fluência',
-    desc:'Tipifica disfluências e diferencia gagueira de disfluência comum em amostras transcritas.',
-    placeholder:'Cole a transcrição da fala do paciente incluindo marcações de repetições, bloqueios e prolongamentos…\nEx: Eu- eu- eu fui a- a- ao mercado e e e comprei... [bloqueio 2s] ...pão.',
-    examples:[
-      'Eu- eu quero f- f- falar com você sobre o tr- trabalho.',
-      'Então eu... [pausa 3s] ...estava dizendo que ele ele ele foi embora.',
-      'A- a- a minha mãe disse p- p- para eu... [bloqueio] ...ir lá.',
-      'Eu tenho vinte e, ahn, como eu diria, vinte e dois anos né.'
-    ],
-    refs:[{y:'Travis 1931',t:'Dominância cerebral'},{y:'Van Riper 1973',t:'Modificação gagueira'},{y:'Shapiro 1999',t:'Stuttering management'},{y:'Guitar 2006',t:'Classificação disfluências'}],
-    prompt:(txt)=>`Fonoaudióloga especialista em fluência. Tipifique as disfluências do texto transcrito. Se não houver marcações temporais, diga que taxa real não pode ser calculada.
+    label:'Fluência',
+    desc:'Tipifica disfluências em transcrição. Taxa real requer medição temporal — análise de texto é parcial.',
+    ph:'Cole transcrição com marcação de disfluências. Ex: Eu- eu- eu quero f-f-falar [bloqueio 2s] com você…',
+    ex:['Eu- eu quero f-f-falar com você sobre o tr-trabalho.','Então eu... [pausa 3s] estava dizendo que ele ele foi embora.','A- a- a minha mãe disse p-para eu... [bloqueio] ir lá.','Eu tenho vinte e, ahn, como eu diria, vinte e dois anos né.'],
+    refs:[{y:'Travis 1931',t:'Dominância cerebral'},{y:'Van Riper 1973',t:'Modificação'},{y:'Guitar 2006',t:'Classificação'},{y:'Shapiro 1999',t:'Management'}],
+    prompt:(txt)=>`Você é fonoaudióloga especialista em fluência. Tipifique as disfluências do texto transcrito. Se não houver marcações de bloqueio ou duração, informe que taxa real não é calculável por texto.
 
 Disfluências gagas: repetição de som/sílaba, prolongamento, bloqueio, revisão por tensão.
-Comuns: hesitação, interjeição, repetição de palavra inteira, revisão por formulação.
+Disfluências comuns: hesitação, interjeição (ahn/né), repetição de palavra inteira, revisão por formulação.
 
-TRANSCRIÇÃO: "${txt}"
+Transcrição: "${txt}"
 
-JSON sem markdown:
-{"disfluencias_identificadas":[{"tipo":"nome","ocorrencias":0,"exemplos":["trecho"]}],"total":0,"ratio":"X gagas / Y comuns","suspeita_clinica":"Gagueira|Disfluência comum|Inconclusivo — justificativa","limitacao":"o que texto não permite determinar"}`
+Responda APENAS em JSON válido, sem markdown:
+{"disfluencias":[{"tipo":"","ocorrencias":0,"exemplos":[]}],"total_gagas":0,"total_comuns":0,"suspeita":"Gagueira|Disfluência comum|Inconclusivo","justificativa":"","limitacao":""}`
   },
   linguagem:{
-    label:'Análise de Linguagem',
-    desc:'Avalia complexidade sintática, coerência e marcadores de alteração de linguagem.',
-    placeholder:'Cole amostra de fala espontânea, redação ou narração do paciente para análise linguística…',
-    examples:[
-      'O homem foi na casa dele e depois ele foi lá e depois voltou.',
-      'Hoje fui ao médico. O médico é bom. Eu gosto do médico. O médico me deu remédio.',
-      'A criança brinca no parque e depois vai para casa e come e dorme.',
-      'Então tipo... a gente foi lá né... e aí... e aí aconteceu aquilo sabe?'
-    ],
-    refs:[{y:'Hernandorena 1991',t:'Normas PT-BR'},{y:'Luria 1947',t:'Neuroling.'},{y:'Bates 1994',t:'Complexidade sintática'},{y:'Coelho 2002',t:'Coerência discurso'}],
-    prompt:(txt)=>`Fonoaudióloga especialista em linguagem. Analise SOMENTE o texto fornecido. Não assuma idade ou diagnóstico não informado.
+    label:'Linguagem',
+    desc:'Avalia complexidade sintática, coerência e marcadores de alteração de linguagem em amostras escritas ou transcritas.',
+    ph:'Cole amostra de fala espontânea, redação ou narração do paciente…',
+    ex:['O homem foi na casa dele e depois ele foi lá e depois voltou.','Hoje fui ao médico. O médico é bom. Eu gosto do médico. O médico me deu remédio.','A criança brinca no parque e depois vai para casa e come e dorme.','Então tipo... a gente foi lá né... e aí aconteceu aquilo sabe?'],
+    refs:[{y:'Hernandorena 1991',t:'Normas PT-BR'},{y:'Luria 1947',t:'Neurolinguística'},{y:'Bates 1994',t:'Complexidade'},{y:'Coelho 2002',t:'Coerência'}],
+    prompt:(txt)=>`Você é fonoaudióloga especialista em linguagem. Analise SOMENTE o texto fornecido. Não assuma idade, diagnóstico ou contexto não informado.
 
-Avalie: complexidade sintática, coesão/coerência, diversidade lexical, padrões alterados (perseveração, agramatismo, neologismo, jargonofasia, tangencialidade).
+Texto: "${txt}"
 
-TEXTO: "${txt}"
-
-JSON sem markdown:
-{"complexidade_sintatica":"análise","coesao_coerencia":"análise","diversidade_lexical":"análise","padroes_alterados":["padrões com exemplos do texto"],"nivel_estimado":"elaboração desta amostra","hipoteses":["hipóteses se houver"],"tamanho_amostra":"adequada|insuficiente","limitacao":"o que amostra não permite determinar"}`
+Responda APENAS em JSON válido, sem markdown:
+{"complexidade_sintatica":"","coesao_coerencia":"","diversidade_lexical":"","padroes_alterados":[],"nivel":"","hipoteses":[],"adequacao_amostra":"adequada|insuficiente — justificativa","limitacao":""}`
   },
   degluticao:{
-    label:'Triagem de Disfagia por Relato',
-    desc:'Analisa relato de sintomas e identifica sinais de risco para encaminhamento.',
-    placeholder:'Cole o relato do paciente sobre sintomas de deglutição, alimentação e qualidade de vida relacionada…',
-    examples:[
-      'Tenho engasgado muito com líquidos, fica passando para a garganta errado.',
-      'A comida fica parada no meio do caminho, tenho que tomar água para descer.',
-      'Depois que tive o derrame parei de conseguir engolir direito.',
-      'Sinto que a comida vai para o lado errado, às vezes tusso muito durante as refeições.'
-    ],
-    refs:[{y:'Logemann 1982',t:'Videofluoroscopia'},{y:'Pommerenke 1948',t:'Zonas gatilho'},{y:'Daniels 1997',t:'Triagem disfagia'},{y:'Crary 2013',t:'MASA'}],
-    prompt:(txt)=>`Fonoaudióloga especialista em disfagia. Triagem por relato — NÃO confirma disfagia, apenas estratifica risco.
+    label:'Deglutição',
+    desc:'Triagem de risco de disfagia por relato. Não confirma diagnóstico — estratifica para encaminhamento.',
+    ph:'Cole o relato do paciente sobre sintomas de deglutição, alimentação e qualidade de vida…',
+    ex:['Tenho engasgado com líquidos, fica passando para a garganta errado.','A comida fica parada no meio do caminho, tenho que tomar água para descer.','Depois que tive o derrame parei de conseguir engolir direito.','Tusso muito durante as refeições, sinto que vai para o lado errado.'],
+    refs:[{y:'Logemann 1982',t:'Videofluoroscopia'},{y:'Pommerenke 1948',t:'Zonas gatilho'},{y:'Daniels 1997',t:'Triagem'},{y:'Crary 2013',t:'MASA'}],
+    prompt:(txt)=>`Você é fonoaudióloga especialista em disfagia. Triagem por relato — NÃO confirma disfagia, apenas estratifica risco para encaminhamento.
 
-Sinais de alerta: tosse durante/após deglutição, engasgo com líquidos, pneumonia de repetição, perda de peso, mudança após AVC/cirurgia, tempo de refeição aumentado, regurgitação nasal.
+Sinais de alerta: tosse durante/após deglutição, engasgo com líquidos, pneumonia de repetição, perda de peso, mudança após AVC/cirurgia/intubação, refeição muito prolongada, regurgitação nasal.
 
-RELATO: "${txt}"
+Relato: "${txt}"
 
-JSON sem markdown:
-{"sinais_presentes":["mencionados no relato"],"sinais_de_alerta":["flags de risco — vazio se nenhum"],"hipoteses_fase":["oral|faríngea|esofágica com justificativa"],"risco_aspiracao":"Baixo|Moderado|Alto","urgencia":"Rotina|Prioritário|Urgente","avaliacao_recomendada":"clínica|VFS|FEES","dados_ausentes":["informações que faltam"],"limitacao":"o que triagem por relato não determina"}`
+Responda APENAS em JSON válido, sem markdown:
+{"sinais_presentes":[],"sinais_alerta":[],"fase_suspeita":[],"risco_aspiracao":"Baixo|Moderado|Alto","urgencia":"Rotina|Prioritário|Urgente","avaliacao":"","dados_ausentes":[],"limitacao":""}`
   },
   afasia:{
-    label:'Análise de Afasia / Linguagem Neurológica',
-    desc:'Identifica padrões compatíveis com diferentes tipos de afasia em amostras de fala.',
-    placeholder:'Cole amostra de fala espontânea, resposta a perguntas ou descrição de figura do paciente neurológico…\nEx: O- o homem... água... não... cozinha. Mulher... caindo.',
-    examples:[
-      'O homem está... a água... não sei falar... cozinha... mulher.',
-      'O menino está roubando os biscoitos da cozinha enquanto a mãe não vê.',
-      'Eu fui ao... ao... ao lugar que tem coisas para comprar. O lugar das compras.',
-      'Os paciente são muito bem cuidado pelos enfermeira do hospital.'
-    ],
+    label:'Afasia / Neuro',
+    desc:'Levanta hipóteses de tipo de afasia em amostras de fala. Diagnóstico requer BDAE/WAB — texto é insuficiente.',
+    ph:'Cole amostra de fala espontânea, resposta a perguntas ou descrição de figura do paciente neurológico…\nEx: O- o homem... água... não... cozinha. Mulher... caindo.',
+    ex:['O homem está... a água... não sei falar... cozinha... mulher.','O menino está roubando os biscoitos da cozinha enquanto a mãe não vê.','Eu fui ao... ao lugar que tem coisas para comprar. O lugar das compras.','Os paciente são muito bem cuidado pelos enfermeira do hospital.'],
     refs:[{y:'Luria 1947',t:'Reorganização cerebral'},{y:'Schuell 1964',t:'Estimulação auditiva'},{y:'Goodglass 1983',t:'BDAE'},{y:'Kertesz 1982',t:'WAB'}],
-    prompt:(txt)=>`Fonoaudióloga especialista em afasia. Análise de amostra de fala NÃO diagnostica — levanta hipóteses para avaliação formal (BDAE/WAB). Diga quando amostra é insuficiente.
+    prompt:(txt)=>`Você é fonoaudióloga especialista em afasia. Análise de amostra de fala NÃO diagnostica afasia — levanta hipóteses para avaliação formal (BDAE/WAB). Se a amostra for muito curta, diga explicitamente que é insuficiente.
 
-Tipos: Broca (não fluente, agramatismo), Wernicke (fluente, parafasias, jargão), Global (não fluente + compreensão comprometida), Anomia (evocação lexical), Condução (parafasias fonêmicas, repetição ruim), Apraxia de fala (inconsistência articulatória).
+Tipos: Broca (não fluente, agramatismo), Wernicke (fluente, parafasias, jargão), Global (não fluente + compreensão comprometida), Anomia (circunlóquios, fluente), Condução (parafasias fonêmicas, repetição comprometida), Apraxia de fala (inconsistência articulatória).
 
-AMOSTRA: "${txt}"
+Amostra: "${txt}"
 
-JSON sem markdown:
-{"fluencia_aparente":"Fluente|Não fluente|Inconclusivo","parafasias":{"fonemicas":[],"semanticas":[],"neologismos":[]},"agramatismo":"Presente|Ausente|Inconclusivo — exemplos","anomia":"sinais presentes?","hipoteses_tipo_afasia":[{"tipo":"nome","compatibilidade":"alta|moderada","justificativa":"baseada na amostra"}],"avaliacao_formal":"BDAE|WAB|outro","tamanho_amostra":"suficiente|insuficiente","limitacao":"o que texto não permite determinar"}`
+Responda APENAS em JSON válido, sem markdown:
+{"fluencia":"Fluente|Não fluente|Inconclusivo","parafasias_fonemicas":[],"parafasias_semanticas":[],"neologismos":[],"agramatismo":"Presente|Ausente|Inconclusivo","anomia":"","hipoteses":[{"tipo":"","compatibilidade":"alta|moderada","justificativa":""}],"avaliacao_formal":"","adequacao_amostra":"","limitacao":""}`
   }
 };
 
@@ -1310,35 +1283,135 @@ function pickCtx(btn){
 function pickCtxByName(name){
   showPanel('analisador');
   const tab=document.querySelector(`.ctx-tab[data-ctx="${name}"]`);
-  if(tab){tab.click();}
+  if(tab)tab.click();
 }
 function applyCtx(name){
-  const cfg=ctxConfig[name];
-  if(!cfg)return;
-  document.getElementById('iz-lbl').textContent='Transcrição / texto para análise:';
-  document.getElementById('speech-ta').placeholder=cfg.placeholder;
-  document.getElementById('ph-sub-txt').textContent=cfg.label;
-  document.getElementById('sr-ctx-name').textContent=cfg.label;
-  document.getElementById('sr-ctx-desc').textContent=cfg.desc;
-  // examples
+  const c=CTX[name];if(!c)return;
+  document.getElementById('speech-ta').placeholder=c.ph;
+  document.getElementById('ph-sub-txt').textContent=c.label+' — '+c.desc;
+  document.getElementById('sr-ctx-name').textContent=c.label;
+  document.getElementById('sr-ctx-desc').textContent=c.desc;
   const er=document.getElementById('examples-row');
-  er.innerHTML=cfg.examples.map((e,i)=>`<button class="ex-chip" onclick="document.getElementById('speech-ta').value=this.dataset.val" data-val="${e.replace(/"/g,'&quot;')}">${['Ex '+((i%4)+1),'Amostra '+(i+1),'Caso '+(i+1),'Relato '+(i+1)][i]}</button>`).join('');
-  // refs in sidebar
+  er.innerHTML=c.ex.map((e,i)=>`<button class="ex-chip" onclick="document.getElementById('speech-ta').value=this.dataset.v" data-v="${e.replace(/"/g,'&quot;').replace(/'/g,'&#39;')}">${['Ex. 1','Ex. 2','Ex. 3','Ex. 4'][i]}</button>`).join('');
   const rl=document.getElementById('refs-list');
-  rl.innerHTML=cfg.refs.map(r=>`<div class="ref-item"><div class="ref-year">${r.y}</div><div class="ref-title">${r.t}</div></div>`).join('');
+  rl.innerHTML=c.refs.map(r=>`<div class="ref-item"><div class="ref-year">${r.y}</div><div class="ref-title">${r.t}</div></div>`).join('');
 }
 applyCtx('infantil');
 
 function clearResult(){
-  document.getElementById('result-zone').innerHTML=`
-    <div class="result-empty" id="result-empty">
-      <div class="re-icon">◈</div>
-      <div class="re-msg">Aguardando análise</div>
-    </div>`;
+  document.getElementById('result-zone').innerHTML=`<div class="result-empty"><div class="re-icon">◈</div><div class="re-msg">Aguardando análise</div></div>`;
 }
 function clearAnalyzer(){
   document.getElementById('speech-ta').value='';
   clearResult();
+}
+
+/* ─── RENDER RESULT ─── */
+function renderBlock(label,color,content){
+  return`<div class="r-block"><div class="rb-label"><span class="rb-dot" style="background:${color}"></span>${label}</div>${content}</div>`;
+}
+function renderList(arr,color='var(--accent)'){
+  if(!arr||!arr.length)return'<span style="color:var(--green);font-size:12px;">Nenhum identificado</span>';
+  return arr.map(i=>`<div class="marker" style="border-left-color:${color}">${typeof i==='object'?JSON.stringify(i):i}</div>`).join('');
+}
+function renderText(v){return`<div class="rb-content">${String(v||'—')}</div>`;}
+
+function renderResult(data,ctx){
+  const rz=document.getElementById('result-zone');
+  if(!data||typeof data!=='object'){
+    rz.innerHTML=renderBlock('Resposta bruta','var(--amber)',`<div class="rb-content">${String(data)}</div>`);
+    return;
+  }
+  let html='';
+
+  if(ctx==='infantil'){
+    const sc=parseInt(data.score)||0;
+    const cls=sc>=70?'s-high':sc>=35?'s-mid':sc<=10?'s-none':'s-low';
+    const vcls=sc>=70?'v-high':sc>=35?'v-mid':sc<=10?'v-none':'v-low';
+    html+=`<div class="r-score-row">
+      <div class="r-score-block"><div class="score-n ${cls}">${sc}</div><div class="score-lbl">/ 100</div></div>
+      <div class="r-verdict"><div class="rv-lbl">Diagnóstico linguístico</div><div class="rv-txt ${vcls}">${data.verdict||'—'}</div></div>
+    </div>`;
+    html+='<div class="r-blocks">';
+    if(data.certezas)html+=renderBlock('✓ Marcadores confirmados no texto','var(--accent)',renderList(data.certezas));
+    if(data.suspeitas)html+=renderBlock('? Suspeitas — precisam de contexto','var(--amber)',renderList(data.suspeitas,'var(--amber)'));
+    if(data.impacto)html+=renderBlock('Impacto clínico documentado','var(--text3)',renderText(data.impacto));
+    if(data.alternativa)html+=renderBlock('✎ Reformulação sugerida','var(--green)',`<div class="alt-block">"${data.alternativa}"</div>`);
+    if(data.limitacao)html+=renderBlock('⚑ Limitação desta análise','var(--text3)',renderText(data.limitacao));
+  }
+  else if(ctx==='voz'){
+    html+='<div class="r-blocks">';
+    if(data.dados_presentes)html+=renderBlock('✓ Dados presentes no relato','var(--accent)',renderList(data.dados_presentes));
+    if(data.hipoteses?.length){
+      const hhtml=data.hipoteses.map(h=>`<div class="marker" style="border-left-color:var(--amber)"><span style="color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:9px;margin-right:6px;">${h.probabilidade||''}</span><strong>${h.nome||''}</strong> — <span style="color:var(--text3);font-size:11px;">${h.justificativa||''}</span></div>`).join('');
+      html+=renderBlock('Hipóteses diagnósticas','var(--amber)',hhtml);
+    }
+    if(data.sinais_alerta)html+=renderBlock('🚨 Sinais de alerta','var(--red)',renderList(data.sinais_alerta,'var(--red)'));
+    if(data.dados_ausentes)html+=renderBlock('⚠ Dados ausentes — investigar','var(--text3)',renderList(data.dados_ausentes,'var(--text3)'));
+    if(data.conduta)html+=renderBlock('Conduta sugerida','var(--text3)',renderText(data.conduta));
+    if(data.limitacao)html+=renderBlock('⚑ Limitação','var(--text3)',renderText(data.limitacao));
+  }
+  else if(ctx==='fluencia'){
+    html+='<div class="r-blocks">';
+    if(data.disfluencias?.length){
+      const dhtml=data.disfluencias.map(d=>`<div class="marker"><strong>${d.tipo}</strong> (${d.ocorrencias}×)${d.exemplos?.length?' — '+d.exemplos.join(', '):''}</div>`).join('');
+      html+=renderBlock('Disfluências identificadas','var(--accent)',dhtml);
+    }
+    if(data.total_gagas!==undefined||data.total_comuns!==undefined){
+      html+=renderBlock('Contagem','var(--text3)',`<div class="rb-content">Gagas: <strong>${data.total_gagas??'?'}</strong> &nbsp;·&nbsp; Comuns: <strong>${data.total_comuns??'?'}</strong></div>`);
+    }
+    if(data.suspeita)html+=renderBlock('Suspeita clínica','var(--amber)',renderText(data.suspeita+(data.justificativa?' — '+data.justificativa:'')));
+    if(data.limitacao)html+=renderBlock('⚑ Limitação','var(--text3)',renderText(data.limitacao));
+  }
+  else if(ctx==='linguagem'){
+    html+='<div class="r-blocks">';
+    if(data.complexidade_sintatica)html+=renderBlock('Complexidade sintática','var(--text3)',renderText(data.complexidade_sintatica));
+    if(data.coesao_coerencia)html+=renderBlock('Coesão e coerência','var(--text3)',renderText(data.coesao_coerencia));
+    if(data.diversidade_lexical)html+=renderBlock('Diversidade lexical','var(--text3)',renderText(data.diversidade_lexical));
+    if(data.padroes_alterados?.length)html+=renderBlock('Padrões alterados','var(--red)',renderList(data.padroes_alterados,'var(--red)'));
+    if(data.nivel)html+=renderBlock('Nível de elaboração','var(--text3)',renderText(data.nivel));
+    if(data.hipoteses?.length)html+=renderBlock('Hipóteses a investigar','var(--amber)',renderList(data.hipoteses,'var(--amber)'));
+    if(data.adequacao_amostra)html+=renderBlock('Adequação da amostra','var(--text3)',renderText(data.adequacao_amostra));
+    if(data.limitacao)html+=renderBlock('⚑ Limitação','var(--text3)',renderText(data.limitacao));
+  }
+  else if(ctx==='degluticao'){
+    html+='<div class="r-blocks">';
+    if(data.sinais_presentes)html+=renderBlock('✓ Sinais presentes no relato','var(--accent)',renderList(data.sinais_presentes));
+    if(data.sinais_alerta?.length)html+=renderBlock('🚨 Sinais de alerta','var(--red)',renderList(data.sinais_alerta,'var(--red)'));
+    if(data.fase_suspeita?.length)html+=renderBlock('Fase suspeita','var(--amber)',renderList(data.fase_suspeita,'var(--amber)'));
+    if(data.risco_aspiracao){
+      const cor=data.risco_aspiracao.includes('Alto')?'var(--red)':data.risco_aspiracao.includes('Moderado')?'var(--amber)':'var(--green)';
+      html+=renderBlock('Risco de aspiração',cor,`<div class="rb-content" style="color:${cor};font-weight:600;">${data.risco_aspiracao}</div>`);
+    }
+    if(data.urgencia){
+      const cor=data.urgencia.includes('Urgente')?'var(--red)':data.urgencia.includes('Prior')?'var(--amber)':'var(--text3)';
+      html+=renderBlock('Urgência de encaminhamento',cor,`<div class="rb-content" style="color:${cor};font-weight:600;">${data.urgencia}</div>`);
+    }
+    if(data.avaliacao)html+=renderBlock('Avaliação recomendada','var(--text3)',renderText(data.avaliacao));
+    if(data.dados_ausentes?.length)html+=renderBlock('Dados ausentes','var(--text3)',renderList(data.dados_ausentes));
+    if(data.limitacao)html+=renderBlock('⚑ Limitação','var(--text3)',renderText(data.limitacao));
+  }
+  else if(ctx==='afasia'){
+    html+='<div class="r-blocks">';
+    if(data.fluencia)html+=renderBlock('Fluência aparente','var(--text3)',renderText(data.fluencia));
+    const plist=[];
+    if(data.parafasias_fonemicas?.length)plist.push('Fonêmicas: '+data.parafasias_fonemicas.join(', '));
+    if(data.parafasias_semanticas?.length)plist.push('Semânticas: '+data.parafasias_semanticas.join(', '));
+    if(data.neologismos?.length)plist.push('Neologismos: '+data.neologismos.join(', '));
+    html+=renderBlock('Parafasias','var(--amber)',plist.length?`<div class="rb-content">${plist.join(' · ')}</div>`:'<span style="color:var(--green);font-size:12px;">Nenhuma identificada</span>');
+    if(data.agramatismo)html+=renderBlock('Agramatismo','var(--text3)',renderText(data.agramatismo));
+    if(data.anomia)html+=renderBlock('Anomia','var(--text3)',renderText(data.anomia));
+    if(data.hipoteses?.length){
+      const hhtml=data.hipoteses.map(h=>`<div class="marker" style="border-left-color:var(--amber)"><span style="color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:9px;">${h.compatibilidade||''}</span> &nbsp;<strong>${h.tipo||''}</strong> — <span style="color:var(--text3);font-size:11px;">${h.justificativa||''}</span></div>`).join('');
+      html+=renderBlock('Hipóteses de tipo de afasia','var(--amber)',hhtml);
+    }
+    if(data.avaliacao_formal)html+=renderBlock('Avaliação formal indicada','var(--text3)',renderText(data.avaliacao_formal));
+    if(data.adequacao_amostra)html+=renderBlock('Adequação da amostra','var(--text3)',renderText(data.adequacao_amostra));
+    if(data.limitacao)html+=renderBlock('⚑ Limitação','var(--text3)',renderText(data.limitacao));
+  }
+
+  html+='</div>';
+  rz.innerHTML=html;
 }
 
 /* ─── RUN ANALYSIS ─── */
@@ -1349,26 +1422,34 @@ async function runAnalysis(){
 
   const btn=document.getElementById('run-btn');
   const spin=document.getElementById('run-spin');
-  const rtxt=document.getElementById('run-txt');
-  btn.disabled=true;spin.style.display='block';rtxt.textContent='Analisando…';
+  btn.disabled=true;spin.style.display='block';
+  document.getElementById('run-txt').textContent='Analisando…';
+  document.getElementById('result-zone').innerHTML='<div class="result-loading"><div class="spin"></div> Processando com IA…</div>';
 
-  const rz=document.getElementById('result-zone');
-  rz.innerHTML='<div class="result-loading"><div class="spin"></div> Analisando padrões no texto…</div>';
+  const resp=await gemini(CTX[currentCtx].prompt(txt));
 
-  const cfg=ctxConfig[currentCtx];
-  const prompt=cfg.prompt(txt);
-  const resp=await gemini(prompt);
-
-  btn.disabled=false;spin.style.display='none';rtxt.textContent='Analisar';
+  btn.disabled=false;spin.style.display='none';
+  document.getElementById('run-txt').textContent='Analisar';
   sessionStats.analyses++;updateStats();
 
-  if(!resp){rz.innerHTML='<div class="result-loading">❌ Erro na API.</div>';return;}
+  if(!resp){
+    document.getElementById('result-zone').innerHTML='<div class="result-loading">❌ Sem resposta.</div>';
+    return;
+  }
+  // Se começar com ❌ é mensagem de erro da função gemini
+  if(resp.startsWith('❌')){
+    document.getElementById('result-zone').innerHTML=`<div class="r-block"><div class="rb-label"><span class="rb-dot" style="background:var(--red)"></span>Erro da API</div><div class="rb-content" style="white-space:pre-wrap;color:var(--amber);">${resp}</div></div><div style="padding:12px 16px;font-size:11px;color:var(--text3);">Dica: O plano gratuito do Gemini permite ~15 req/min. Se o erro persistir, aguarde 1 minuto.</div>`;
+    return;
+  }
 
   let data=null;
-  const clean=resp.replace(/```json\n?|```\n?/g,'').trim();
-  try{data=JSON.parse(clean);}
-  catch(e){
-    rz.innerHTML=`<div class="r-block"><div class="rb-label"><span class="rb-dot" style="background:var(--red)"></span>Resposta não estruturada</div><div class="rb-content">${resp}</div></div>`;
+  // Limpa markdown antes de parsear
+  const clean=resp.replace(/^```json\s*/,'').replace(/\s*```$/,'').trim();
+  try{
+    data=JSON.parse(clean);
+  }catch(e){
+    // Se não parseou, mostra o texto bruto mas de forma legível
+    document.getElementById('result-zone').innerHTML=`<div class="r-block"><div class="rb-label"><span class="rb-dot" style="background:var(--amber)"></span>Resposta em texto livre (JSON inválido)</div><div class="rb-content" style="white-space:pre-wrap;">${resp}</div></div>`;
     return;
   }
 
@@ -1377,245 +1458,83 @@ async function runAnalysis(){
   renderResult(data,currentCtx);
 }
 
-function renderResult(data,ctx){
-  const rz=document.getElementById('result-zone');
-  let html='';
-
-  // Score (só para infantil)
-  if(ctx==='infantil'&&data.score!==undefined){
-    const sc=parseInt(data.score)||0;
-    const cls=sc>=70?'s-high':sc>=35?'s-mid':sc<=10?'s-none':'s-low';
-    const vcls=sc>=70?'v-high':sc>=35?'v-mid':sc<=10?'v-none':'v-low';
-    html+=`<div class="r-score-row">
-      <div class="r-score-block">
-        <div class="score-n ${cls}">${sc}</div>
-        <div class="score-lbl">/ 100</div>
-      </div>
-      <div class="r-verdict">
-        <div class="rv-lbl">Diagnóstico linguístico</div>
-        <div class="rv-txt ${vcls}">${data.verdict||'—'}</div>
-      </div>
-    </div>`;
-  }
-
-  html+='<div class="r-blocks">';
-
-  // Render each field intelligently
-  const fields={
-    // infantil
-    certezas:{label:'✓ Marcadores confirmados no texto',color:'var(--accent)'},
-    suspeitas:{label:'? Suspeitas — precisam de contexto',color:'var(--amber)'},
-    o_que_nao_da_pra_saber:{label:'⚠ Limitações desta análise',color:'var(--text3)'},
-    impacto:{label:'Impacto documentado',color:'var(--text3)'},
-    base:{label:'Base científica',color:'var(--text3)'},
-    alternativa:{label:'✎ Reformulação sugerida',color:'var(--green)',isAlt:true},
-    limitacao:{label:'⚑ Limitação honesta',color:'var(--amber)'},
-    // voz
-    presentes_no_relato:{label:'✓ Dados presentes no relato',color:'var(--accent)'},
-    hipoteses_diagnosticas:{label:'Hipóteses diagnósticas',color:'var(--amber)',isHipoteses:true},
-    ausentes_importantes:{label:'⚠ Dados ausentes — investigar',color:'var(--red)'},
-    sinais_de_alerta:{label:'🚨 Sinais de alerta',color:'var(--red)'},
-    conduta_sugerida:{label:'Conduta sugerida',color:'var(--text3)'},
-    avaliacao_necessaria:{label:'Avaliação indicada',color:'var(--text3)'},
-    avaliacao_recomendada:{label:'Avaliação indicada',color:'var(--text3)'},
-    // fluencia
-    disfluencias_identificadas:{label:'Disfluências identificadas',color:'var(--accent)',isDisfluencias:true},
-    total_disfluencias_contadas:{label:'Total de disfluências',color:'var(--text3)'},
-    ratio_gagas_vs_comuns:{label:'Proporção gagas / comuns',color:'var(--text3)'},
-    padrao:{label:'Padrão observado',color:'var(--text3)'},
-    suspeita_clinica:{label:'Suspeita clínica',color:'var(--amber)'},
-    o_que_falta:{label:'O que falta para diagnóstico',color:'var(--amber)'},
-    tamanho_amostra:{label:'Adequação da amostra',color:'var(--text3)'},
-    // linguagem
-    complexidade_sintatica:{label:'Complexidade sintática',color:'var(--text3)'},
-    coesao_coerencia:{label:'Coesão e coerência',color:'var(--text3)'},
-    diversidade_lexical:{label:'Diversidade lexical',color:'var(--text3)'},
-    padroes_alterados:{label:'Padrões linguísticos alterados',color:'var(--red)'},
-    nivel_estimado:{label:'Nível de elaboração',color:'var(--text3)'},
-    hipoteses:{label:'Hipóteses a investigar',color:'var(--amber)'},
-    // degluticao
-    sinais_presentes:{label:'✓ Sinais presentes no relato',color:'var(--accent)'},
-    hipoteses_fase:{label:'Fase provável afetada',color:'var(--amber)'},
-    risco_aspiracao:{label:'Risco de aspiração',color:'var(--red)'},
-    urgencia_encaminhamento:{label:'Urgência de encaminhamento',color:'var(--amber)'},
-    dados_ausentes:{label:'Dados ausentes — investigar',color:'var(--text3)'},
-    // afasia
-    fluencia_aparente:{label:'Fluência aparente',color:'var(--text3)'},
-    parafasias:{label:'Parafasias',color:'var(--amber)',isParafasias:true},
-    agramatismo:{label:'Agramatismo',color:'var(--text3)'},
-    anomia:{label:'Anomia',color:'var(--text3)'},
-    hipoteses_tipo_afasia:{label:'Hipóteses de tipo de afasia',color:'var(--amber)',isHipAfasia:true},
-    avaliacao_formal_indicada:{label:'Avaliação formal indicada',color:'var(--text3)'},
-  };
-
-  Object.entries(data).forEach(([k,v])=>{
-    if(k==='score'||k==='verdict'||v===null||v===undefined)return;
-    const f=fields[k];
-    if(!f)return;
-
-    let content='';
-    if(Array.isArray(v)&&v.length===0){
-      content='<span style="color:var(--green);font-size:12px;">Nenhum identificado</span>';
-    } else if(f.isAlt&&typeof v==='string'){
-      content=`<div class="alt-block">"${v}"</div>`;
-    } else if(f.isHipoteses&&Array.isArray(v)){
-      content=v.map(h=>`<div class="marker" style="border-left-color:var(--amber);"><span style="color:var(--amber);font-family:'IBM Plex Mono',monospace;font-size:10px;">${h.probabilidade||''}</span>&nbsp;${h.hipotese||h} — <span style="color:var(--text3);font-size:11px;">${h.justificativa||''}</span></div>`).join('');
-    } else if(f.isHipAfasia&&Array.isArray(v)){
-      content=v.map(h=>`<div class="marker" style="border-left-color:var(--amber);"><strong>${h.tipo||h}</strong> [${h.compatibilidade||''}] — <span style="color:var(--text3);font-size:11px;">${h.justificativa||''}</span></div>`).join('');
-    } else if(f.isDisfluencias&&Array.isArray(v)){
-      content=v.map(d=>`<div class="marker"><strong>${d.tipo}</strong> (${d.ocorrencias}×) ${d.exemplos_do_texto?'— '+d.exemplos_do_texto.join(', '):''}</div>`).join('');
-    } else if(f.isParafasias&&typeof v==='object'){
-      const parts=[];
-      if(v.fonémicas?.length||v.fonémicas?.length)parts.push('Fonêmicas: '+[...(v.fonémicas||[]),...(v.fonémicas||[])].join(', '));
-      if(v.semanticas?.length)parts.push('Semânticas: '+v.semanticas.join(', '));
-      if(v.neologismos?.length)parts.push('Neologismos: '+v.neologismos.join(', '));
-      content=`<div class="rb-content">${parts.length?parts.join(' · '):'Nenhuma identificada na amostra'}</div>`;
-    } else if(Array.isArray(v)){
-      content=v.length?v.map(item=>`<div class="marker">${typeof item==='object'?JSON.stringify(item):item}</div>`).join('')
-        :'<span style="color:var(--green);font-size:12px;">Nenhum identificado</span>';
-    } else {
-      content=`<div class="rb-content">${String(v)}</div>`;
-    }
-
-    html+=`<div class="r-block">
-      <div class="rb-label"><span class="rb-dot" style="background:${f.color}"></span>${f.label}</div>
-      ${content}
-    </div>`;
-  });
-
-  html+='</div>';
-  rz.innerHTML=html;
-}
-
 /* ─── RESEARCH DB ─── */
-const papers=[
-  {id:0,year:1854,cat:'voice',lost:true,
-   title:'Observações do Aparelho Vocal Vivo',author:'Manuel García · Royal Society of London',
-   area:'Voz & Laringe',
-   o_que:'Em setembro de 1854, García — professor de canto espanhol, não médico — comprou um espelho de dentista por 6 francos e, usando reflexo de luz solar em dois espelhos posicionados estrategicamente, tornou-se o primeiro ser humano a observar as próprias cordas vocais em funcionamento. Publicou na Royal Society em 1855.',
-   por_que_esquecido:'García era músico, não médico. Publicou em sociedade de ciências naturais, não em periódico médico. A medicina levou anos para assimilar. García morreu em 1906, aos 101 anos.',
-   aplicacao:'Cada laringoscopia, nasofibroscopia e videoestroboscopia que existe hoje tem raízes neste momento. A visualização direta das pregas vocais — fundamento da laringologia — começa aqui.',
-   badges:['b-voice','b-lost']},
-  {id:1,year:1881,cat:'voice',lost:false,
-   title:'Lei de Semon — Paralisia Laríngea Progressiva',author:'Felix Semon & Rosenbach · Archives of Laryngology, Londres',
-   area:'Voz & Laringe',
-   o_que:'Semon e Rosenbach propuseram que em lesões progressivas do nervo laríngeo recorrente (NLR), as fibras que controlam os abdutores (abridores das cordas) são afetadas antes das fibras dos adutores. Implicação: rouquidão (fechamento incompleto) precede dificuldade respiratória (fechamento completo).',
-   por_que_esquecido:'A hipótese Wagner-Grossman posteriormente sugeriu que a posição paramediana seria por preservação do cricoaritenóideo posterior — gerando controvérsia que levou a Lei de Semon a ser "abandonada" como simplista. Poucos conhecem o trabalho original.',
-   aplicacao:'Diagnóstico diferencial em paralisia de prega vocal — após tireoidectomia, compressão por tumor de mediastino, lesão vagal. A sequência de Semon (abdutores primeiro) ainda orienta o raciocínio clínico. EMG laríngea hoje pode confirmar.',
-   badges:['b-voice']},
-  {id:2,year:1924,cat:'voice',lost:true,
-   title:'Método Mastigado para Disfonia Funcional',author:'Emil Froeschels · Policlínica de Viena',
-   area:'Voz & Laringe',
-   o_que:'Froeschels — fundador da Logopedia e da foniatria como disciplinas — observou que durante mastigação exagerada com vocalização simultânea, a laringe produz voz sem tensão excessiva. Desenvolveu o Método Mastigado: o paciente mastiga exageradamente (de forma exagerada, quase cômica) enquanto vocaliza. Taxa de resolução: 78% de disfonias funcionais em 6 semanas.',
-   por_que_esquecido:'Froeschels era judeu e precisou fugir da Europa nos anos 30. Sua Policlínica de Viena — referência mundial — foi fechada. Obra fragmentada, dispersa, jamais traduzida sistematicamente para o português.',
-   aplicacao:'Disfonia hiperfuncional, fadiga vocal, disfonia do professor, voz do cantor. Alta eficácia documentada, de baixíssimo custo, fácil de ensinar. Subutilizado na clínica brasileira por desconhecimento histórico.',
-   badges:['b-voice','b-lost']},
-  {id:3,year:1927,cat:'fluency',lost:true,
-   title:'Cerebral Dominance and Stuttering',author:'Samuel Orton & Lee Travis · Universidade de Iowa',
-   area:'Fluência',
-   o_que:'Travis — fundador da speech-language pathology como profissão nos EUA — e o neurologista Orton propuseram que a gagueira resulta de competição hemisférica pelo controle motor da fala. Quando a dominância cerebral não é suficientemente estabelecida, os dois hemisférios "competem" pela musculatura fonoarticulatória, gerando bloqueios e repetições. Travis demonstrou com EEG primitivo que pessoas que gaguejavam tinham padrões de lateralização diferentes.',
-   por_que_esquecido:'Estudos comportamentais dos anos 60-80 não encontraram diferenças consistentes de lateralidade manual em gagos — a teoria foi abandonada antes de a neuroimagem poder testá-la adequadamente. Considerada "ultrapassada" por décadas.',
-   aplicacao:'Neuroimagem por fMRI de 2024 (Demirel et al.) revelou ativação anormal do hemisfério direito e menor lateralização no esquerdo em pessoas que gaguejam durante tarefas de fala. Travis estava apontando na direção certa. Implicações para avaliação e abordagem terapêutica.',
-   badges:['b-fluency','b-lost']},
-  {id:4,year:1947,cat:'aphasia',lost:false,
-   title:'Reorganização Funcional Cerebral após Trauma',author:'Alexander Luria · Instituto de Neurocirurgia de Moscou',
-   area:'Afasia & Neurologia',
-   o_que:'Luria trabalhou com soldados soviéticos com lesões cerebrais da Segunda Guerra Mundial. Desenvolveu a teoria de que o cérebro pode reorganizar suas funções — usando rotas alternativas, regiões intactas e estratégias compensatórias conscientes. Um paciente com afasia motora severa que não conseguia falar poderia começar pela melodia de canções e gradualmente recuperar as palavras.',
-   por_que_esquecido:'Publicado em russo em 1947. Stalin condenou o trabalho como "idealista e burguês". O mundo ocidental só conheceu após tradução inglesa de 1963. Brasil: a maioria dos clínicos conhece o conceito de neuroplasticidade sem saber que Luria o descreveu 50 anos antes.',
-   aplicacao:'Fundamento de toda reabilitação neuropsicológica moderna. Afasia de Broca, apraxia de fala, reabilitação pós-AVC. Os princípios de Luria — usar funções intactas para compensar as lesadas — continuam guiando a prática. Melodic Intonation Therapy deriva diretamente destes princípios.',
-   badges:['b-aphasia']},
-  {id:5,year:1948,cat:'swallow',lost:true,
-   title:'Neuromuscular Coordination in Deglutition',author:'W.T. Pommerenke · American Journal of Physiology',
-   area:'Deglutição',
-   o_que:'Pommerenke mapeou com precisão anatômica as zonas de gatilho faríngeo responsáveis por deflagrar o reflexo de deglutição — especialmente o papel dos pilares palatinos anteriores, base de língua e parede posterior da faringe. Descreveu como a estimulação de diferentes regiões produz respostas de deglutição com características distintas.',
-   por_que_esquecido:'Publicado em periódico de fisiologia, não de clínica. Ficou fora do radar de fonoaudiólogos por décadas, redescoberto como base para estimulação sensorial em disfagia nos anos 90.',
-   aplicacao:'Base científica para as técnicas de estimulação tátil-térmica em disfagia orofaríngea — o cubo de gelo nos pilares, a estimulação fria, o toque na base de língua. Protocolo de Logemann (1982) se apoia indiretamente neste trabalho.',
-   badges:['b-swallow','b-lost']},
-  {id:6,year:1956,cat:'hearing',lost:true,
-   title:'Discriminação Tonal em Bebês Pré-Linguísticos',author:'S. Wolff · Zeitschrift für Phonetik, Berlim',
-   area:'Audição',
-   o_que:'Wolff demonstrou experimentalmente que bebês pré-linguísticos conseguem discriminar frequências tonais — o sistema auditivo central processava diferenças acústicas antes de qualquer desenvolvimento de fala. Esta demonstração de competência auditiva precoce estava 30 anos à frente do BERA.',
-   por_que_esquecido:'Publicado em alemão, em periódico de fonética com circulação limitada, durante a Guerra Fria que separava as produções científicas. Ficou invisível 30 anos. Redescoberto em 2001.',
-   aplicacao:'Base conceitual do BERA neonatal e da triagem auditiva universal que hoje detecta perdas auditivas no 1º dia de vida. A pesquisa de Wolff demonstrou o que o equipamento só confirmaria décadas depois.',
-   badges:['b-hearing','b-lost']},
-  {id:7,year:1964,cat:'aphasia',lost:true,
-   title:"Schuell's Stimulation Approach to Aphasia",author:'Hildred Schuell · Minneapolis VA Hospital',
-   area:'Afasia & Neurologia',
-   o_que:'Schuell baseou sua abordagem numa premissa revolucionária: a linguagem em afasia não é destruída — funciona com eficiência reduzida. O que o paciente precisa é de estimulação auditiva intensa, controlada e repetitiva que "reative" os circuitos existentes. A variável de intensidade era crítica: mais sessões, mais frequente, mais efeito.',
-   por_que_esquecido:'Schuell era mulher trabalhando num hospital de veteranos — não numa universidade de prestígio. Morreu prematuramente em 1959, antes de publicar o trabalho definitivo. Suas técnicas são usadas até hoje sem que se cite o nome.',
-   aplicacao:'Redescoberta em 2008 (Dignam et al.) especificamente para afasias severas "em platô" — casos que pararam de responder a outras terapias. A variável de intensidade que Schuell identificou é exatamente o que os estudos de neuroplasticidade 2000-2020 confirmaram: dose terapêutica importa.',
-   badges:['b-aphasia','b-lost']},
-  {id:8,year:1966,cat:'voice',lost:true,
-   title:'Acoustic Properties of the Aging Voice',author:'P.H. Ptacek & E.K. Sander · Journal of Speech and Hearing Research',
-   area:'Voz & Laringe',
-   o_que:'Primeiro mapeamento sistemático das propriedades acústicas da voz senil: frequência fundamental (F0), jitter, shimmer e HNR em adultos saudáveis por faixa etária. Estabeleceu o que é normal no envelhecimento vocal versus o que é patológico — dados normativos essenciais para diagnóstico de presbifonia.',
-   por_que_esquecido:'Publicado antes da era digital. Os dados existem mas raramente são contextualizados na formação brasileira. A clínica usa parâmetros genéricos sem segmentação etária.',
-   aplicacao:'Diagnóstico diferencial de presbifonia vs. disfonia patológica em pacientes acima de 60 anos. Sem dados normativos por faixa etária, qualquer análise acústica compara o paciente com um padrão errado. Evita sobrediagnóstico e subtratamento.',
-   badges:['b-voice','b-lost']},
-  {id:9,year:1986,cat:'infant',lost:false,
-   title:'Communication Predicament of Aging',author:'Ellen Ryan, Howard Giles, Giampietro Bartolucci & Kathryn Henwood · Language & Communication',
-   area:'Fala Infantilizada',
-   o_que:'Desenvolveu o Communication Predicament Model: quando alguém percebe (corretamente ou não) que o interlocutor pertence a grupo "menos capaz", adapta a fala para baixo — simplifica, usa diminutivos, tom supra-agudo. Esta adaptação comunica "você não é capaz". O interlocutor, recebendo esta mensagem repetidamente, pode se comportar de acordo. Profecia autorrealizável.',
-   por_que_esquecido:'Publicado em periódico de comunicação e linguística, fora do radar de fonoaudiólogos. Kemper (1994) popularizou o tema elderspeak, deixando Ryan na sombra apesar de ter vindo antes com o framework teórico.',
-   aplicacao:'Base teórica para treinar cuidadores, profissionais de saúde e gestores. Explica por que a fala infantilizada não é apenas inconveniente — é neurologicamente prejudicial quando sistemática. Vale para todos os grupos infantilizados: idosos, pacientes, mulheres em certos contextos, pessoas com deficiência.',
-   badges:['b-infant']},
-  {id:10,year:1994,cat:'infant',lost:false,
-   title:'Elderspeak: A Patronizing Style with Older Adults',author:'Susan Kemper · Journal of Gerontology',
-   area:'Fala Infantilizada',
-   o_que:'Kemper definiu, documentou e provou os danos do elderspeak com rigor científico. Demonstrou que idosos expostos sistematicamente ao elderspeak apresentam: declínio cognitivo acelerado, autoestima reduzida, aumento da resistência ao cuidado, maior agitação. O elderspeak comunica "você não é mais capaz" — e o sistema neurológico responde a essa mensagem.',
-   por_que_esquecido:'No Brasil, a área de comunicação geriátrica é periférica na formação em fonoaudiologia. O idoso permanece subatendido e subpesquisado. 32 anos após esta publicação, existem aproximadamente zero estudos brasileiros derivados.',
-   aplicacao:'Protocolo de treinamento de cuidadores. Triagem de comunicação em ILPI. Formação de equipes de saúde geriátrica. Base científica para o analisador de fala infantilizada desta plataforma.',
-   badges:['b-infant']},
-  {id:11,year:2004,cat:'infant',lost:false,
-   title:'Decreasing Elderspeak: A Training Program',author:'Brent Williams, Susan Kemper & Mary Lee Hummert · The Gerontologist',
-   area:'Fala Infantilizada',
-   o_que:'Avaliou um protocolo de treinamento de 4 horas para cuidadores de ILPI. Resultado: redução de 58% no uso de elderspeak, mensurada por gravações antes e após. Melhora significativa na qualidade das interações. Mudança mensurável e duradoura — reavaliada 3 meses depois.',
-   por_que_esquecido:'Publicado em periódico de gerontologia. O dado de "4 horas para −58%" é extraordinário e praticamente desconhecido na prática clínica brasileira.',
-   aplicacao:'Protocolo concreto de treinamento para ILPI, hospitais e equipes de saúde. O dado de 4 horas é suficiente para uma mudança mensurável é uma das evidências mais práticas e subutilizadas da área.',
-   badges:['b-infant']},
+const PAPERS=[
+  {id:0,year:1854,cat:'voice',lost:true,title:'Observações do Aparelho Vocal Vivo',author:'Manuel García · Royal Society of London',area:'Voz & Laringe',badges:['b-voice','b-lost'],
+   o_que:'Em setembro de 1854, García — professor de canto espanhol, não médico — comprou um espelho de dentista por 6 francos e, usando reflexo de luz solar, tornou-se o primeiro ser humano a observar as próprias cordas vocais em funcionamento. Publicou na Royal Society em 1855.',
+   esquecido:'García era músico, não médico. Publicou em sociedade de ciências naturais. A medicina levou anos para assimilar. Morreu em 1906, aos 101 anos.',
+   aplicacao:'Fundamento de toda laringoscopia. Cada videoestroboscopia e nasofibroscopia usada hoje começa aqui.'},
+  {id:1,year:1881,cat:'voice',lost:false,title:"Lei de Semon — Paralisia Laríngea",author:'Felix Semon & Rosenbach · Archives of Laryngology',area:'Voz & Laringe',badges:['b-voice'],
+   o_que:'Fibras que controlam abdutores (abrem as cordas) são afetadas antes das adutoras em lesões progressivas do NLR. Rouquidão precede dificuldade respiratória.',
+   esquecido:'Hipótese Wagner-Grossman gerou controvérsia e a lei foi considerada "ultrapassada" por décadas. Poucos conhecem o trabalho original.',
+   aplicacao:'Diagnóstico diferencial em paralisia de prega vocal. Sequência de Semon ainda orienta raciocínio clínico em tireoidectomia, tumores de mediastino, lesão vagal.'},
+  {id:2,year:1924,cat:'voice',lost:true,title:'Método Mastigado para Disfonia Funcional',author:'Emil Froeschels · Policlínica de Viena',area:'Voz & Laringe',badges:['b-voice','b-lost'],
+   o_que:'Durante mastigação exagerada com vocalização simultânea, a laringe produz voz sem tensão. Taxa de resolução: 78% em disfonias funcionais em 6 semanas.',
+   esquecido:'Froeschels era judeu e precisou fugir da Europa nos anos 30. Sua Policlínica de Viena foi fechada. Obra fragmentada, jamais traduzida sistematicamente para PT.',
+   aplicacao:'Disfonia hiperfuncional, fadiga vocal, voz do professor. Alta eficácia, baixo custo. Subutilizado no Brasil por desconhecimento histórico.'},
+  {id:3,year:1927,cat:'fluency',lost:true,title:'Cerebral Dominance and Stuttering',author:'Samuel Orton & Lee Travis · Universidade de Iowa',area:'Fluência',badges:['b-fluency','b-lost'],
+   o_que:'Gagueira como competição hemisférica pelo controle motor da fala. Quando dominância não é estabelecida, os dois hemisférios "competem" pela musculatura fonoarticulatória.',
+   esquecido:'Estudos comportamentais dos anos 60-80 não encontraram diferenças de lateralidade manual. Teoria abandonada antes de a neuroimagem poder testá-la.',
+   aplicacao:'fMRI de 2024 revelou ativação anormal do hemisfério direito em pessoas que gaguejam. Travis estava na direção certa. Implicações para avaliação e abordagem terapêutica.'},
+  {id:4,year:1947,cat:'aphasia',lost:false,title:'Reorganização Funcional Cerebral após Trauma',author:'Alexander Luria · Instituto de Neurocirurgia de Moscou',area:'Afasia & Neurologia',badges:['b-aphasia'],
+   o_que:'Trabalhando com soldados com lesão cerebral de guerra, Luria demonstrou que o cérebro pode reorganizar funções usando rotas alternativas e estratégias compensatórias conscientes.',
+   esquecido:'Publicado em russo em 1947. Stalin condenou como "idealista". Tradução inglesa só em 1963. Brasil: conceito de neuroplasticidade usado sem citar Luria.',
+   aplicacao:'Base de toda reabilitação neuropsicológica. Afasia de Broca, apraxia de fala, pós-AVC. Melodic Intonation Therapy deriva diretamente destes princípios.'},
+  {id:5,year:1948,cat:'swallow',lost:true,title:'Neuromuscular Coordination in Deglutition',author:'W.T. Pommerenke · American Journal of Physiology',area:'Deglutição',badges:['b-swallow','b-lost'],
+   o_que:'Mapeamento detalhado das zonas de gatilho faríngeo — pilares palatinos anteriores, base de língua, parede posterior — que deflagram o reflexo de deglutição.',
+   esquecido:'Publicado em periódico de fisiologia, fora do radar clínico. Redescoberto nos anos 90 como base para estimulação sensorial em disfagia.',
+   aplicacao:'Fundamento científico da estimulação tátil-térmica em disfagia orofaríngea. O cubo de gelo nos pilares, estimulação fria — tudo baseia-se neste mapa de 1948.'},
+  {id:6,year:1956,cat:'hearing',lost:true,title:'Discriminação Tonal em Bebês Pré-Linguísticos',author:'S. Wolff · Zeitschrift für Phonetik, Berlim',area:'Audição',badges:['b-hearing','b-lost'],
+   o_que:'Bebês pré-linguísticos discriminam frequências tonais — o sistema auditivo central processava diferenças acústicas antes de qualquer desenvolvimento de fala. 30 anos antes do BERA.',
+   esquecido:'Publicado em alemão, periódico de fonética de circulação limitada, durante a Guerra Fria. Ficou invisível por 30 anos. Redescoberto em 2001.',
+   aplicacao:'Base conceitual do BERA neonatal e da triagem auditiva universal. Sem este trabalho, o diagnóstico neonatal de surdez teria chegado décadas depois.'},
+  {id:7,year:1964,cat:'aphasia',lost:true,title:"Schuell's Stimulation Approach to Aphasia",author:'Hildred Schuell · Minneapolis VA Hospital',area:'Afasia & Neurologia',badges:['b-aphasia','b-lost'],
+   o_que:'A linguagem em afasia não é destruída — funciona com eficiência reduzida. Estimulação auditiva intensa, controlada e repetitiva "reativa" os circuitos. Intensidade é variável crítica.',
+   esquecido:'Schuell era mulher no VA, não em universidade de prestígio. Morreu em 1959. Técnicas dela usadas até hoje sem citação.',
+   aplicacao:'Redescoberta em 2008 para afasias severas em platô. A variável de intensidade que Schuell identificou é o que neuroplasticidade 2000-2020 confirmou: dose terapêutica importa.'},
+  {id:8,year:1966,cat:'voice',lost:true,title:'Acoustic Properties of the Aging Voice',author:'P.H. Ptacek & E.K. Sander · J. Speech Hearing Research',area:'Voz & Laringe',badges:['b-voice','b-lost'],
+   o_que:'Primeiro mapeamento sistemático de F0, jitter, shimmer e HNR em adultos saudáveis por faixa etária. Define o que é normal no envelhecimento vocal.',
+   esquecido:'Publicado antes da era digital. Dados existem mas não são contextualizados na formação brasileira. Clínica usa parâmetros sem segmentação etária.',
+   aplicacao:'Diagnóstico diferencial de presbifonia vs. disfonia patológica em pacientes acima de 60 anos. Sem normativos por idade, a comparação é inválida.'},
+  {id:9,year:1986,cat:'infant',lost:false,title:'Communication Predicament of Aging',author:'Ryan, Giles, Bartolucci & Henwood · Language & Communication',area:'Fala Infantilizada',badges:['b-infant'],
+   o_que:'Communication Predicament Model: percepção de "grupo menos capaz" → fala adaptada para baixo → comunica incapacidade → profecia autorrealizável. Vale para todos os grupos infantilizados.',
+   esquecido:'Publicado em periódico de comunicação, fora do radar de fono. Kemper 1994 popularizou elderspeak e deixou Ryan na sombra — apesar de Ryan ter vindo antes.',
+   aplicacao:'Base teórica para treinar cuidadores e profissionais de saúde. Explica por que a fala infantilizada não é apenas deselegante — é neurologicamente prejudicial quando sistemática.'},
+  {id:10,year:1994,cat:'infant',lost:false,title:'Elderspeak: Patronizing Style with Older Adults',author:'Susan Kemper · Journal of Gerontology',area:'Fala Infantilizada',badges:['b-infant'],
+   o_que:'Elderspeak exposto com rigor científico. Idosos expostos sistematicamente apresentam: declínio cognitivo acelerado, autoestima reduzida, resistência ao cuidado, maior agitação.',
+   esquecido:'No Brasil, comunicação geriátrica é periférica na formação de fono. 32 anos após, existem aproximadamente zero estudos brasileiros derivados desta pesquisa.',
+   aplicacao:'Protocolo de treinamento de cuidadores. Triagem de comunicação em ILPI. Formação de equipes de saúde geriátrica.'},
+  {id:11,year:2004,cat:'infant',lost:false,title:'Decreasing Elderspeak: A Training Program',author:'B. Williams, S. Kemper & M.L. Hummert · The Gerontologist',area:'Fala Infantilizada',badges:['b-infant'],
+   o_que:'Treinamento de 4 horas para cuidadores de ILPI resultou em redução de 58% no elderspeak — mensurado por gravações antes e após. Melhora mantida em reavaliação 3 meses depois.',
+   esquecido:'Publicado em gerontologia, fora do radar de fono. O dado "4 horas → −58%" é extraordinário e praticamente desconhecido na prática clínica brasileira.',
+   aplicacao:'Protocolo concreto para ILPI e hospitais. Quatro horas de treinamento são suficientes para mudança mensurável — evidência rara de praticidade clínica.'},
 ];
 
-let activeResearch=null;
-function renderResearchNav(filtered){
+let activeResearchId=null;
+function renderResearchNav(list){
   const nav=document.getElementById('research-nav');
-  nav.innerHTML=filtered.map(p=>`
-    <div class="rn-item ${activeResearch===p.id?'active':''}" onclick="showResearch(${p.id})">
-      <div class="rn-year">${p.year}</div>
-      <div class="rn-title">${p.title}</div>
-    </div>`).join('');
+  nav.innerHTML=list.map(p=>`<div class="rn-item${activeResearchId===p.id?' active':''}" onclick="showResearch(${p.id})"><div class="rn-year">${p.year}</div><div class="rn-title">${p.title}</div></div>`).join('');
 }
 function filterResearch(){
   const f=document.getElementById('re-filter').value;
-  const filtered=f==='all'?papers:f==='lost'?papers.filter(p=>p.lost):papers.filter(p=>p.cat===f);
-  renderResearchNav(filtered);
-  document.getElementById('research-detail').innerHTML='<div class="rd-empty">Selecione uma pesquisa ao lado</div>';
-  activeResearch=null;
+  const list=f==='all'?PAPERS:f==='lost'?PAPERS.filter(p=>p.lost):PAPERS.filter(p=>p.cat===f);
+  renderResearchNav(list);
 }
 function showResearch(id){
-  activeResearch=id;
-  const p=papers.find(x=>x.id===id);
-  if(!p)return;
-  filterResearch();// re-render nav with active
-  const det=document.getElementById('research-detail');
-  det.innerHTML=`
-    <div class="rd-year">${p.year} · ${p.area} ${p.lost?'<span class="rd-badge b-lost">Esquecida/Perdida</span>':''}</div>
+  activeResearchId=id;
+  filterResearch();
+  const p=PAPERS.find(x=>x.id===id);if(!p)return;
+  const bmap={'b-voice':'Voz','b-fluency':'Fluência','b-aphasia':'Afasia','b-swallow':'Deglutição','b-hearing':'Audição','b-infant':'Fala Infantilizada','b-lost':'Esquecida'};
+  document.getElementById('research-detail').innerHTML=`
+    <div class="rd-year">${p.year} · ${p.area}</div>
     <div class="rd-title">${p.title}</div>
     <div class="rd-author">${p.author}</div>
-    <div class="rd-badges">${p.badges.map(b=>`<span class="rd-badge ${b}">${{b_voice:'Voz',b_fluency:'Fluência',b_aphasia:'Afasia',b_swallow:'Deglutição',b_hearing:'Audição',b_infant:'Fala Infantilizada',b_lang:'Linguagem',b_lost:'Esquecida'}[b.replace('-','_')]||b}</span>`).join('')}</div>
-    <div class="rd-section">
-      <div class="rd-section-lbl">O que foi descoberto</div>
-      <div class="rd-section-txt">${p.o_que}</div>
-    </div>
-    <div class="rd-section">
-      <div class="rd-section-lbl">Por que foi esquecida / ignorada</div>
-      <div class="rd-section-txt">${p.por_que_esquecido}</div>
-    </div>
-    <div class="rd-section">
-      <div class="rd-section-lbl">Aplicação clínica em 2026</div>
-      <div class="rd-section-txt"><strong style="color:var(--accent);">${p.aplicacao}</strong></div>
-    </div>`;
+    <div class="rd-badges">${p.badges.map(b=>`<span class="rd-badge ${b}">${bmap[b]||b}</span>`).join('')}</div>
+    <div class="rd-section"><div class="rd-section-lbl">O que foi descoberto</div><div class="rd-section-txt">${p.o_que}</div></div>
+    <div class="rd-section"><div class="rd-section-lbl">Por que foi esquecida / ignorada</div><div class="rd-section-txt">${p.esquecido}</div></div>
+    <div class="rd-section"><div class="rd-section-lbl">Aplicação clínica em 2026</div><div class="rd-section-txt"><strong style="color:var(--accent);">${p.aplicacao}</strong></div></div>`;
 }
-renderResearchNav(papers);
+renderResearchNav(PAPERS);
 
 /* ─── CONSULTA IA ─── */
 let consultMode='clinica';
@@ -1637,33 +1556,39 @@ async function runConsult(){
   btn.disabled=true;btn.textContent='…';
 
   const modeMap={
-    clinica:'Responda com foco clínico: protocolo, diagnóstico diferencial, conduta, encaminhamento. Seja direto e baseado em evidência.',
+    clinica:'Responda com foco clínico: protocolo, diagnóstico diferencial, conduta, encaminhamento. Direto e baseado em evidência.',
     historica:'Responda com foco histórico: contexto da descoberta, por que foi esquecida, o que foi redescoberto.',
     brasil:'Foque nas lacunas brasileiras: o que não é feito no Brasil, normas PT-BR ausentes, pesquisas necessárias.'
   };
-  const sys=`Fonoaudióloga clínica sênior com conhecimento de pesquisas históricas esquecidas:
-García 1854 (laringoscópio), Semon 1881 (lei NLR), Froeschels 1924 (Método Mastigado 78% resolução), Travis 1927 (dominância cerebral gagueira), Luria 1947 (reorganização cerebral), Pommerenke 1948 (zonas gatilho disfagia), Wolff 1956 (audição neonatal), Schuell 1964 (afasia severa), Ptacek 1966 (voz senil), Ryan 1986 (Communication Predicament), Kemper 1994 (elderspeak), Williams 2004 (−58% ILPI).
+  const sys=`Fonoaudióloga clínica sênior. Conhece pesquisas históricas esquecidas: García 1854 (laringoscópio), Semon 1881 (lei NLR), Froeschels 1924 (Método Mastigado 78%), Travis 1927 (dominância cerebral gagueira), Luria 1947 (reorganização cerebral), Pommerenke 1948 (zonas gatilho disfagia), Wolff 1956 (audição neonatal), Schuell 1964 (afasia severa), Ptacek 1966 (voz senil), Ryan 1986 (Communication Predicament), Kemper 1994 (elderspeak), Williams 2004 (−58% ILPI 4h treino).
 ${modeMap[consultMode]}
-Cite autores/anos. Separe certeza de hipótese. Máx 400 palavras. PT-BR.`;
+Cite autores e anos. Separe certeza de hipótese. Máx 400 palavras. Português brasileiro.
+
+Pergunta: ${q}`;
 
   const output=document.getElementById('consult-output');
-  const entry=document.createElement('div');
-  entry.className='co-entry';
-  entry.innerHTML=`<div class="co-q">${q}</div><div class="co-a" id="co-a-${sessionStats.consults}"><span class="caret"></span></div>`;
-  output.innerHTML='';
-  output.appendChild(entry);
+  const idx=sessionStats.consults;
+  output.innerHTML=`<div class="co-entry"><div class="co-q">${q}</div><div class="co-a" id="coa-${idx}"><div class="result-loading"><div class="spin"></div> Consultando…</div></div></div>`;
 
-  const resp=await gemini(sys+'\n\nPergunta: '+q);
-
+  const resp=await gemini(sys);
   btn.disabled=false;btn.textContent='Enviar';
   sessionStats.consults++;updateStats();
 
-  if(!resp){document.getElementById(`co-a-${sessionStats.consults-1}`).textContent='Erro na API.';return;}
-  const el=document.getElementById(`co-a-${sessionStats.consults-1}`);
+  const el=document.getElementById(`coa-${idx}`);
+  if(!resp||resp.startsWith('❌')){
+    el.innerHTML=`<span style="color:var(--amber);white-space:pre-wrap;">${resp||'Sem resposta.'}</span>`;
+    return;
+  }
   el.textContent='';
   let i=0;
-  (function type(){if(i<resp.length){el.innerHTML=resp.substring(0,i+1).replace(/\n/g,'<br>')+'<span class="caret"></span>';i++;setTimeout(type,5);}
-    else{el.innerHTML=resp.replace(/\n/g,'<br>');}})();
+  (function type(){
+    if(i<resp.length){
+      el.innerHTML=resp.substring(0,i+1).replace(/\n/g,'<br>')+'<span class="caret"></span>';
+      i++;setTimeout(type,4);
+    }else{
+      el.innerHTML=resp.replace(/\n/g,'<br>');
+    }
+  })();
 }
 
 /* INIT */
