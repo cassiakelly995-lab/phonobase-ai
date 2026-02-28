@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHONOBASE CLINICAL — Estação de Trabalho Fonoaudiológica 2026</title>
+    <title>Clinica de Fonoaudiologia</title>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400&display=swap" rel="stylesheet">
     <style>
         /* Estilos Gerais */
@@ -11,14 +11,14 @@
             margin: 0; padding: 0; height: 100%; font-family: 'IBM Plex Sans', sans-serif; background: #0b0e13; color: #c8cdd8;
         }
         .container {
-            display: grid; grid-template-rows: 40px 1fr; height: 100vh;
+            display: grid; grid-template-rows: 60px 1fr; height: 100vh;
         }
         /* Top Bar */
         .topbar {
             background: #111; display: flex; align-items: center; padding: 0 16px; border-bottom: 1px solid #2e3445;
         }
         .topbar h1 {
-            margin-right: 24px; font-size: 16px; color: #c8cdd8;
+            margin-right: 24px; font-size: 20px; color: #c8cdd8;
         }
         .tabs {
             display: flex; margin-left: auto;
@@ -34,7 +34,7 @@
             display: flex;
         }
         .sidebar {
-            width: 200px; background: #111; color: #c8cdd8; padding: 10px; overflow-y: auto;
+            width: 220px; background: #111; color: #c8cdd8; padding: 10px; overflow-y: auto;
         }
         .content {
             flex: 1; padding: 20px; overflow-y: auto; background: #161a21;
@@ -46,17 +46,21 @@
         .btn:hover {
             background: #6ab5ff;
         }
+        /* Result Styling */
+        .result {
+            margin-top: 20px; padding: 10px; background: #252a35; border-radius: 5px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Top Bar -->
         <div class="topbar">
-            <h1>PHONO<em>BASE</em> CLINICAL</h1>
+            <h1>Clinica de Fonoaudiologia</h1>
             <div class="tabs">
                 <button class="tab" onclick="showPanel('analisador')">Analisador de Fala</button>
-                <button class="tab" onclick="showPanel('pesquisas')">Pesquisas Históricas</button>
                 <button class="tab" onclick="showPanel('consulta')">Consulta IA</button>
+                <button class="tab" onclick="showPanel('pesquisas')">Pesquisas</button>
             </div>
         </div>
         
@@ -64,11 +68,13 @@
         <div class="workspace">
             <!-- Sidebar -->
             <div class="sidebar">
-                <h3>Análise</h3>
+                <h3>Ferramentas</h3>
                 <button class="btn" onclick="setSub('infantil')">Fala Infantilizada</button>
                 <button class="btn" onclick="setSub('voz')">Padrão Vocal</button>
                 <button class="btn" onclick="setSub('fluencia')">Fluência</button>
                 <button class="btn" onclick="setSub('linguagem')">Linguagem</button>
+                <button class="btn" onclick="setSub('degluticao')">Deglutição</button>
+                <button class="btn" onclick="setSub('afasia')">Afasia</button>
             </div>
             
             <!-- Main Content -->
@@ -77,15 +83,17 @@
                     <h2>Analisador de Fala</h2>
                     <textarea id="speech-ta" rows="6" placeholder="Cole aqui a transcrição da fala..."></textarea>
                     <button class="btn" onclick="runAnalysis()">Analisar</button>
-                    <div id="result-zone">Aguardando análise...</div>
-                </div>
-                <div id="panel-pesquisas" class="panel" style="display:none;">
-                    <h2>Pesquisas Históricas</h2>
-                    <p>Conteúdo das pesquisas aqui...</p>
+                    <div id="result-zone" class="result">Aguardando análise...</div>
                 </div>
                 <div id="panel-consulta" class="panel" style="display:none;">
                     <h2>Consulta IA</h2>
-                    <p>Conteúdo da consulta aqui...</p>
+                    <textarea id="ci-ta" rows="4" placeholder="Descreva o caso do paciente..."></textarea>
+                    <button class="btn" onclick="runConsult()">Enviar Consulta</button>
+                    <div id="consult-output" class="result">Aguardando consulta...</div>
+                </div>
+                <div id="panel-pesquisas" class="panel" style="display:none;">
+                    <h2>Pesquisas de Última Geração</h2>
+                    <div id="research-list"></div>
                 </div>
             </div>
         </div>
@@ -103,18 +111,41 @@
                 alert('Por favor, insira um texto para análise.');
                 return;
             }
-            // Aqui você chamaria a API para análise
             document.getElementById('result-zone').innerText = "Analisando...";
             // Simulação de resposta
             setTimeout(() => {
-                document.getElementById('result-zone').innerText = "Análise concluída!";
+                document.getElementById('result-zone').innerText = "Análise concluída! (Aqui viria o resultado da análise)";
+            }, 2000);
+        }
+
+        function runConsult() {
+            const query = document.getElementById('ci-ta').value;
+            if (!query) {
+                alert('Por favor, descreva o caso.');
+                return;
+            }
+            document.getElementById('consult-output').innerText = "Consultando...";
+            // Simulação de resposta
+            setTimeout(() => {
+                document.getElementById('consult-output').innerText = "Resposta da IA: (Aqui viria a resposta da consulta)";
             }, 2000);
         }
 
         function setSub(sub) {
-            // Atualiza o contexto ou faz algo relacionado ao botão clicado
             console.log('Sub selecionado: ' + sub);
+            // Aqui você pode executar a lógica relacionada ao sub selecionado
         }
+
+        function loadResearch() {
+            const researchData = [
+                { year: 2023, title: "Estudo sobre Fluência", description: "Um estudo recente sobre a fluência na fala." },
+                { year: 2022, title: "Análise de Afasia", description: "Pesquisas sobre diferentes tipos de afasia." }
+            ];
+            const researchList = document.getElementById('research-list');
+            researchList.innerHTML = researchData.map(r => `<div><strong>${r.year}:</strong> ${r.title} - ${r.description}</div>`).join('');
+        }
+
+        loadResearch(); // Carrega as pesquisas ao iniciar
     </script>
 </body>
 </html>
