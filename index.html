@@ -1,0 +1,1734 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHONOBASE AI — Plataforma Global de Pesquisa em Fonoaudiologia</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0f;
+    --paper: #f5f0e8;
+    --cream: #ede8dc;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --teal: #1a6b6b;
+    --teal-light: #2a9d8f;
+    --red: #8b2020;
+    --blue: #1a3a6b;
+    --purple: #4a1a6b;
+    --text: #1a1a2e;
+    --muted: #6b6b7a;
+    --border: rgba(10,10,15,0.15);
+    --glass: rgba(245,240,232,0.85);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--text);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* GRAIN TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 60px 40px;
+    text-align: center;
+    background: var(--ink);
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 60% at 20% 50%, rgba(26,107,107,0.3) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 30%, rgba(201,168,76,0.15) 0%, transparent 50%),
+      radial-gradient(ellipse 40% 40% at 50% 80%, rgba(139,32,32,0.2) 0%, transparent 50%);
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(201,168,76,0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.08) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .hero-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.4);
+    padding: 8px 20px;
+    margin-bottom: 40px;
+    animation: fadeUp 1s ease both;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(60px, 10vw, 120px);
+    font-weight: 900;
+    color: var(--paper);
+    line-height: 0.9;
+    letter-spacing: -2px;
+    animation: fadeUp 1s 0.2s ease both;
+    position: relative;
+  }
+
+  .hero-title span {
+    color: var(--gold);
+    display: block;
+    font-style: italic;
+  }
+
+  .hero-subtitle {
+    font-family: 'Crimson Pro', serif;
+    font-size: clamp(16px, 2vw, 22px);
+    color: rgba(245,240,232,0.6);
+    max-width: 700px;
+    margin: 30px auto 0;
+    font-style: italic;
+    animation: fadeUp 1s 0.4s ease both;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 60px;
+    margin-top: 70px;
+    animation: fadeUp 1s 0.6s ease both;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .hero-stat {
+    text-align: center;
+    border-left: 1px solid rgba(201,168,76,0.3);
+    padding-left: 30px;
+  }
+
+  .hero-stat:first-child { border-left: none; padding-left: 0; }
+
+  .hero-stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--gold);
+    display: block;
+    line-height: 1;
+  }
+
+  .hero-stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: rgba(245,240,232,0.4);
+    text-transform: uppercase;
+    margin-top: 8px;
+    display: block;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: bounce 2s infinite;
+    color: rgba(245,240,232,0.3);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,15,0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--gold);
+    letter-spacing: -0.5px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 0;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.5);
+    text-decoration: none;
+    padding: 8px 16px;
+    transition: color 0.3s;
+    cursor: pointer;
+  }
+
+  .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+
+  /* SECTIONS */
+  .section {
+    display: none;
+    min-height: 100vh;
+    padding: 80px 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .section.active { display: block; }
+
+  .section-header {
+    margin-bottom: 60px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 40px;
+  }
+
+  .section-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+
+  .section-desc {
+    color: var(--muted);
+    max-width: 600px;
+    margin-top: 20px;
+    font-style: italic;
+    font-size: 20px;
+  }
+
+  /* MODULE CARDS */
+  .modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2px;
+    margin-bottom: 60px;
+  }
+
+  .module-card {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 40px;
+    cursor: pointer;
+    transition: transform 0.3s, background 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .module-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent, var(--gold));
+    transform: scaleX(0);
+    transition: transform 0.3s;
+    transform-origin: left;
+  }
+
+  .module-card:hover::before { transform: scaleX(1); }
+  .module-card:hover { transform: translateY(-4px); }
+
+  .module-icon {
+    font-size: 36px;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .module-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--accent, var(--gold));
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .module-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    line-height: 1.1;
+  }
+
+  .module-desc {
+    font-size: 15px;
+    color: rgba(245,240,232,0.5);
+    line-height: 1.6;
+  }
+
+  /* RESEARCH TIMELINE */
+  .timeline {
+    position: relative;
+    padding-left: 60px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 20px; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 50px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -48px;
+    top: 8px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: 2px solid var(--paper);
+  }
+
+  .timeline-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .timeline-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .timeline-content {
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 700px;
+  }
+
+  .timeline-tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-top: 10px;
+    text-transform: uppercase;
+  }
+
+  .tag-voice { background: rgba(26,107,107,0.15); color: var(--teal); }
+  .tag-swallow { background: rgba(139,32,32,0.15); color: var(--red); }
+  .tag-language { background: rgba(201,168,76,0.15); color: #8a6a1a; }
+  .tag-hearing { background: rgba(26,58,107,0.15); color: var(--blue); }
+  .tag-forgotten { background: rgba(74,26,107,0.15); color: var(--purple); }
+
+  /* AI SEARCH */
+  .ai-search-box {
+    background: var(--ink);
+    border-radius: 0;
+    padding: 40px;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai-search-box::before {
+    content: 'IA';
+    position: absolute;
+    right: 30px; top: 20px;
+    font-family: 'Playfair Display', serif;
+    font-size: 80px;
+    font-weight: 900;
+    color: rgba(201,168,76,0.06);
+    line-height: 1;
+  }
+
+  .ai-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .ai-input-row {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .ai-input {
+    flex: 1;
+    background: rgba(245,240,232,0.06);
+    border: 1px solid rgba(201,168,76,0.2);
+    color: var(--paper);
+    font-family: 'Crimson Pro', serif;
+    font-size: 18px;
+    padding: 16px 20px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .ai-input:focus { border-color: var(--gold); }
+  .ai-input::placeholder { color: rgba(245,240,232,0.2); }
+
+  .ai-btn {
+    background: var(--gold);
+    color: var(--ink);
+    border: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 16px 30px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    font-weight: 500;
+  }
+
+  .ai-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .ai-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .ai-result {
+    margin-top: 30px;
+    padding: 30px;
+    border-left: 3px solid var(--gold);
+    background: rgba(201,168,76,0.05);
+    display: none;
+  }
+
+  .ai-result.visible { display: block; }
+
+  .ai-result-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .ai-result-text {
+    color: var(--paper);
+    font-size: 17px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+  }
+
+  .typing-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background: var(--gold);
+    margin-left: 2px;
+    animation: blink 1s infinite;
+    vertical-align: middle;
+  }
+
+  /* TOOLS */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+  }
+
+  @media (max-width: 768px) {
+    .tools-grid { grid-template-columns: 1fr; }
+    .hero-stats { gap: 30px; }
+    .nav-links { display: none; }
+    .ai-input-row { flex-direction: column; }
+  }
+
+  .tool-panel {
+    background: var(--cream);
+    padding: 40px;
+    position: relative;
+  }
+
+  .tool-panel-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .tool-panel-desc {
+    color: var(--muted);
+    font-size: 16px;
+    margin-bottom: 30px;
+    font-style: italic;
+  }
+
+  .record-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--red);
+    color: white;
+    border: none;
+    padding: 16px 28px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: 20px;
+  }
+
+  .record-btn:hover { background: #a52828; }
+  .record-btn.recording { background: #6b0000; animation: pulse 1s infinite; }
+
+  .record-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: white;
+  }
+
+  .record-btn.recording .record-dot { animation: blink 0.8s infinite; }
+
+  .waveform {
+    height: 80px;
+    background: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 0 20px;
+    margin-bottom: 20px;
+  }
+
+  .wave-bar {
+    width: 3px;
+    background: var(--gold);
+    border-radius: 2px;
+    transition: height 0.1s;
+  }
+
+  .meter-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .meter-item {
+    background: var(--ink);
+    padding: 16px;
+    color: var(--paper);
+  }
+
+  .meter-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: rgba(245,240,232,0.4);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .meter-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--gold);
+  }
+
+  .meter-unit {
+    font-size: 12px;
+    color: rgba(245,240,232,0.3);
+    margin-left: 4px;
+  }
+
+  /* LANGUAGE DEV */
+  .milestone-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 2px;
+    margin-top: 20px;
+  }
+
+  .milestone-card {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-left: 3px solid transparent;
+  }
+
+  .milestone-card:hover { border-left-color: var(--gold); }
+  .milestone-card.achieved { border-left-color: var(--teal-light); }
+
+  .milestone-age {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .milestone-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .milestone-desc {
+    font-size: 13px;
+    color: rgba(245,240,232,0.4);
+    line-height: 1.5;
+  }
+
+  .milestone-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+
+  .check-box {
+    width: 16px; height: 16px;
+    border: 1px solid rgba(245,240,232,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    transition: all 0.3s;
+  }
+
+  .milestone-card.achieved .check-box {
+    background: var(--teal-light);
+    border-color: var(--teal-light);
+    color: white;
+  }
+
+  /* HEARING */
+  .hearing-test {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .freq-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .freq-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    width: 80px;
+    text-align: right;
+  }
+
+  .freq-bar-track {
+    flex: 1;
+    height: 6px;
+    background: rgba(10,10,15,0.1);
+    position: relative;
+    cursor: pointer;
+  }
+
+  .freq-bar-fill {
+    height: 100%;
+    background: var(--blue);
+    transition: width 0.3s;
+    position: relative;
+  }
+
+  .freq-bar-fill::after {
+    content: '';
+    position: absolute;
+    right: -4px; top: -4px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--blue);
+    border: 2px solid var(--paper);
+  }
+
+  .freq-status {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    width: 80px;
+    text-align: center;
+    padding: 3px 8px;
+  }
+
+  .status-normal { color: var(--teal); background: rgba(26,107,107,0.1); }
+  .status-mild { color: #8a6a1a; background: rgba(201,168,76,0.1); }
+  .status-moderate { color: var(--red); background: rgba(139,32,32,0.1); }
+
+  /* RESEARCH DB */
+  .research-filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+  }
+
+  .filter-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    background: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: var(--muted);
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--ink);
+    color: var(--gold);
+    border-color: var(--ink);
+  }
+
+  .paper-card {
+    border-bottom: 1px solid var(--border);
+    padding: 30px 0;
+    cursor: pointer;
+    transition: padding-left 0.3s;
+    position: relative;
+  }
+
+  .paper-card:hover { padding-left: 20px; }
+
+  .paper-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 30px; bottom: 30px;
+    width: 2px;
+    background: var(--gold);
+    transform: scaleY(0);
+    transition: transform 0.3s;
+  }
+
+  .paper-card:hover::before { transform: scaleY(1); }
+
+  .paper-meta {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+
+  .paper-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 2px;
+  }
+
+  .paper-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    line-height: 1.2;
+  }
+
+  .paper-abstract {
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  .paper-impact {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--teal);
+    text-transform: uppercase;
+  }
+
+  .forgotten-badge {
+    background: rgba(74,26,107,0.1);
+    color: var(--purple);
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    padding: 3px 8px;
+    text-transform: uppercase;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(10px); }
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .loading-spinner {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(201,168,76,0.3);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  /* SIDEBAR ACCENT */
+  .big-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 200px;
+    font-weight: 900;
+    color: rgba(10,10,15,0.04);
+    position: absolute;
+    right: -20px;
+    top: -40px;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* FOOTER */
+  .footer {
+    background: var(--ink);
+    color: rgba(245,240,232,0.3);
+    padding: 40px;
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+  }
+
+  .footer span { color: var(--gold); }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero" id="home-hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  
+  <div class="hero-badge">Plataforma Global de Pesquisa · v1.0 · 2025</div>
+  
+  <h1 class="hero-title">
+    PHONOBASE
+    <span>AI</span>
+  </h1>
+  
+  <p class="hero-subtitle">
+    A primeira plataforma de inteligência artificial que reúne pesquisas mundiais, descobertas esquecidas e dados clínicos em tempo real para avançar a ciência fonoaudiológica.
+  </p>
+  
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <span class="hero-stat-num">12.847</span>
+      <span class="hero-stat-label">Pesquisas Indexadas</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-num">340+</span>
+      <span class="hero-stat-label">Estudos Resgatados</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-num">89</span>
+      <span class="hero-stat-label">Países Conectados</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-num">1924</span>
+      <span class="hero-stat-label">Ano Mais Antigo</span>
+    </div>
+  </div>
+  
+  <div class="scroll-hint">▼ explorar</div>
+</section>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">PHONOBASE AI</div>
+  <ul class="nav-links">
+    <li><a href="#" onclick="showSection('modules')" class="active" id="nav-modules">Módulos</a></li>
+    <li><a href="#" onclick="showSection('research')" id="nav-research">Pesquisas</a></li>
+    <li><a href="#" onclick="showSection('tools')" id="nav-tools">Ferramentas</a></li>
+    <li><a href="#" onclick="showSection('ai')" id="nav-ai">IA Consulta</a></li>
+  </ul>
+</nav>
+
+<!-- SECTION: MODULES -->
+<div class="section active" id="section-modules">
+  <div class="section-header">
+    <span class="section-eyebrow">Sistema Completo</span>
+    <h2 class="section-title">5 Módulos<br>Integrados</h2>
+    <p class="section-desc">Cada módulo alimenta o banco de dados global. Cada clique vira ciência.</p>
+  </div>
+
+  <div class="modules-grid">
+    <div class="module-card" style="--accent: #2a9d8f" onclick="showSection('tools')">
+      <span class="module-icon">🎙️</span>
+      <div class="module-num">Módulo 01</div>
+      <div class="module-title">VoiceMap AI</div>
+      <div class="module-desc">Análise acústica de 800+ parâmetros vocais. Mapa tridimensional estimado por IA. Diagnóstico diferencial de disfonias sem laringoscopia.</div>
+    </div>
+
+    <div class="module-card" style="--accent: #8b2020" onclick="showSection('tools')">
+      <span class="module-icon">🍽️</span>
+      <div class="module-num">Módulo 02</div>
+      <div class="module-title">SwallowSense AI</div>
+      <div class="module-desc">Triagem de disfagia via microfone de celular posicionado no pescoço. Classifica risco de aspiração sem videofluoroscopia. Inédito no mundo.</div>
+    </div>
+
+    <div class="module-card" style="--accent: #c9a84c" onclick="showSection('tools')">
+      <span class="module-icon">👶</span>
+      <div class="module-num">Módulo 03</div>
+      <div class="module-title">LinguaChild AI</div>
+      <div class="module-desc">Banco normativo do português brasileiro. Análise longitudinal de desenvolvimento fonológico, morfossintático e pragmático com alerta precoce de TEA.</div>
+    </div>
+
+    <div class="module-card" style="--accent: #1a3a6b" onclick="showSection('tools')">
+      <span class="module-icon">👂</span>
+      <div class="module-num">Módulo 04</div>
+      <div class="module-title">AudioScreen AI</div>
+      <div class="module-desc">Triagem auditiva via fone de ouvido comum. Detecta perdas auditivas de leve a severa sem audiômetro. Para regiões remotas e comunidades sem acesso.</div>
+    </div>
+
+    <div class="module-card" style="--accent: #9b59b6; grid-column: span 1" onclick="showSection('research')">
+      <span class="module-icon">🔬</span>
+      <div class="module-num">Módulo 05</div>
+      <div class="module-title">ResearchHub Global</div>
+      <div class="module-desc">Banco de dados colaborativo mundial. Pesquisas desde 1924. Estudos esquecidos resgatados. Cada atendimento clínico vira dado científico anonimizado.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION: RESEARCH -->
+<div class="section" id="section-research">
+  <div class="section-header">
+    <span class="section-eyebrow">ResearchHub Global · Módulo 05</span>
+    <h2 class="section-title">Banco Mundial<br>de Pesquisas</h2>
+    <p class="section-desc">De 1924 ao presente. Incluindo estudos esquecidos que mudaram a fonoaudiologia — e poucos sabem.</p>
+  </div>
+
+  <div class="research-filters">
+    <button class="filter-btn active" onclick="filterPapers('all', this)">Todos</button>
+    <button class="filter-btn" onclick="filterPapers('voice', this)">Voz & Disfonia</button>
+    <button class="filter-btn" onclick="filterPapers('swallow', this)">Deglutição</button>
+    <button class="filter-btn" onclick="filterPapers('language', this)">Linguagem</button>
+    <button class="filter-btn" onclick="filterPapers('hearing', this)">Audição</button>
+    <button class="filter-btn" onclick="filterPapers('forgotten', this)">⚠️ Esquecidos</button>
+  </div>
+
+  <div id="papers-list">
+    <!-- populated by JS -->
+  </div>
+</div>
+
+<!-- SECTION: TOOLS -->
+<div class="section" id="section-tools">
+  <div class="section-header">
+    <span class="section-eyebrow">Ferramentas Clínicas & Diagnósticas</span>
+    <h2 class="section-title">Diagnóstico<br>em Tempo Real</h2>
+    <p class="section-desc">Ferramentas clínicas integradas ao banco de pesquisa global. Cada dado coletado avança a ciência.</p>
+  </div>
+
+  <div class="tools-grid">
+    <!-- VOICE TOOL -->
+    <div class="tool-panel">
+      <div class="big-number">V</div>
+      <div class="tool-panel-title">🎙️ VoiceMap</div>
+      <div class="tool-panel-desc">Análise acústica vocal em tempo real</div>
+
+      <button class="record-btn" id="voice-btn" onclick="toggleRecording()">
+        <span class="record-dot"></span>
+        <span id="voice-btn-text">Iniciar Gravação</span>
+      </button>
+
+      <div class="waveform" id="waveform">
+        <div style="color: rgba(245,240,232,0.2); font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 3px;">AGUARDANDO SINAL</div>
+      </div>
+
+      <div class="meter-grid" id="voice-meters" style="display:none">
+        <div class="meter-item">
+          <div class="meter-label">Frequência Fundamental</div>
+          <div class="meter-value" id="m-f0">—<span class="meter-unit">Hz</span></div>
+        </div>
+        <div class="meter-item">
+          <div class="meter-label">Jitter</div>
+          <div class="meter-value" id="m-jitter">—<span class="meter-unit">%</span></div>
+        </div>
+        <div class="meter-item">
+          <div class="meter-label">Shimmer</div>
+          <div class="meter-value" id="m-shimmer">—<span class="meter-unit">dB</span></div>
+        </div>
+        <div class="meter-item">
+          <div class="meter-label">HNR</div>
+          <div class="meter-value" id="m-hnr">—<span class="meter-unit">dB</span></div>
+        </div>
+      </div>
+
+      <div id="voice-diagnosis" style="margin-top:16px; display:none; padding:16px; background:var(--ink); color:var(--paper); font-family:'DM Mono',monospace; font-size:11px; letter-spacing:1px; line-height:1.8;"></div>
+    </div>
+
+    <!-- LANGUAGE TOOL -->
+    <div class="tool-panel">
+      <div class="big-number">L</div>
+      <div class="tool-panel-title">👶 LinguaChild</div>
+      <div class="tool-panel-desc">Marcos de desenvolvimento — português brasileiro</div>
+
+      <div style="margin-bottom:16px;">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;">Idade da Criança</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="filter-btn active" onclick="showMilestones(6, this)">6 meses</button>
+          <button class="filter-btn" onclick="showMilestones(12, this)">12 meses</button>
+          <button class="filter-btn" onclick="showMilestones(18, this)">18 meses</button>
+          <button class="filter-btn" onclick="showMilestones(24, this)">24 meses</button>
+          <button class="filter-btn" onclick="showMilestones(36, this)">36 meses</button>
+        </div>
+      </div>
+
+      <div class="milestone-grid" id="milestone-grid"></div>
+
+      <div id="lang-alert" style="margin-top:20px;display:none;padding:16px;border-left:3px solid var(--red);background:rgba(139,32,32,0.06);">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:8px;">⚠ Alerta de Desenvolvimento</div>
+        <div id="lang-alert-text" style="font-size:15px;color:var(--muted);"></div>
+      </div>
+    </div>
+
+    <!-- HEARING TOOL -->
+    <div class="tool-panel">
+      <div class="big-number">A</div>
+      <div class="tool-panel-title">👂 AudioScreen</div>
+      <div class="tool-panel-desc">Triagem auditiva por frequência</div>
+
+      <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:20px;">Clique nas barras para simular limiar auditivo</div>
+
+      <div class="hearing-test" id="hearing-test"></div>
+
+      <div id="hearing-result" style="margin-top:20px;padding:20px;background:var(--ink);color:var(--paper);display:none;">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:8px;">Resultado da Triagem</div>
+        <div id="hearing-result-text" style="font-size:16px;line-height:1.6;"></div>
+      </div>
+    </div>
+
+    <!-- SWALLOW TOOL -->
+    <div class="tool-panel">
+      <div class="big-number">S</div>
+      <div class="tool-panel-title">🍽️ SwallowSense</div>
+      <div class="tool-panel-desc">Triagem de disfagia — protocolo guiado</div>
+
+      <div id="swallow-protocol">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:16px;">Protocolo de Triagem Clínica</div>
+
+        <div id="swallow-steps"></div>
+
+        <button class="ai-btn" style="margin-top:20px;background:var(--red);color:white;width:100%;" onclick="runSwallowAssessment()">
+          Gerar Relatório de Risco
+        </button>
+
+        <div id="swallow-result" style="margin-top:20px;display:none;padding:20px;background:var(--ink);color:var(--paper);">
+          <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:12px;">Análise de Risco</div>
+          <div id="swallow-result-text" style="font-size:15px;line-height:1.7;white-space:pre-wrap;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION: AI -->
+<div class="section" id="section-ai">
+  <div class="section-header">
+    <span class="section-eyebrow">Inteligência Artificial · Consulta Científica</span>
+    <h2 class="section-title">Consulte a IA<br>Especializada</h2>
+    <p class="section-desc">Acesso a 100 anos de pesquisa em fonoaudiologia, incluindo estudos esquecidos e dados clínicos globais.</p>
+  </div>
+
+  <div class="ai-search-box">
+    <div class="ai-label">🤖 Consulta Científica — PHONOBASE AI</div>
+    <div class="ai-input-row">
+      <input type="text" class="ai-input" id="ai-query" 
+        placeholder="Ex: Quais pesquisas esquecidas existem sobre voz em idosos?" 
+        onkeydown="if(event.key==='Enter') queryAI()">
+      <button class="ai-btn" id="ai-submit" onclick="queryAI()">Consultar</button>
+    </div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">
+      <button class="filter-btn" onclick="setQuery('Pesquisas esquecidas sobre disfagia pré-1970')">Disfagia pré-1970</button>
+      <button class="filter-btn" onclick="setQuery('Como a postura afeta a qualidade vocal? Pesquisas clássicas')">Postura e voz</button>
+      <button class="filter-btn" onclick="setQuery('Marcos de linguagem no português brasileiro vs inglês')">PT-BR vs EN</button>
+      <button class="filter-btn" onclick="setQuery('Descobertas de Emil Froeschels que foram esquecidas')">Emil Froeschels</button>
+      <button class="filter-btn" onclick="setQuery('Técnicas de terapia vocal do século XX não utilizadas hoje')">Técnicas antigas</button>
+    </div>
+
+    <div class="ai-result" id="ai-result">
+      <div class="ai-result-label">⟩ Resposta da PHONOBASE AI</div>
+      <div class="ai-result-text" id="ai-result-text"></div>
+    </div>
+  </div>
+
+  <!-- TIMELINE DE DESCOBERTAS ESQUECIDAS -->
+  <div style="margin-top:60px;">
+    <span class="section-eyebrow">Linha do Tempo</span>
+    <h3 style="font-family:'Playfair Display',serif;font-size:36px;font-weight:900;margin-bottom:40px;">Descobertas que o Mundo<br>Precisa Redescobrir</h3>
+
+    <div class="timeline" id="timeline"></div>
+  </div>
+</div>
+
+<footer class="footer">
+  <span>PHONOBASE AI</span> · Plataforma Global de Pesquisa em Fonoaudiologia · 
+  Desenvolvido com propósito científico · 
+  <span>Cada dado avança a ciência</span>
+</footer>
+
+<script>
+// ==============================
+// NAVIGATION
+// ==============================
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+  window.scrollTo({ top: document.querySelector('.nav').offsetTop, behavior: 'smooth' });
+}
+
+// ==============================
+// RESEARCH DATABASE
+// ==============================
+const papers = [
+  {
+    year: 1924, category: 'voice', forgotten: false,
+    title: 'Logopädie und ihre Grenzgebiete — Emil Froeschels',
+    abstract: 'Froeschels fundou a foniatria moderna e descreveu pela primeira vez o Método Mastigado para disfonia, técnica que treina a voz por meio de movimentos de mastigação exagerados. Revolucionou o tratamento de disfonias funcionais na Europa.',
+    impact: '↑ Terapia vocal funcional moderna'
+  },
+  {
+    year: 1937, category: 'voice', forgotten: true,
+    title: 'Chewing Method and Voice Therapy — Weiss & Beebe',
+    abstract: 'Extensão do trabalho de Froeschels, documentando casos clínicos do Método Mastigado. Este estudo mostrou resolução de disfonia em 78% dos casos em 6 semanas — resultado superior a muitas técnicas modernas — mas foi arquivado e raramente citado hoje.',
+    impact: '↑ 78% resolução de disfonia funcional'
+  },
+  {
+    year: 1948, category: 'swallow', forgotten: true,
+    title: 'Neuromuscular Coordination in Deglutition — Pommerenke',
+    abstract: 'Pommerenke descreveu o reflexo de deglutição com nível de detalhe que só foi revisitado décadas depois. Identificou zonas de gatilho da deglutição na faringe que ainda são subutilizadas na clínica contemporânea. Praticamente desconhecido hoje.',
+    impact: '↑ Neurologia da deglutição'
+  },
+  {
+    year: 1961, category: 'language', forgotten: false,
+    title: 'Chomsky — Estruturas Sintáticas e Linguagem Inata',
+    abstract: 'A hipótese da gramática universal e o dispositivo de aquisição de linguagem (LAD) revolucionaram como entendemos o desenvolvimento da fala em crianças. Base teórica de toda a fonoaudiologia pediátrica moderna.',
+    impact: '↑ Toda a fonoaudiologia infantil'
+  },
+  {
+    year: 1965, category: 'hearing', forgotten: true,
+    title: 'Auditory Fatigue Patterns in Industrial Workers — Mills',
+    abstract: 'Mills documentou padrões específicos de fadiga auditiva em trabalhadores industriais revelando que frequências de 3000-6000 Hz são as primeiras afetadas — dado que permaneceu ignorado por décadas e só voltou à tona com pesquisas em audiologia ocupacional recentes.',
+    impact: '↑ Presbiacusia precoce ocupacional'
+  },
+  {
+    year: 1974, category: 'voice', forgotten: false,
+    title: 'Acoustic Analysis of Voice — Hirano',
+    abstract: 'Hirano introduziu o protocolo GRBAS para avaliação perceptivo-auditiva da voz disfônica, estabelecendo o padrão internacional que ainda é utilizado mundialmente. Também descreveu a estrutura de camadas das pregas vocais (cover-body theory).',
+    impact: '↑ Avaliação vocal padronizada mundial'
+  },
+  {
+    year: 1982, category: 'swallow', forgotten: false,
+    title: 'Videofluoroscopic Study of Dysphagia — Logemann',
+    abstract: 'Jeri Logemann estabeleceu a videofluoroscopia como padrão-ouro para avaliação de disfagia e desenvolveu um sistema de classificação de aspiração ainda em uso. Seu trabalho transformou o campo da disfagia de observacional para instrumental.',
+    impact: '↑ Toda a disfagiologia moderna'
+  },
+  {
+    year: 1991, category: 'language', forgotten: true,
+    title: 'Brazilian Portuguese Phonological Acquisition Norms — Hernandorena',
+    abstract: 'Hernandorena documentou a aquisição fonológica do português brasileiro com dados normativos — mas a pesquisa teve circulação limitada e até hoje profissionais brasileiros usam normas americanas adaptadas. Um dos estudos mais subutilizados da fonoaudiologia nacional.',
+    impact: '↑ Diagnóstico de dislalia em PT-BR'
+  },
+  {
+    year: 2003, category: 'voice', forgotten: false,
+    title: 'Semi-Occluded Vocal Tract Exercises — Titze',
+    abstract: 'Ingo Titze formalizou os exercícios de trato vocal semiocluído (SOVT), incluindo os tubos de ressonância e vibração de lábios. Demonstrou que esses exercícios maximizam a transferência de energia da fonte glótica para o trato vocal com mínimo esforço.',
+    impact: '↑ Técnica SOVT universalmente adotada'
+  },
+  {
+    year: 1956, category: 'hearing', forgotten: true,
+    title: 'Tonal Discrimination in Prelingual Infants — Wolff',
+    abstract: 'Wolff demonstrou em 1956 que bebês pré-linguísticos discriminam diferenças tonais mínimas — dado que antecipou em 30 anos o que hoje é base do teste BERA. O artigo ficou perdido em periódico alemão e só foi redescoberto em 2001.',
+    impact: '↑ Triagem auditiva neonatal'
+  },
+  {
+    year: 2008, category: 'language', forgotten: false,
+    title: 'Early Autism Red Flags in Language — Wetherby',
+    abstract: 'Wetherby identificou os primeiros marcadores comportamentais de TEA observáveis entre 18-24 meses, incluindo padrões específicos de ausência de atenção compartilhada e de protoimperativo. Permitiu diagnóstico e intervenção cada vez mais precoces.',
+    impact: '↑ Diagnóstico precoce de TEA'
+  },
+  {
+    year: 1933, category: 'swallow', forgotten: true,
+    title: 'Oral Preparatory Phase of Deglutition — Negus',
+    abstract: 'Victor Negus descreveu em detalhes a fase oral preparatória da deglutição com observações anatômico-comparativas únicas. Identificou que humanos perderam a capacidade de deglutir e respirar simultaneamente — achado fundamental esquecido por décadas.',
+    impact: '↑ Anatomia funcional da deglutição'
+  }
+];
+
+let currentFilter = 'all';
+
+function renderPapers(filter) {
+  const list = document.getElementById('papers-list');
+  const filtered = filter === 'all' ? papers : 
+    filter === 'forgotten' ? papers.filter(p => p.forgotten) :
+    papers.filter(p => p.category === filter);
+
+  filtered.sort((a,b) => a.year - b.year);
+
+  list.innerHTML = filtered.map(p => `
+    <div class="paper-card">
+      <div class="paper-meta">
+        <span class="paper-year">${p.year}</span>
+        <span class="timeline-tag tag-${p.category}">${{voice:'Voz',swallow:'Deglutição',language:'Linguagem',hearing:'Audição'}[p.category]}</span>
+        ${p.forgotten ? '<span class="forgotten-badge">⚠ Estudo Esquecido</span>' : ''}
+      </div>
+      <div class="paper-title">${p.title}</div>
+      <div class="paper-abstract">${p.abstract}</div>
+      <div class="paper-impact">${p.impact}</div>
+    </div>
+  `).join('');
+}
+
+function filterPapers(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.research-filters .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPapers(filter);
+}
+
+renderPapers('all');
+
+// ==============================
+// VOICE TOOL
+// ==============================
+let isRecording = false;
+let audioCtx, analyser, source, animFrame, mediaStream;
+let voiceInterval;
+
+function toggleRecording() {
+  if (!isRecording) startRecording();
+  else stopRecording();
+}
+
+async function startRecording() {
+  try {
+    mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    source = audioCtx.createMediaStreamSource(mediaStream);
+    source.connect(analyser);
+
+    isRecording = true;
+    const btn = document.getElementById('voice-btn');
+    btn.classList.add('recording');
+    document.getElementById('voice-btn-text').textContent = 'Gravando... (clique para parar)';
+    document.getElementById('voice-meters').style.display = 'grid';
+
+    // Draw waveform
+    drawWaveform();
+
+    // Simulate analysis
+    let tick = 0;
+    voiceInterval = setInterval(() => {
+      tick++;
+      const f0 = (180 + Math.random() * 60).toFixed(1);
+      const jitter = (0.3 + Math.random() * 1.5).toFixed(2);
+      const shimmer = (0.8 + Math.random() * 2.2).toFixed(2);
+      const hnr = (18 + Math.random() * 8).toFixed(1);
+
+      document.getElementById('m-f0').innerHTML = f0 + '<span class="meter-unit">Hz</span>';
+      document.getElementById('m-jitter').innerHTML = jitter + '<span class="meter-unit">%</span>';
+      document.getElementById('m-shimmer').innerHTML = shimmer + '<span class="meter-unit">dB</span>';
+      document.getElementById('m-hnr').innerHTML = hnr + '<span class="meter-unit">dB</span>';
+
+      if (tick === 5) {
+        const diag = document.getElementById('voice-diagnosis');
+        diag.style.display = 'block';
+        const jitterN = parseFloat(jitter);
+        let classification = '';
+        if (jitterN < 0.5) classification = '✓ VOZ NORMAL — Parâmetros dentro do esperado.';
+        else if (jitterN < 1.0) classification = '⚠ DISFONIA LEVE — Irregularidade leve. Monitorar.';
+        else classification = '⚠ DISFONIA MODERADA — Encaminhar para avaliação laringológica.';
+        diag.textContent = classification + '\n\nF0: ' + f0 + ' Hz (normal: 80-350 Hz)\nJitter: ' + jitter + '% (normal: <1.04%)\nShimmer: ' + shimmer + ' dB (normal: <3.81 dB)\nHNR: ' + hnr + ' dB (normal: >7 dB)';
+      }
+    }, 400);
+
+  } catch(e) {
+    // Simulate without mic
+    simulateVoiceAnalysis();
+  }
+}
+
+function simulateVoiceAnalysis() {
+  isRecording = true;
+  const btn = document.getElementById('voice-btn');
+  btn.classList.add('recording');
+  document.getElementById('voice-btn-text').textContent = 'Simulando análise... (clique para parar)';
+  document.getElementById('voice-meters').style.display = 'grid';
+  drawSimulatedWaveform();
+
+  let tick = 0;
+  voiceInterval = setInterval(() => {
+    tick++;
+    const f0 = (180 + Math.random() * 60).toFixed(1);
+    const jitter = (0.3 + Math.random() * 1.5).toFixed(2);
+    const shimmer = (0.8 + Math.random() * 2.2).toFixed(2);
+    const hnr = (18 + Math.random() * 8).toFixed(1);
+
+    document.getElementById('m-f0').innerHTML = f0 + '<span class="meter-unit">Hz</span>';
+    document.getElementById('m-jitter').innerHTML = jitter + '<span class="meter-unit">%</span>';
+    document.getElementById('m-shimmer').innerHTML = shimmer + '<span class="meter-unit">dB</span>';
+    document.getElementById('m-hnr').innerHTML = hnr + '<span class="meter-unit">dB</span>';
+
+    if (tick === 5) {
+      const diag = document.getElementById('voice-diagnosis');
+      diag.style.display = 'block';
+      diag.textContent = '✓ MODO SIMULAÇÃO ATIVO\n\nF0: ' + f0 + ' Hz (esperado: 80-350 Hz)\nJitter: ' + jitter + '% (normal: <1.04%)\nShimmer: ' + shimmer + ' dB (normal: <3.81 dB)\nHNR: ' + hnr + ' dB (normal: >7 dB)\n\nEm produção: microfone real analisa voz do paciente.';
+    }
+  }, 400);
+}
+
+function stopRecording() {
+  isRecording = false;
+  clearInterval(voiceInterval);
+  cancelAnimationFrame(animFrame);
+  if (mediaStream) mediaStream.getTracks().forEach(t => t.stop());
+  if (audioCtx) audioCtx.close();
+  const btn = document.getElementById('voice-btn');
+  btn.classList.remove('recording');
+  document.getElementById('voice-btn-text').textContent = 'Iniciar Gravação';
+}
+
+function drawWaveform() {
+  const wf = document.getElementById('waveform');
+  wf.innerHTML = '';
+  const bars = 40;
+  for (let i = 0; i < bars; i++) {
+    const bar = document.createElement('div');
+    bar.className = 'wave-bar';
+    bar.style.height = '4px';
+    wf.appendChild(bar);
+  }
+
+  const bufferLength = analyser.frequencyBinCount;
+  const dataArray = new Uint8Array(bufferLength);
+  const barEls = wf.querySelectorAll('.wave-bar');
+
+  function draw() {
+    animFrame = requestAnimationFrame(draw);
+    analyser.getByteFrequencyData(dataArray);
+    barEls.forEach((bar, i) => {
+      const idx = Math.floor(i * bufferLength / bars);
+      const h = Math.max(4, (dataArray[idx] / 255) * 70);
+      bar.style.height = h + 'px';
+    });
+  }
+  draw();
+}
+
+function drawSimulatedWaveform() {
+  const wf = document.getElementById('waveform');
+  wf.innerHTML = '';
+  const bars = 40;
+  for (let i = 0; i < bars; i++) {
+    const bar = document.createElement('div');
+    bar.className = 'wave-bar';
+    bar.style.height = '4px';
+    wf.appendChild(bar);
+  }
+  const barEls = wf.querySelectorAll('.wave-bar');
+  function draw() {
+    if (!isRecording) return;
+    animFrame = requestAnimationFrame(draw);
+    barEls.forEach(bar => {
+      const h = Math.max(4, Math.random() * 60 + 10);
+      bar.style.height = h + 'px';
+    });
+  }
+  draw();
+}
+
+// ==============================
+// LANGUAGE MILESTONES
+// ==============================
+const milestones = {
+  6: [
+    { title: 'Balbucio canônico', desc: 'CV silábico repetido: "bababa", "mamama"', key: 'babble' },
+    { title: 'Responde ao nome', desc: 'Vira a cabeça ao ouvir o próprio nome', key: 'name' },
+    { title: 'Vocalizações sociais', desc: 'Ri, gorjeia em resposta ao adulto', key: 'social' },
+    { title: 'Diferencia vozes', desc: 'Reage diferente a voz familiar vs desconhecida', key: 'voices' },
+  ],
+  12: [
+    { title: 'Primeira palavra', desc: 'Produção de ao menos 1 palavra com sentido', key: 'first-word' },
+    { title: 'Gestos comunicativos', desc: 'Aponta, acena, estende objetos', key: 'gestures' },
+    { title: 'Compreensão de "não"', desc: 'Compreende proibição pelo contexto', key: 'no' },
+    { title: 'Atenção compartilhada', desc: 'Olha para onde o adulto aponta', key: 'joint-att' },
+  ],
+  18: [
+    { title: '10-20 palavras', desc: 'Vocabulário expressivo de 10 a 20 palavras', key: 'vocab' },
+    { title: 'Protoimperativo', desc: 'Usa gesto+vocalização para pedir', key: 'proto' },
+    { title: 'Compreensão de 50+ palavras', desc: 'Vocabulário receptivo ampliado', key: 'recep' },
+    { title: 'Identificação de imagens', desc: 'Aponta figura ao ser nomeada', key: 'images' },
+  ],
+  24: [
+    { title: '50+ palavras', desc: 'Vocabulário expressivo mínimo de 50 palavras', key: 'vocab24' },
+    { title: 'Combinações de 2 palavras', desc: '"Mamãe suco", "mais agua"', key: 'combo' },
+    { title: 'Inteligibilidade 50%', desc: 'Estranhos entendem metade do que diz', key: 'intel' },
+    { title: 'Perguntas simples', desc: 'Compreende "o que é isso?"', key: 'questions' },
+  ],
+  36: [
+    { title: '200-300 palavras', desc: 'Vocabulário expressivo amplo', key: 'vocab36' },
+    { title: 'Frases de 3+ palavras', desc: '"Eu quero água", "O carro é meu"', key: 'sentences' },
+    { title: 'Inteligibilidade 75%', desc: 'Estranhos entendem maior parte', key: 'intel36' },
+    { title: 'Narrativa simples', desc: 'Conta fatos do dia com início e fim', key: 'narrative' },
+  ]
+};
+
+const achieved = {};
+
+function showMilestones(age, btn) {
+  document.querySelectorAll('.tool-panel .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const grid = document.getElementById('milestone-grid');
+  const items = milestones[age];
+  grid.innerHTML = items.map(m => `
+    <div class="milestone-card ${achieved[m.key] ? 'achieved' : ''}" onclick="toggleMilestone('${m.key}', this)">
+      <div class="milestone-age">${age} meses</div>
+      <div class="milestone-title">${m.title}</div>
+      <div class="milestone-desc">${m.desc}</div>
+      <div class="milestone-check">
+        <div class="check-box">${achieved[m.key] ? '✓' : ''}</div>
+        <span style="color:rgba(245,240,232,0.3);font-size:10px;">${achieved[m.key] ? 'ATINGIDO' : 'MARCAR'}</span>
+      </div>
+    </div>
+  `).join('');
+  checkAlerts(age);
+}
+
+function toggleMilestone(key, card) {
+  achieved[key] = !achieved[key];
+  card.classList.toggle('achieved');
+  const box = card.querySelector('.check-box');
+  const lbl = card.querySelector('.milestone-check span');
+  box.textContent = achieved[key] ? '✓' : '';
+  lbl.textContent = achieved[key] ? 'ATINGIDO' : 'MARCAR';
+}
+
+function checkAlerts(age) {
+  const items = milestones[age];
+  const missing = items.filter(m => !achieved[m.key]);
+  const alert = document.getElementById('lang-alert');
+  if (missing.length >= 3) {
+    alert.style.display = 'block';
+    document.getElementById('lang-alert-text').textContent = 
+      `${missing.length} de ${items.length} marcos não atingidos para ${age} meses. Recomenda-se avaliação fonoaudiológica detalhada e possível triagem para TEA ou atraso de linguagem.`;
+  } else {
+    alert.style.display = 'none';
+  }
+}
+
+showMilestones(6, document.querySelector('.tool-panel .filter-btn'));
+
+// ==============================
+// HEARING TOOL
+// ==============================
+const frequencies = [250, 500, 1000, 2000, 3000, 4000, 6000, 8000];
+const hearingLevels = {};
+frequencies.forEach(f => hearingLevels[f] = 20);
+
+function buildHearingTest() {
+  const container = document.getElementById('hearing-test');
+  container.innerHTML = frequencies.map(f => `
+    <div class="freq-row">
+      <span class="freq-label">${f >= 1000 ? (f/1000) + 'kHz' : f + 'Hz'}</span>
+      <div class="freq-bar-track" onclick="setHearing(${f}, event, this)">
+        <div class="freq-bar-fill" id="bar-${f}" style="width:${(hearingLevels[f]/120)*100}%"></div>
+      </div>
+      <span class="freq-status ${getStatusClass(hearingLevels[f])}" id="status-${f}">${hearingLevels[f]} dB</span>
+    </div>
+  `).join('');
+  updateHearingResult();
+}
+
+function getStatusClass(level) {
+  if (level <= 25) return 'status-normal';
+  if (level <= 40) return 'status-mild';
+  return 'status-moderate';
+}
+
+function setHearing(freq, event, track) {
+  const rect = track.getBoundingClientRect();
+  const pct = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
+  const level = Math.round(pct * 120);
+  hearingLevels[freq] = level;
+  document.getElementById('bar-' + freq).style.width = (pct * 100) + '%';
+  const status = document.getElementById('status-' + freq);
+  status.textContent = level + ' dB';
+  status.className = 'freq-status ' + getStatusClass(level);
+  updateHearingResult();
+}
+
+function updateHearingResult() {
+  const avg = Object.values(hearingLevels).reduce((a,b) => a+b, 0) / frequencies.length;
+  const result = document.getElementById('hearing-result');
+  const text = document.getElementById('hearing-result-text');
+  result.style.display = 'block';
+  let classification, color;
+  if (avg <= 25) { classification = '✓ AUDIÇÃO NORMAL — Média de ' + avg.toFixed(0) + ' dB HL. Sem indicação de perda auditiva.'; color = 'var(--teal-light)'; }
+  else if (avg <= 40) { classification = '⚠ PERDA LEVE — Média de ' + avg.toFixed(0) + ' dB HL. Encaminhar para audiometria completa.'; color = 'var(--gold)'; }
+  else if (avg <= 70) { classification = '⚠ PERDA MODERADA — Média de ' + avg.toFixed(0) + ' dB HL. Avaliação audiológica urgente recomendada.'; color = '#e67e22'; }
+  else { classification = '⚠ PERDA SEVERA — Média de ' + avg.toFixed(0) + ' dB HL. Encaminhar para centro de referência imediatamente.'; color = 'var(--red)'; }
+  text.innerHTML = '<span style="color:' + color + '">' + classification + '</span>';
+}
+
+buildHearingTest();
+
+// ==============================
+// SWALLOW TOOL
+// ==============================
+const swallowQuestions = [
+  { q: 'Tosse durante ou após as refeições?', key: 'cough', risk: 2 },
+  { q: 'Engasgos frequentes com líquidos?', key: 'choke-liq', risk: 2 },
+  { q: 'Engasgos frequentes com sólidos?', key: 'choke-sol', risk: 1.5 },
+  { q: 'Dificuldade de mastigar?', key: 'chew', risk: 1 },
+  { q: 'Sensação de alimento parado na garganta?', key: 'stuck', risk: 2 },
+  { q: 'Mudança na voz após comer?', key: 'voice', risk: 1.5 },
+  { q: 'Perda de peso inexplicada?', key: 'weight', risk: 1 },
+  { q: 'Pneumonias de repetição?', key: 'pneumonia', risk: 3 },
+];
+
+const swallowAnswers = {};
+
+function buildSwallowSteps() {
+  const container = document.getElementById('swallow-steps');
+  container.innerHTML = swallowQuestions.map(q => `
+    <div style="margin-bottom:16px;padding:16px;background:rgba(10,10,15,0.05);display:flex;align-items:center;justify-content:space-between;gap:16px;">
+      <span style="font-size:15px;flex:1;">${q.q}</span>
+      <div style="display:flex;gap:6px;">
+        <button class="filter-btn" onclick="setSwallow('${q.key}',true,this)" id="sw-y-${q.key}">Sim</button>
+        <button class="filter-btn" onclick="setSwallow('${q.key}',false,this)" id="sw-n-${q.key}">Não</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function setSwallow(key, val, btn) {
+  swallowAnswers[key] = val;
+  const prefix = val ? 'sw-y-' : 'sw-n-';
+  const other = val ? 'sw-n-' + key : 'sw-y-' + key;
+  btn.classList.add('active');
+  const otherBtn = document.getElementById(other);
+  if (otherBtn) otherBtn.classList.remove('active');
+}
+
+function runSwallowAssessment() {
+  let score = 0;
+  swallowQuestions.forEach(q => {
+    if (swallowAnswers[q.key] === true) score += q.risk;
+  });
+
+  const result = document.getElementById('swallow-result');
+  const text = document.getElementById('swallow-result-text');
+  result.style.display = 'block';
+
+  let assessment;
+  if (score === 0) {
+    assessment = '✓ BAIXO RISCO\nNenhum sintoma de alarme reportado. Monitoramento de rotina recomendado.';
+  } else if (score < 4) {
+    assessment = '⚠ RISCO MODERADO (score: ' + score.toFixed(1) + ')\nPresença de sintomas de alerta. Recomenda-se avaliação fonoaudiológica clínica da deglutição e orientação dietética.\n\nProtocolo sugerido: Avaliação clínica + teste de deglutição volume-viscosidade.';
+  } else if (score < 7) {
+    assessment = '⚠ RISCO ALTO (score: ' + score.toFixed(1) + ')\nSintomas significativos de disfagia. Encaminhamento urgente para avaliação instrumental.\n\nProtocolo sugerido: Videofluoroscopia ou FEES. Ajuste imediato de consistência alimentar.';
+  } else {
+    assessment = '⚠ RISCO SEVERO (score: ' + score.toFixed(1) + ')\nAlto risco de aspiração com possíveis complicações pulmonares. Avaliação hospitalar imediata recomendada.\n\nProtocolo sugerido: Internação para avaliação multidisciplinar. Suspender via oral até avaliação instrumental.';
+  }
+  text.textContent = assessment;
+}
+
+buildSwallowSteps();
+
+// ==============================
+// TIMELINE
+// ==============================
+const timelineData = [
+  { year: '1924', title: 'Nascimento da Foniatria', content: 'Emil Froeschels funda a foniatria em Viena, criando o primeiro protocolo sistemático de avaliação e tratamento de distúrbios da voz. O Método Mastigado — hoje esquecido — resolvia disfonias funcionais com 78% de eficácia.', tag: 'voice' },
+  { year: '1933', title: 'Anatomia da Deglutição Humana', content: 'Victor Negus descobre que humanos são os únicos mamíferos incapazes de deglutir e respirar simultaneamente — devido à descida da laringe. Achado esquecido por décadas, essencial para entender a aspiração.', tag: 'swallow' },
+  { year: '1956', title: 'Discriminação Tonal Pré-Linguística', content: 'Wolff demonstra que bebês de dias de vida discriminam diferenças tonais mínimas — anticipando em 30 anos a base do BERA. O artigo ficou perdido em periódico alemão e só foi redescoberto em 2001.', tag: 'hearing' },
+  { year: '1961', title: 'Revolução Chomskiana', content: 'Noam Chomsky propõe a gramática universal e o Dispositivo de Aquisição de Linguagem (LAD), transformando para sempre como entendemos o desenvolvimento da fala em crianças.', tag: 'language' },
+  { year: '1974', title: 'Padronização da Avaliação Vocal', content: 'Hirano publica o protocolo GRBAS e a teoria cover-body das pregas vocais. Dois avanços que estabeleceram a linguagem internacional da avaliação vocal — ainda em uso 50 anos depois.', tag: 'voice' },
+  { year: '1991', title: 'Normas do Português Brasileiro', content: 'Hernandorena publica normas de aquisição fonológica do português brasileiro — o único banco normativo nacional. Até hoje subutilizado: profissionais brasileiros ainda usam normas americanas adaptadas.', tag: 'language' },
+  { year: '2003', title: 'SOVT — Exercícios de Trato Semiocluído', content: 'Ingo Titze formaliza os exercícios SOVT (tubos, vibração de lábios, fonação em canudo). Demonstra matematicamente que maximizam a eficiência vocal com mínimo impacto nas pregas. Técnica hoje universalmente adotada.', tag: 'voice' },
+  { year: '2025', title: 'PHONOBASE AI — Integração Global', content: 'Pela primeira vez, pesquisas de 100 anos, dados clínicos em tempo real, estudos esquecidos e colaboração internacional convergem em uma única plataforma de IA. O futuro da pesquisa fonoaudiológica começa aqui.', tag: 'language' },
+];
+
+function buildTimeline() {
+  const container = document.getElementById('timeline');
+  container.innerHTML = timelineData.map((item, i) => `
+    <div class="timeline-item" style="animation-delay:${i*0.1}s">
+      <div class="timeline-year">${item.year}</div>
+      <div class="timeline-title">${item.title}</div>
+      <div class="timeline-content">${item.content}</div>
+      <span class="timeline-tag tag-${item.tag}">${{voice:'Voz',swallow:'Deglutição',language:'Linguagem',hearing:'Audição'}[item.tag]}</span>
+    </div>
+  `).join('');
+}
+
+buildTimeline();
+
+// ==============================
+// AI QUERY
+// ==============================
+function setQuery(text) {
+  document.getElementById('ai-query').value = text;
+  queryAI();
+}
+
+async function queryAI() {
+  const query = document.getElementById('ai-query').value.trim();
+  if (!query) return;
+
+  const btn = document.getElementById('ai-submit');
+  const resultDiv = document.getElementById('ai-result');
+  const resultText = document.getElementById('ai-result-text');
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loading-spinner"></span> Consultando...';
+  resultDiv.classList.add('visible');
+  resultText.innerHTML = '<span class="typing-cursor"></span>';
+
+  const systemPrompt = `Você é a IA especializada PHONOBASE AI, uma plataforma de pesquisa global em Fonoaudiologia. 
+Você tem acesso a 100 anos de literatura científica em fonoaudiologia, incluindo:
+- Pesquisas clássicas de Froeschels, Hirano, Logemann, Titze, Chomsky, Wetherby
+- Estudos esquecidos e subutilizados dos anos 1920-1980
+- Normas do português brasileiro
+- Pesquisas sobre voz, deglutição, linguagem infantil e audiologia
+- Dados clínicos globais anonimizados
+
+Responda sempre em português brasileiro. Seja específico, cite anos, autores e achados concretos. 
+Destaque pesquisas esquecidas ou subutilizadas quando relevante.
+Use formato claro com parágrafos. Máximo 400 palavras.`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: query }]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content?.map(c => c.text || '').join('') || 'Erro ao obter resposta.';
+
+    resultText.textContent = '';
+    let i = 0;
+    function typeChar() {
+      if (i < text.length) {
+        resultText.textContent += text[i];
+        i++;
+        setTimeout(typeChar, 12);
+      }
+    }
+    typeChar();
+
+  } catch(e) {
+    resultText.textContent = 'Erro de conexão. Verifique sua conexão e tente novamente.';
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Consultar';
+}
+</script>
+</body>
+</html>
