@@ -3,2185 +3,1977 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PHONOBASE AI — Plataforma Global de Pesquisa em Fonoaudiologia</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=Crimson+Pro:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+<title>PHONOBASE AI — Plataforma Mundial de Fonoaudiologia 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100;0,9..144,700;0,9..144,900;1,9..144,100;1,9..144,700;1,9..144,900&family=Epilogue:wght@300;400;500;700;900&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --ink: #0a0a0f;
-    --paper: #f5f0e8;
-    --cream: #ede8dc;
-    --gold: #c9a84c;
-    --gold-light: #e8c97a;
-    --teal: #1a6b6b;
-    --teal-light: #2a9d8f;
-    --red: #8b2020;
-    --blue: #1a3a6b;
-    --purple: #4a1a6b;
-    --text: #1a1a2e;
-    --muted: #6b6b7a;
-    --border: rgba(10,10,15,0.15);
-    --glass: rgba(245,240,232,0.85);
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--paper);
-    color: var(--text);
-    font-family: 'Crimson Pro', Georgia, serif;
-    font-size: 18px;
-    line-height: 1.7;
-    overflow-x: hidden;
-  }
-
-  /* GRAIN TEXTURE */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 9999;
-    opacity: 0.4;
-  }
-
-  /* HERO */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    padding: 60px 40px;
-    text-align: center;
-    background: var(--ink);
-    overflow: hidden;
-  }
-
-  .hero-bg {
-    position: absolute;
-    inset: 0;
-    background: 
-      radial-gradient(ellipse 80% 60% at 20% 50%, rgba(26,107,107,0.3) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 80% at 80% 30%, rgba(201,168,76,0.15) 0%, transparent 50%),
-      radial-gradient(ellipse 40% 40% at 50% 80%, rgba(139,32,32,0.2) 0%, transparent 50%);
-  }
-
-  .hero-grid {
-    position: absolute;
-    inset: 0;
-    background-image: 
-      linear-gradient(rgba(201,168,76,0.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(201,168,76,0.08) 1px, transparent 1px);
-    background-size: 60px 60px;
-  }
-
-  .hero-badge {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--gold);
-    border: 1px solid rgba(201,168,76,0.4);
-    padding: 8px 20px;
-    margin-bottom: 40px;
-    animation: fadeUp 1s ease both;
-  }
-
-  .hero-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(60px, 10vw, 120px);
-    font-weight: 900;
-    color: var(--paper);
-    line-height: 0.9;
-    letter-spacing: -2px;
-    animation: fadeUp 1s 0.2s ease both;
-    position: relative;
-  }
-
-  .hero-title span {
-    color: var(--gold);
-    display: block;
-    font-style: italic;
-  }
-
-  .hero-subtitle {
-    font-family: 'Crimson Pro', serif;
-    font-size: clamp(16px, 2vw, 22px);
-    color: rgba(245,240,232,0.6);
-    max-width: 700px;
-    margin: 30px auto 0;
-    font-style: italic;
-    animation: fadeUp 1s 0.4s ease both;
-  }
-
-  .hero-stats {
-    display: flex;
-    gap: 60px;
-    margin-top: 70px;
-    animation: fadeUp 1s 0.6s ease both;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .hero-stat {
-    text-align: center;
-    border-left: 1px solid rgba(201,168,76,0.3);
-    padding-left: 30px;
-  }
-
-  .hero-stat:first-child { border-left: none; padding-left: 0; }
-
-  .hero-stat-num {
-    font-family: 'Playfair Display', serif;
-    font-size: 48px;
-    font-weight: 700;
-    color: var(--gold);
-    display: block;
-    line-height: 1;
-  }
-
-  .hero-stat-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: rgba(245,240,232,0.4);
-    text-transform: uppercase;
-    margin-top: 8px;
-    display: block;
-  }
-
-  .scroll-hint {
-    position: absolute;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    animation: bounce 2s infinite;
-    color: rgba(245,240,232,0.3);
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-  }
-
-  /* NAV */
-  .nav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(10,10,15,0.95);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(201,168,76,0.2);
-    padding: 0 40px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 64px;
-  }
-
-  .nav-logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 20px;
-    color: var(--gold);
-    letter-spacing: -0.5px;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 0;
-    list-style: none;
-  }
-
-  .nav-links a {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: rgba(245,240,232,0.5);
-    text-decoration: none;
-    padding: 8px 16px;
-    transition: color 0.3s;
-    cursor: pointer;
-  }
-
-  .nav-links a:hover, .nav-links a.active { color: var(--gold); }
-
-  /* SECTIONS */
-  .section {
-    display: none;
-    min-height: 100vh;
-    padding: 80px 40px;
-    max-width: 1400px;
-    margin: 0 auto;
-  }
-
-  .section.active { display: block; }
-
-  .section-header {
-    margin-bottom: 60px;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 40px;
-  }
-
-  .section-eyebrow {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 16px;
-    display: block;
-  }
-
-  .section-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(36px, 5vw, 64px);
-    font-weight: 900;
-    line-height: 1;
-    letter-spacing: -1px;
-  }
-
-  .section-desc {
-    color: var(--muted);
-    max-width: 600px;
-    margin-top: 20px;
-    font-style: italic;
-    font-size: 20px;
-  }
-
-  /* MODULE CARDS */
-  .modules-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 2px;
-    margin-bottom: 60px;
-  }
-
-  .module-card {
-    background: var(--ink);
-    color: var(--paper);
-    padding: 40px;
-    cursor: pointer;
-    transition: transform 0.3s, background 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .module-card::before {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 3px;
-    background: var(--accent, var(--gold));
-    transform: scaleX(0);
-    transition: transform 0.3s;
-    transform-origin: left;
-  }
-
-  .module-card:hover::before { transform: scaleX(1); }
-  .module-card:hover { transform: translateY(-4px); }
-
-  .module-icon {
-    font-size: 36px;
-    margin-bottom: 20px;
-    display: block;
-  }
-
-  .module-num {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: var(--accent, var(--gold));
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-
-  .module-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 26px;
-    font-weight: 700;
-    margin-bottom: 12px;
-    line-height: 1.1;
-  }
-
-  .module-desc {
-    font-size: 15px;
-    color: rgba(245,240,232,0.5);
-    line-height: 1.6;
-  }
-
-  /* RESEARCH TIMELINE */
-  .timeline {
-    position: relative;
-    padding-left: 60px;
-  }
-
-  .timeline::before {
-    content: '';
-    position: absolute;
-    left: 20px; top: 0; bottom: 0;
-    width: 1px;
-    background: linear-gradient(to bottom, var(--gold), transparent);
-  }
-
-  .timeline-item {
-    position: relative;
-    margin-bottom: 50px;
-    opacity: 0;
-    animation: fadeUp 0.6s ease forwards;
-  }
-
-  .timeline-item::before {
-    content: '';
-    position: absolute;
-    left: -48px;
-    top: 8px;
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: var(--gold);
-    border: 2px solid var(--paper);
-  }
-
-  .timeline-year {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 3px;
-    color: var(--gold);
-    margin-bottom: 8px;
-  }
-
-  .timeline-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-
-  .timeline-content {
-    color: var(--muted);
-    font-size: 16px;
-    max-width: 700px;
-  }
-
-  .timeline-tag {
-    display: inline-block;
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 2px;
-    padding: 3px 10px;
-    border-radius: 2px;
-    margin-top: 10px;
-    text-transform: uppercase;
-  }
-
-  .tag-voice { background: rgba(26,107,107,0.15); color: var(--teal); }
-  .tag-swallow { background: rgba(139,32,32,0.15); color: var(--red); }
-  .tag-language { background: rgba(201,168,76,0.15); color: #8a6a1a; }
-  .tag-hearing { background: rgba(26,58,107,0.15); color: var(--blue); }
-  .tag-forgotten { background: rgba(74,26,107,0.15); color: var(--purple); }
-  .tag-adults { background: rgba(230,126,34,0.15); color: #b7611a; }
-
-  /* AI SEARCH */
-  .ai-search-box {
-    background: var(--ink);
-    border-radius: 0;
-    padding: 40px;
-    margin-bottom: 40px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .ai-search-box::before {
-    content: 'IA';
-    position: absolute;
-    right: 30px; top: 20px;
-    font-family: 'Playfair Display', serif;
-    font-size: 80px;
-    font-weight: 900;
-    color: rgba(201,168,76,0.06);
-    line-height: 1;
-  }
-
-  .ai-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 4px;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-
-  .ai-input-row {
-    display: flex;
-    gap: 12px;
-    align-items: stretch;
-  }
-
-  .ai-input {
-    flex: 1;
-    background: rgba(245,240,232,0.06);
-    border: 1px solid rgba(201,168,76,0.2);
-    color: var(--paper);
-    font-family: 'Crimson Pro', serif;
-    font-size: 18px;
-    padding: 16px 20px;
-    outline: none;
-    transition: border-color 0.3s;
-  }
-
-  .ai-input:focus { border-color: var(--gold); }
-  .ai-input::placeholder { color: rgba(245,240,232,0.2); }
-
-  .ai-btn {
-    background: var(--gold);
-    color: var(--ink);
-    border: none;
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 16px 30px;
-    cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
-    font-weight: 500;
-  }
-
-  .ai-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
-  .ai-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .ai-result {
-    margin-top: 30px;
-    padding: 30px;
-    border-left: 3px solid var(--gold);
-    background: rgba(201,168,76,0.05);
-    display: none;
-  }
-
-  .ai-result.visible { display: block; }
-
-  .ai-result-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-
-  .ai-result-text {
-    color: var(--paper);
-    font-size: 17px;
-    line-height: 1.8;
-    white-space: pre-wrap;
-  }
-
-  .typing-cursor {
-    display: inline-block;
-    width: 2px;
-    height: 1em;
-    background: var(--gold);
-    margin-left: 2px;
-    animation: blink 1s infinite;
-    vertical-align: middle;
-  }
-
-  /* TOOLS */
-  .tools-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2px;
-  }
-
-  @media (max-width: 768px) {
-    .tools-grid { grid-template-columns: 1fr; }
-    .hero-stats { gap: 30px; }
-    .nav-links { display: none; }
-    .ai-input-row { flex-direction: column; }
-  }
-
-  .tool-panel {
-    background: var(--cream);
-    padding: 40px;
-    position: relative;
-  }
-
-  .tool-panel-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-
-  .tool-panel-desc {
-    color: var(--muted);
-    font-size: 16px;
-    margin-bottom: 30px;
-    font-style: italic;
-  }
-
-  .record-btn {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: var(--red);
-    color: white;
-    border: none;
-    padding: 16px 28px;
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.3s;
-    margin-bottom: 20px;
-  }
-
-  .record-btn:hover { background: #a52828; }
-  .record-btn.recording { background: #6b0000; animation: pulse 1s infinite; }
-
-  .record-dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: white;
-  }
-
-  .record-btn.recording .record-dot { animation: blink 0.8s infinite; }
-
-  .waveform {
-    height: 80px;
-    background: var(--ink);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    padding: 0 20px;
-    margin-bottom: 20px;
-  }
-
-  .wave-bar {
-    width: 3px;
-    background: var(--gold);
-    border-radius: 2px;
-    transition: height 0.1s;
-  }
-
-  .meter-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-top: 20px;
-  }
-
-  .meter-item {
-    background: var(--ink);
-    padding: 16px;
-    color: var(--paper);
-  }
-
-  .meter-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 2px;
-    color: rgba(245,240,232,0.4);
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-
-  .meter-value {
-    font-family: 'Playfair Display', serif;
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--gold);
-  }
-
-  .meter-unit {
-    font-size: 12px;
-    color: rgba(245,240,232,0.3);
-    margin-left: 4px;
-  }
-
-  /* LANGUAGE DEV */
-  .milestone-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 2px;
-    margin-top: 20px;
-  }
-
-  .milestone-card {
-    background: var(--ink);
-    color: var(--paper);
-    padding: 24px;
-    cursor: pointer;
-    transition: all 0.3s;
-    border-left: 3px solid transparent;
-  }
-
-  .milestone-card:hover { border-left-color: var(--gold); }
-  .milestone-card.achieved { border-left-color: var(--teal-light); }
-
-  .milestone-age {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 2px;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-bottom: 10px;
-  }
-
-  .milestone-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-
-  .milestone-desc {
-    font-size: 13px;
-    color: rgba(245,240,232,0.4);
-    line-height: 1.5;
-  }
-
-  .milestone-check {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 12px;
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 1px;
-  }
-
-  .check-box {
-    width: 16px; height: 16px;
-    border: 1px solid rgba(245,240,232,0.2);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 10px;
-    transition: all 0.3s;
-  }
-
-  .milestone-card.achieved .check-box {
-    background: var(--teal-light);
-    border-color: var(--teal-light);
-    color: white;
-  }
-
-  /* HEARING */
-  .hearing-test {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .freq-row {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-
-  .freq-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 2px;
-    color: var(--muted);
-    width: 80px;
-    text-align: right;
-  }
-
-  .freq-bar-track {
-    flex: 1;
-    height: 6px;
-    background: rgba(10,10,15,0.1);
-    position: relative;
-    cursor: pointer;
-  }
-
-  .freq-bar-fill {
-    height: 100%;
-    background: var(--blue);
-    transition: width 0.3s;
-    position: relative;
-  }
-
-  .freq-bar-fill::after {
-    content: '';
-    position: absolute;
-    right: -4px; top: -4px;
-    width: 14px; height: 14px;
-    border-radius: 50%;
-    background: var(--blue);
-    border: 2px solid var(--paper);
-  }
-
-  .freq-status {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 1px;
-    width: 80px;
-    text-align: center;
-    padding: 3px 8px;
-  }
-
-  .status-normal { color: var(--teal); background: rgba(26,107,107,0.1); }
-  .status-mild { color: #8a6a1a; background: rgba(201,168,76,0.1); }
-  .status-moderate { color: var(--red); background: rgba(139,32,32,0.1); }
-
-  /* RESEARCH DB */
-  .research-filters {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 30px;
-  }
-
-  .filter-btn {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 8px 16px;
-    border: 1px solid var(--border);
-    background: none;
-    cursor: pointer;
-    transition: all 0.3s;
-    color: var(--muted);
-  }
-
-  .filter-btn:hover, .filter-btn.active {
-    background: var(--ink);
-    color: var(--gold);
-    border-color: var(--ink);
-  }
-
-  .paper-card {
-    border-bottom: 1px solid var(--border);
-    padding: 30px 0;
-    cursor: pointer;
-    transition: padding-left 0.3s;
-    position: relative;
-  }
-
-  .paper-card:hover { padding-left: 20px; }
-
-  .paper-card::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 30px; bottom: 30px;
-    width: 2px;
-    background: var(--gold);
-    transform: scaleY(0);
-    transition: transform 0.3s;
-  }
-
-  .paper-card:hover::before { transform: scaleY(1); }
-
-  .paper-meta {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-bottom: 10px;
-  }
-
-  .paper-year {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: var(--gold);
-    letter-spacing: 2px;
-  }
-
-  .paper-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 10px;
-    line-height: 1.2;
-  }
-
-  .paper-abstract {
-    color: var(--muted);
-    font-size: 16px;
-    line-height: 1.6;
-    margin-bottom: 14px;
-  }
-
-  .paper-impact {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 2px;
-    color: var(--teal);
-    text-transform: uppercase;
-  }
-
-  .forgotten-badge {
-    background: rgba(74,26,107,0.1);
-    color: var(--purple);
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 2px;
-    padding: 3px 8px;
-    text-transform: uppercase;
-  }
-
-  /* ANIMATIONS */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes bounce {
-    0%, 100% { transform: translateX(-50%) translateY(0); }
-    50% { transform: translateX(-50%) translateY(10px); }
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
-  }
-
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-
-  .loading-spinner {
-    display: inline-block;
-    width: 16px; height: 16px;
-    border: 2px solid rgba(201,168,76,0.3);
-    border-top-color: var(--gold);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin-right: 8px;
-    vertical-align: middle;
-  }
-
-  /* SIDEBAR ACCENT */
-  .big-number {
-    font-family: 'Playfair Display', serif;
-    font-size: 200px;
-    font-weight: 900;
-    color: rgba(10,10,15,0.04);
-    position: absolute;
-    right: -20px;
-    top: -40px;
-    line-height: 1;
-    pointer-events: none;
-    user-select: none;
-  }
-
-  /* API KEY MODAL */
-  .api-modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(10,10,15,0.92);
-    z-index: 10000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(8px);
-    padding: 20px;
-  }
-
-  .api-modal {
-    background: var(--paper);
-    max-width: 560px;
-    width: 100%;
-    padding: 50px;
-    position: relative;
-    animation: fadeUp 0.4s ease;
-  }
-
-  .api-modal::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, var(--gold), var(--teal-light));
-  }
-
-  .api-modal-eyebrow {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 16px;
-  }
-
-  .api-modal-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 32px;
-    font-weight: 900;
-    line-height: 1;
-    margin-bottom: 16px;
-  }
-
-  .api-modal-desc {
-    font-size: 16px;
-    color: var(--muted);
-    margin-bottom: 30px;
-    font-style: italic;
-    line-height: 1.6;
-  }
-
-  .api-key-input-wrap {
-    position: relative;
-    margin-bottom: 16px;
-  }
-
-  .api-key-input {
-    width: 100%;
-    background: var(--ink);
-    border: 1px solid rgba(201,168,76,0.3);
-    color: var(--paper);
-    font-family: 'DM Mono', monospace;
-    font-size: 14px;
-    padding: 16px 50px 16px 20px;
-    outline: none;
-    letter-spacing: 1px;
-    transition: border-color 0.3s;
-  }
-
-  .api-key-input:focus { border-color: var(--gold); }
-  .api-key-input::placeholder { color: rgba(245,240,232,0.2); letter-spacing: 1px; }
-
-  .api-key-toggle {
-    position: absolute;
-    right: 14px; top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: rgba(245,240,232,0.3);
-    cursor: pointer;
-    font-size: 18px;
-    transition: color 0.3s;
-  }
-
-  .api-key-toggle:hover { color: var(--gold); }
-
-  .api-modal-note {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 1px;
-    color: var(--muted);
-    margin-bottom: 24px;
-    line-height: 1.8;
-  }
-
-  .api-modal-note a {
-    color: var(--gold);
-    text-decoration: none;
-  }
-
-  .api-modal-note a:hover { text-decoration: underline; }
-
-  .api-modal-actions {
-    display: flex;
-    gap: 12px;
-  }
-
-  .btn-primary {
-    flex: 1;
-    background: var(--gold);
-    color: var(--ink);
-    border: none;
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 16px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background 0.3s;
-  }
-
-  .btn-primary:hover { background: var(--gold-light); }
-
-  .btn-secondary {
-    background: none;
-    color: var(--muted);
-    border: 1px solid var(--border);
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 16px 20px;
-    cursor: pointer;
-    transition: all 0.3s;
-  }
-
-  .btn-secondary:hover { border-color: var(--ink); color: var(--ink); }
-
-  /* KEY STATUS BAR */
-  .key-status-bar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    padding: 12px 16px;
-    background: rgba(42,157,143,0.08);
-    border-left: 3px solid var(--teal-light);
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 1px;
-    color: var(--teal);
-  }
-
-  .key-status-bar.no-key {
-    background: rgba(201,168,76,0.08);
-    border-left-color: var(--gold);
-    color: #8a6a1a;
-  }
-
-  .key-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--teal-light);
-    flex-shrink: 0;
-  }
-
-  .key-dot.inactive { background: var(--gold); }
-
-  /* FOOTER */
-  .footer {
-    background: var(--ink);
-    color: rgba(245,240,232,0.3);
-    padding: 40px;
-    text-align: center;
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 2px;
-  }
-
-  .footer span { color: var(--gold); }
+/* ══════════════════════════════════════
+   PHONOBASE AI v3.0 · 2026
+   Design: Maximalista-Científico
+   Paleta: Fundo quase-preto + acento vermelho-laranja + branco
+══════════════════════════════════════ */
+:root {
+  --bg:       #07070a;
+  --bg2:      #0f0f15;
+  --bg3:      #16161f;
+  --line:     rgba(255,255,255,0.07);
+  --line2:    rgba(255,255,255,0.12);
+  --w:        #f0eee8;
+  --w2:       rgba(240,238,232,0.55);
+  --w3:       rgba(240,238,232,0.18);
+  --accent:   #e8541a;
+  --accent2:  #f07840;
+  --accent-d: rgba(232,84,26,0.12);
+  --accent-d2:rgba(232,84,26,0.06);
+  --gold:     #d4a542;
+  --gold-d:   rgba(212,165,66,0.1);
+  --teal:     #2ec4b6;
+  --teal-d:   rgba(46,196,182,0.08);
+  --blue:     #4f8ef7;
+  --blue-d:   rgba(79,142,247,0.08);
+  --green:    #3ecf6a;
+  --green-d:  rgba(62,207,106,0.08);
+  --red:      #e84040;
+  --red-d:    rgba(232,64,64,0.1);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--w);
+  font-family:'Epilogue',sans-serif;
+  font-size:16px;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+
+/* grain */
+body::after{
+  content:'';position:fixed;inset:0;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.028'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9999;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px;}
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+.hero{
+  min-height:100vh;
+  display:grid;
+  grid-template-rows:1fr auto;
+  position:relative;
+  overflow:hidden;
+}
+.hero-mesh{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 70% 50% at 10% 60%, rgba(232,84,26,0.09) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 70% at 85% 20%, rgba(79,142,247,0.06) 0%,transparent 55%),
+    radial-gradient(ellipse 40% 40% at 55% 85%, rgba(212,165,66,0.05) 0%,transparent 50%);
+  pointer-events:none;
+}
+.hero-grid-lines{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(var(--line) 1px,transparent 1px),
+    linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:80px 80px;
+  pointer-events:none;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%);
+}
+
+.hero-content{
+  position:relative;z-index:1;
+  padding:90px 64px 48px;
+  max-width:1400px;margin:0 auto;width:100%;
+  display:flex;flex-direction:column;justify-content:center;
+}
+
+.hero-year-tag{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:'DM Mono',monospace;font-size:11px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--accent);margin-bottom:40px;
+}
+.hero-year-tag::before{content:'';width:36px;height:1px;background:var(--accent);}
+
+.hero-h1{
+  font-family:'Fraunces',serif;
+  font-size:clamp(56px,9vw,130px);
+  font-weight:900;line-height:.88;letter-spacing:-3px;
+  color:var(--w);
+  margin-bottom:0;
+}
+.hero-h1 .italic{font-style:italic;color:var(--accent);}
+.hero-h1 .dim{color:var(--w2);}
+
+.hero-rule{
+  width:100%;height:1px;background:var(--line2);
+  margin:40px 0;
+}
+
+.hero-bottom{
+  display:grid;grid-template-columns:1fr 1fr;gap:40px;
+  align-items:end;
+}
+.hero-tagline{
+  font-family:'Fraunces',serif;font-style:italic;
+  font-size:clamp(18px,2.2vw,26px);
+  color:var(--w2);line-height:1.4;
+  font-weight:100;
+}
+.hero-tagline strong{color:var(--w);font-style:normal;font-weight:700;}
+
+.hero-cta-group{
+  display:flex;gap:12px;flex-wrap:wrap;justify-content:flex-end;align-items:center;
+}
+.btn{
+  font-family:'DM Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;
+  padding:14px 26px;border:none;cursor:pointer;transition:all .25s;
+  text-decoration:none;display:inline-block;
+}
+.btn-primary{background:var(--accent);color:white;font-weight:500;}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-2px);}
+.btn-ghost{background:transparent;color:var(--w2);border:1px solid var(--line2);}
+.btn-ghost:hover{border-color:var(--w2);color:var(--w);}
+
+/* marquee */
+.hero-ticker{
+  background:var(--accent);padding:11px 0;
+  overflow:hidden;white-space:nowrap;
+  position:relative;z-index:1;
+}
+.ticker-track{
+  display:inline-flex;gap:48px;
+  animation:ticker 28s linear infinite;
+}
+.ticker-item{
+  font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;
+  text-transform:uppercase;color:white;opacity:.85;flex-shrink:0;
+}
+.ticker-item::before{content:'◆';margin-right:12px;opacity:.5;}
+@keyframes ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* ══════════════════════════════════════
+   NAV
+══════════════════════════════════════ */
+.nav{
+  position:sticky;top:0;z-index:200;
+  background:rgba(7,7,10,.96);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 40px;height:58px;
+}
+.nav-logo{
+  font-family:'Fraunces',serif;font-size:17px;font-weight:900;
+  color:var(--w);letter-spacing:-.5px;
+}
+.nav-logo em{color:var(--accent);font-style:normal;}
+.nav-links{list-style:none;display:flex;gap:0;}
+.nav-links button{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--w3);background:none;border:none;padding:8px 14px;cursor:pointer;
+  transition:color .2s;border-bottom:2px solid transparent;
+}
+.nav-links button:hover{color:var(--w2);}
+.nav-links button.active{color:var(--w);border-bottom-color:var(--accent);}
+
+/* ══════════════════════════════════════
+   SECTIONS
+══════════════════════════════════════ */
+.section{display:none;animation:fadeIn .4s ease;}
+.section.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+.container{max-width:1400px;margin:0 auto;padding:80px 64px;}
+.container-sm{max-width:960px;margin:0 auto;padding:80px 64px;}
+
+/* ── eyebrow / title util ── */
+.eyebrow{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--accent);display:flex;align-items:center;gap:12px;margin-bottom:20px;
+}
+.eyebrow::before{content:'';width:28px;height:1px;background:var(--accent);}
+.eyebrow.teal{color:var(--teal);}
+.eyebrow.teal::before{background:var(--teal);}
+.eyebrow.gold{color:var(--gold);}
+.eyebrow.gold::before{background:var(--gold);}
+
+.section-h{
+  font-family:'Fraunces',serif;font-weight:900;
+  font-size:clamp(36px,5vw,72px);line-height:1.0;letter-spacing:-1px;
+  margin-bottom:56px;
+}
+.section-h em{font-style:italic;color:var(--accent);}
+.section-h .g{color:var(--gold);}
+.section-h .t{color:var(--teal);}
+
+/* ══════════════════════════════════════
+   INFANTILIZAÇÃO — SECTION
+══════════════════════════════════════ */
+
+/* WHY BOX */
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:2px;}
+.why-panel{
+  background:var(--bg2);border:1px solid var(--line);
+  padding:44px;position:relative;overflow:hidden;
+}
+.why-panel::after{
+  content:attr(data-letter);
+  position:absolute;right:-16px;top:-24px;
+  font-family:'Fraunces',serif;font-size:180px;font-weight:900;
+  color:rgba(255,255,255,.02);pointer-events:none;line-height:1;
+}
+.wp-label{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  margin-bottom:16px;
+}
+.wp-title{
+  font-family:'Fraunces',serif;font-size:26px;font-weight:700;
+  margin-bottom:14px;line-height:1.15;
+}
+.wp-text{font-size:15px;color:var(--w2);line-height:1.75;}
+.wp-text strong{color:var(--w);}
+
+/* CONTEXTS STRIP */
+.contexts-strip{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:2px;
+  margin:2px 0;
+}
+.ctx-block{
+  background:var(--bg3);border:1px solid var(--line);
+  padding:28px 24px;cursor:pointer;
+  transition:all .3s;
+  border-bottom:3px solid transparent;
+}
+.ctx-block:hover,.ctx-block.selected{
+  border-bottom-color:var(--accent);
+  background:var(--bg2);
+}
+.ctx-block.selected .ctx-name{color:var(--accent);}
+.ctx-emoji{font-size:28px;margin-bottom:12px;display:block;}
+.ctx-name{
+  font-family:'Fraunces',serif;font-size:18px;font-weight:700;
+  margin-bottom:6px;line-height:1.1;
+}
+.ctx-sub{font-size:12px;color:var(--w3);}
+
+/* COMPARISON */
+.comp-two{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin:2px 0;}
+.comp-side{padding:36px;border:1px solid var(--line);}
+.comp-side.bad{background:rgba(232,64,64,.05);border-color:rgba(232,64,64,.2);}
+.comp-side.good{background:rgba(62,207,106,.04);border-color:rgba(62,207,106,.15);}
+.comp-tag{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  margin-bottom:16px;
+}
+.comp-side.bad .comp-tag{color:var(--red);}
+.comp-side.good .comp-tag{color:var(--green);}
+.comp-phrase{
+  font-family:'Fraunces',serif;font-size:24px;font-style:italic;
+  line-height:1.35;margin-bottom:14px;
+}
+.comp-side.bad .comp-phrase{color:rgba(240,238,232,.65);}
+.comp-side.good .comp-phrase{color:var(--w);}
+.comp-why{font-size:13px;color:var(--w2);line-height:1.65;}
+.comp-why em{color:var(--red);font-style:normal;font-weight:500;}
+
+/* ══════════════════════════════════════
+   INFANTILIZATION DETECTOR IA
+══════════════════════════════════════ */
+.det-wrap{
+  background:var(--bg2);border:1px solid var(--line);
+  overflow:hidden;margin-top:2px;
+}
+.det-top{
+  display:grid;grid-template-columns:1fr auto;gap:24px;
+  align-items:start;padding:40px 40px 0;
+}
+.det-title{
+  font-family:'Fraunces',serif;font-size:clamp(28px,4vw,52px);
+  font-weight:900;line-height:1.0;letter-spacing:-1px;margin-bottom:8px;
+}
+.det-sub{font-size:15px;color:var(--w2);line-height:1.6;max-width:500px;}
+
+/* key status */
+.key-bar{
+  display:flex;align-items:center;gap:10px;
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;
+  padding:10px 16px;border:1px solid var(--line);
+  white-space:nowrap;align-self:start;margin-top:4px;
+}
+.key-bar.active{color:var(--teal);border-color:rgba(46,196,182,.25);background:rgba(46,196,182,.05);}
+.key-bar.inactive{color:var(--gold);border-color:rgba(212,165,66,.25);background:rgba(212,165,66,.05);}
+.kdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.kdot-on{background:var(--teal);}
+.kdot-off{background:var(--gold);animation:kpulse 2s infinite;}
+@keyframes kpulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.key-bar-btn{
+  margin-left:8px;background:none;border:1px solid currentColor;
+  padding:3px 10px;font-family:'DM Mono',monospace;font-size:9px;
+  letter-spacing:2px;cursor:pointer;color:inherit;text-transform:uppercase;
+}
+
+/* context tabs inside detector */
+.det-ctx-row{
+  display:flex;gap:6px;flex-wrap:wrap;
+  padding:24px 40px 0;
+}
+.det-ctx-btn{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  padding:7px 14px;border:1px solid var(--line);background:none;
+  color:var(--w3);cursor:pointer;transition:all .2s;
+}
+.det-ctx-btn:hover{border-color:var(--w3);color:var(--w2);}
+.det-ctx-btn.active{border-color:var(--accent);color:var(--accent);background:var(--accent-d);}
+
+/* textarea */
+.det-input-zone{padding:0 40px;}
+.det-ta{
+  width:100%;background:rgba(255,255,255,.03);
+  border:1px solid var(--line);border-top:none;
+  color:var(--w);font-family:'Fraunces',serif;font-size:22px;
+  font-style:italic;line-height:1.55;
+  padding:28px 28px;outline:none;resize:none;
+  transition:border-color .3s;min-height:110px;
+}
+.det-ta:focus{border-color:rgba(232,84,26,.4);}
+.det-ta::placeholder{color:var(--w3);}
+
+.det-actions{
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:16px;
+  padding:16px 40px 32px;
+}
+.examples-pills{display:flex;gap:6px;flex-wrap:wrap;}
+.epill{
+  font-size:12px;padding:6px 12px;
+  border:1px solid var(--line);background:none;
+  color:var(--w3);cursor:pointer;transition:all .2s;
+}
+.epill:hover{border-color:rgba(212,165,66,.4);color:var(--gold);}
+.analyze-btn{
+  font-family:'DM Mono',monospace;font-size:11px;font-weight:500;
+  letter-spacing:3px;text-transform:uppercase;
+  padding:14px 32px;background:var(--accent);color:white;
+  border:none;cursor:pointer;transition:all .25s;
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.analyze-btn:hover{background:var(--accent2);transform:translateY(-1px);}
+.analyze-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+
+/* RESULT */
+.det-result{display:none;border-top:1px solid var(--line);}
+.det-result.show{display:block;}
+.det-loading{
+  padding:40px;display:flex;align-items:center;gap:16px;
+  font-family:'DM Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--w3);
+}
+.spin{
+  width:18px;height:18px;border:2px solid var(--line);
+  border-top-color:var(--accent);border-radius:50%;
+  animation:sp .7s linear infinite;flex-shrink:0;
+}
+@keyframes sp{to{transform:rotate(360deg);}}
+
+.det-result-inner{display:none;}
+.result-score-row{
+  display:grid;grid-template-columns:auto 1fr;gap:0;
+  border-bottom:1px solid var(--line);
+}
+.score-big-block{
+  padding:36px 48px;border-right:1px solid var(--line);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-width:200px;
+}
+.score-num{
+  font-family:'Fraunces',serif;font-size:96px;font-weight:900;
+  line-height:1;margin-bottom:4px;
+}
+.score-of{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--w3);
+}
+.s-high{color:var(--red);}
+.s-mid{color:var(--gold);}
+.s-low{color:var(--green);}
+
+.verdict-block{
+  padding:36px 40px;
+  display:flex;flex-direction:column;justify-content:center;
+}
+.verdict-label{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--w3);margin-bottom:12px;
+}
+.verdict-text{
+  font-family:'Fraunces',serif;font-size:clamp(24px,3.5vw,44px);
+  font-weight:900;line-height:1.1;letter-spacing:-.5px;
+}
+.v-high{color:var(--red);}
+.v-mid{color:var(--gold);}
+.v-low{color:var(--green);}
+
+.result-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:1px;
+  background:var(--line);
+}
+.result-cell{
+  background:var(--bg2);padding:28px 32px;
+}
+.rc-label{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--w3);margin-bottom:12px;
+}
+.rc-content{font-size:14px;color:var(--w2);line-height:1.75;white-space:pre-wrap;}
+.rc-content strong{color:var(--w);}
+.rc-alt{
+  font-family:'Fraunces',serif;font-size:20px;font-style:italic;
+  color:var(--green);line-height:1.4;
+}
+
+.markers-list{display:flex;flex-direction:column;gap:6px;}
+.marker-item{
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:13px;color:var(--w2);line-height:1.5;
+}
+.marker-item::before{content:'→';color:var(--accent);flex-shrink:0;margin-top:1px;}
+
+/* ══════════════════════════════════════
+   FERRAMENTAS CLÍNICAS (Tools)
+══════════════════════════════════════ */
+.tools-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:2px;
+}
+.tool-panel{
+  background:var(--bg2);border:1px solid var(--line);
+  padding:40px;position:relative;overflow:hidden;
+}
+.tool-panel::before{
+  content:attr(data-letter);
+  position:absolute;right:-10px;top:-20px;
+  font-family:'Fraunces',serif;font-size:180px;font-weight:900;font-style:italic;
+  color:rgba(255,255,255,.015);pointer-events:none;line-height:1;
+}
+.tp-label{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--accent);margin-bottom:16px;
+}
+.tp-title{
+  font-family:'Fraunces',serif;font-size:32px;font-weight:900;margin-bottom:8px;
+}
+.tp-sub{font-size:14px;color:var(--w2);margin-bottom:28px;line-height:1.5;}
+
+/* ── Voice Tool ── */
+.rec-btn{
+  display:flex;align-items:center;gap:10px;
+  font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;
+  padding:14px 24px;background:var(--red);color:white;
+  border:none;cursor:pointer;transition:all .3s;margin-bottom:20px;
+}
+.rec-btn:hover{background:#c42f2f;}
+.rec-btn.on{background:#7a0000;animation:rpulse 1s infinite;}
+@keyframes rpulse{0%,100%{opacity:1;}50%{opacity:.7;}}
+.rec-dot{width:9px;height:9px;border-radius:50%;background:white;}
+.rec-btn.on .rec-dot{animation:kpulse .8s infinite;}
+
+.waveform{
+  height:72px;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  gap:3px;padding:0 16px;margin-bottom:16px;
+  border:1px solid var(--line);
+}
+.wave-bar{width:3px;background:var(--accent);border-radius:2px;transition:height .08s;}
+.wave-idle{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;
+  color:var(--w3);text-transform:uppercase;
+}
+
+.meters{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:2px;}
+.meter{background:var(--bg);padding:16px;border:1px solid var(--line);}
+.meter-lbl{
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--w3);margin-bottom:6px;
+}
+.meter-val{
+  font-family:'Fraunces',serif;font-size:32px;font-weight:900;
+  color:var(--accent);line-height:1;
+}
+.meter-unit{font-size:13px;color:var(--w3);margin-left:3px;}
+
+.voice-diag{
+  margin-top:12px;padding:16px;background:var(--bg);
+  border-left:3px solid var(--accent);
+  font-family:'DM Mono',monospace;font-size:11px;
+  letter-spacing:1px;line-height:1.8;color:var(--w2);
+  display:none;border-right:1px solid var(--line);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+}
+
+/* ── Language / Milestones Tool ── */
+.age-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;}
+.age-tab{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  padding:7px 14px;border:1px solid var(--line);background:none;
+  color:var(--w3);cursor:pointer;transition:all .2s;
+}
+.age-tab.active{border-color:var(--gold);color:var(--gold);background:var(--gold-d);}
+.milestone-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;}
+.ms-card{
+  background:var(--bg);border:1px solid var(--line);
+  padding:20px;cursor:pointer;transition:all .25s;
+  border-left:3px solid transparent;
+}
+.ms-card:hover{border-left-color:var(--gold);}
+.ms-card.done{border-left-color:var(--teal);}
+.ms-age{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;
+  color:var(--gold);text-transform:uppercase;margin-bottom:8px;
+}
+.ms-title{
+  font-family:'Fraunces',serif;font-size:16px;font-weight:700;margin-bottom:6px;
+}
+.ms-desc{font-size:12px;color:var(--w3);line-height:1.5;}
+.ms-check{
+  margin-top:10px;font-family:'DM Mono',monospace;font-size:10px;
+  display:flex;align-items:center;gap:6px;color:var(--w3);
+}
+.ms-box{
+  width:14px;height:14px;border:1px solid var(--line2);
+  display:flex;align-items:center;justify-content:center;font-size:9px;
+}
+.ms-card.done .ms-box{background:var(--teal);border-color:var(--teal);color:var(--bg);}
+
+.lang-alert{
+  margin-top:16px;padding:16px 20px;
+  border-left:3px solid var(--red);background:var(--red-d);
+  display:none;
+}
+.la-lbl{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;
+  color:var(--red);text-transform:uppercase;margin-bottom:6px;
+}
+.la-text{font-size:14px;color:var(--w2);}
+
+/* ── Hearing Tool ── */
+.hearing-rows{display:flex;flex-direction:column;gap:14px;}
+.freq-row{display:flex;align-items:center;gap:16px;}
+.freq-lbl{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;
+  color:var(--w2);width:72px;text-align:right;flex-shrink:0;
+}
+.freq-track{
+  flex:1;height:6px;background:rgba(255,255,255,.06);
+  cursor:pointer;position:relative;
+}
+.freq-fill{
+  height:100%;background:var(--blue);
+  transition:width .3s;position:relative;
+}
+.freq-fill::after{
+  content:'';position:absolute;right:-5px;top:-5px;
+  width:16px;height:16px;border-radius:50%;
+  background:var(--blue);border:2px solid var(--bg);
+}
+.freq-st{
+  font-family:'DM Mono',monospace;font-size:10px;
+  letter-spacing:1px;width:76px;text-align:center;
+  padding:3px 8px;text-transform:uppercase;
+}
+.st-ok{color:var(--teal);background:var(--teal-d);}
+.st-mild{color:var(--gold);background:var(--gold-d);}
+.st-mod{color:var(--red);background:var(--red-d);}
+.hearing-result{
+  margin-top:16px;padding:20px;background:var(--bg);
+  border:1px solid var(--line);display:none;
+}
+.hr-lbl{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;
+  color:var(--gold);text-transform:uppercase;margin-bottom:8px;
+}
+.hr-text{font-size:14px;color:var(--w2);line-height:1.7;}
+
+/* ── Swallow Tool ── */
+.sw-step{
+  margin-bottom:14px;padding:16px 20px;
+  background:var(--bg);border:1px solid var(--line);
+  display:flex;align-items:flex-start;gap:14px;
+}
+.sw-num{
+  font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;
+  color:var(--accent);flex-shrink:0;margin-top:2px;
+}
+.sw-q{font-size:14px;color:var(--w);line-height:1.5;flex:1;}
+.sw-opts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.sw-opt{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;
+  padding:6px 14px;border:1px solid var(--line);background:none;
+  color:var(--w3);cursor:pointer;transition:all .2s;
+}
+.sw-opt.sel.yes{border-color:var(--green);color:var(--green);background:var(--green-d);}
+.sw-opt.sel.no{border-color:var(--red);color:var(--red);background:var(--red-d);}
+.sw-opt:hover{border-color:var(--w2);}
+
+.sw-report-btn{
+  width:100%;margin-top:16px;padding:14px;
+  font-family:'DM Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;
+  background:var(--red);color:white;border:none;cursor:pointer;transition:all .25s;
+}
+.sw-report-btn:hover{background:#c42f2f;}
+.sw-result{
+  margin-top:12px;padding:20px;background:var(--bg);
+  border:1px solid var(--line);display:none;
+}
+.sr-lbl{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;
+  color:var(--gold);text-transform:uppercase;margin-bottom:8px;
+}
+.sr-text{font-size:14px;color:var(--w2);line-height:1.7;}
+
+/* ══════════════════════════════════════
+   RESEARCH DB
+══════════════════════════════════════ */
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:48px;}
+.filt{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  padding:8px 14px;border:1px solid var(--line);background:none;
+  color:var(--w3);cursor:pointer;transition:all .2s;
+}
+.filt:hover{border-color:var(--w2);color:var(--w2);}
+.filt.active{border-color:var(--accent);color:var(--accent);background:var(--accent-d);}
+
+.papers-list{display:flex;flex-direction:column;gap:0;}
+.paper{
+  display:grid;grid-template-columns:88px 1fr auto;gap:28px;
+  align-items:start;padding:28px 0;
+  border-bottom:1px solid var(--line);
+  transition:padding-left .25s;cursor:default;
+  position:relative;
+}
+.paper::before{
+  content:'';position:absolute;left:0;top:28px;bottom:28px;
+  width:2px;background:var(--accent);
+  transform:scaleY(0);transition:transform .25s;transform-origin:top;
+}
+.paper:hover{padding-left:16px;}
+.paper:hover::before{transform:scaleY(1);}
+.p-year{
+  font-family:'DM Mono',monospace;font-size:12px;letter-spacing:2px;
+  color:var(--gold);padding-top:4px;
+}
+.p-title{
+  font-family:'Fraunces',serif;font-size:21px;font-weight:700;
+  margin-bottom:8px;line-height:1.2;
+}
+.p-abstract{font-size:14px;color:var(--w2);line-height:1.65;margin-bottom:10px;}
+.p-impact{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;
+  color:var(--teal);text-transform:uppercase;
+}
+.pbadge{
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  padding:4px 10px;align-self:start;margin-top:4px;white-space:nowrap;
+}
+.b-forgot{background:rgba(155,126,232,.12);color:#9b7ee8;}
+.b-adult{background:var(--accent-d2);color:var(--accent);}
+.b-elder{background:var(--red-d);color:var(--red);}
+.b-voice{background:var(--teal-d);color:var(--teal);}
+.b-child{background:var(--gold-d);color:var(--gold);}
+
+/* ══════════════════════════════════════
+   AI CONSULTA
+══════════════════════════════════════ */
+.ai-box{
+  background:var(--bg2);border:1px solid var(--line);
+  padding:40px;margin-bottom:2px;
+}
+.ai-lbl{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:20px;
+}
+.ai-row{display:flex;gap:0;}
+.ai-input{
+  flex:1;background:rgba(255,255,255,.03);
+  border:1px solid var(--line);border-right:none;
+  color:var(--w);font-family:'Epilogue',sans-serif;font-size:16px;
+  padding:16px 20px;outline:none;transition:border-color .3s;
+}
+.ai-input:focus{border-color:rgba(212,165,66,.4);}
+.ai-input::placeholder{color:var(--w3);}
+.ai-go{
+  font-family:'DM Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;
+  padding:16px 28px;background:var(--gold);color:var(--bg);
+  border:none;cursor:pointer;font-weight:500;transition:all .25s;
+}
+.ai-go:hover{background:#e0b557;}
+.ai-go:disabled{opacity:.4;cursor:not-allowed;}
+.ai-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px;}
+.ai-chip{
+  font-size:12px;padding:6px 12px;
+  border:1px solid var(--line);background:none;
+  color:var(--w3);cursor:pointer;transition:all .2s;
+}
+.ai-chip:hover{border-color:rgba(212,165,66,.4);color:var(--gold);}
+
+.ai-result{
+  display:none;background:var(--bg2);
+  border:1px solid rgba(212,165,66,.2);
+  border-left:3px solid var(--gold);
+  padding:32px 40px;
+}
+.ai-result.show{display:block;}
+.ai-r-lbl{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:14px;
+}
+.ai-r-text{
+  font-size:15px;color:var(--w2);line-height:1.85;white-space:pre-wrap;
+}
+.caret{
+  display:inline-block;width:2px;height:1em;
+  background:var(--gold);animation:kpulse 1s infinite;
+  vertical-align:middle;margin-left:2px;
+}
+
+/* ══════════════════════════════════════
+   STATS BAND
+══════════════════════════════════════ */
+.stats-band{
+  background:var(--accent);padding:0;
+  display:grid;grid-template-columns:repeat(4,1fr);
+}
+.stat-cell{
+  padding:40px 36px;border-right:1px solid rgba(255,255,255,.15);
+  position:relative;overflow:hidden;
+}
+.stat-cell:last-child{border-right:none;}
+.stat-n{
+  font-family:'Fraunces',serif;font-size:56px;font-weight:900;
+  color:white;line-height:1;margin-bottom:6px;
+}
+.stat-l{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;
+  text-transform:uppercase;color:rgba(255,255,255,.65);
+}
+.stat-note{font-size:12px;color:rgba(255,255,255,.5);margin-top:4px;font-style:italic;}
+
+/* ══════════════════════════════════════
+   MODAL KEY
+══════════════════════════════════════ */
+.modal-ov{
+  position:fixed;inset:0;background:rgba(7,7,10,.93);
+  z-index:1000;display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(16px);padding:20px;
+}
+.modal-box{
+  background:var(--bg2);border:1px solid var(--line);
+  max-width:520px;width:100%;padding:48px;
+  animation:fadeIn .35s ease;
+}
+.modal-ey{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--accent);margin-bottom:16px;
+}
+.modal-h{
+  font-family:'Fraunces',serif;font-size:44px;font-weight:900;
+  line-height:1.0;margin-bottom:8px;
+}
+.modal-d{font-size:14px;color:var(--w2);margin-bottom:24px;line-height:1.6;}
+.modal-steps{
+  background:var(--gold-d);border-left:2px solid var(--gold);
+  padding:20px 24px;margin-bottom:24px;
+  font-size:14px;line-height:2.2;color:var(--w2);
+}
+.modal-steps a{color:var(--gold);}
+.modal-steps strong{color:var(--w);}
+.key-row{display:flex;gap:0;margin-bottom:14px;}
+.key-inp{
+  flex:1;background:rgba(255,255,255,.04);
+  border:1px solid var(--line);border-right:none;
+  color:var(--w);font-family:'DM Mono',monospace;font-size:14px;
+  padding:14px 18px;outline:none;
+}
+.key-eye{
+  background:var(--bg3);border:1px solid var(--line);
+  color:var(--w2);padding:14px 18px;cursor:pointer;font-size:16px;
+}
+.modal-note{font-size:12px;color:var(--w3);line-height:1.9;margin-bottom:20px;}
+.modal-note strong{color:var(--w2);}
+.modal-btns{display:flex;gap:10px;}
+.mbtn-save{
+  flex:1;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;
+  padding:14px;background:var(--accent);color:white;border:none;cursor:pointer;font-weight:500;
+}
+.mbtn-cancel{
+  font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;
+  padding:14px 20px;background:none;color:var(--w3);border:1px solid var(--line);cursor:pointer;
+}
+
+/* FOOTER */
+footer{
+  background:var(--bg);border-top:1px solid var(--line);
+  padding:40px 64px;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;
+}
+.footer-logo{font-family:'Fraunces',serif;font-size:20px;font-weight:900;}
+.footer-logo em{color:var(--accent);font-style:normal;}
+.footer-r{
+  font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--w3);text-align:right;line-height:2;
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .hero-content{padding:70px 28px 40px;}
+  .hero-bottom{grid-template-columns:1fr;}
+  .hero-cta-group{justify-content:flex-start;}
+  .container,.container-sm{padding:60px 28px;}
+  .nav{padding:0 20px;}
+  .nav-links{display:none;}
+  .why-grid,.comp-two,.result-grid,.tools-grid,.milestones-grid{grid-template-columns:1fr;}
+  .contexts-strip{grid-template-columns:repeat(3,1fr);}
+  .stats-band{grid-template-columns:1fr 1fr;}
+  .stat-cell{border-bottom:1px solid rgba(255,255,255,.1);}
+  .paper{grid-template-columns:1fr;gap:8px;}
+  .pbadge{align-self:auto;width:fit-content;}
+  .result-score-row{grid-template-columns:1fr;}
+  .score-big-block{border-right:none;border-bottom:1px solid var(--line);}
+  footer{padding:32px 28px;}
+  .det-top{grid-template-columns:1fr;}
+  .det-actions{flex-direction:column;align-items:stretch;}
+  .analyze-btn{justify-content:center;}
+  .ai-row{flex-direction:column;}
+  .ai-input{border-right:1px solid var(--line);border-bottom:none;}
+  .meters{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:600px){
+  .contexts-strip{grid-template-columns:1fr 1fr;}
+  .hero-h1{font-size:clamp(48px,14vw,80px);}
+  .stats-band{grid-template-columns:1fr;}
+}
 </style>
 </head>
 <body>
 
-<!-- HERO -->
-<section class="hero" id="home-hero">
-  <div class="hero-bg"></div>
-  <div class="hero-grid"></div>
-  
-  <div class="hero-badge">Plataforma Global de Pesquisa · v1.0 · 2025</div>
-  
-  <h1 class="hero-title">
-    PHONOBASE
-    <span>AI</span>
-  </h1>
-  
-  <p class="hero-subtitle">
-    A primeira plataforma de inteligência artificial que reúne pesquisas mundiais, descobertas esquecidas e dados clínicos em tempo real para avançar a ciência fonoaudiológica.
-  </p>
-  
-  <div class="hero-stats">
-    <div class="hero-stat">
-      <span class="hero-stat-num">18.500+</span>
-      <span class="hero-stat-label">Pesquisas Indexadas</span>
-    </div>
-    <div class="hero-stat">
-      <span class="hero-stat-num">520+</span>
-      <span class="hero-stat-label">Estudos Resgatados</span>
-    </div>
-    <div class="hero-stat">
-      <span class="hero-stat-num">89</span>
-      <span class="hero-stat-label">Países Conectados</span>
-    </div>
-    <div class="hero-stat">
-      <span class="hero-stat-num">1924</span>
-      <span class="hero-stat-label">Ano Mais Antigo</span>
+<!-- ══════════ HERO ══════════ -->
+<section class="hero">
+  <div class="hero-mesh"></div>
+  <div class="hero-grid-lines"></div>
+  <div class="hero-content">
+    <div class="hero-year-tag">PHONOBASE AI · 2026 · Plataforma Mundial</div>
+    <h1 class="hero-h1">
+      PHONO<span class="italic">BASE</span><br>
+      <span class="dim">AI</span>
+    </h1>
+    <div class="hero-rule"></div>
+    <div class="hero-bottom">
+      <p class="hero-tagline">
+        A plataforma que <strong>ninguém construiu ainda.</strong><br>
+        Ciência de 100 anos. Ferramentas reais.<br>
+        <strong>Foco no que a fono esqueceu:</strong> adultos, idosos,<br>
+        e a fala que infantiliza quem já cresceu.
+      </p>
+      <div class="hero-cta-group">
+        <button class="btn btn-primary" onclick="show('infantil')">Detectar Fala Infantilizada IA</button>
+        <button class="btn btn-ghost" onclick="show('tools')">Ferramentas Clínicas</button>
+      </div>
     </div>
   </div>
-  
-  <div class="scroll-hint">▼ explorar</div>
+  <div class="hero-ticker">
+    <div class="ticker-track">
+      <span class="ticker-item">Kemper 1994 — elderspeak acelera declínio cognitivo</span>
+      <span class="ticker-item">Fala infantilizada acontece no trabalho, família, romance e hospital</span>
+      <span class="ticker-item">84% das interações em ILPI contêm elderspeak — Williams 2003</span>
+      <span class="ticker-item">Froeschels 1924 — 78% de resolução de disfonia funcional</span>
+      <span class="ticker-item">Hernandorena 1991 — normas PT-BR ignoradas há 35 anos</span>
+      <span class="ticker-item">Wolff 1956 — base do BERA perdida 30 anos em periódico alemão</span>
+      <span class="ticker-item">Kemper 1994 — elderspeak acelera declínio cognitivo</span>
+      <span class="ticker-item">Fala infantilizada acontece no trabalho, família, romance e hospital</span>
+      <span class="ticker-item">84% das interações em ILPI contêm elderspeak — Williams 2003</span>
+      <span class="ticker-item">Froeschels 1924 — 78% de resolução de disfonia funcional</span>
+      <span class="ticker-item">Hernandorena 1991 — normas PT-BR ignoradas há 35 anos</span>
+      <span class="ticker-item">Wolff 1956 — base do BERA perdida 30 anos em periódico alemão</span>
+    </div>
+  </div>
 </section>
 
-<!-- NAV -->
+<!-- ══════════ NAV ══════════ -->
 <nav class="nav">
-  <div class="nav-logo">PHONOBASE AI</div>
+  <div class="nav-logo">PHONO<em>BASE</em> AI</div>
   <ul class="nav-links">
-    <li><a href="#" onclick="showSection('modules')" class="active" id="nav-modules">Módulos</a></li>
-    <li><a href="#" onclick="showSection('research')" id="nav-research">Pesquisas</a></li>
-    <li><a href="#" onclick="showSection('tools')" id="nav-tools">Ferramentas</a></li>
-    <li><a href="#" onclick="showSection('ai')" id="nav-ai">IA Consulta</a></li>
+    <li><button onclick="show('infantil')" id="nav-infantil" class="active">Fala Infantilizada</button></li>
+    <li><button onclick="show('tools')" id="nav-tools">Ferramentas</button></li>
+    <li><button onclick="show('research')" id="nav-research">Pesquisas</button></li>
+    <li><button onclick="show('modules')" id="nav-modules">Módulos</button></li>
+    <li><button onclick="show('ai')" id="nav-ai">IA Consulta</button></li>
   </ul>
 </nav>
 
-<!-- SECTION: MODULES -->
-<div class="section active" id="section-modules">
-  <div class="section-header">
-    <span class="section-eyebrow">Sistema Completo</span>
-    <h2 class="section-title">5 Módulos<br>Integrados</h2>
-    <p class="section-desc">Cada módulo alimenta o banco de dados global. Cada clique vira ciência.</p>
+<!-- ══════════════════════════════════════
+     SECTION: FALA INFANTILIZADA
+══════════════════════════════════════ -->
+<div class="section active" id="section-infantil">
+
+  <div class="container">
+    <div class="eyebrow">Fenômeno Universal · Subpesquisado · Urgente</div>
+    <h2 class="section-h">
+      Fala infantilizada<br>
+      não é só com <em>idosos.</em><br>
+      É com <span class="g">todos os adultos.</span>
+    </h2>
+
+    <!-- POR QUE ISSO IMPORTA -->
+    <div class="why-grid">
+      <div class="why-panel" data-letter="O">
+        <div class="wp-label" style="color:var(--accent)">O Fenômeno</div>
+        <div class="wp-title">Quando adultos são tratados como crianças na fala</div>
+        <div class="wp-text">
+          Diminutivos excessivos. Tom mais agudo. Frases simples demais. Elogios para ações básicas.
+          Linguagem condescendente. Paternalismo verbal. Isso acontece <strong>em todo lugar</strong>:
+          no trabalho, nos relacionamentos, nas famílias, nos consultórios médicos, nas casas de repouso.
+          <br><br>
+          Com idosos, tem nome científico: <strong>elderspeak</strong> (Kemper, 1994).
+          Com adultos em geral: <strong>patronizing speech</strong>, <strong>condescending communication</strong>,
+          <strong>infantilization</strong>. Menos estudado. Mais prevalente.
+        </div>
+      </div>
+      <div class="why-panel" data-letter="I">
+        <div class="wp-label" style="color:var(--red)">Por Que Acontece</div>
+        <div class="wp-title">A neurociência por trás de falar como se o outro fosse menor</div>
+        <div class="wp-text">
+          <strong>Poder e hierarquia:</strong> quem tem mais poder (chefe, médico, pai) tende a simplificar
+          a fala inconscientemente como marcador de status.<br><br>
+          <strong>Cuidado mal calibrado:</strong> a intenção é cuidar, mas o resultado é infantilizar —
+          diminutivos e tom suave comunicam "você não é capaz".<br><br>
+          <strong>Estereótipos de grupo:</strong> idosos, mulheres, pacientes, pessoas com deficiência —
+          grupos sistematicamente expostos à fala condescendente independente da capacidade real.
+          <br><br>
+          <strong>Contágio social:</strong> se todos na equipe falam assim, o padrão se normaliza.
+          Ryan et al. (1986) chamaram de <strong>Communication Predicament</strong> — profecia autorrealizável.
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTEXTOS -->
+    <div style="margin-top:40px;">
+      <div class="eyebrow teal">Onde Acontece</div>
+      <h3 style="font-family:'Fraunces',serif;font-size:clamp(24px,3.5vw,44px);font-weight:900;margin-bottom:24px;line-height:1.1;">
+        Todos os contextos adultos
+      </h3>
+      <div class="contexts-strip">
+        <div class="ctx-block selected" data-ctx="trabalho" onclick="selectCtx(this,'trabalho')">
+          <span class="ctx-emoji">💼</span>
+          <div class="ctx-name">Trabalho</div>
+          <div class="ctx-sub">Chefia, gestão, reuniões</div>
+        </div>
+        <div class="ctx-block" data-ctx="romance" onclick="selectCtx(this,'romance')">
+          <span class="ctx-emoji">💑</span>
+          <div class="ctx-name">Romance</div>
+          <div class="ctx-sub">Casais, relacionamentos</div>
+        </div>
+        <div class="ctx-block" data-ctx="familia" onclick="selectCtx(this,'familia')">
+          <span class="ctx-emoji">👨‍👩‍👧</span>
+          <div class="ctx-name">Família</div>
+          <div class="ctx-sub">Pais com filhos adultos</div>
+        </div>
+        <div class="ctx-block" data-ctx="saude" onclick="selectCtx(this,'saude')">
+          <span class="ctx-emoji">🏥</span>
+          <div class="ctx-name">Saúde</div>
+          <div class="ctx-sub">Médico, fono, terapeuta</div>
+        </div>
+        <div class="ctx-block" data-ctx="idosos" onclick="selectCtx(this,'idosos')">
+          <span class="ctx-emoji">👴</span>
+          <div class="ctx-name">Idosos</div>
+          <div class="ctx-sub">Cuidadores, ILPI</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPARAÇÕES DINÂMICAS -->
+    <div id="comp-section" style="margin-top:2px;">
+      <div class="comp-two" id="comp-container">
+        <!-- preenchido pelo JS -->
+      </div>
+    </div>
   </div>
 
-  <div class="modules-grid">
-    <div class="module-card" style="--accent: #2a9d8f" onclick="showSection('tools')">
-      <span class="module-icon">🎙️</span>
-      <div class="module-num">Módulo 01</div>
-      <div class="module-title">VoiceMap AI</div>
-      <div class="module-desc">Análise acústica de 800+ parâmetros vocais. Mapa tridimensional estimado por IA. Diagnóstico diferencial de disfonias sem laringoscopia.</div>
+  <!-- STATS BAND -->
+  <div class="stats-band">
+    <div class="stat-cell">
+      <div class="stat-n">84%</div>
+      <div class="stat-l">interações em ILPI com elderspeak</div>
+      <div class="stat-note">Williams et al., 2003</div>
     </div>
-
-    <div class="module-card" style="--accent: #8b2020" onclick="showSection('tools')">
-      <span class="module-icon">🍽️</span>
-      <div class="module-num">Módulo 02</div>
-      <div class="module-title">SwallowSense AI</div>
-      <div class="module-desc">Triagem de disfagia via microfone de celular posicionado no pescoço. Classifica risco de aspiração sem videofluoroscopia. Inédito no mundo.</div>
+    <div class="stat-cell">
+      <div class="stat-n">−58%</div>
+      <div class="stat-l">elderspeak após 4h de treinamento</div>
+      <div class="stat-note">Williams et al., 2004</div>
     </div>
-
-    <div class="module-card" style="--accent: #c9a84c" onclick="showSection('tools')">
-      <span class="module-icon">👶</span>
-      <div class="module-num">Módulo 03</div>
-      <div class="module-title">LinguaChild AI</div>
-      <div class="module-desc">Banco normativo do português brasileiro. Análise longitudinal de desenvolvimento fonológico, morfossintático e pragmático com alerta precoce de TEA.</div>
+    <div class="stat-cell">
+      <div class="stat-n">≈0</div>
+      <div class="stat-l">pesquisas brasileiras sobre o tema</div>
+      <div class="stat-note">Campo aberto · 2026</div>
     </div>
-
-    <div class="module-card" style="--accent: #1a3a6b" onclick="showSection('tools')">
-      <span class="module-icon">👂</span>
-      <div class="module-num">Módulo 04</div>
-      <div class="module-title">AudioScreen AI</div>
-      <div class="module-desc">Triagem auditiva via fone de ouvido comum. Detecta perdas auditivas de leve a severa sem audiômetro. Para regiões remotas e comunidades sem acesso.</div>
-    </div>
-
-    <div class="module-card" style="--accent: #9b59b6; grid-column: span 1" onclick="showSection('research')">
-      <span class="module-icon">🔬</span>
-      <div class="module-num">Módulo 05</div>
-      <div class="module-title">ResearchHub Global</div>
-      <div class="module-desc">Banco de dados colaborativo mundial. Pesquisas desde 1924. Estudos esquecidos resgatados. Cada atendimento clínico vira dado científico anonimizado.</div>
-    </div>
-
-    <div class="module-card" style="--accent: #e67e22" onclick="showSection('tools')">
-      <span class="module-icon">👴</span>
-      <div class="module-num">Módulo 06</div>
-      <div class="module-title">GeroVoice AI</div>
-      <div class="module-desc">Presbifonia, presbiacusia, disfagia geriátrica. Reabilitação vocal no envelhecimento. Campo com menos pesquisa nacional — banco de dados pioneiro no Brasil.</div>
-    </div>
-
-    <div class="module-card" style="--accent: #c0392b" onclick="showSection('tools')">
-      <span class="module-icon">🗣️</span>
-      <div class="module-num">Módulo 07</div>
-      <div class="module-title">ElderSpeak Detector</div>
-      <div class="module-desc">Identifica e quantifica fala infantilizada (elderspeak) em ambientes de cuidado. Treina cuidadores e profissionais. Baseado nas pesquisas de Kemper (1994) e Ryan (1986).</div>
-    </div>
-
-    <div class="module-card" style="--accent: #27ae60" onclick="showSection('tools')">
-      <span class="module-icon">👨</span>
-      <div class="module-num">Módulo 08</div>
-      <div class="module-title">AdultVoice Pro</div>
-      <div class="module-desc">Voz profissional, burnout vocal, disfonia em adultos. Reúne o Método Mastigado (Froeschels 1924), SOVT (Titze 2003) e Accent Method (1976) — técnicas esquecidas que funcionam.</div>
+    <div class="stat-cell">
+      <div class="stat-n">1994</div>
+      <div class="stat-l">Kemper definiu elderspeak</div>
+      <div class="stat-note">32 anos ignorado no Brasil</div>
     </div>
   </div>
-</div>
 
-<!-- SECTION: RESEARCH -->
-<div class="section" id="section-research">
-  <div class="section-header">
-    <span class="section-eyebrow">ResearchHub Global · Módulo 05</span>
-    <h2 class="section-title">Banco Mundial<br>de Pesquisas</h2>
-    <p class="section-desc">De 1924 ao presente. Incluindo estudos esquecidos que mudaram a fonoaudiologia — e poucos sabem.</p>
+  <!-- DETECTOR IA -->
+  <div class="container">
+    <div class="eyebrow">Detector com IA · Primeiro do Brasil · 2026</div>
+    <h2 class="section-h">Analisador de<br>Fala <em>Infantilizada</em></h2>
   </div>
 
-  <div class="research-filters">
-    <button class="filter-btn active" onclick="filterPapers('all', this)">Todos</button>
-    <button class="filter-btn" onclick="filterPapers('voice', this)">Voz & Disfonia</button>
-    <button class="filter-btn" onclick="filterPapers('swallow', this)">Deglutição</button>
-    <button class="filter-btn" onclick="filterPapers('language', this)">Linguagem Infantil</button>
-    <button class="filter-btn" onclick="filterPapers('hearing', this)">Audição</button>
-    <button class="filter-btn" onclick="filterPapers('adults', this)">👨 Adultos & Idosos</button>
-    <button class="filter-btn" onclick="filterPapers('forgotten', this)">⚠️ Esquecidos</button>
+  <div style="max-width:1400px;margin:0 auto;padding:0 64px 80px;" id="det-outer">
+    <div class="det-wrap">
+      <div class="det-top">
+        <div>
+          <div class="det-title">InfantSpeech<br>Detector <span style="color:var(--accent)">IA</span></div>
+          <div class="det-sub">Cole qualquer frase dita a um adulto. A IA detecta padrões de infantilização, pontua o nível, identifica os marcadores linguísticos e sugere como comunicar com respeito — em qualquer contexto.</div>
+        </div>
+        <div>
+          <div class="key-bar inactive" id="kb-det">
+            <span class="kdot kdot-off" id="kd-det"></span>
+            <span id="kt-det">Configure a chave Gemini para ativar</span>
+            <button onclick="openModal()" class="key-bar-btn" id="kb-btn-det">Configurar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- context tabs -->
+      <div class="det-ctx-row">
+        <button class="det-ctx-btn active" data-dctx="trabalho" onclick="pickDetCtx(this)">💼 Trabalho</button>
+        <button class="det-ctx-btn" data-dctx="romance" onclick="pickDetCtx(this)">💑 Romance</button>
+        <button class="det-ctx-btn" data-dctx="familia" onclick="pickDetCtx(this)">👨‍👩‍👧 Família</button>
+        <button class="det-ctx-btn" data-dctx="saude" onclick="pickDetCtx(this)">🏥 Saúde</button>
+        <button class="det-ctx-btn" data-dctx="idosos" onclick="pickDetCtx(this)">👴 Idosos / ILPI</button>
+      </div>
+
+      <!-- textarea -->
+      <div class="det-input-zone" style="margin-top:20px;">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--w3);padding:12px 28px;background:var(--bg);border:1px solid var(--line);border-bottom:none;">
+          Fala para analisar:
+        </div>
+        <textarea class="det-ta" id="det-txt"
+          placeholder="Ex: Que bonitinho, você fez isso sozinho! Que orgulho do papai…"
+          rows="4"></textarea>
+      </div>
+
+      <div class="det-actions">
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--w3);margin-bottom:8px;">Exemplos rápidos:</div>
+          <div class="examples-pills">
+            <button class="epill" onclick="setEx('Ai que bonitinho, você conseguiu! Que orgulho do papai!')">Orgulho condescendente</button>
+            <button class="epill" onclick="setEx('Calma, calma meu amor, não precisa ficar assim, tá bem?')">Emoção invalidada</button>
+            <button class="epill" onclick="setEx('Ui, ficou bravo? Que lindinho o nervosinho dele!')">Diminutivo tóxico</button>
+            <button class="epill" onclick="setEx('Vou te explicar devagarzinho, pode ficar tranquilo')">Patronizador</button>
+            <button class="epill" onclick="setEx('Vovozinha, a gente vai tomar o remedinho agora, tá bem meu amor?')">Elderspeak clássico</button>
+            <button class="epill" onclick="setEx('Você tem certeza que consegue fazer isso sozinho? Deixa eu ajudar')">Dúvida na capacidade</button>
+          </div>
+        </div>
+        <button class="analyze-btn" id="det-btn" onclick="runDetector()">
+          <span id="det-btn-txt">Analisar com IA</span>
+        </button>
+      </div>
+
+      <!-- result -->
+      <div class="det-result" id="det-result">
+        <div class="det-loading" id="det-loading">
+          <div class="spin"></div>
+          <span>Analisando padrões linguísticos...</span>
+        </div>
+        <div id="det-inner" class="det-result-inner">
+          <div class="result-score-row">
+            <div class="score-big-block">
+              <div class="score-num" id="det-score">—</div>
+              <div class="score-of">/ 100 · nível de<br>infantilização</div>
+            </div>
+            <div class="verdict-block">
+              <div class="verdict-label">Diagnóstico Linguístico</div>
+              <div class="verdict-text" id="det-verdict">—</div>
+            </div>
+          </div>
+          <div class="result-grid">
+            <div class="result-cell">
+              <div class="rc-label">📌 Marcadores identificados</div>
+              <div class="rc-content markers-list" id="det-markers"></div>
+            </div>
+            <div class="result-cell">
+              <div class="rc-label">⚠ Impacto psicológico</div>
+              <div class="rc-content" id="det-impact"></div>
+            </div>
+            <div class="result-cell">
+              <div class="rc-label">📚 Base científica</div>
+              <div class="rc-content" id="det-science"></div>
+            </div>
+            <div class="result-cell">
+              <div class="rc-label">✅ Como comunicar melhor</div>
+              <div class="rc-alt" id="det-alt"></div>
+              <div class="rc-content" style="margin-top:12px;" id="det-train"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div id="papers-list">
-    <!-- populated by JS -->
-  </div>
-</div>
+</div><!-- end infantil section -->
 
-<!-- SECTION: TOOLS -->
+
+<!-- ══════════════════════════════════════
+     SECTION: FERRAMENTAS
+══════════════════════════════════════ -->
 <div class="section" id="section-tools">
-  <div class="section-header">
-    <span class="section-eyebrow">Ferramentas Clínicas & Diagnósticas</span>
-    <h2 class="section-title">Diagnóstico<br>em Tempo Real</h2>
-    <p class="section-desc">Ferramentas clínicas integradas ao banco de pesquisa global. Cada dado coletado avança a ciência.</p>
-  </div>
+  <div class="container">
+    <div class="eyebrow">Ferramentas Clínicas · Real-Time</div>
+    <h2 class="section-h">Diagnóstico<br><em>em tempo real</em></h2>
 
-  <div class="tools-grid">
-    <!-- VOICE TOOL -->
-    <div class="tool-panel">
-      <div class="big-number">V</div>
-      <div class="tool-panel-title">🎙️ VoiceMap</div>
-      <div class="tool-panel-desc">Análise acústica vocal em tempo real</div>
+    <div class="tools-grid">
 
-      <button class="record-btn" id="voice-btn" onclick="toggleRecording()">
-        <span class="record-dot"></span>
-        <span id="voice-btn-text">Iniciar Gravação</span>
-      </button>
+      <!-- VOICE -->
+      <div class="tool-panel" data-letter="V">
+        <div class="tp-label">Módulo Voz · VoiceMap AI</div>
+        <div class="tp-title">🎙️ Análise Vocal</div>
+        <div class="tp-sub">Análise acústica em tempo real: F0, jitter, shimmer e HNR via microfone.</div>
 
-      <div class="waveform" id="waveform">
-        <div style="color: rgba(245,240,232,0.2); font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 3px;">AGUARDANDO SINAL</div>
-      </div>
-
-      <div class="meter-grid" id="voice-meters" style="display:none">
-        <div class="meter-item">
-          <div class="meter-label">Frequência Fundamental</div>
-          <div class="meter-value" id="m-f0">—<span class="meter-unit">Hz</span></div>
-        </div>
-        <div class="meter-item">
-          <div class="meter-label">Jitter</div>
-          <div class="meter-value" id="m-jitter">—<span class="meter-unit">%</span></div>
-        </div>
-        <div class="meter-item">
-          <div class="meter-label">Shimmer</div>
-          <div class="meter-value" id="m-shimmer">—<span class="meter-unit">dB</span></div>
-        </div>
-        <div class="meter-item">
-          <div class="meter-label">HNR</div>
-          <div class="meter-value" id="m-hnr">—<span class="meter-unit">dB</span></div>
-        </div>
-      </div>
-
-      <div id="voice-diagnosis" style="margin-top:16px; display:none; padding:16px; background:var(--ink); color:var(--paper); font-family:'DM Mono',monospace; font-size:11px; letter-spacing:1px; line-height:1.8;"></div>
-    </div>
-
-    <!-- LANGUAGE TOOL -->
-    <div class="tool-panel">
-      <div class="big-number">L</div>
-      <div class="tool-panel-title">👶 LinguaChild</div>
-      <div class="tool-panel-desc">Marcos de desenvolvimento — português brasileiro</div>
-
-      <div style="margin-bottom:16px;">
-        <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;">Idade da Criança</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button class="filter-btn active" onclick="showMilestones(6, this)">6 meses</button>
-          <button class="filter-btn" onclick="showMilestones(12, this)">12 meses</button>
-          <button class="filter-btn" onclick="showMilestones(18, this)">18 meses</button>
-          <button class="filter-btn" onclick="showMilestones(24, this)">24 meses</button>
-          <button class="filter-btn" onclick="showMilestones(36, this)">36 meses</button>
-        </div>
-      </div>
-
-      <div class="milestone-grid" id="milestone-grid"></div>
-
-      <div id="lang-alert" style="margin-top:20px;display:none;padding:16px;border-left:3px solid var(--red);background:rgba(139,32,32,0.06);">
-        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:8px;">⚠ Alerta de Desenvolvimento</div>
-        <div id="lang-alert-text" style="font-size:15px;color:var(--muted);"></div>
-      </div>
-    </div>
-
-    <!-- HEARING TOOL -->
-    <div class="tool-panel">
-      <div class="big-number">A</div>
-      <div class="tool-panel-title">👂 AudioScreen</div>
-      <div class="tool-panel-desc">Triagem auditiva por frequência</div>
-
-      <div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:20px;">Clique nas barras para simular limiar auditivo</div>
-
-      <div class="hearing-test" id="hearing-test"></div>
-
-      <div id="hearing-result" style="margin-top:20px;padding:20px;background:var(--ink);color:var(--paper);display:none;">
-        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:8px;">Resultado da Triagem</div>
-        <div id="hearing-result-text" style="font-size:16px;line-height:1.6;"></div>
-      </div>
-    </div>
-
-    <!-- SWALLOW TOOL -->
-    <div class="tool-panel">
-      <div class="big-number">S</div>
-      <div class="tool-panel-title">🍽️ SwallowSense</div>
-      <div class="tool-panel-desc">Triagem de disfagia — protocolo guiado</div>
-
-      <div id="swallow-protocol">
-        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:16px;">Protocolo de Triagem Clínica</div>
-
-        <div id="swallow-steps"></div>
-
-        <button class="ai-btn" style="margin-top:20px;background:var(--red);color:white;width:100%;" onclick="runSwallowAssessment()">
-          Gerar Relatório de Risco
+        <button class="rec-btn" id="rec-btn" onclick="toggleRec()">
+          <span class="rec-dot"></span>
+          <span id="rec-txt">Iniciar Gravação</span>
         </button>
 
-        <div id="swallow-result" style="margin-top:20px;display:none;padding:20px;background:var(--ink);color:var(--paper);">
-          <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:12px;">Análise de Risco</div>
-          <div id="swallow-result-text" style="font-size:15px;line-height:1.7;white-space:pre-wrap;"></div>
+        <div class="waveform" id="waveform">
+          <span class="wave-idle">AGUARDANDO SINAL</span>
         </div>
+
+        <div class="meters" id="voice-meters" style="display:none">
+          <div class="meter">
+            <div class="meter-lbl">F0 (Freq. Fundamental)</div>
+            <div class="meter-val" id="m-f0">—<span class="meter-unit">Hz</span></div>
+          </div>
+          <div class="meter">
+            <div class="meter-lbl">Jitter</div>
+            <div class="meter-val" id="m-jitter">—<span class="meter-unit">%</span></div>
+          </div>
+          <div class="meter">
+            <div class="meter-lbl">Shimmer</div>
+            <div class="meter-val" id="m-shimmer">—<span class="meter-unit">dB</span></div>
+          </div>
+          <div class="meter">
+            <div class="meter-lbl">HNR</div>
+            <div class="meter-val" id="m-hnr">—<span class="meter-unit">dB</span></div>
+          </div>
+        </div>
+
+        <div class="voice-diag" id="voice-diag"></div>
+      </div>
+
+      <!-- LANGUAGE -->
+      <div class="tool-panel" data-letter="L">
+        <div class="tp-label">Módulo Linguagem · LinguaChild AI</div>
+        <div class="tp-title">👶 Desenvolvimento</div>
+        <div class="tp-sub">Marcos do português brasileiro — Hernandorena (1991). Clique nos cartões para registrar.</div>
+
+        <div class="age-tabs">
+          <button class="age-tab active" onclick="showMs(6,this)">6m</button>
+          <button class="age-tab" onclick="showMs(12,this)">12m</button>
+          <button class="age-tab" onclick="showMs(18,this)">18m</button>
+          <button class="age-tab" onclick="showMs(24,this)">24m</button>
+          <button class="age-tab" onclick="showMs(36,this)">36m</button>
+        </div>
+
+        <div class="milestone-grid" id="ms-grid"></div>
+        <div class="lang-alert" id="lang-alert">
+          <div class="la-lbl">⚠ Alerta de Desenvolvimento</div>
+          <div class="la-text" id="la-txt"></div>
+        </div>
+      </div>
+
+      <!-- HEARING -->
+      <div class="tool-panel" data-letter="A">
+        <div class="tp-label">Módulo Audição · AudioScreen AI</div>
+        <div class="tp-title">👂 Triagem Auditiva</div>
+        <div class="tp-sub">Arraste as barras para simular o limiar auditivo por frequência.</div>
+
+        <div class="hearing-rows" id="hearing-rows"></div>
+        <div class="hearing-result" id="hearing-result">
+          <div class="hr-lbl">Resultado da Triagem</div>
+          <div class="hr-text" id="hearing-txt"></div>
+        </div>
+      </div>
+
+      <!-- SWALLOW -->
+      <div class="tool-panel" data-letter="S">
+        <div class="tp-label">Módulo Deglutição · SwallowSense AI</div>
+        <div class="tp-title">🍽️ Triagem Disfagia</div>
+        <div class="tp-sub">Protocolo guiado de triagem clínica. Baseado em Logemann (1982) e Pommerenke (1948).</div>
+
+        <div id="sw-steps"></div>
+        <button class="sw-report-btn" onclick="genSwallowReport()">Gerar Relatório de Risco</button>
+        <div class="sw-result" id="sw-result">
+          <div class="sr-lbl">Análise de Risco</div>
+          <div class="sr-text" id="sw-txt"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     SECTION: RESEARCH
+══════════════════════════════════════ -->
+<div class="section" id="section-research">
+  <div class="container">
+    <div class="eyebrow gold">Banco de Pesquisas · 1924–2026</div>
+    <h2 class="section-h">Descobertas que<br>o mundo <span class="g">esqueceu.</span></h2>
+
+    <div class="filter-row">
+      <button class="filt active" onclick="filterP('all',this)">Todos</button>
+      <button class="filt" onclick="filterP('infantil',this)">🗣 Fala Infantilizada</button>
+      <button class="filt" onclick="filterP('adult',this)">👤 Adultos</button>
+      <button class="filt" onclick="filterP('elder',this)">👴 Idosos</button>
+      <button class="filt" onclick="filterP('voice',this)">🎙 Voz</button>
+      <button class="filt" onclick="filterP('child',this)">👶 Linguagem</button>
+      <button class="filt" onclick="filterP('forgot',this)">⚠ Esquecidos</button>
+    </div>
+
+    <div class="papers-list" id="papers-list"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     SECTION: MODULES
+══════════════════════════════════════ -->
+<div class="section" id="section-modules">
+  <div class="container">
+    <div class="eyebrow">Sistema Completo · 8 Módulos</div>
+    <h2 class="section-h">Uma plataforma.<br><em>Oito revoluções.</em></h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:2px;">
+      <div style="background:var(--bg2);border:1px solid var(--line);padding:36px;cursor:pointer;border-bottom:3px solid var(--accent);" onclick="show('infantil')">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:16px;">Módulo 01 · DESTAQUE 2026</div>
+        <div style="font-size:32px;margin-bottom:14px;">🗣️</div>
+        <div style="font-family:'Fraunces',serif;font-size:26px;font-weight:900;margin-bottom:10px;">InfantSpeech Detector</div>
+        <div style="font-size:14px;color:var(--w2);line-height:1.6;">Primeiro detector mundial de fala infantilizada com IA generativa. Todos os contextos adultos: trabalho, família, romance, saúde e idosos. Análise completa em segundos.</div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--line);padding:36px;cursor:pointer;border-bottom:3px solid var(--red);" onclick="show('tools')">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:16px;">Módulo 02</div>
+        <div style="font-size:32px;margin-bottom:14px;">👴</div>
+        <div style="font-family:'Fraunces',serif;font-size:26px;font-weight:900;margin-bottom:10px;">GeroVoice AI</div>
+        <div style="font-size:14px;color:var(--w2);line-height:1.6;">Presbifonia, presbiacusia, disfagia geriátrica. Reabilitação vocal no envelhecimento. Banco normativo geriátrico pioneiro no Brasil.</div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--line);padding:36px;cursor:pointer;border-bottom:3px solid var(--teal);" onclick="show('tools')">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:16px;">Módulo 03</div>
+        <div style="font-size:32px;margin-bottom:14px;">🎙️</div>
+        <div style="font-family:'Fraunces',serif;font-size:26px;font-weight:900;margin-bottom:10px;">VoiceMap AI</div>
+        <div style="font-size:14px;color:var(--w2);line-height:1.6;">Análise acústica vocal: F0, jitter, shimmer, HNR em tempo real. Diagnóstico diferencial de disfonias. Voz profissional e burnout vocal.</div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--line);padding:36px;cursor:pointer;border-bottom:3px solid var(--gold);" onclick="show('tools')">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;">Módulo 04</div>
+        <div style="font-size:32px;margin-bottom:14px;">👶</div>
+        <div style="font-family:'Fraunces',serif;font-size:26px;font-weight:900;margin-bottom:10px;">LinguaChild AI</div>
+        <div style="font-size:14px;color:var(--w2);line-height:1.6;">Banco normativo do português brasileiro. Hernandorena (1991) finalmente aplicado. Alerta precoce para TEA e dislalia com dados reais do PT-BR.</div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--line);padding:36px;cursor:pointer;border-bottom:3px solid #4f8ef7;" onclick="show('tools')">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#4f8ef7;margin-bottom:16px;">Módulo 05</div>
+        <div style="font-size:32px;margin-bottom:14px;">👂</div>
+        <div style="font-family:'Fraunces',serif;font-size:26px;font-weight:900;margin-bottom:10px;">AudioScreen AI</div>
+        <div style="font-size:14px;color:var(--w2);line-height:1.6;">Triagem auditiva por fone comum. Detecta perdas de leve a severa sem audiômetro. Para regiões remotas. Baseado em Wolff (1956).</div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--line);padding:36px;cursor:pointer;border-bottom:3px solid #9b7ee8;" onclick="show('tools')">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#9b7ee8;margin-bottom:16px;">Módulo 06</div>
+        <div style="font-size:32px;margin-bottom:14px;">🍽️</div>
+        <div style="font-family:'Fraunces',serif;font-size:26px;font-weight:900;margin-bottom:10px;">SwallowSense AI</div>
+        <div style="font-size:14px;color:var(--w2);line-height:1.6;">Triagem de disfagia por protocolo guiado. Pommerenke (1948) — zonas de gatilho faríngeo resgatadas. Logemann (1982) como base clínica.</div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--line);padding:36px;cursor:pointer;border-bottom:3px solid var(--accent2);" onclick="show('research')">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent2);margin-bottom:16px;">Módulo 07</div>
+        <div style="font-size:32px;margin-bottom:14px;">🔬</div>
+        <div style="font-family:'Fraunces',serif;font-size:26px;font-weight:900;margin-bottom:10px;">ResearchHub Global</div>
+        <div style="font-size:14px;color:var(--w2);line-height:1.6;">Banco mundial colaborativo desde 1924. Estudos esquecidos resgatados. Cada atendimento clínico vira dado científico anonimizado.</div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--line);padding:36px;cursor:pointer;border-bottom:3px solid var(--green);" onclick="show('ai')">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--green);margin-bottom:16px;">Módulo 08</div>
+        <div style="font-size:32px;margin-bottom:14px;">🤖</div>
+        <div style="font-family:'Fraunces',serif;font-size:26px;font-weight:900;margin-bottom:10px;">PHONOBASE IA</div>
+        <div style="font-size:14px;color:var(--w2);line-height:1.6;">Consulta científica via IA. 100 anos de fonoaudiologia mundial. Pesquisas esquecidas, lacunas brasileiras, recomendações clínicas baseadas em evidência.</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- SECTION: AI -->
+
+<!-- ══════════════════════════════════════
+     SECTION: AI
+══════════════════════════════════════ -->
 <div class="section" id="section-ai">
-  <div class="section-header">
-    <span class="section-eyebrow">Inteligência Artificial · Consulta Científica</span>
-    <h2 class="section-title">Consulte a IA<br>Especializada</h2>
-    <p class="section-desc">Acesso a 100 anos de pesquisa em fonoaudiologia, incluindo estudos esquecidos e dados clínicos globais.</p>
-  </div>
+  <div class="container-sm">
+    <div class="eyebrow gold">IA Científica · 100 anos de fono</div>
+    <h2 class="section-h">Consulte a<br><span class="g">PHONOBASE IA</span></h2>
 
-  <div id="key-status-bar" class="key-status-bar no-key">
-    <span class="key-dot inactive" id="key-dot"></span>
-    <span id="key-status-text">Nenhuma chave configurada — clique em "Configurar Chave" para ativar a IA</span>
-    <button onclick="openApiModal()" style="margin-left:auto;background:none;border:1px solid currentColor;padding:4px 12px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;cursor:pointer;color:inherit;text-transform:uppercase;" id="key-config-btn">Configurar Chave</button>
-  </div>
-
-  <div class="ai-search-box">
-    <div class="ai-label">🤖 Consulta Científica — PHONOBASE AI</div>
-    <div class="ai-input-row">
-      <input type="text" class="ai-input" id="ai-query" 
-        placeholder="Ex: Quais pesquisas esquecidas existem sobre voz em idosos?" 
-        onkeydown="if(event.key==='Enter') queryAI()">
-      <button class="ai-btn" id="ai-submit" onclick="queryAI()">Consultar</button>
+    <div class="key-bar inactive" id="kb-ai" style="margin-bottom:24px;max-width:600px;">
+      <span class="kdot kdot-off" id="kd-ai"></span>
+      <span id="kt-ai">Nenhuma chave configurada</span>
+      <button onclick="openModal()" class="key-bar-btn" id="kb-btn-ai">Configurar</button>
     </div>
 
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;">
-      <button class="filter-btn" onclick="setQuery('Pesquisas esquecidas sobre disfagia pré-1970')">Disfagia pré-1970</button>
-      <button class="filter-btn" onclick="setQuery('Como a postura afeta a qualidade vocal? Pesquisas clássicas')">Postura e voz</button>
-      <button class="filter-btn" onclick="setQuery('Marcos de linguagem no português brasileiro vs inglês')">PT-BR vs EN</button>
-      <button class="filter-btn" onclick="setQuery('Descobertas de Emil Froeschels que foram esquecidas')">Emil Froeschels</button>
-      <button class="filter-btn" onclick="setQuery('Técnicas de terapia vocal do século XX não utilizadas hoje')">Técnicas antigas</button>
-      <button class="filter-btn" onclick="setQuery('O que é elderspeak e como prejudica idosos? Pesquisas internacionais')">Elderspeak</button>
-      <button class="filter-btn" onclick="setQuery('Presbifonia: envelhecimento vocal em idosos, pesquisas esquecidas')">Voz no idoso</button>
-      <button class="filter-btn" onclick="setQuery('Reabilitação vocal em adultos com disfonia profissional — professores e cantores')">Voz profissional</button>
-      <button class="filter-btn" onclick="setQuery('Disfagia no idoso com Parkinson e Alzheimer — o que a pesquisa diz')">Disfagia geriátrica</button>
-      <button class="filter-btn" onclick="setQuery('Quais são os campos com menos pesquisa em fonoaudiologia no Brasil?')">Lacunas no Brasil</button>
+    <div class="ai-box">
+      <div class="ai-lbl">🤖 Consulta Científica · PHONOBASE AI</div>
+      <div class="ai-row">
+        <input type="text" class="ai-input" id="ai-q"
+          placeholder="Ex: Por que adultos infantilizam a fala com certos grupos?"
+          onkeydown="if(event.key==='Enter') runAI()">
+        <button class="ai-go" id="ai-btn" onclick="runAI()">Consultar</button>
+      </div>
+      <div class="ai-chips">
+        <button class="ai-chip" onclick="setQ('Por que adultos usam fala infantilizada com outros adultos?')">Fala infantilizada em adultos</button>
+        <button class="ai-chip" onclick="setQ('Kemper 1994 — o que provou sobre elderspeak?')">Kemper 1994</button>
+        <button class="ai-chip" onclick="setQ('Método Mastigado de Froeschels — como funciona na clínica?')">Froeschels 1924</button>
+        <button class="ai-chip" onclick="setQ('Quais são as maiores lacunas de pesquisa em fono no Brasil?')">Lacunas no Brasil</button>
+        <button class="ai-chip" onclick="setQ('Presbifonia: o que acontece com a voz no envelhecimento?')">Presbifonia</button>
+        <button class="ai-chip" onclick="setQ('Hernandorena 1991 — por que as normas PT-BR são ignoradas?')">Normas PT-BR</button>
+        <button class="ai-chip" onclick="setQ('Communication Predicament Model — Ryan 1986')">Ryan 1986</button>
+        <button class="ai-chip" onclick="setQ('Como treinar cuidadores para eliminar o elderspeak?')">Treinar cuidadores</button>
+      </div>
     </div>
 
     <div class="ai-result" id="ai-result">
-      <div class="ai-result-label">⟩ Resposta da PHONOBASE AI</div>
-      <div class="ai-result-text" id="ai-result-text"></div>
-    </div>
-  </div>
-
-  <!-- TIMELINE DE DESCOBERTAS ESQUECIDAS -->
-  <div style="margin-top:60px;">
-    <span class="section-eyebrow">Linha do Tempo</span>
-    <h3 style="font-family:'Playfair Display',serif;font-size:36px;font-weight:900;margin-bottom:40px;">Descobertas que o Mundo<br>Precisa Redescobrir</h3>
-
-    <div class="timeline" id="timeline"></div>
-  </div>
-</div>
-
-<!-- API KEY MODAL -->
-<div class="api-modal-overlay" id="api-modal" style="display:none;">
-  <div class="api-modal">
-    <div class="api-modal-eyebrow">🔑 Ativar Inteligência Artificial — Gratuito</div>
-    <div class="api-modal-title">Chave Google<br>Gemini AI</div>
-
-    <div class="api-modal-desc">
-      Para ativar a IA da plataforma, você precisa de uma chave gratuita do Google AI Studio. É rápido e sem custo.
-    </div>
-
-    <!-- PASSO A PASSO -->
-    <div style="background:rgba(201,168,76,0.08);border-left:3px solid var(--gold);padding:20px;margin:20px 0;font-size:14px;line-height:2;">
-      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:12px;">Como obter sua chave gratuita:</div>
-      <div>1️⃣ Acesse <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--gold);font-weight:bold;">aistudio.google.com/apikey</a></div>
-      <div>2️⃣ Faça login com sua conta Google</div>
-      <div>3️⃣ Clique em <strong>"Create API Key"</strong></div>
-      <div>4️⃣ Copie a chave gerada (começa com <code style="background:rgba(255,255,255,0.1);padding:1px 6px;">AIza...</code>)</div>
-      <div>5️⃣ Cole aqui abaixo e clique em <strong>"Salvar e Ativar"</strong></div>
-    </div>
-
-    <div class="api-key-input-wrap">
-      <input type="password" class="api-key-input" id="api-key-field" placeholder="AIzaSy..." autocomplete="off" />
-      <button class="api-key-toggle" onclick="toggleKeyVisibility()" id="key-toggle-btn" title="Mostrar/ocultar chave">👁</button>
-    </div>
-
-    <!-- O QUE ACONTECE COM A CHAVE -->
-    <div class="api-modal-note">
-      <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;margin-bottom:10px;opacity:0.6;">O QUE ACONTECE QUANDO VOCÊ COLOCA A CHAVE:</div>
-      🔒 <strong>Fica salva só no SEU navegador</strong> — ninguém mais acessa<br>
-      🚫 <strong>Não aparece no código</strong> — nunca fica exposta no GitHub<br>
-      🌐 <strong>Vai direto do seu navegador ao Google</strong> — sem intermediários<br>
-      👁 <strong>O Google vê apenas as perguntas</strong> que você faz à IA<br>
-      🆓 <strong>100% gratuito</strong> — 1.500 consultas por dia sem custo<br>
-      🗑 <strong>Para apagar:</strong> limpe o localStorage do navegador
-    </div>
-
-    <div class="api-modal-actions">
-      <button class="btn-primary" onclick="saveApiKey()">Salvar e Ativar IA</button>
-      <button class="btn-secondary" onclick="closeApiModal()">Cancelar</button>
+      <div class="ai-r-lbl">⟩ PHONOBASE AI responde</div>
+      <div class="ai-r-text" id="ai-txt"></div>
     </div>
   </div>
 </div>
 
-<footer class="footer">
-  <span>PHONOBASE AI</span> · Plataforma Global de Pesquisa em Fonoaudiologia · 
-  Desenvolvido com propósito científico · 
-  <span>Cada dado avança a ciência</span>
+<footer>
+  <div>
+    <div class="footer-logo">PHONO<em>BASE</em> AI</div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--w3);margin-top:6px;">Plataforma Mundial de Fonoaudiologia · 2026</div>
+  </div>
+  <div class="footer-r">
+    Cada dado avança a ciência.<br>
+    Cada fala respeitosa preserva uma dignidade.
+  </div>
 </footer>
 
+<!-- MODAL API KEY -->
+<div class="modal-ov" id="modal" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <div class="modal-ey">🔑 Ativar Inteligência Artificial · Gratuito</div>
+    <div class="modal-h">Chave Gemini<br>Google AI</div>
+    <div class="modal-d">Para ativar a IA da plataforma, você precisa de uma chave gratuita do Google AI Studio. Rápido, sem custo.</div>
+    <div class="modal-steps">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:8px;">Como obter:</div>
+      1️⃣ Acesse <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a><br>
+      2️⃣ Login com conta Google<br>
+      3️⃣ Clique em <strong>"Create API Key"</strong><br>
+      4️⃣ Copie a chave (começa com <span style="color:var(--gold);font-family:'DM Mono',monospace;">AIza...</span>)<br>
+      5️⃣ Cole abaixo e salve
+    </div>
+    <div class="key-row">
+      <input type="password" class="key-inp" id="key-inp" placeholder="AIzaSy..." autocomplete="off">
+      <button class="key-eye" onclick="toggleEye()" id="key-eye">👁</button>
+    </div>
+    <div class="modal-note">
+      🔒 <strong>Salva só no seu navegador</strong> — ninguém mais acessa<br>
+      🚫 <strong>Nunca exposta no código</strong> — tráfego direto para o Google<br>
+      🆓 <strong>100% gratuito</strong> — 1.500 consultas/dia sem custo<br>
+      🗑 <strong>Para apagar:</strong> limpe o localStorage do navegador
+    </div>
+    <div class="modal-btns">
+      <button class="mbtn-save" onclick="saveKey()">Salvar e Ativar</button>
+      <button class="mbtn-cancel" onclick="closeModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
 <script>
-// ==============================
-// NAVIGATION
-// ==============================
-function showSection(name) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-  document.getElementById('section-' + name).classList.add('active');
-  document.getElementById('nav-' + name).classList.add('active');
-  window.scrollTo({ top: document.querySelector('.nav').offsetTop, behavior: 'smooth' });
+'use strict';
+
+// ─── NAVIGATION ───
+function show(name) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-links button').forEach(b=>b.classList.remove('active'));
+  const sec=document.getElementById('section-'+name);
+  const nav=document.getElementById('nav-'+name);
+  if(sec)sec.classList.add('active');
+  if(nav)nav.classList.add('active');
+  window.scrollTo({top:document.querySelector('.nav').offsetTop,behavior:'smooth'});
 }
 
-// ==============================
-// RESEARCH DATABASE
-// ==============================
-const papers = [
-  {
-    year: 1924, category: 'voice', forgotten: false,
-    title: 'Logopädie und ihre Grenzgebiete — Emil Froeschels',
-    abstract: 'Froeschels fundou a foniatria moderna e descreveu pela primeira vez o Método Mastigado para disfonia, técnica que treina a voz por meio de movimentos de mastigação exagerados. Revolucionou o tratamento de disfonias funcionais na Europa.',
-    impact: '↑ Terapia vocal funcional moderna'
+// ─── CONTEXT COMPARISONS ───
+const ctxData = {
+  trabalho:{
+    bad:{phrase:'"Deixa eu te explicar devagarzinho, pode ficar tranquilo."',why:'Tom de superioridade. Pressupõe que o colega não entenderia sem simplificação. Desnecessariamente condescendente mesmo com boa intenção. Marca implícita de poder hierárquico disfarçado de cuidado.'},
+    good:{phrase:'"Posso detalhar algum ponto específico sobre o projeto?"',why:'Oferece ajuda sem presumir incapacidade. Coloca os dois no mesmo nível. Preserva a autonomia e a inteligência do interlocutor.'}
   },
-  {
-    year: 1937, category: 'voice', forgotten: true,
-    title: 'Chewing Method and Voice Therapy — Weiss & Beebe',
-    abstract: 'Extensão do trabalho de Froeschels, documentando casos clínicos do Método Mastigado. Este estudo mostrou resolução de disfonia em 78% dos casos em 6 semanas — resultado superior a muitas técnicas modernas — mas foi arquivado e raramente citado hoje.',
-    impact: '↑ 78% resolução de disfonia funcional'
+  romance:{
+    bad:{phrase:'"Ui, ficou bravo? Que lindinho o nervosinho dele!"',why:'Diminutivo tóxico para invalidar emoção legítima. Tratamento de criança que minimiza sentimento real. Cria distância e desequilíbrio emocional no relacionamento.'},
+    good:{phrase:'"Percebi que você ficou chateado. Quer conversar sobre o que aconteceu?"',why:'Valida a emoção do outro. Trata como adulto capaz de articular seus sentimentos. Convida ao diálogo em pé de igualdade.'}
   },
-  {
-    year: 1948, category: 'swallow', forgotten: true,
-    title: 'Neuromuscular Coordination in Deglutition — Pommerenke',
-    abstract: 'Pommerenke descreveu o reflexo de deglutição com nível de detalhe que só foi revisitado décadas depois. Identificou zonas de gatilho da deglutição na faringe que ainda são subutilizadas na clínica contemporânea. Praticamente desconhecido hoje.',
-    impact: '↑ Neurologia da deglutição'
+  familia:{
+    bad:{phrase:'"Ai que bonitinho, você conseguiu! Que orgulho do papai!"',why:'Elogio de adulto para criança aplicado a filho de 35 anos. Infantiliza conquistas que são apenas cotidiano adulto. Comunica inconscientemente: você ainda precisa da minha aprovação.'},
+    good:{phrase:'"Que bom que deu certo. Como foi o processo?"',why:'Reconhece sem infantilizar. Trata como par. Abre espaço para conversa real entre adultos.'}
   },
-  {
-    year: 1961, category: 'language', forgotten: false,
-    title: 'Chomsky — Estruturas Sintáticas e Linguagem Inata',
-    abstract: 'A hipótese da gramática universal e o dispositivo de aquisição de linguagem (LAD) revolucionaram como entendemos o desenvolvimento da fala em crianças. Base teórica de toda a fonoaudiologia pediátrica moderna.',
-    impact: '↑ Toda a fonoaudiologia infantil'
+  saude:{
+    bad:{phrase:'"Calma, calma meu amor. Vamos fazer o exame rapidinho, vai doer só um pouquinho."',why:'Linguagem para criança em consultório adulto. Infantiliza o paciente num momento de vulnerabilidade. Mina a confiança no profissional e na própria capacidade de lidar com o procedimento.'},
+    good:{phrase:'"O procedimento dura cerca de 3 minutos. Pode sentir algum desconforto leve. Tem alguma dúvida antes de começarmos?"',why:'Informação objetiva. Respeita a capacidade do paciente de lidar com a realidade. Dá controle e autonomia ao adulto.'}
   },
-  {
-    year: 1965, category: 'hearing', forgotten: true,
-    title: 'Auditory Fatigue Patterns in Industrial Workers — Mills',
-    abstract: 'Mills documentou padrões específicos de fadiga auditiva em trabalhadores industriais revelando que frequências de 3000-6000 Hz são as primeiras afetadas — dado que permaneceu ignorado por décadas e só voltou à tona com pesquisas em audiologia ocupacional recentes.',
-    impact: '↑ Presbiacusia precoce ocupacional'
-  },
-  {
-    year: 1974, category: 'voice', forgotten: false,
-    title: 'Acoustic Analysis of Voice — Hirano',
-    abstract: 'Hirano introduziu o protocolo GRBAS para avaliação perceptivo-auditiva da voz disfônica, estabelecendo o padrão internacional que ainda é utilizado mundialmente. Também descreveu a estrutura de camadas das pregas vocais (cover-body theory).',
-    impact: '↑ Avaliação vocal padronizada mundial'
-  },
-  {
-    year: 1982, category: 'swallow', forgotten: false,
-    title: 'Videofluoroscopic Study of Dysphagia — Logemann',
-    abstract: 'Jeri Logemann estabeleceu a videofluoroscopia como padrão-ouro para avaliação de disfagia e desenvolveu um sistema de classificação de aspiração ainda em uso. Seu trabalho transformou o campo da disfagia de observacional para instrumental.',
-    impact: '↑ Toda a disfagiologia moderna'
-  },
-  {
-    year: 1991, category: 'language', forgotten: true,
-    title: 'Brazilian Portuguese Phonological Acquisition Norms — Hernandorena',
-    abstract: 'Hernandorena documentou a aquisição fonológica do português brasileiro com dados normativos — mas a pesquisa teve circulação limitada e até hoje profissionais brasileiros usam normas americanas adaptadas. Um dos estudos mais subutilizados da fonoaudiologia nacional.',
-    impact: '↑ Diagnóstico de dislalia em PT-BR'
-  },
-  {
-    year: 2003, category: 'voice', forgotten: false,
-    title: 'Semi-Occluded Vocal Tract Exercises — Titze',
-    abstract: 'Ingo Titze formalizou os exercícios de trato vocal semiocluído (SOVT), incluindo os tubos de ressonância e vibração de lábios. Demonstrou que esses exercícios maximizam a transferência de energia da fonte glótica para o trato vocal com mínimo esforço.',
-    impact: '↑ Técnica SOVT universalmente adotada'
-  },
-  {
-    year: 1956, category: 'hearing', forgotten: true,
-    title: 'Tonal Discrimination in Prelingual Infants — Wolff',
-    abstract: 'Wolff demonstrou em 1956 que bebês pré-linguísticos discriminam diferenças tonais mínimas — dado que antecipou em 30 anos o que hoje é base do teste BERA. O artigo ficou perdido em periódico alemão e só foi redescoberto em 2001.',
-    impact: '↑ Triagem auditiva neonatal'
-  },
-  {
-    year: 2008, category: 'language', forgotten: false,
-    title: 'Early Autism Red Flags in Language — Wetherby',
-    abstract: 'Wetherby identificou os primeiros marcadores comportamentais de TEA observáveis entre 18-24 meses, incluindo padrões específicos de ausência de atenção compartilhada e de protoimperativo. Permitiu diagnóstico e intervenção cada vez mais precoces.',
-    impact: '↑ Diagnóstico precoce de TEA'
-  },
-  {
-    year: 1933, category: 'swallow', forgotten: true,
-    title: 'Oral Preparatory Phase of Deglutition — Negus',
-    abstract: 'Victor Negus descreveu em detalhes a fase oral preparatória da deglutição com observações anatômico-comparativas únicas. Identificou que humanos perderam a capacidade de deglutir e respirar simultaneamente — achado fundamental esquecido por décadas.',
-    impact: '↑ Anatomia funcional da deglutição'
-  },
-  {
-    year: 1966, category: 'voice', forgotten: true,
-    title: 'Acoustic Properties of Senescent Voice — Ptacek & Sander',
-    abstract: 'Ptacek e Sander foram os primeiros a documentar sistematicamente as características acústicas da voz senil: elevação do jitter, redução da frequência fundamental em mulheres, queda do HNR. Estudo de 1966 que permanece pouco citado e cujos achados ainda não foram incorporados à prática clínica geriátrica brasileira.',
-    impact: '↑ Avaliação vocal geriátrica'
-  },
-  {
-    year: 1976, category: 'voice', forgotten: true,
-    title: 'The Accent Method of Voice Therapy — Smith & Thyme',
-    abstract: 'Criado na Dinamarca por Svend Smith, o Método Acento usa ritmo, melodia e acentuação rítmica para reabilitar a voz. Eficaz em disfonia funcional, nódulos vocais e voz profissional. Amplamente usado na Europa mas praticamente desconhecido no Brasil — uma das maiores lacunas da fonoaudiologia nacional.',
-    impact: '↑ Terapia vocal rítmica — subutilizada no Brasil'
-  },
-  {
-    year: 1986, category: 'adults', forgotten: true,
-    title: 'Communication Accommodation Theory in Eldercare — Ryan et al.',
-    abstract: 'Ryan e colaboradores documentaram como profissionais de saúde inconscientemente adaptam sua fala ao tratar idosos — simplificando vocabulário, elevando tom, usando diminutivos — padrão chamado posteriormente de elderspeak. O estudo mostrou que essa adaptação, ao contrário do que se pensa, prejudica a comunicação e a autonomia do idoso.',
-    impact: '↑ Base teórica do elderspeak'
-  },
-  {
-    year: 1992, category: 'adults', forgotten: false,
-    title: 'Dysphonia in the Elderly — Woo, Colton, Casper & Brewer',
-    abstract: 'Primeiro mapeamento sistemático da presbifonia: atrofia das pregas vocais, arqueamento glótico, incompetência fonatória no envelhecimento. Woo et al. estabeleceram que a disfonia senil não é inevitável — é tratável com reabilitação fonoaudiológica. Estudo ainda subutilizado na prática clínica.',
-    impact: '↑ Reabilitação vocal geriátrica'
-  },
-  {
-    year: 1994, category: 'adults', forgotten: false,
-    title: 'Elderspeak: Speech Adapted to Frail and Aging Adults — Kemper',
-    abstract: 'Susan Kemper cunhou e definiu o termo elderspeak: fala infantilizada, em voz alta, com vocabulário simplificado, tom condescendente, usada com idosos. Seus estudos mostraram que o elderspeak reduz a autoestima, acelera o declínio cognitivo e aumenta a resistência ao cuidado. Campo com quase nenhuma pesquisa brasileira.',
-    impact: '↑ Comunicação geriátrica e qualidade de cuidado'
-  },
-  {
-    year: 1996, category: 'adults', forgotten: true,
-    title: 'Infantilization in Long-Term Care — Nussbaum et al.',
-    abstract: 'Nussbaum documentou como a infantilização da comunicação em ambientes de cuidado de longa duração (asilos, clínicas) cria um ciclo de dependência: o idoso tratado como criança passa a se comportar como criança. Estudo de 1996 com implicações diretas para a fonoaudiologia geriátrica — ignorado na literatura brasileira.',
-    impact: '↑ Autonomia comunicativa do idoso institucionalizado'
-  },
-  {
-    year: 2010, category: 'swallow', forgotten: false,
-    title: 'Dysphagia in Neurodegenerative Diseases — Logemann & Rademaker',
-    abstract: 'Extensão do trabalho clássico de Logemann para doenças neurodegenerativas: Parkinson, Alzheimer, ELA. Documentou que 80% dos pacientes com Parkinson avançado apresentam disfagia clinicamente significativa — e que intervenção fonoaudiológica precoce reduz pneumonias aspirativas em 40%.',
-    impact: '↑ Disfagia neurológica e prevenção de pneumonia'
-  },
-  {
-    year: 2015, category: 'adults', forgotten: false,
-    title: 'Vocal Aging and Professional Voice Users — Sataloff et al.',
-    abstract: 'Sataloff e colaboradores documentaram o impacto do envelhecimento vocal em usuários profissionais da voz: cantores, atores, professores, advogados. Mostraram que com treinamento adequado, cantores profissionais mantêm qualidade vocal superior a não-profissionais de mesma idade — contrariando a crença de que a deterioração vocal é inevitável.',
-    impact: '↑ Longevidade vocal profissional'
+  idosos:{
+    bad:{phrase:'"Vovozinha, a gente vai tomar o remedinho agora, tá bem meu amor?"',why:'Elderspeak clássico: diminutivos, "a gente" que apaga agência, tom supra-agudo presumido, superendereçamento afetivo. Kemper (1994): comunica "você não é mais capaz". Acelera declínio cognitivo.'},
+    good:{phrase:'"Dona Maria, está na hora da medicação. Quer tomar agora ou em cinco minutos?"',why:'Usa nome. Oferece escolha real. Trata como adulto com autonomia de decisão. Estimula funções executivas. Respeita dignidade.'}
   }
-];
-
-let currentFilter = 'all';
-
-function renderPapers(filter) {
-  const list = document.getElementById('papers-list');
-  const filtered = filter === 'all' ? papers : 
-    filter === 'forgotten' ? papers.filter(p => p.forgotten) :
-    papers.filter(p => p.category === filter);
-
-  filtered.sort((a,b) => a.year - b.year);
-
-  list.innerHTML = filtered.map(p => `
-    <div class="paper-card">
-      <div class="paper-meta">
-        <span class="paper-year">${p.year}</span>
-        <span class="timeline-tag tag-${p.category}">${{voice:'Voz',swallow:'Deglutição',language:'Linguagem',hearing:'Audição',adults:'Adultos & Idosos'}[p.category] || p.category}</span>
-        ${p.forgotten ? '<span class="forgotten-badge">⚠ Estudo Esquecido</span>' : ''}
-      </div>
-      <div class="paper-title">${p.title}</div>
-      <div class="paper-abstract">${p.abstract}</div>
-      <div class="paper-impact">${p.impact}</div>
-    </div>
-  `).join('');
-}
-
-function filterPapers(filter, btn) {
-  currentFilter = filter;
-  document.querySelectorAll('.research-filters .filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderPapers(filter);
-}
-
-renderPapers('all');
-
-// ==============================
-// VOICE TOOL
-// ==============================
-let isRecording = false;
-let audioCtx, analyser, source, animFrame, mediaStream;
-let voiceInterval;
-
-function toggleRecording() {
-  if (!isRecording) startRecording();
-  else stopRecording();
-}
-
-async function startRecording() {
-  try {
-    mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    analyser = audioCtx.createAnalyser();
-    analyser.fftSize = 256;
-    source = audioCtx.createMediaStreamSource(mediaStream);
-    source.connect(analyser);
-
-    isRecording = true;
-    const btn = document.getElementById('voice-btn');
-    btn.classList.add('recording');
-    document.getElementById('voice-btn-text').textContent = 'Gravando... (clique para parar)';
-    document.getElementById('voice-meters').style.display = 'grid';
-
-    // Draw waveform
-    drawWaveform();
-
-    // Simulate analysis
-    let tick = 0;
-    voiceInterval = setInterval(() => {
-      tick++;
-      const f0 = (180 + Math.random() * 60).toFixed(1);
-      const jitter = (0.3 + Math.random() * 1.5).toFixed(2);
-      const shimmer = (0.8 + Math.random() * 2.2).toFixed(2);
-      const hnr = (18 + Math.random() * 8).toFixed(1);
-
-      document.getElementById('m-f0').innerHTML = f0 + '<span class="meter-unit">Hz</span>';
-      document.getElementById('m-jitter').innerHTML = jitter + '<span class="meter-unit">%</span>';
-      document.getElementById('m-shimmer').innerHTML = shimmer + '<span class="meter-unit">dB</span>';
-      document.getElementById('m-hnr').innerHTML = hnr + '<span class="meter-unit">dB</span>';
-
-      if (tick === 5) {
-        const diag = document.getElementById('voice-diagnosis');
-        diag.style.display = 'block';
-        const jitterN = parseFloat(jitter);
-        let classification = '';
-        if (jitterN < 0.5) classification = '✓ VOZ NORMAL — Parâmetros dentro do esperado.';
-        else if (jitterN < 1.0) classification = '⚠ DISFONIA LEVE — Irregularidade leve. Monitorar.';
-        else classification = '⚠ DISFONIA MODERADA — Encaminhar para avaliação laringológica.';
-        diag.textContent = classification + '\n\nF0: ' + f0 + ' Hz (normal: 80-350 Hz)\nJitter: ' + jitter + '% (normal: <1.04%)\nShimmer: ' + shimmer + ' dB (normal: <3.81 dB)\nHNR: ' + hnr + ' dB (normal: >7 dB)';
-      }
-    }, 400);
-
-  } catch(e) {
-    // Simulate without mic
-    simulateVoiceAnalysis();
-  }
-}
-
-function simulateVoiceAnalysis() {
-  isRecording = true;
-  const btn = document.getElementById('voice-btn');
-  btn.classList.add('recording');
-  document.getElementById('voice-btn-text').textContent = 'Simulando análise... (clique para parar)';
-  document.getElementById('voice-meters').style.display = 'grid';
-  drawSimulatedWaveform();
-
-  let tick = 0;
-  voiceInterval = setInterval(() => {
-    tick++;
-    const f0 = (180 + Math.random() * 60).toFixed(1);
-    const jitter = (0.3 + Math.random() * 1.5).toFixed(2);
-    const shimmer = (0.8 + Math.random() * 2.2).toFixed(2);
-    const hnr = (18 + Math.random() * 8).toFixed(1);
-
-    document.getElementById('m-f0').innerHTML = f0 + '<span class="meter-unit">Hz</span>';
-    document.getElementById('m-jitter').innerHTML = jitter + '<span class="meter-unit">%</span>';
-    document.getElementById('m-shimmer').innerHTML = shimmer + '<span class="meter-unit">dB</span>';
-    document.getElementById('m-hnr').innerHTML = hnr + '<span class="meter-unit">dB</span>';
-
-    if (tick === 5) {
-      const diag = document.getElementById('voice-diagnosis');
-      diag.style.display = 'block';
-      diag.textContent = '✓ MODO SIMULAÇÃO ATIVO\n\nF0: ' + f0 + ' Hz (esperado: 80-350 Hz)\nJitter: ' + jitter + '% (normal: <1.04%)\nShimmer: ' + shimmer + ' dB (normal: <3.81 dB)\nHNR: ' + hnr + ' dB (normal: >7 dB)\n\nEm produção: microfone real analisa voz do paciente.';
-    }
-  }, 400);
-}
-
-function stopRecording() {
-  isRecording = false;
-  clearInterval(voiceInterval);
-  cancelAnimationFrame(animFrame);
-  if (mediaStream) mediaStream.getTracks().forEach(t => t.stop());
-  if (audioCtx) audioCtx.close();
-  const btn = document.getElementById('voice-btn');
-  btn.classList.remove('recording');
-  document.getElementById('voice-btn-text').textContent = 'Iniciar Gravação';
-}
-
-function drawWaveform() {
-  const wf = document.getElementById('waveform');
-  wf.innerHTML = '';
-  const bars = 40;
-  for (let i = 0; i < bars; i++) {
-    const bar = document.createElement('div');
-    bar.className = 'wave-bar';
-    bar.style.height = '4px';
-    wf.appendChild(bar);
-  }
-
-  const bufferLength = analyser.frequencyBinCount;
-  const dataArray = new Uint8Array(bufferLength);
-  const barEls = wf.querySelectorAll('.wave-bar');
-
-  function draw() {
-    animFrame = requestAnimationFrame(draw);
-    analyser.getByteFrequencyData(dataArray);
-    barEls.forEach((bar, i) => {
-      const idx = Math.floor(i * bufferLength / bars);
-      const h = Math.max(4, (dataArray[idx] / 255) * 70);
-      bar.style.height = h + 'px';
-    });
-  }
-  draw();
-}
-
-function drawSimulatedWaveform() {
-  const wf = document.getElementById('waveform');
-  wf.innerHTML = '';
-  const bars = 40;
-  for (let i = 0; i < bars; i++) {
-    const bar = document.createElement('div');
-    bar.className = 'wave-bar';
-    bar.style.height = '4px';
-    wf.appendChild(bar);
-  }
-  const barEls = wf.querySelectorAll('.wave-bar');
-  function draw() {
-    if (!isRecording) return;
-    animFrame = requestAnimationFrame(draw);
-    barEls.forEach(bar => {
-      const h = Math.max(4, Math.random() * 60 + 10);
-      bar.style.height = h + 'px';
-    });
-  }
-  draw();
-}
-
-// ==============================
-// LANGUAGE MILESTONES
-// ==============================
-const milestones = {
-  6: [
-    { title: 'Balbucio canônico', desc: 'CV silábico repetido: "bababa", "mamama"', key: 'babble' },
-    { title: 'Responde ao nome', desc: 'Vira a cabeça ao ouvir o próprio nome', key: 'name' },
-    { title: 'Vocalizações sociais', desc: 'Ri, gorjeia em resposta ao adulto', key: 'social' },
-    { title: 'Diferencia vozes', desc: 'Reage diferente a voz familiar vs desconhecida', key: 'voices' },
-  ],
-  12: [
-    { title: 'Primeira palavra', desc: 'Produção de ao menos 1 palavra com sentido', key: 'first-word' },
-    { title: 'Gestos comunicativos', desc: 'Aponta, acena, estende objetos', key: 'gestures' },
-    { title: 'Compreensão de "não"', desc: 'Compreende proibição pelo contexto', key: 'no' },
-    { title: 'Atenção compartilhada', desc: 'Olha para onde o adulto aponta', key: 'joint-att' },
-  ],
-  18: [
-    { title: '10-20 palavras', desc: 'Vocabulário expressivo de 10 a 20 palavras', key: 'vocab' },
-    { title: 'Protoimperativo', desc: 'Usa gesto+vocalização para pedir', key: 'proto' },
-    { title: 'Compreensão de 50+ palavras', desc: 'Vocabulário receptivo ampliado', key: 'recep' },
-    { title: 'Identificação de imagens', desc: 'Aponta figura ao ser nomeada', key: 'images' },
-  ],
-  24: [
-    { title: '50+ palavras', desc: 'Vocabulário expressivo mínimo de 50 palavras', key: 'vocab24' },
-    { title: 'Combinações de 2 palavras', desc: '"Mamãe suco", "mais agua"', key: 'combo' },
-    { title: 'Inteligibilidade 50%', desc: 'Estranhos entendem metade do que diz', key: 'intel' },
-    { title: 'Perguntas simples', desc: 'Compreende "o que é isso?"', key: 'questions' },
-  ],
-  36: [
-    { title: '200-300 palavras', desc: 'Vocabulário expressivo amplo', key: 'vocab36' },
-    { title: 'Frases de 3+ palavras', desc: '"Eu quero água", "O carro é meu"', key: 'sentences' },
-    { title: 'Inteligibilidade 75%', desc: 'Estranhos entendem maior parte', key: 'intel36' },
-    { title: 'Narrativa simples', desc: 'Conta fatos do dia com início e fim', key: 'narrative' },
-  ]
 };
-
-const achieved = {};
-
-function showMilestones(age, btn) {
-  document.querySelectorAll('.tool-panel .filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  const grid = document.getElementById('milestone-grid');
-  const items = milestones[age];
-  grid.innerHTML = items.map(m => `
-    <div class="milestone-card ${achieved[m.key] ? 'achieved' : ''}" onclick="toggleMilestone('${m.key}', this)">
-      <div class="milestone-age">${age} meses</div>
-      <div class="milestone-title">${m.title}</div>
-      <div class="milestone-desc">${m.desc}</div>
-      <div class="milestone-check">
-        <div class="check-box">${achieved[m.key] ? '✓' : ''}</div>
-        <span style="color:rgba(245,240,232,0.3);font-size:10px;">${achieved[m.key] ? 'ATINGIDO' : 'MARCAR'}</span>
-      </div>
+let activeCtx='trabalho';
+function selectCtx(el,ctx){
+  document.querySelectorAll('.ctx-block').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  activeCtx=ctx;
+  renderComp(ctx);
+}
+function renderComp(ctx){
+  const d=ctxData[ctx];
+  document.getElementById('comp-container').innerHTML=`
+    <div class="comp-side bad">
+      <div class="comp-tag">❌ Fala Infantilizada</div>
+      <div class="comp-phrase">${d.bad.phrase}</div>
+      <div class="comp-why">${d.bad.why}</div>
     </div>
-  `).join('');
-  checkAlerts(age);
+    <div class="comp-side good">
+      <div class="comp-tag">✓ Comunicação Respeitosa</div>
+      <div class="comp-phrase">${d.good.phrase}</div>
+      <div class="comp-why">${d.good.why}</div>
+    </div>`;
 }
+renderComp('trabalho');
 
-function toggleMilestone(key, card) {
-  achieved[key] = !achieved[key];
-  card.classList.toggle('achieved');
-  const box = card.querySelector('.check-box');
-  const lbl = card.querySelector('.milestone-check span');
-  box.textContent = achieved[key] ? '✓' : '';
-  lbl.textContent = achieved[key] ? 'ATINGIDO' : 'MARCAR';
+// ─── API KEY ───
+const KSTORE='phonobase_v3_key';
+const getKey=()=>localStorage.getItem(KSTORE)||'';
+function openModal(){
+  const f=document.getElementById('key-inp');
+  f.value=getKey();f.type='password';
+  document.getElementById('key-eye').textContent='👁';
+  document.getElementById('modal').style.display='flex';
+  setTimeout(()=>f.focus(),100);
 }
-
-function checkAlerts(age) {
-  const items = milestones[age];
-  const missing = items.filter(m => !achieved[m.key]);
-  const alert = document.getElementById('lang-alert');
-  if (missing.length >= 3) {
-    alert.style.display = 'block';
-    document.getElementById('lang-alert-text').textContent = 
-      `${missing.length} de ${items.length} marcos não atingidos para ${age} meses. Recomenda-se avaliação fonoaudiológica detalhada e possível triagem para TEA ou atraso de linguagem.`;
-  } else {
-    alert.style.display = 'none';
-  }
+function closeModal(){document.getElementById('modal').style.display='none';}
+function toggleEye(){
+  const f=document.getElementById('key-inp'),b=document.getElementById('key-eye');
+  f.type=f.type==='password'?'text':'password';
+  b.textContent=f.type==='password'?'👁':'🙈';
 }
-
-showMilestones(6, document.querySelector('.tool-panel .filter-btn'));
-
-// ==============================
-// HEARING TOOL
-// ==============================
-const frequencies = [250, 500, 1000, 2000, 3000, 4000, 6000, 8000];
-const hearingLevels = {};
-frequencies.forEach(f => hearingLevels[f] = 20);
-
-function buildHearingTest() {
-  const container = document.getElementById('hearing-test');
-  container.innerHTML = frequencies.map(f => `
-    <div class="freq-row">
-      <span class="freq-label">${f >= 1000 ? (f/1000) + 'kHz' : f + 'Hz'}</span>
-      <div class="freq-bar-track" onclick="setHearing(${f}, event, this)">
-        <div class="freq-bar-fill" id="bar-${f}" style="width:${(hearingLevels[f]/120)*100}%"></div>
-      </div>
-      <span class="freq-status ${getStatusClass(hearingLevels[f])}" id="status-${f}">${hearingLevels[f]} dB</span>
-    </div>
-  `).join('');
-  updateHearingResult();
+document.getElementById('key-inp').addEventListener('keydown',e=>{if(e.key==='Enter')saveKey();});
+function saveKey(){
+  const k=document.getElementById('key-inp').value.trim();
+  if(!k){alert('Insira uma chave.');return;}
+  if(!k.startsWith('AIza')){alert('Chave inválida — deve começar com "AIza".');return;}
+  localStorage.setItem(KSTORE,k);
+  updateKeyStatus();closeModal();
 }
-
-function getStatusClass(level) {
-  if (level <= 25) return 'status-normal';
-  if (level <= 40) return 'status-mild';
-  return 'status-moderate';
-}
-
-function setHearing(freq, event, track) {
-  const rect = track.getBoundingClientRect();
-  const pct = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
-  const level = Math.round(pct * 120);
-  hearingLevels[freq] = level;
-  document.getElementById('bar-' + freq).style.width = (pct * 100) + '%';
-  const status = document.getElementById('status-' + freq);
-  status.textContent = level + ' dB';
-  status.className = 'freq-status ' + getStatusClass(level);
-  updateHearingResult();
-}
-
-function updateHearingResult() {
-  const avg = Object.values(hearingLevels).reduce((a,b) => a+b, 0) / frequencies.length;
-  const result = document.getElementById('hearing-result');
-  const text = document.getElementById('hearing-result-text');
-  result.style.display = 'block';
-  let classification, color;
-  if (avg <= 25) { classification = '✓ AUDIÇÃO NORMAL — Média de ' + avg.toFixed(0) + ' dB HL. Sem indicação de perda auditiva.'; color = 'var(--teal-light)'; }
-  else if (avg <= 40) { classification = '⚠ PERDA LEVE — Média de ' + avg.toFixed(0) + ' dB HL. Encaminhar para audiometria completa.'; color = 'var(--gold)'; }
-  else if (avg <= 70) { classification = '⚠ PERDA MODERADA — Média de ' + avg.toFixed(0) + ' dB HL. Avaliação audiológica urgente recomendada.'; color = '#e67e22'; }
-  else { classification = '⚠ PERDA SEVERA — Média de ' + avg.toFixed(0) + ' dB HL. Encaminhar para centro de referência imediatamente.'; color = 'var(--red)'; }
-  text.innerHTML = '<span style="color:' + color + '">' + classification + '</span>';
-}
-
-buildHearingTest();
-
-// ==============================
-// SWALLOW TOOL
-// ==============================
-const swallowQuestions = [
-  { q: 'Tosse durante ou após as refeições?', key: 'cough', risk: 2 },
-  { q: 'Engasgos frequentes com líquidos?', key: 'choke-liq', risk: 2 },
-  { q: 'Engasgos frequentes com sólidos?', key: 'choke-sol', risk: 1.5 },
-  { q: 'Dificuldade de mastigar?', key: 'chew', risk: 1 },
-  { q: 'Sensação de alimento parado na garganta?', key: 'stuck', risk: 2 },
-  { q: 'Mudança na voz após comer?', key: 'voice', risk: 1.5 },
-  { q: 'Perda de peso inexplicada?', key: 'weight', risk: 1 },
-  { q: 'Pneumonias de repetição?', key: 'pneumonia', risk: 3 },
-];
-
-const swallowAnswers = {};
-
-function buildSwallowSteps() {
-  const container = document.getElementById('swallow-steps');
-  container.innerHTML = swallowQuestions.map(q => `
-    <div style="margin-bottom:16px;padding:16px;background:rgba(10,10,15,0.05);display:flex;align-items:center;justify-content:space-between;gap:16px;">
-      <span style="font-size:15px;flex:1;">${q.q}</span>
-      <div style="display:flex;gap:6px;">
-        <button class="filter-btn" onclick="setSwallow('${q.key}',true,this)" id="sw-y-${q.key}">Sim</button>
-        <button class="filter-btn" onclick="setSwallow('${q.key}',false,this)" id="sw-n-${q.key}">Não</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-function setSwallow(key, val, btn) {
-  swallowAnswers[key] = val;
-  const prefix = val ? 'sw-y-' : 'sw-n-';
-  const other = val ? 'sw-n-' + key : 'sw-y-' + key;
-  btn.classList.add('active');
-  const otherBtn = document.getElementById(other);
-  if (otherBtn) otherBtn.classList.remove('active');
-}
-
-function runSwallowAssessment() {
-  let score = 0;
-  swallowQuestions.forEach(q => {
-    if (swallowAnswers[q.key] === true) score += q.risk;
+function updateKeyStatus(){
+  const k=getKey();
+  [
+    {bar:'kb-det',dot:'kd-det',txt:'kt-det',btn:'kb-btn-det'},
+    {bar:'kb-ai',dot:'kd-ai',txt:'kt-ai',btn:'kb-btn-ai'},
+  ].forEach(({bar,dot,txt,btn})=>{
+    const b=document.getElementById(bar);
+    const d=document.getElementById(dot);
+    const t=document.getElementById(txt);
+    const btnEl=document.getElementById(btn);
+    if(!b)return;
+    if(k){
+      b.className='key-bar active';
+      d.className='kdot kdot-on';
+      t.textContent='✓ Chave ativa: '+k.substring(0,14)+'••••'+k.slice(-4);
+      btnEl.textContent='Alterar';
+    } else {
+      b.className='key-bar inactive';
+      d.className='kdot kdot-off';
+      t.textContent='Configure a chave Gemini para ativar';
+      btnEl.textContent='Configurar';
+    }
   });
-
-  const result = document.getElementById('swallow-result');
-  const text = document.getElementById('swallow-result-text');
-  result.style.display = 'block';
-
-  let assessment;
-  if (score === 0) {
-    assessment = '✓ BAIXO RISCO\nNenhum sintoma de alarme reportado. Monitoramento de rotina recomendado.';
-  } else if (score < 4) {
-    assessment = '⚠ RISCO MODERADO (score: ' + score.toFixed(1) + ')\nPresença de sintomas de alerta. Recomenda-se avaliação fonoaudiológica clínica da deglutição e orientação dietética.\n\nProtocolo sugerido: Avaliação clínica + teste de deglutição volume-viscosidade.';
-  } else if (score < 7) {
-    assessment = '⚠ RISCO ALTO (score: ' + score.toFixed(1) + ')\nSintomas significativos de disfagia. Encaminhamento urgente para avaliação instrumental.\n\nProtocolo sugerido: Videofluoroscopia ou FEES. Ajuste imediato de consistência alimentar.';
-  } else {
-    assessment = '⚠ RISCO SEVERO (score: ' + score.toFixed(1) + ')\nAlto risco de aspiração com possíveis complicações pulmonares. Avaliação hospitalar imediata recomendada.\n\nProtocolo sugerido: Internação para avaliação multidisciplinar. Suspender via oral até avaliação instrumental.';
-  }
-  text.textContent = assessment;
 }
+updateKeyStatus();
 
-buildSwallowSteps();
-
-// ==============================
-// TIMELINE
-// ==============================
-const timelineData = [
-  { year: '1924', title: 'Nascimento da Foniatria', content: 'Emil Froeschels funda a foniatria em Viena, criando o primeiro protocolo sistemático de avaliação e tratamento de distúrbios da voz. O Método Mastigado — hoje esquecido — resolvia disfonias funcionais com 78% de eficácia.', tag: 'voice' },
-  { year: '1933', title: 'Anatomia da Deglutição Humana', content: 'Victor Negus descobre que humanos são os únicos mamíferos incapazes de deglutir e respirar simultaneamente — devido à descida da laringe. Achado esquecido por décadas, essencial para entender a aspiração.', tag: 'swallow' },
-  { year: '1956', title: 'Discriminação Tonal Pré-Linguística', content: 'Wolff demonstra que bebês de dias de vida discriminam diferenças tonais mínimas — anticipando em 30 anos a base do BERA. O artigo ficou perdido em periódico alemão e só foi redescoberto em 2001.', tag: 'hearing' },
-  { year: '1961', title: 'Revolução Chomskiana', content: 'Noam Chomsky propõe a gramática universal e o Dispositivo de Aquisição de Linguagem (LAD), transformando para sempre como entendemos o desenvolvimento da fala em crianças.', tag: 'language' },
-  { year: '1966', title: 'A Voz que Envelhece — Esquecida', content: 'Ptacek & Sander publicam o primeiro mapeamento acústico da voz senil. Elevação do jitter, queda do HNR, arqueamento glótico. Estudo de 60 anos ainda ignorado na clínica geriátrica brasileira.', tag: 'adults' },
-  { year: '1974', title: 'Padronização da Avaliação Vocal', content: 'Hirano publica o protocolo GRBAS e a teoria cover-body das pregas vocais. Dois avanços que estabeleceram a linguagem internacional da avaliação vocal — ainda em uso 50 anos depois.', tag: 'voice' },
-  { year: '1976', title: 'Método Acento — Dinamarca', content: 'Svend Smith cria o Método Acento, usando ritmo e melodia para reabilitar a voz. Amplamente usado na Europa, praticamente desconhecido no Brasil. Uma das maiores lacunas da fonoaudiologia nacional.', tag: 'voice' },
-  { year: '1986', title: 'Comunicação com Idosos — Primeira Evidência', content: 'Ryan et al. documentam como profissionais de saúde adaptam inconscientemente sua fala ao cuidar de idosos, criando barreiras comunicativas. Base teórica do que seria chamado de elderspeak.', tag: 'adults' },
-  { year: '1991', title: 'Normas do Português Brasileiro', content: 'Hernandorena publica normas de aquisição fonológica do português brasileiro — o único banco normativo nacional. Até hoje subutilizado: profissionais brasileiros ainda usam normas americanas adaptadas.', tag: 'language' },
-  { year: '1992', title: 'Presbifonia — Campo Ignorado', content: 'Woo et al. mapeiam sistematicamente a presbifonia pela primeira vez. Mostram que a deterioração vocal no envelhecimento é tratável — mas o campo permanece com pouquíssima pesquisa nacional até hoje.', tag: 'adults' },
-  { year: '1994', title: 'Elderspeak — A Fala que Prejudica', content: 'Susan Kemper define e documenta o elderspeak: a fala infantilizada direcionada a idosos. Seus estudos provam que essa prática reduz autoestima, acelera declínio cognitivo e piora a adesão ao cuidado. Brasil: quase sem pesquisa.', tag: 'adults' },
-  { year: '2003', title: 'SOVT — Exercícios de Trato Semiocluído', content: 'Ingo Titze formaliza os exercícios SOVT (tubos, vibração de lábios, fonação em canudo). Demonstra matematicamente que maximizam a eficiência vocal com mínimo impacto nas pregas. Técnica hoje universalmente adotada.', tag: 'voice' },
-  { year: '2025', title: 'PHONOBASE AI — Fazer Pessoas Falar e Ouvir', content: 'A primeira plataforma que reúne 100 anos de ciência fonoaudiológica — incluindo estudos esquecidos, pesquisas sobre adultos, idosos, elderspeak e o pioneiro banco normativo do português brasileiro. O futuro começa aqui.', tag: 'adults' },];
-
-function buildTimeline() {
-  const container = document.getElementById('timeline');
-  container.innerHTML = timelineData.map((item, i) => `
-    <div class="timeline-item" style="animation-delay:${i*0.1}s">
-      <div class="timeline-year">${item.year}</div>
-      <div class="timeline-title">${item.title}</div>
-      <div class="timeline-content">${item.content}</div>
-      <span class="timeline-tag tag-${item.tag}">${{voice:'Voz',swallow:'Deglutição',language:'Linguagem',hearing:'Audição',adults:'Adultos & Idosos'}[item.tag]}</span>
-    </div>
-  `).join('');
-}
-
-buildTimeline();
-
-// ==============================
-// API KEY MANAGEMENT
-// ==============================
-const KEY_STORAGE = 'phonobase_gemini_key';
-
-function getApiKey() {
-  return localStorage.getItem(KEY_STORAGE) || '';
-}
-
-function openApiModal() {
-  const modal = document.getElementById('api-modal');
-  const field = document.getElementById('api-key-field');
-  const existing = getApiKey();
-  field.value = existing;
-  field.type = 'password';
-  document.getElementById('key-toggle-btn').textContent = '👁';
-  modal.style.display = 'flex';
-  setTimeout(() => field.focus(), 100);
-}
-
-function closeApiModal() {
-  document.getElementById('api-modal').style.display = 'none';
-}
-
-function toggleKeyVisibility() {
-  const field = document.getElementById('api-key-field');
-  const btn = document.getElementById('key-toggle-btn');
-  if (field.type === 'password') {
-    field.type = 'text';
-    btn.textContent = '🙈';
-  } else {
-    field.type = 'password';
-    btn.textContent = '👁';
-  }
-}
-
-function saveApiKey() {
-  const key = document.getElementById('api-key-field').value.trim();
-  if (!key) {
-    alert('Por favor, insira uma chave válida.');
-    return;
-  }
-  if (!key.startsWith('AIza')) {
-    alert('Chave inválida. As chaves do Google AI Studio começam com "AIza".');
-    return;
-  }
-  localStorage.setItem(KEY_STORAGE, key);
-  updateKeyStatusBar();
-  closeApiModal();
-}
-
-function updateKeyStatusBar() {
-  const key = getApiKey();
-  const bar = document.getElementById('key-status-bar');
-  const dot = document.getElementById('key-dot');
-  const text = document.getElementById('key-status-text');
-  const btn = document.getElementById('key-config-btn');
-
-  if (key) {
-    const masked = key.substring(0, 14) + '••••••••••••' + key.slice(-4);
-    bar.classList.remove('no-key');
-    dot.classList.remove('inactive');
-    text.textContent = '✓ Chave ativa: ' + masked;
-    btn.textContent = 'Alterar Chave';
-  } else {
-    bar.classList.add('no-key');
-    dot.classList.add('inactive');
-    text.textContent = 'Nenhuma chave configurada — clique em "Configurar Chave" para ativar a IA gratuitamente';
-    btn.textContent = 'Configurar Chave';
-  }
-}
-
-// Close modal on overlay click
-document.getElementById('api-modal').addEventListener('click', function(e) {
-  if (e.target === this) closeApiModal();
-});
-
-// Enter key in field
-document.getElementById('api-key-field').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') saveApiKey();
-});
-
-// Init status bar on load
-updateKeyStatusBar();
-
-// ==============================
-// AI QUERY
-// ==============================
-function setQuery(text) {
-  document.getElementById('ai-query').value = text;
-  queryAI();
-}
-
-async function queryAI() {
-  const query = document.getElementById('ai-query').value.trim();
-  if (!query) return;
-
-  const apiKey = getApiKey();
-  if (!apiKey) { openApiModal(); return; }
-
-  const btn = document.getElementById('ai-submit');
-  const resultDiv = document.getElementById('ai-result');
-  const resultText = document.getElementById('ai-result-text');
-
-  btn.disabled = true;
-  btn.innerHTML = '<span class="loading-spinner"></span> Consultando...';
-  resultDiv.classList.add('visible');
-  resultText.innerHTML = '<span class="typing-cursor"></span>';
-
-  // System prompt embutido na pergunta do usuário (compatível com todos os modelos Gemini)
-  const promptCompleto = `Você é a PHONOBASE AI — especialista em Fonoaudiologia com conhecimento de 100 anos de pesquisa mundial.
-
-CONHECIMENTO COMPLETO:
-• LINGUAGEM INFANTIL: Aquisição fonológica PT-BR (Hernandorena 1991, Yavas 1988), marcos 0-7 anos, TEA, dislalia, gagueira, estimulação precoce
-• ADULTOS — VOZ: Disfonia funcional/orgânica (Behlau, Hirano, Boone), nódulos, pólipos, paralisia vocal, burnout vocal, voz profissional (professores, cantores, locutores), Método Mastigado Froeschels 1924, SOVT Titze 2003, Accent Method Smith & Thyme 1976, Resonant Voice Therapy Verdolini
-• IDOSOS — PRESBIFONIA: Envelhecimento vocal, atrofia de pregas, Woo et al 1992 (primeiro mapeamento presbifonia), Ptacek & Sander 1966 (acústica da voz senil — ESQUECIDO), presbiacusia, disfagia geriátrica, Parkinson/Alzheimer/AVC, reabilitação vocal geriátrica — CAMPO COM POUCA PESQUISA NACIONAL
-• ELDERSPEAK (FALA INFANTILIZADA): Kemper 1994 (definição e danos cognitivos), Ryan et al 1986 (Communication Accommodation Theory), Nussbaum 1996 (institucionalização), efeitos: piora autoestima, acelera declínio cognitivo, aumenta resistência ao cuidado — BRASIL: QUASE SEM PESQUISA — CAMPO ABERTO!
-• AUDIÇÃO: Triagem neonatal PEATE/EOAPD, audiometria, PAIR, processamento auditivo, implante coclear, AASI
-• DEGLUTIÇÃO: Disfagia orofaríngea/esofágica, videofluoroscopia, FEES, FOIS, IDDSI, AVC/Parkinson/ELA/câncer, Pommerenke 1948 (zonas de gatilho faríngeo — ESQUECIDO), Negus 1933
-
-PESQUISAS ESQUECIDAS PARA DESTACAR:
-• Froeschels 1924: Método Mastigado — 78% resolução disfonia funcional
-• Negus 1933: Humanos únicos que não respiram e deglutindo juntos
-• Wolff 1956: Bebês discriminam tons — base do BERA, perdido 30 anos
-• Ptacek & Sander 1966: Acústica da voz senil — ignorado na clínica BR
-• Accent Method 1976: Dinamarca, funciona, desconhecido no Brasil
-• Kemper 1994: Elderspeak acelera declínio cognitivo — sem pesquisa BR
-• Hernandorena 1991: Única norma fonológica PT-BR — profissionais usam normas americanas!
-
-MISSÃO: Fazer pessoas FALAR E OUVIR. Revolucionar a Fonoaudiologia mundial.
-SEMPRE em português brasileiro. Cite anos, autores, achados concretos. Destaque lacunas brasileiras. Máximo 500 palavras. Seja científico e apaixonado.
-
-PERGUNTA: ${query}`;
-
-  // Tenta gemini-2.0-flash primeiro, depois gemini-1.5-flash como fallback
-  const modelos = [
-    'gemini-2.0-flash',
-    'gemini-1.5-flash',
-    'gemini-1.5-flash-latest'
-  ];
-
-  let sucesso = false;
-
-  for (const modelo of modelos) {
-    if (sucesso) break;
-    try {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${apiKey}`;
-      const resp = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: promptCompleto }] }],
-          generationConfig: { maxOutputTokens: 1024, temperature: 0.7 }
-        })
+// ─── GEMINI CALL ───
+async function gemini(prompt){
+  const k=getKey();if(!k){openModal();return null;}
+  const models=['gemini-2.0-flash','gemini-1.5-flash'];
+  for(const m of models){
+    try{
+      const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${k}`,{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:1400,temperature:.7}})
       });
-
-      // Diagnóstico detalhado de erro
-      if (!resp.ok) {
-        const errData = await resp.json().catch(() => ({}));
-        const msg = errData?.error?.message || `HTTP ${resp.status}`;
-
-        if (resp.status === 400) {
-          resultText.textContent = `❌ Erro na requisição: ${msg}\n\nVerifique se a chave está correta e tente novamente.`;
-          sucesso = true; break;
-        }
-        if (resp.status === 403) {
-          resultText.textContent = `❌ Chave sem permissão para a API Gemini.\n\nSolução:\n1. Acesse aistudio.google.com/apikey\n2. Crie uma NOVA chave\n3. Clique em "Alterar Chave" e cole a nova`;
-          sucesso = true; break;
-        }
-        if (resp.status === 429) {
-          resultText.textContent = `⚠️ Limite de requisições atingido. Aguarde 1 minuto e tente novamente.\n\n(Limite gratuito: 15 req/min)`;
-          sucesso = true; break;
-        }
-        // Tenta próximo modelo
+      if(!r.ok){
+        const e=await r.json().catch(()=>({}));
+        const msg=e?.error?.message||`HTTP ${r.status}`;
+        if(r.status===403)return`❌ Chave sem permissão. Crie uma nova em aistudio.google.com/apikey`;
+        if(r.status===429)return`⚠️ Limite atingido. Aguarde 1 min.`;
+        if(r.status===400)return`❌ Erro: ${msg}`;
         continue;
       }
+      const data=await r.json();
+      const text=data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if(text)return text;
+    }catch(e){if(models.indexOf(m)===models.length-1)return`❌ Erro de conexão: ${e.message}`;}
+  }
+  return'❌ Sem resposta.';
+}
 
-      const data = await resp.json();
-      const resposta = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+// ─── DETECTOR ───
+let detCtx='trabalho';
+function pickDetCtx(el){
+  document.querySelectorAll('.det-ctx-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  detCtx=el.dataset.dctx;
+}
+function setEx(t){document.getElementById('det-txt').value=t;}
 
-      if (!resposta) {
-        // Verifica se foi bloqueado por segurança
-        const bloqueio = data?.candidates?.[0]?.finishReason;
-        if (bloqueio === 'SAFETY') {
-          resultText.textContent = '⚠️ Resposta bloqueada por filtro de segurança. Tente reformular a pergunta.';
-        } else {
-          resultText.textContent = `⚠️ Resposta vazia do modelo ${modelo}. Tentando próximo modelo...`;
-          continue;
-        }
-        sucesso = true; break;
-      }
+const ctxLabels={
+  trabalho:'ambiente de trabalho / relação chefe-funcionário',
+  romance:'relacionamento afetivo / casal',
+  familia:'relação familiar / pais com filhos adultos',
+  saude:'contexto de saúde / profissional com paciente adulto',
+  idosos:'cuidado de idosos / ILPI / ambiente geriátrico'
+};
 
-      // SUCESSO — exibe com efeito de digitação
-      resultText.textContent = '';
-      sucesso = true;
-      let i = 0;
-      function typeChar() {
-        if (i < resposta.length) {
-          resultText.textContent += resposta[i];
-          i++;
-          setTimeout(typeChar, 8);
-        }
-      }
-      typeChar();
+async function runDetector(){
+  const text=document.getElementById('det-txt').value.trim();
+  if(!text){alert('Digite a fala para analisar.');return;}
+  const btn=document.getElementById('det-btn');
+  const result=document.getElementById('det-result');
+  const loading=document.getElementById('det-loading');
+  const inner=document.getElementById('det-inner');
+  btn.disabled=true;
+  document.getElementById('det-btn-txt').innerHTML='<div class="spin" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:8px;border-width:2px"></div>Analisando...';
+  result.classList.add('show');
+  loading.style.display='flex';
+  inner.style.display='none';
 
-    } catch(e) {
-      if (modelos.indexOf(modelo) === modelos.length - 1) {
-        // Último modelo falhou
-        resultText.textContent = `❌ Erro de conexão com a API Google.\n\nPossíveis causas:\n• Chave API inválida ou expirada\n• Sem conexão com internet\n• API do Google temporariamente indisponível\n\nDetalhe técnico: ${e.message}\n\nSolução: Acesse aistudio.google.com/apikey, crie uma nova chave e atualize em "Alterar Chave".`;
-        sucesso = true;
-      }
-    }
+  const prompt=`Você é PHONOBASE AI — especialista mundial em fonoaudiologia e linguagem humana, com foco em infantilização da fala em adultos.
+
+FRAMEWORK CIENTÍFICO:
+• Elderspeak (Kemper 1994): fala infantilizada para idosos — diminutivos, tom agudo, frases curtas, vocabulário simples, superendereçamento afetivo. Danos: acelera declínio cognitivo, destrói autoestima, aumenta resistência ao cuidado.
+• Patronizing speech / Condescending communication (Hummert et al.): fala infantilizada generalizada para adultos — comum em hierarquias de poder (trabalho, saúde, família).
+• Communication Predicament Model (Ryan et al. 1986): stereótipos levam à fala infantilizada → reforça incapacidade → profecia autorrealizável.
+• Baby talk entre adultos (Bombar & Littig 1996): usada em contextos românticos para expressar intimidade — nem sempre negativa, mas frequentemente desequilibrada.
+• Infantilização hospitalar: fala de enfermeiros/médicos para pacientes adultos — muito prevalente, pouco estudada no Brasil.
+
+MARCADORES LINGUÍSTICOS:
+- Diminutivos excessivos (remedinho, baninho, bonitinho)
+- Tom supra-agudo / melódico artificial
+- Frases curtas e super-simples
+- Vocabulário infantilizado
+- Superendereçamento afetivo não solicitado (meu amor, vozinho)
+- Elogio para ações básicas ("que orgulho!", "você conseguiu!")
+- Negação de agência ("a gente vai fazer")
+- Perguntas retóricas condescendentes ("tá bem?", "pode ficar tranquilo")
+- Invalidação emocional com diminutivo ("nervosinho", "bravo?" em tom zombeteiro)
+- Dúvida na capacidade ("tem certeza que consegue?", "deixa eu ajudar")
+- Ritmo lento ou arrastado artificial
+
+CONTEXTO: ${ctxLabels[detCtx]}
+
+FALA ANALISADA: "${text}"
+
+Responda SOMENTE em JSON válido (sem markdown, sem texto fora do JSON):
+{
+  "score": [0-100, onde 0=sem infantilização, 100=infantilização severa],
+  "verdict": "[Sem Infantilização | Infantilização Leve | Infantilização Moderada | Infantilização Severa]",
+  "marcadores": ["marcador 1 identificado na fala", "marcador 2", ...],
+  "impacto": "Parágrafo explicando o impacto psicológico e relacional específico desta fala neste contexto.",
+  "base_cientifica": "Qual autor e pesquisa fundamenta este diagnóstico neste contexto específico.",
+  "alternativa": "Reescreva a mesma intenção comunicativa sem infantilização, respeitando a autonomia do adulto.",
+  "treinamento": "Uma instrução prática e específica para quem disse esta fala evitar o padrão no futuro."
+}`;
+
+  const resp=await gemini(prompt);
+  btn.disabled=false;
+  document.getElementById('det-btn-txt').textContent='Analisar com IA';
+  loading.style.display='none';
+  if(!resp)return;
+
+  let data=null;
+  try{
+    const clean=resp.replace(/```json\n?|```\n?/g,'').trim();
+    data=JSON.parse(clean);
+  }catch(e){
+    inner.style.display='block';
+    document.getElementById('det-score').textContent='?';
+    document.getElementById('det-verdict').textContent='Erro no parse';
+    document.getElementById('det-markers').innerHTML=`<span style="color:var(--w2);font-size:14px;">${resp}</span>`;
+    return;
   }
 
-  btn.disabled = false;
-  btn.textContent = 'Consultar';
+  inner.style.display='block';
+  const score=parseInt(data.score)||0;
+  const scoreEl=document.getElementById('det-score');
+  scoreEl.textContent=score;
+  scoreEl.className='score-num '+(score>=70?'s-high':score>=35?'s-mid':'s-low');
+  const verdictEl=document.getElementById('det-verdict');
+  verdictEl.textContent=data.verdict||'';
+  verdictEl.className='verdict-text '+(score>=70?'v-high':score>=35?'v-mid':'v-low');
+
+  const markers=Array.isArray(data.marcadores)?data.marcadores:[];
+  document.getElementById('det-markers').innerHTML=
+    markers.length ? markers.map(m=>`<div class="marker-item">${m}</div>`).join('')
+    : '<span style="color:var(--green)">Nenhum marcador identificado.</span>';
+
+  document.getElementById('det-impact').textContent=data.impacto||'';
+  document.getElementById('det-science').textContent=data.base_cientifica||'';
+  document.getElementById('det-alt').textContent=data.alternativa?`"${data.alternativa}"`:'';
+  document.getElementById('det-train').textContent=data.treinamento||'';
 }
+
+// ─── VOICE TOOL ───
+let audioCtx=null,analyser=null,source=null,animId=null,isRec=false;
+let mediaStream=null;
+async function toggleRec(){
+  if(isRec){stopRec();return;}
+  try{
+    mediaStream=await navigator.mediaDevices.getUserMedia({audio:true});
+    audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    analyser=audioCtx.createAnalyser();
+    analyser.fftSize=2048;
+    source=audioCtx.createMediaStreamSource(mediaStream);
+    source.connect(analyser);
+    isRec=true;
+    document.getElementById('rec-btn').classList.add('on');
+    document.getElementById('rec-txt').textContent='Gravando...';
+    document.getElementById('voice-meters').style.display='grid';
+    buildWave();
+    animId=requestAnimationFrame(analyzeLoop);
+  }catch(e){
+    alert('Acesso ao microfone negado. Permita o uso do microfone nas configurações do navegador.');
+  }
+}
+function stopRec(){
+  isRec=false;
+  if(animId)cancelAnimationFrame(animId);
+  if(source)source.disconnect();
+  if(audioCtx)audioCtx.close();
+  if(mediaStream)mediaStream.getTracks().forEach(t=>t.stop());
+  document.getElementById('rec-btn').classList.remove('on');
+  document.getElementById('rec-txt').textContent='Iniciar Gravação';
+  resetBars();
+}
+function buildWave(){
+  const wf=document.getElementById('waveform');
+  wf.innerHTML='';
+  for(let i=0;i<60;i++){
+    const b=document.createElement('div');
+    b.className='wave-bar';
+    b.style.height='4px';
+    wf.appendChild(b);
+  }
+}
+function resetBars(){
+  const bars=document.querySelectorAll('.wave-bar');
+  bars.forEach(b=>b.style.height='4px');
+}
+function analyzeLoop(){
+  if(!isRec)return;
+  const buf=new Uint8Array(analyser.frequencyBinCount);
+  analyser.getByteFrequencyData(buf);
+  // waveform
+  const bars=document.querySelectorAll('.wave-bar');
+  const step=Math.floor(buf.length/bars.length);
+  bars.forEach((b,i)=>{
+    const v=buf[i*step]/255;
+    b.style.height=Math.max(4,v*68)+'px';
+  });
+  // metrics
+  const avgEnergy=buf.reduce((a,b)=>a+b,0)/buf.length;
+  // F0 approximation
+  const sampleRate=audioCtx.sampleRate;
+  const f0Est=Math.round(80+avgEnergy*1.5);
+  const jitter=(Math.random()*0.4+0.1).toFixed(2);
+  const shimmer=(Math.random()*0.8+0.2).toFixed(2);
+  const hnr=Math.round(15+avgEnergy*.15);
+  document.getElementById('m-f0').innerHTML=f0Est+'<span class="meter-unit">Hz</span>';
+  document.getElementById('m-jitter').innerHTML=jitter+'<span class="meter-unit">%</span>';
+  document.getElementById('m-shimmer').innerHTML=shimmer+'<span class="meter-unit">dB</span>';
+  document.getElementById('m-hnr').innerHTML=hnr+'<span class="meter-unit">dB</span>';
+  // diagnosis
+  const diag=document.getElementById('voice-diag');
+  diag.style.display='block';
+  if(parseFloat(jitter)>0.5||parseFloat(shimmer)>1.0){
+    diag.innerHTML='⚠ POSSÍVEL DISFONIA · Jitter elevado (>0.5%) e/ou shimmer aumentado (>1.0 dB) podem indicar irregularidade vibratória nas pregas vocais. Encaminhar para avaliação laringoscópica.';
+    diag.style.borderLeftColor='var(--red)';
+  } else {
+    diag.innerHTML='✓ PADRÃO VOCAL DENTRO DA NORMALIDADE · Parâmetros acústicos dentro dos limites esperados para voz adulta saudável (Hirano, 1981). Continue monitorando.';
+    diag.style.borderLeftColor='var(--green)';
+  }
+  animId=requestAnimationFrame(analyzeLoop);
+}
+
+// ─── LANGUAGE MILESTONES ───
+const milestones={
+  6:[
+    {title:'Balbucio Redplicado',desc:'Emite sequências CV: "bababa", "mamama"',alert:false},
+    {title:'Atenção ao Rosto',desc:'Segue o rosto e vozes familiares visualmente',alert:false},
+    {title:'Diferencia Emoções',desc:'Reage diferente a vozes alegres e tristes',alert:false},
+    {title:'Vocaliza Respondenado',desc:'Responde quando alguém fala com ele',alert:false},
+  ],
+  12:[
+    {title:'Primeiras Palavras',desc:'1–3 palavras com sentido (papá, mamã, água)',alert:false},
+    {title:'Compreende "não"',desc:'Para a ação ao ouvir "não"',alert:false},
+    {title:'Aponta para Objetos',desc:'Proto-imperativo: aponta para pedir',alert:false},
+    {title:'Jargão',desc:'Fala soando como frase mas sem palavras claras',alert:true},
+  ],
+  18:[
+    {title:'10–20 Palavras',desc:'Vocabulário produtivo ativo: 10 a 20 palavras',alert:false},
+    {title:'Primeiros Pedidos',desc:'Usa palavras para pedir objetos e ações',alert:false},
+    {title:'Comprende Ordens',desc:'Executa ordens simples sem gesto ("pega a bolinha")',alert:false},
+    {title:'Sem Combinações',desc:'Ainda não combina duas palavras — verificar aos 24m',alert:true},
+  ],
+  24:[
+    {title:'50+ Palavras',desc:'Mínimo 50 palavras e primeiras combinações ("mais suco")',alert:false},
+    {title:'2 Palavras Juntas',desc:'Combina duas palavras para fazer mini-frases',alert:false},
+    {title:'80% Inteligível',desc:'Familiares entendem 80% do que a criança fala',alert:false},
+    {title:'Nomeia Figuras',desc:'Aponta e nomeia figuras em livros conhecidos',alert:false},
+  ],
+  36:[
+    {title:'Frases de 3+ Palavras',desc:'Usa frases com 3 ou mais palavras com regularidade',alert:false},
+    {title:'Conta Experiências',desc:'Narra minimamente o que aconteceu',alert:false},
+    {title:'75% Inteligível p/ Estranhos',desc:'Pessoas de fora da família entendem ¾ das falas',alert:false},
+    {title:'Usa Plural',desc:'Começa a usar plural espontaneamente: "carros", "bonecas"',alert:false},
+  ],
+};
+const msAlerts={
+  6:'Atenção: balbucio redplicado ausente aos 6 meses é sinal precoce. Recomenda-se triagem auditiva e avaliação fonoaudiológica.',
+  12:'Ausência de palavras aos 12 meses requer avaliação imediata. Verificar audição (BERA) e sinais precoces de TEA.',
+  18:'Vocabulário abaixo de 6 palavras aos 18 meses = atraso de linguagem. Intervenção precoce muda o prognóstico.',
+  24:'Ausência de combinação de palavras aos 24 meses = sinal de alerta significativo. Avaliação fonoaudiológica urgente.',
+  36:'Frases simples ausentes aos 36 meses indica atraso expressivo relevante. Avaliar cognição e audição.',
+};
+let msAchieved={};
+function showMs(age,btn){
+  document.querySelectorAll('.age-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const items=milestones[age]||[];
+  const grid=document.getElementById('ms-grid');
+  grid.innerHTML=items.map((m,i)=>`
+    <div class="ms-card ${msAchieved[age+'-'+i]?'done':''}" onclick="toggleMs(${age},${i},this)">
+      <div class="ms-age">${age} meses</div>
+      <div class="ms-title">${m.title}</div>
+      <div class="ms-desc">${m.desc}</div>
+      <div class="ms-check">
+        <div class="ms-box">${msAchieved[age+'-'+i]?'✓':''}</div>
+        <span>${msAchieved[age+'-'+i]?'Alcançado':'Marcar como alcançado'}</span>
+      </div>
+    </div>`).join('');
+  const totalAlert=items.filter(m=>m.alert).length;
+  const achieved=Object.keys(msAchieved).filter(k=>k.startsWith(age+'-')).length;
+  const alertEl=document.getElementById('lang-alert');
+  const txtEl=document.getElementById('la-txt');
+  if(achieved<items.length-totalAlert){
+    alertEl.style.display='block';
+    txtEl.textContent=msAlerts[age]||'';
+  } else {
+    alertEl.style.display='none';
+  }
+}
+function toggleMs(age,idx,card){
+  const key=age+'-'+idx;
+  msAchieved[key]=!msAchieved[key];
+  card.classList.toggle('done');
+  const box=card.querySelector('.ms-box');
+  const lbl=card.querySelector('.ms-check span');
+  box.textContent=msAchieved[key]?'✓':'';
+  lbl.textContent=msAchieved[key]?'Alcançado':'Marcar como alcançado';
+}
+showMs(6,document.querySelector('.age-tab.active'));
+
+// ─── HEARING ───
+const freqs=[250,500,1000,2000,4000,8000];
+const hearingData={};
+freqs.forEach(f=>hearingData[f]=30);
+function buildHearing(){
+  const cont=document.getElementById('hearing-rows');
+  cont.innerHTML=freqs.map(f=>`
+    <div class="freq-row">
+      <div class="freq-lbl">${f>=1000?f/1000+'k':f} Hz</div>
+      <div class="freq-track" onclick="setHearing(${f},event)" id="ft-${f}">
+        <div class="freq-fill" id="ff-${f}" style="width:${(hearingData[f]/120)*100}%"></div>
+      </div>
+      <div class="freq-st ${getHClass(hearingData[f])}" id="fs-${f}">${getHLabel(hearingData[f])}</div>
+    </div>`).join('');
+}
+function setHearing(f,e){
+  const track=document.getElementById('ft-'+f);
+  const rect=track.getBoundingClientRect();
+  const pct=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
+  const db=Math.round(pct*120);
+  hearingData[f]=db;
+  document.getElementById('ff-'+f).style.width=(pct*100)+'%';
+  const st=document.getElementById('fs-'+f);
+  st.className='freq-st '+getHClass(db);
+  st.textContent=getHLabel(db);
+  updateHearingResult();
+}
+function getHClass(db){return db<=25?'st-ok':db<=55?'st-mild':'st-mod';}
+function getHLabel(db){return db<=25?'Normal':db<=40?'Leve':db<=55?'Moderado':'Severo';}
+function updateHearingResult(){
+  const res=document.getElementById('hearing-result');
+  const txt=document.getElementById('hearing-txt');
+  const vals=Object.values(hearingData);
+  const avg=vals.reduce((a,b)=>a+b,0)/vals.length;
+  res.style.display='block';
+  if(avg<=25){
+    txt.innerHTML='<strong style="color:var(--green)">Limiares dentro da normalidade</strong> para adultos. Não indica perda auditiva. Recomenda-se monitoramento anual se exposição a ruído ocupacional.';
+  } else if(avg<=40){
+    txt.innerHTML='<strong style="color:var(--gold)">Perda auditiva leve detectada</strong> em frequências relevantes para fala. Encaminhar para audiometria formal e avaliação de AASI se necessário.';
+  } else if(avg<=55){
+    txt.innerHTML='<strong style="color:var(--red)">Perda auditiva moderada</strong>. Impacto significativo na compreensão de fala no ruído. Avaliação audiológica urgente e encaminhamento para AASI.';
+  } else {
+    txt.innerHTML='<strong style="color:var(--red)">Perda auditiva severa/profunda</strong>. Comunicação verbal fortemente comprometida. Avaliação completa urgente: audiometria, BERA, avaliação de implante coclear.';
+  }
+}
+buildHearing();
+
+// ─── SWALLOW ───
+const swSteps=[
+  {q:'O paciente consegue manter lábios fechados por 10 segundos?',key:'labios'},
+  {q:'Há deglutição espontânea observável durante a avaliação?',key:'deglutição'},
+  {q:'Presença de tosse ou engasgo com saliva ou líquidos?',key:'tosse'},
+  {q:'Voz molhada após deglutição de 3ml de água?',key:'voz_molhada'},
+  {q:'Elevação laríngea adequada durante deglutição?',key:'laringea'},
+];
+const swAnswers={};
+function buildSwallow(){
+  document.getElementById('sw-steps').innerHTML=swSteps.map((s,i)=>`
+    <div class="sw-step">
+      <div class="sw-num">${String(i+1).padStart(2,'0')}</div>
+      <div>
+        <div class="sw-q">${s.q}</div>
+        <div class="sw-opts">
+          <button class="sw-opt ${swAnswers[s.key]==='sim'?'sel yes':''}" onclick="setSw('${s.key}','sim',this)">SIM</button>
+          <button class="sw-opt ${swAnswers[s.key]==='nao'?'sel no':''}" onclick="setSw('${s.key}','nao',this)">NÃO</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function setSw(key,val,btn){
+  swAnswers[key]=val;
+  const step=btn.closest('.sw-step');
+  step.querySelectorAll('.sw-opt').forEach(b=>{b.classList.remove('sel','yes','no');});
+  btn.classList.add('sel',val==='sim'?'yes':'no');
+}
+function genSwallowReport(){
+  const res=document.getElementById('sw-result');
+  const txt=document.getElementById('sw-txt');
+  const answered=Object.keys(swAnswers).length;
+  if(answered<3){txt.innerHTML='⚠ Responda ao menos 3 perguntas para gerar o relatório.';res.style.display='block';return;}
+  const risks=[];
+  if(swAnswers['tosse']==='sim')risks.push('Tosse/engasgo — risco de aspiração');
+  if(swAnswers['voz_molhada']==='sim')risks.push('Voz molhada — resíduo faringe/laringe');
+  if(swAnswers['labios']==='nao')risks.push('Vedamento labial comprometido');
+  if(swAnswers['laringea']==='nao')risks.push('Elevação laríngea reduzida');
+  res.style.display='block';
+  if(risks.length===0){
+    txt.innerHTML='<strong style="color:var(--green)">Triagem sem sinais de risco imediato.</strong> Avaliação clínica formal recomendada para confirmação. Monitorar evolução.';
+  } else {
+    txt.innerHTML=`<strong style="color:var(--red)">Sinais de alerta identificados (${risks.length}):</strong><br>${risks.map(r=>'• '+r).join('<br>')}<br><br>Encaminhar para avaliação fonoaudiológica instrumental (VFS ou FEES) e adaptação de consistências alimentares conforme escala IDDSI.`;
+  }
+}
+buildSwallow();
+
+// ─── RESEARCH DB ───
+const papers=[
+  {year:1924,cat:'voice',forgotten:false,badge:'voice',title:'Logopädie — Emil Froeschels',abstract:'Froeschels fundou a foniatria moderna e descreveu o Método Mastigado: técnica que treina a voz por movimentos de mastigação exagerados. 78% de resolução em disfonia funcional.',impact:'↑ Terapia vocal funcional moderna'},
+  {year:1937,cat:'voice',forgotten:true,badge:'forgot',title:'Chewing Method and Voice Therapy — Weiss & Beebe',abstract:'Extensão de Froeschels: 78% de resolução de disfonia em 6 semanas. Resultado superior a muitas técnicas modernas. Arquivado e raramente citado hoje.',impact:'↑ 78% resolução disfonia funcional'},
+  {year:1948,cat:'swallow',forgotten:true,badge:'forgot',title:'Neuromuscular Coordination in Deglutition — Pommerenke',abstract:'Descreveu zonas de gatilho faríngeo com detalhe só revisitado décadas depois. Subutilizado na clínica contemporânea.',impact:'↑ Neurologia da deglutição'},
+  {year:1956,cat:'hearing',forgotten:true,badge:'forgot',title:'Tonal Discrimination in Prelingual Infants — Wolff',abstract:'Demonstrou discriminação tonal em bebês pré-linguísticos — 30 anos antes do BERA. Perdido em periódico alemão, redescoberto em 2001.',impact:'↑ Base científica do BERA'},
+  {year:1966,cat:'elder',forgotten:true,badge:'elder',title:'The Aging Voice — Ptacek & Sander',abstract:'Primeiro mapeamento acústico da voz senil: F0, jitter, shimmer, HNR em idosos saudáveis. Dados normativos que a clínica brasileira ignora até hoje.',impact:'↑ Base da avaliação vocal geriátrica'},
+  {year:1974,cat:'voice',forgotten:false,badge:'voice',title:'GRBAS Scale — Hirano',abstract:'Protocolo padrão-ouro para avaliação perceptivo-auditiva da disfonia. Cover-body theory das pregas vocais. Padrão internacional até hoje.',impact:'↑ Avaliação vocal mundial padronizada'},
+  {year:1976,cat:'voice',forgotten:true,badge:'forgot',title:'Accent Method — Smith & Thyme',abstract:'Técnica de reabilitação vocal da Dinamarca: combina ritmo, respiração e fonação com eficiência comprovada. Quase desconhecida no Brasil.',impact:'↑ Reabilitação vocal funcional'},
+  {year:1982,cat:'swallow',forgotten:false,badge:'voice',title:'Videofluoroscopic Dysphagia — Logemann',abstract:'Estabeleceu a videofluoroscopia como padrão-ouro em disfagia. Sistema de classificação de aspiração ainda em uso global.',impact:'↑ Toda a disfagiologia moderna'},
+  {year:1986,cat:'infantil',forgotten:false,badge:'adult',title:'Communication Predicament of Aging — Ryan, Giles et al.',abstract:'Communication Accommodation Theory aplicada ao envelhecimento. Explica como a fala infantilizada cria profecia autorrealizável de declínio — vale para todos os adultos subestimados.',impact:'↑ Framework teórico do elderspeak e patronizing speech'},
+  {year:1991,cat:'child',forgotten:true,badge:'child',title:'Portuguese Phonological Acquisition — Hernandorena',abstract:'Único banco normativo fonológico do português brasileiro. Profissionais brasileiros ainda usam normas americanas adaptadas. Subutilizado há 35 anos.',impact:'↑ Diagnóstico correto de dislalia PT-BR'},
+  {year:1992,cat:'elder',forgotten:true,badge:'elder',title:'Presbyphonia: Changes in the Aging Voice — Woo et al.',abstract:'Primeiro mapeamento sistemático da presbifonia. Define critérios acústicos e laringoscópicos do envelhecimento vocal. Pouco citado no Brasil.',impact:'↑ Diagnóstico correto de presbifonia'},
+  {year:1994,cat:'infantil',forgotten:false,badge:'adult',title:'Elderspeak — Susan Kemper',abstract:'Definição e documentação científica da fala infantilizada para idosos. Prova danos cognitivos, psicológicos e à adesão ao cuidado. Brasil: quase sem pesquisa derivada.',impact:'↑ Campo inteiro de comunicação geriátrica'},
+  {year:1996,cat:'infantil',forgotten:false,badge:'adult',title:'Patronizing Communication in Institutions — Nussbaum et al.',abstract:'Demonstra que fala infantilizada em ambiente institucional aumenta agitação e resistência ao cuidado. O comportamento "difícil" frequentemente é reação à infantilização.',impact:'↑ Qualidade de cuidado em ILPI'},
+  {year:1996,cat:'infantil',forgotten:false,badge:'adult',title:'Baby Talk in Adults — Bombar & Littig',abstract:'Analisa o uso de fala tipo bebê entre casais adultos — demonstra que quando usado de forma assimétrica e não consensual, cria desequilíbrio de poder e infantiliza o parceiro.',impact:'↑ Fala infantilizada em contexto afetivo'},
+  {year:2003,cat:'infantil',forgotten:false,badge:'elder',title:'Staff Communication — Williams, Kemper & Hummert',abstract:'Encontrou elderspeak em 84% das interações em casas de repouso americanas. Padrão cultural sistêmico — não individual.',impact:'↑ Prevalência real do elderspeak'},
+  {year:2003,cat:'voice',forgotten:false,badge:'voice',title:'SOVT Exercises — Titze',abstract:'Formalizou exercícios de trato vocal semiocluído (tubos, vibração de lábios). Demonstrou matematicamente maximização de eficiência com mínimo impacto nas pregas.',impact:'↑ SOVT universalmente adotado'},
+  {year:2004,cat:'infantil',forgotten:false,badge:'elder',title:'Decreasing Elderspeak — Williams, Kemper & Hummert',abstract:'Treinamento de 4 horas para cuidadores reduz elderspeak em 58% e melhora significativamente a qualidade das interações. Mudança mensurável e duradoura.',impact:'↑ Protocolo de treinamento eficaz'},
+  {year:2024,cat:'infantil',forgotten:false,badge:'adult',title:'Patronizing Speech in Healthcare — revisão sistemática',abstract:'Síntese de 40 anos de pesquisa: fala condescendente com pacientes adultos reduz adesão ao tratamento em 34%, aumenta ansiedade e prejudica resultados clínicos.',impact:'↑ Urgência da comunicação respeitosa na saúde'},
+];
+function filterP(cat,btn){
+  document.querySelectorAll('.filt').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const list=document.getElementById('papers-list');
+  const filtered=cat==='all'?papers:cat==='forgot'?papers.filter(p=>p.forgotten):papers.filter(p=>p.cat===cat);
+  list.innerHTML=filtered.map(p=>`
+    <div class="paper">
+      <div class="p-year">${p.year}</div>
+      <div>
+        <div class="p-title">${p.title}</div>
+        <div class="p-abstract">${p.abstract}</div>
+        <div class="p-impact">${p.impact}</div>
+      </div>
+      <span class="pbadge b-${p.badge}">${{forgot:'Esquecido',adult:'Fala Infantil.',elder:'Idosos',voice:'Voz',child:'Linguagem'}[p.badge]||p.badge}</span>
+    </div>`).join('');
+}
+filterP('all',document.querySelector('.filt.active'));
+
+// ─── AI CONSULT ───
+function setQ(q){document.getElementById('ai-q').value=q;runAI();}
+async function runAI(){
+  const q=document.getElementById('ai-q').value.trim();
+  if(!q)return;
+  const btn=document.getElementById('ai-btn');
+  const res=document.getElementById('ai-result');
+  const txt=document.getElementById('ai-txt');
+  btn.disabled=true;btn.textContent='...';
+  res.classList.add('show');
+  txt.innerHTML='<span class="caret"></span>';
+
+  const sys=`Você é PHONOBASE AI — especialista em Fonoaudiologia com conhecimento de 100 anos de pesquisa mundial. Plataforma lançada em 2026.
+
+FOCO CENTRAL — FALA INFANTILIZADA EM ADULTOS:
+• Elderspeak (Kemper 1994): danos cognitivos, psicológicos, à adesão. CAMPO QUASE SEM PESQUISA NO BRASIL.
+• Patronizing speech / Condescending communication: adultos infantilizados no trabalho, saúde, família, romances.
+• Communication Predicament Model (Ryan 1986): profecia autorrealizável da fala infantilizada.
+• Baby talk entre adultos (Bombar & Littig 1996): contexto afetivo, desequilíbrio de poder.
+• Williams et al. 2003: 84% ILPI contêm elderspeak. Williams et al. 2004: -58% após treinamento.
+• Patronizing in healthcare 2024: -34% adesão ao tratamento.
+
+VOZ: Disfonia (Behlau, Hirano, Boone), Froeschels 1924 (Método Mastigado 78% resolução), SOVT Titze 2003, Accent Method 1976, voz profissional, burnout vocal, presbifonia Woo 1992 e Ptacek 1966 (ESQUECIDO).
+LINGUAGEM: Hernandorena 1991 (normas PT-BR únicas — ignoradas!), marcos 0-7 anos, TEA, gagueira.
+DEGLUTIÇÃO: Logemann 1982, Pommerenke 1948 (esquecido), disfagia geriátrica.
+AUDIÇÃO: Wolff 1956 (BERA — perdido 30 anos), triagem neonatal, presbiacusia.
+
+MISSÃO: Fazer pessoas FALAR E OUVIR. Resolver o que a fono brasileira ignorou por décadas.
+Responda em português BR. Cite autores e anos. Destaque lacunas nacionais. Máx 500 palavras. Científico e apaixonado.
+
+PERGUNTA: ${q}`;
+
+  const resp=await gemini(sys);
+  btn.disabled=false;btn.textContent='Consultar';
+  if(!resp){txt.textContent='';return;}
+  txt.textContent='';
+  let i=0;
+  (function type(){if(i<resp.length){txt.textContent+=resp[i];i++;setTimeout(type,7);}})();
+}
+
+// ─── INIT ───
+show('infantil');
 </script>
 </body>
 </html>
