@@ -2063,10 +2063,7 @@ async function queryAI() {
   if (!query) return;
 
   const apiKey = getApiKey();
-  if (!apiKey) {
-    openApiModal();
-    return;
-  }
+  if (!apiKey) { openApiModal(); return; }
 
   const btn = document.getElementById('ai-submit');
   const resultDiv = document.getElementById('ai-result');
@@ -2077,114 +2074,109 @@ async function queryAI() {
   resultDiv.classList.add('visible');
   resultText.innerHTML = '<span class="typing-cursor"></span>';
 
-  const systemInstruction = `Você é a IA especializada PHONOBASE AI, a maior plataforma de pesquisa em Fonoaudiologia do mundo.
+  // System prompt embutido na pergunta do usuário (compatível com todos os modelos Gemini)
+  const promptCompleto = `Você é a PHONOBASE AI — especialista em Fonoaudiologia com conhecimento de 100 anos de pesquisa mundial.
 
-ÁREAS DE CONHECIMENTO COMPLETAS:
+CONHECIMENTO COMPLETO:
+• LINGUAGEM INFANTIL: Aquisição fonológica PT-BR (Hernandorena 1991, Yavas 1988), marcos 0-7 anos, TEA, dislalia, gagueira, estimulação precoce
+• ADULTOS — VOZ: Disfonia funcional/orgânica (Behlau, Hirano, Boone), nódulos, pólipos, paralisia vocal, burnout vocal, voz profissional (professores, cantores, locutores), Método Mastigado Froeschels 1924, SOVT Titze 2003, Accent Method Smith & Thyme 1976, Resonant Voice Therapy Verdolini
+• IDOSOS — PRESBIFONIA: Envelhecimento vocal, atrofia de pregas, Woo et al 1992 (primeiro mapeamento presbifonia), Ptacek & Sander 1966 (acústica da voz senil — ESQUECIDO), presbiacusia, disfagia geriátrica, Parkinson/Alzheimer/AVC, reabilitação vocal geriátrica — CAMPO COM POUCA PESQUISA NACIONAL
+• ELDERSPEAK (FALA INFANTILIZADA): Kemper 1994 (definição e danos cognitivos), Ryan et al 1986 (Communication Accommodation Theory), Nussbaum 1996 (institucionalização), efeitos: piora autoestima, acelera declínio cognitivo, aumenta resistência ao cuidado — BRASIL: QUASE SEM PESQUISA — CAMPO ABERTO!
+• AUDIÇÃO: Triagem neonatal PEATE/EOAPD, audiometria, PAIR, processamento auditivo, implante coclear, AASI
+• DEGLUTIÇÃO: Disfagia orofaríngea/esofágica, videofluoroscopia, FEES, FOIS, IDDSI, AVC/Parkinson/ELA/câncer, Pommerenke 1948 (zonas de gatilho faríngeo — ESQUECIDO), Negus 1933
 
-🧒 LINGUAGEM INFANTIL:
-- Aquisição fonológica do português brasileiro (Hernandorena 1991, Yavas 1988)
-- Marcos de desenvolvimento 0-7 anos
-- TEA, atraso de linguagem, dislalia, gagueira infantil
-- Estimulação precoce e intervenção fonoaudiológica pediátrica
+PESQUISAS ESQUECIDAS PARA DESTACAR:
+• Froeschels 1924: Método Mastigado — 78% resolução disfonia funcional
+• Negus 1933: Humanos únicos que não respiram e deglutindo juntos
+• Wolff 1956: Bebês discriminam tons — base do BERA, perdido 30 anos
+• Ptacek & Sander 1966: Acústica da voz senil — ignorado na clínica BR
+• Accent Method 1976: Dinamarca, funciona, desconhecido no Brasil
+• Kemper 1994: Elderspeak acelera declínio cognitivo — sem pesquisa BR
+• Hernandorena 1991: Única norma fonológica PT-BR — profissionais usam normas americanas!
 
-👨 ADULTOS — VOZ E COMUNICAÇÃO:
-- Disfonia funcional e orgânica (Behlau, Hirano, Boone)
-- Nódulos, pólipos, paralisia de prega vocal
-- Voz profissional: professores, cantores, advogados, locutores
-- Síndrome de burnout vocal
-- Método Mastigado de Froeschels (1924) — esquecido e revolucionário
-- SOVT — Semi-Occluded Vocal Tract (Titze 2003)
-- Resonant Voice Therapy (Verdolini)
-- Accent Method (Smith & Thyme 1976) — subutilizado
-- Terapia de voz por biofeedback visual
+MISSÃO: Fazer pessoas FALAR E OUVIR. Revolucionar a Fonoaudiologia mundial.
+SEMPRE em português brasileiro. Cite anos, autores, achados concretos. Destaque lacunas brasileiras. Máximo 500 palavras. Seja científico e apaixonado.
 
-👴 IDOSOS — PRESBIFONIA E PRESBIACUSIA:
-- Presbifonia: envelhecimento vocal, voz senil
-- Atrofia de pregas vocais no envelhecimento
-- Pesquisa de Woo et al. (1992) — primeiro mapeamento da presbifonia
-- Presbiacusia: perda auditiva por envelhecimento
-- Disfagia no idoso — risco de aspiração e pneumonia aspirativa
-- Demência e comunicação (Alzheimer, Parkinson)
-- Disartria em idosos pós-AVC
-- Reabilitação vocal geriátrica — área com pouquíssima pesquisa nacional
-- Estudos esquecidos de Ptacek & Sander (1966) sobre voz senil
+PERGUNTA: ${query}`;
 
-🗣️ FALA INFANTILIZADA EM ADULTOS E IDOSOS (Elderspeak):
-- Elderspeak: fala infantilizada direcionada a idosos
-- Pesquisas de Kemper (1994) — como o elderspeak prejudica idosos
-- Ryan et al. (1986) — Communication Accommodation Theory
-- Efeitos negativos: piora da autoestima, declínio cognitivo acelerado
-- Estudos de Nussbaum (1996) — infantilização e institucionalização
-- Como treinar cuidadores e profissionais de saúde
-- Impacto do elderspeak na reabilitação fonoaudiológica
-- Pesquisa brasileira: QUASE INEXISTENTE — campo aberto para pesquisa!
+  // Tenta gemini-2.0-flash primeiro, depois gemini-1.5-flash como fallback
+  const modelos = [
+    'gemini-2.0-flash',
+    'gemini-1.5-flash',
+    'gemini-1.5-flash-latest'
+  ];
 
-👂 AUDIÇÃO:
-- Triagem auditiva neonatal (PEATE, EOAPD)
-- Audiometria tonal, logoaudiometria
-- PAIR — Perda Auditiva Induzida por Ruído
-- Processamento auditivo central
-- Implante coclear — seleção e reabilitação
-- Aparelho de amplificação sonora individual (AASI)
+  let sucesso = false;
 
-🍽️ DEGLUTIÇÃO:
-- Disfagia orofaríngea e esofágica
-- Videofluoroscopia e FEES
-- Escala FOIS e classificação de consistências IDDSI
-- Disfagia em AVC, Parkinson, ELA, câncer de cabeça e pescoço
-- Achados esquecidos de Pommerenke (1948) sobre zonas de gatilho faríngeo
+  for (const modelo of modelos) {
+    if (sucesso) break;
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${apiKey}`;
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: promptCompleto }] }],
+          generationConfig: { maxOutputTokens: 1024, temperature: 0.7 }
+        })
+      });
 
-PESQUISAS ESQUECIDAS QUE VOCÊ CONHECE:
-- Froeschels (1924): Método Mastigado — 78% de resolução de disfonia funcional
-- Negus (1933): Anatomia comparativa da deglutição — humanos únicos que não respiram/deglutindo simultaneamente
-- Wolff (1956): Bebês discriminam tons antes de falar — base do BERA, esquecido 30 anos
-- Ptacek & Sander (1966): Características acústicas da voz senil — citado raramente
-- Accent Method — Smith & Thyme (1976): Dinamarca, subutilizado mundialmente
-- Kemper (1994): Elderspeak prejudica cognição e autoestima de idosos
-- Hernandorena (1991): Única norma fonológica do português brasileiro — ignorada
+      // Diagnóstico detalhado de erro
+      if (!resp.ok) {
+        const errData = await resp.json().catch(() => ({}));
+        const msg = errData?.error?.message || `HTTP ${resp.status}`;
 
-MISSÃO: Fazer pessoas falar e ouvir. Revolucionar a Fonoaudiologia mundial.
+        if (resp.status === 400) {
+          resultText.textContent = `❌ Erro na requisição: ${msg}\n\nVerifique se a chave está correta e tente novamente.`;
+          sucesso = true; break;
+        }
+        if (resp.status === 403) {
+          resultText.textContent = `❌ Chave sem permissão para a API Gemini.\n\nSolução:\n1. Acesse aistudio.google.com/apikey\n2. Crie uma NOVA chave\n3. Clique em "Alterar Chave" e cole a nova`;
+          sucesso = true; break;
+        }
+        if (resp.status === 429) {
+          resultText.textContent = `⚠️ Limite de requisições atingido. Aguarde 1 minuto e tente novamente.\n\n(Limite gratuito: 15 req/min)`;
+          sucesso = true; break;
+        }
+        // Tenta próximo modelo
+        continue;
+      }
 
-Responda SEMPRE em português brasileiro. Seja específico: cite anos, autores, achados concretos.
-Destaque pesquisas ESQUECIDAS e campos com POUCA PESQUISA NACIONAL como oportunidades.
-Seja apaixonado e científico ao mesmo tempo. Máximo 500 palavras.`;
+      const data = await resp.json();
+      const resposta = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
-  try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+      if (!resposta) {
+        // Verifica se foi bloqueado por segurança
+        const bloqueio = data?.candidates?.[0]?.finishReason;
+        if (bloqueio === 'SAFETY') {
+          resultText.textContent = '⚠️ Resposta bloqueada por filtro de segurança. Tente reformular a pergunta.';
+        } else {
+          resultText.textContent = `⚠️ Resposta vazia do modelo ${modelo}. Tentando próximo modelo...`;
+          continue;
+        }
+        sucesso = true; break;
+      }
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: systemInstruction }] },
-        contents: [{ role: 'user', parts: [{ text: query }] }],
-        generationConfig: { maxOutputTokens: 1000, temperature: 0.7 }
-      })
-    });
+      // SUCESSO — exibe com efeito de digitação
+      resultText.textContent = '';
+      sucesso = true;
+      let i = 0;
+      function typeChar() {
+        if (i < resposta.length) {
+          resultText.textContent += resposta[i];
+          i++;
+          setTimeout(typeChar, 8);
+        }
+      }
+      typeChar();
 
-    if (response.status === 400 || response.status === 403) {
-      resultText.textContent = '❌ Chave API inválida ou sem permissão. Clique em "Alterar Chave" para verificar.';
-      btn.disabled = false;
-      btn.textContent = 'Consultar';
-      return;
-    }
-
-    const data = await response.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Erro ao obter resposta da IA.';
-
-    resultText.textContent = '';
-    let i = 0;
-    function typeChar() {
-      if (i < text.length) {
-        resultText.textContent += text[i];
-        i++;
-        setTimeout(typeChar, 10);
+    } catch(e) {
+      if (modelos.indexOf(modelo) === modelos.length - 1) {
+        // Último modelo falhou
+        resultText.textContent = `❌ Erro de conexão com a API Google.\n\nPossíveis causas:\n• Chave API inválida ou expirada\n• Sem conexão com internet\n• API do Google temporariamente indisponível\n\nDetalhe técnico: ${e.message}\n\nSolução: Acesse aistudio.google.com/apikey, crie uma nova chave e atualize em "Alterar Chave".`;
+        sucesso = true;
       }
     }
-    typeChar();
-
-  } catch(e) {
-    resultText.textContent = '❌ Erro de conexão. Verifique sua internet e tente novamente.\n\nDetalhe: ' + e.message;
   }
 
   btn.disabled = false;
