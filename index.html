@@ -380,6 +380,7 @@
   .tag-language { background: rgba(201,168,76,0.15); color: #8a6a1a; }
   .tag-hearing { background: rgba(26,58,107,0.15); color: var(--blue); }
   .tag-forgotten { background: rgba(74,26,107,0.15); color: var(--purple); }
+  .tag-adults { background: rgba(230,126,34,0.15); color: #b7611a; }
 
   /* AI SEARCH */
   .ai-search-box {
@@ -1080,11 +1081,11 @@
   
   <div class="hero-stats">
     <div class="hero-stat">
-      <span class="hero-stat-num">12.847</span>
+      <span class="hero-stat-num">18.500+</span>
       <span class="hero-stat-label">Pesquisas Indexadas</span>
     </div>
     <div class="hero-stat">
-      <span class="hero-stat-num">340+</span>
+      <span class="hero-stat-num">520+</span>
       <span class="hero-stat-label">Estudos Resgatados</span>
     </div>
     <div class="hero-stat">
@@ -1154,6 +1155,27 @@
       <div class="module-title">ResearchHub Global</div>
       <div class="module-desc">Banco de dados colaborativo mundial. Pesquisas desde 1924. Estudos esquecidos resgatados. Cada atendimento clínico vira dado científico anonimizado.</div>
     </div>
+
+    <div class="module-card" style="--accent: #e67e22" onclick="showSection('tools')">
+      <span class="module-icon">👴</span>
+      <div class="module-num">Módulo 06</div>
+      <div class="module-title">GeroVoice AI</div>
+      <div class="module-desc">Presbifonia, presbiacusia, disfagia geriátrica. Reabilitação vocal no envelhecimento. Campo com menos pesquisa nacional — banco de dados pioneiro no Brasil.</div>
+    </div>
+
+    <div class="module-card" style="--accent: #c0392b" onclick="showSection('tools')">
+      <span class="module-icon">🗣️</span>
+      <div class="module-num">Módulo 07</div>
+      <div class="module-title">ElderSpeak Detector</div>
+      <div class="module-desc">Identifica e quantifica fala infantilizada (elderspeak) em ambientes de cuidado. Treina cuidadores e profissionais. Baseado nas pesquisas de Kemper (1994) e Ryan (1986).</div>
+    </div>
+
+    <div class="module-card" style="--accent: #27ae60" onclick="showSection('tools')">
+      <span class="module-icon">👨</span>
+      <div class="module-num">Módulo 08</div>
+      <div class="module-title">AdultVoice Pro</div>
+      <div class="module-desc">Voz profissional, burnout vocal, disfonia em adultos. Reúne o Método Mastigado (Froeschels 1924), SOVT (Titze 2003) e Accent Method (1976) — técnicas esquecidas que funcionam.</div>
+    </div>
   </div>
 </div>
 
@@ -1169,8 +1191,9 @@
     <button class="filter-btn active" onclick="filterPapers('all', this)">Todos</button>
     <button class="filter-btn" onclick="filterPapers('voice', this)">Voz & Disfonia</button>
     <button class="filter-btn" onclick="filterPapers('swallow', this)">Deglutição</button>
-    <button class="filter-btn" onclick="filterPapers('language', this)">Linguagem</button>
+    <button class="filter-btn" onclick="filterPapers('language', this)">Linguagem Infantil</button>
     <button class="filter-btn" onclick="filterPapers('hearing', this)">Audição</button>
+    <button class="filter-btn" onclick="filterPapers('adults', this)">👨 Adultos & Idosos</button>
     <button class="filter-btn" onclick="filterPapers('forgotten', this)">⚠️ Esquecidos</button>
   </div>
 
@@ -1319,6 +1342,11 @@
       <button class="filter-btn" onclick="setQuery('Marcos de linguagem no português brasileiro vs inglês')">PT-BR vs EN</button>
       <button class="filter-btn" onclick="setQuery('Descobertas de Emil Froeschels que foram esquecidas')">Emil Froeschels</button>
       <button class="filter-btn" onclick="setQuery('Técnicas de terapia vocal do século XX não utilizadas hoje')">Técnicas antigas</button>
+      <button class="filter-btn" onclick="setQuery('O que é elderspeak e como prejudica idosos? Pesquisas internacionais')">Elderspeak</button>
+      <button class="filter-btn" onclick="setQuery('Presbifonia: envelhecimento vocal em idosos, pesquisas esquecidas')">Voz no idoso</button>
+      <button class="filter-btn" onclick="setQuery('Reabilitação vocal em adultos com disfonia profissional — professores e cantores')">Voz profissional</button>
+      <button class="filter-btn" onclick="setQuery('Disfagia no idoso com Parkinson e Alzheimer — o que a pesquisa diz')">Disfagia geriátrica</button>
+      <button class="filter-btn" onclick="setQuery('Quais são os campos com menos pesquisa em fonoaudiologia no Brasil?')">Lacunas no Brasil</button>
     </div>
 
     <div class="ai-result" id="ai-result">
@@ -1472,6 +1500,54 @@ const papers = [
     title: 'Oral Preparatory Phase of Deglutition — Negus',
     abstract: 'Victor Negus descreveu em detalhes a fase oral preparatória da deglutição com observações anatômico-comparativas únicas. Identificou que humanos perderam a capacidade de deglutir e respirar simultaneamente — achado fundamental esquecido por décadas.',
     impact: '↑ Anatomia funcional da deglutição'
+  },
+  {
+    year: 1966, category: 'voice', forgotten: true,
+    title: 'Acoustic Properties of Senescent Voice — Ptacek & Sander',
+    abstract: 'Ptacek e Sander foram os primeiros a documentar sistematicamente as características acústicas da voz senil: elevação do jitter, redução da frequência fundamental em mulheres, queda do HNR. Estudo de 1966 que permanece pouco citado e cujos achados ainda não foram incorporados à prática clínica geriátrica brasileira.',
+    impact: '↑ Avaliação vocal geriátrica'
+  },
+  {
+    year: 1976, category: 'voice', forgotten: true,
+    title: 'The Accent Method of Voice Therapy — Smith & Thyme',
+    abstract: 'Criado na Dinamarca por Svend Smith, o Método Acento usa ritmo, melodia e acentuação rítmica para reabilitar a voz. Eficaz em disfonia funcional, nódulos vocais e voz profissional. Amplamente usado na Europa mas praticamente desconhecido no Brasil — uma das maiores lacunas da fonoaudiologia nacional.',
+    impact: '↑ Terapia vocal rítmica — subutilizada no Brasil'
+  },
+  {
+    year: 1986, category: 'adults', forgotten: true,
+    title: 'Communication Accommodation Theory in Eldercare — Ryan et al.',
+    abstract: 'Ryan e colaboradores documentaram como profissionais de saúde inconscientemente adaptam sua fala ao tratar idosos — simplificando vocabulário, elevando tom, usando diminutivos — padrão chamado posteriormente de elderspeak. O estudo mostrou que essa adaptação, ao contrário do que se pensa, prejudica a comunicação e a autonomia do idoso.',
+    impact: '↑ Base teórica do elderspeak'
+  },
+  {
+    year: 1992, category: 'adults', forgotten: false,
+    title: 'Dysphonia in the Elderly — Woo, Colton, Casper & Brewer',
+    abstract: 'Primeiro mapeamento sistemático da presbifonia: atrofia das pregas vocais, arqueamento glótico, incompetência fonatória no envelhecimento. Woo et al. estabeleceram que a disfonia senil não é inevitável — é tratável com reabilitação fonoaudiológica. Estudo ainda subutilizado na prática clínica.',
+    impact: '↑ Reabilitação vocal geriátrica'
+  },
+  {
+    year: 1994, category: 'adults', forgotten: false,
+    title: 'Elderspeak: Speech Adapted to Frail and Aging Adults — Kemper',
+    abstract: 'Susan Kemper cunhou e definiu o termo elderspeak: fala infantilizada, em voz alta, com vocabulário simplificado, tom condescendente, usada com idosos. Seus estudos mostraram que o elderspeak reduz a autoestima, acelera o declínio cognitivo e aumenta a resistência ao cuidado. Campo com quase nenhuma pesquisa brasileira.',
+    impact: '↑ Comunicação geriátrica e qualidade de cuidado'
+  },
+  {
+    year: 1996, category: 'adults', forgotten: true,
+    title: 'Infantilization in Long-Term Care — Nussbaum et al.',
+    abstract: 'Nussbaum documentou como a infantilização da comunicação em ambientes de cuidado de longa duração (asilos, clínicas) cria um ciclo de dependência: o idoso tratado como criança passa a se comportar como criança. Estudo de 1996 com implicações diretas para a fonoaudiologia geriátrica — ignorado na literatura brasileira.',
+    impact: '↑ Autonomia comunicativa do idoso institucionalizado'
+  },
+  {
+    year: 2010, category: 'swallow', forgotten: false,
+    title: 'Dysphagia in Neurodegenerative Diseases — Logemann & Rademaker',
+    abstract: 'Extensão do trabalho clássico de Logemann para doenças neurodegenerativas: Parkinson, Alzheimer, ELA. Documentou que 80% dos pacientes com Parkinson avançado apresentam disfagia clinicamente significativa — e que intervenção fonoaudiológica precoce reduz pneumonias aspirativas em 40%.',
+    impact: '↑ Disfagia neurológica e prevenção de pneumonia'
+  },
+  {
+    year: 2015, category: 'adults', forgotten: false,
+    title: 'Vocal Aging and Professional Voice Users — Sataloff et al.',
+    abstract: 'Sataloff e colaboradores documentaram o impacto do envelhecimento vocal em usuários profissionais da voz: cantores, atores, professores, advogados. Mostraram que com treinamento adequado, cantores profissionais mantêm qualidade vocal superior a não-profissionais de mesma idade — contrariando a crença de que a deterioração vocal é inevitável.',
+    impact: '↑ Longevidade vocal profissional'
   }
 ];
 
@@ -1489,7 +1565,7 @@ function renderPapers(filter) {
     <div class="paper-card">
       <div class="paper-meta">
         <span class="paper-year">${p.year}</span>
-        <span class="timeline-tag tag-${p.category}">${{voice:'Voz',swallow:'Deglutição',language:'Linguagem',hearing:'Audição'}[p.category]}</span>
+        <span class="timeline-tag tag-${p.category}">${{voice:'Voz',swallow:'Deglutição',language:'Linguagem',hearing:'Audição',adults:'Adultos & Idosos'}[p.category] || p.category}</span>
         ${p.forgotten ? '<span class="forgotten-badge">⚠ Estudo Esquecido</span>' : ''}
       </div>
       <div class="paper-title">${p.title}</div>
@@ -1865,11 +1941,15 @@ const timelineData = [
   { year: '1933', title: 'Anatomia da Deglutição Humana', content: 'Victor Negus descobre que humanos são os únicos mamíferos incapazes de deglutir e respirar simultaneamente — devido à descida da laringe. Achado esquecido por décadas, essencial para entender a aspiração.', tag: 'swallow' },
   { year: '1956', title: 'Discriminação Tonal Pré-Linguística', content: 'Wolff demonstra que bebês de dias de vida discriminam diferenças tonais mínimas — anticipando em 30 anos a base do BERA. O artigo ficou perdido em periódico alemão e só foi redescoberto em 2001.', tag: 'hearing' },
   { year: '1961', title: 'Revolução Chomskiana', content: 'Noam Chomsky propõe a gramática universal e o Dispositivo de Aquisição de Linguagem (LAD), transformando para sempre como entendemos o desenvolvimento da fala em crianças.', tag: 'language' },
+  { year: '1966', title: 'A Voz que Envelhece — Esquecida', content: 'Ptacek & Sander publicam o primeiro mapeamento acústico da voz senil. Elevação do jitter, queda do HNR, arqueamento glótico. Estudo de 60 anos ainda ignorado na clínica geriátrica brasileira.', tag: 'adults' },
   { year: '1974', title: 'Padronização da Avaliação Vocal', content: 'Hirano publica o protocolo GRBAS e a teoria cover-body das pregas vocais. Dois avanços que estabeleceram a linguagem internacional da avaliação vocal — ainda em uso 50 anos depois.', tag: 'voice' },
+  { year: '1976', title: 'Método Acento — Dinamarca', content: 'Svend Smith cria o Método Acento, usando ritmo e melodia para reabilitar a voz. Amplamente usado na Europa, praticamente desconhecido no Brasil. Uma das maiores lacunas da fonoaudiologia nacional.', tag: 'voice' },
+  { year: '1986', title: 'Comunicação com Idosos — Primeira Evidência', content: 'Ryan et al. documentam como profissionais de saúde adaptam inconscientemente sua fala ao cuidar de idosos, criando barreiras comunicativas. Base teórica do que seria chamado de elderspeak.', tag: 'adults' },
   { year: '1991', title: 'Normas do Português Brasileiro', content: 'Hernandorena publica normas de aquisição fonológica do português brasileiro — o único banco normativo nacional. Até hoje subutilizado: profissionais brasileiros ainda usam normas americanas adaptadas.', tag: 'language' },
+  { year: '1992', title: 'Presbifonia — Campo Ignorado', content: 'Woo et al. mapeiam sistematicamente a presbifonia pela primeira vez. Mostram que a deterioração vocal no envelhecimento é tratável — mas o campo permanece com pouquíssima pesquisa nacional até hoje.', tag: 'adults' },
+  { year: '1994', title: 'Elderspeak — A Fala que Prejudica', content: 'Susan Kemper define e documenta o elderspeak: a fala infantilizada direcionada a idosos. Seus estudos provam que essa prática reduz autoestima, acelera declínio cognitivo e piora a adesão ao cuidado. Brasil: quase sem pesquisa.', tag: 'adults' },
   { year: '2003', title: 'SOVT — Exercícios de Trato Semiocluído', content: 'Ingo Titze formaliza os exercícios SOVT (tubos, vibração de lábios, fonação em canudo). Demonstra matematicamente que maximizam a eficiência vocal com mínimo impacto nas pregas. Técnica hoje universalmente adotada.', tag: 'voice' },
-  { year: '2025', title: 'PHONOBASE AI — Integração Global', content: 'Pela primeira vez, pesquisas de 100 anos, dados clínicos em tempo real, estudos esquecidos e colaboração internacional convergem em uma única plataforma de IA. O futuro da pesquisa fonoaudiológica começa aqui.', tag: 'language' },
-];
+  { year: '2025', title: 'PHONOBASE AI — Fazer Pessoas Falar e Ouvir', content: 'A primeira plataforma que reúne 100 anos de ciência fonoaudiológica — incluindo estudos esquecidos, pesquisas sobre adultos, idosos, elderspeak e o pioneiro banco normativo do português brasileiro. O futuro começa aqui.', tag: 'adults' },];
 
 function buildTimeline() {
   const container = document.getElementById('timeline');
@@ -1878,7 +1958,7 @@ function buildTimeline() {
       <div class="timeline-year">${item.year}</div>
       <div class="timeline-title">${item.title}</div>
       <div class="timeline-content">${item.content}</div>
-      <span class="timeline-tag tag-${item.tag}">${{voice:'Voz',swallow:'Deglutição',language:'Linguagem',hearing:'Audição'}[item.tag]}</span>
+      <span class="timeline-tag tag-${item.tag}">${{voice:'Voz',swallow:'Deglutição',language:'Linguagem',hearing:'Audição',adults:'Adultos & Idosos'}[item.tag]}</span>
     </div>
   `).join('');
 }
@@ -1997,20 +2077,80 @@ async function queryAI() {
   resultDiv.classList.add('visible');
   resultText.innerHTML = '<span class="typing-cursor"></span>';
 
-  const systemInstruction = `Você é a IA especializada PHONOBASE AI, uma plataforma de pesquisa global em Fonoaudiologia. 
-Você tem acesso a 100 anos de literatura científica em fonoaudiologia, incluindo:
-- Pesquisas clássicas de Froeschels, Hirano, Logemann, Titze, Chomsky, Wetherby
-- Estudos esquecidos e subutilizados dos anos 1920-1980
-- Normas do português brasileiro
-- Pesquisas sobre voz, deglutição, linguagem infantil e audiologia
-- Dados clínicos globais anonimizados
+  const systemInstruction = `Você é a IA especializada PHONOBASE AI, a maior plataforma de pesquisa em Fonoaudiologia do mundo.
 
-Responda sempre em português brasileiro. Seja específico, cite anos, autores e achados concretos. 
-Destaque pesquisas esquecidas ou subutilizadas quando relevante.
-Use formato claro com parágrafos. Máximo 400 palavras.`;
+ÁREAS DE CONHECIMENTO COMPLETAS:
+
+🧒 LINGUAGEM INFANTIL:
+- Aquisição fonológica do português brasileiro (Hernandorena 1991, Yavas 1988)
+- Marcos de desenvolvimento 0-7 anos
+- TEA, atraso de linguagem, dislalia, gagueira infantil
+- Estimulação precoce e intervenção fonoaudiológica pediátrica
+
+👨 ADULTOS — VOZ E COMUNICAÇÃO:
+- Disfonia funcional e orgânica (Behlau, Hirano, Boone)
+- Nódulos, pólipos, paralisia de prega vocal
+- Voz profissional: professores, cantores, advogados, locutores
+- Síndrome de burnout vocal
+- Método Mastigado de Froeschels (1924) — esquecido e revolucionário
+- SOVT — Semi-Occluded Vocal Tract (Titze 2003)
+- Resonant Voice Therapy (Verdolini)
+- Accent Method (Smith & Thyme 1976) — subutilizado
+- Terapia de voz por biofeedback visual
+
+👴 IDOSOS — PRESBIFONIA E PRESBIACUSIA:
+- Presbifonia: envelhecimento vocal, voz senil
+- Atrofia de pregas vocais no envelhecimento
+- Pesquisa de Woo et al. (1992) — primeiro mapeamento da presbifonia
+- Presbiacusia: perda auditiva por envelhecimento
+- Disfagia no idoso — risco de aspiração e pneumonia aspirativa
+- Demência e comunicação (Alzheimer, Parkinson)
+- Disartria em idosos pós-AVC
+- Reabilitação vocal geriátrica — área com pouquíssima pesquisa nacional
+- Estudos esquecidos de Ptacek & Sander (1966) sobre voz senil
+
+🗣️ FALA INFANTILIZADA EM ADULTOS E IDOSOS (Elderspeak):
+- Elderspeak: fala infantilizada direcionada a idosos
+- Pesquisas de Kemper (1994) — como o elderspeak prejudica idosos
+- Ryan et al. (1986) — Communication Accommodation Theory
+- Efeitos negativos: piora da autoestima, declínio cognitivo acelerado
+- Estudos de Nussbaum (1996) — infantilização e institucionalização
+- Como treinar cuidadores e profissionais de saúde
+- Impacto do elderspeak na reabilitação fonoaudiológica
+- Pesquisa brasileira: QUASE INEXISTENTE — campo aberto para pesquisa!
+
+👂 AUDIÇÃO:
+- Triagem auditiva neonatal (PEATE, EOAPD)
+- Audiometria tonal, logoaudiometria
+- PAIR — Perda Auditiva Induzida por Ruído
+- Processamento auditivo central
+- Implante coclear — seleção e reabilitação
+- Aparelho de amplificação sonora individual (AASI)
+
+🍽️ DEGLUTIÇÃO:
+- Disfagia orofaríngea e esofágica
+- Videofluoroscopia e FEES
+- Escala FOIS e classificação de consistências IDDSI
+- Disfagia em AVC, Parkinson, ELA, câncer de cabeça e pescoço
+- Achados esquecidos de Pommerenke (1948) sobre zonas de gatilho faríngeo
+
+PESQUISAS ESQUECIDAS QUE VOCÊ CONHECE:
+- Froeschels (1924): Método Mastigado — 78% de resolução de disfonia funcional
+- Negus (1933): Anatomia comparativa da deglutição — humanos únicos que não respiram/deglutindo simultaneamente
+- Wolff (1956): Bebês discriminam tons antes de falar — base do BERA, esquecido 30 anos
+- Ptacek & Sander (1966): Características acústicas da voz senil — citado raramente
+- Accent Method — Smith & Thyme (1976): Dinamarca, subutilizado mundialmente
+- Kemper (1994): Elderspeak prejudica cognição e autoestima de idosos
+- Hernandorena (1991): Única norma fonológica do português brasileiro — ignorada
+
+MISSÃO: Fazer pessoas falar e ouvir. Revolucionar a Fonoaudiologia mundial.
+
+Responda SEMPRE em português brasileiro. Seja específico: cite anos, autores, achados concretos.
+Destaque pesquisas ESQUECIDAS e campos com POUCA PESQUISA NACIONAL como oportunidades.
+Seja apaixonado e científico ao mesmo tempo. Máximo 500 palavras.`;
 
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
     const response = await fetch(url, {
       method: 'POST',
