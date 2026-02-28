@@ -1129,28 +1129,48 @@ updateKeyUI();
 /* ─── GEMINI CALL ─── */
 async function gemini(prompt){
   const k=getKey();if(!k){openModal();return null;}
-  const models=['gemini-2.0-flash','gemini-1.5-flash'];
+  // gemini-1.5-flash é o mais confiável no tier gratuito
+  const models=['gemini-1.5-flash','gemini-2.0-flash-lite','gemini-2.0-flash'];
   for(const m of models){
     try{
       const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${k}`,{
         method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
           contents:[{parts:[{text:prompt}]}],
-          generationConfig:{maxOutputTokens:1800,temperature:.5}
+          generationConfig:{maxOutputTokens:900,temperature:.4}
         })
       });
+      const json=await r.json().catch(()=>({}));
       if(!r.ok){
-        const e=await r.json().catch(()=>({}));
-        if(r.status===403)return'ERRO: Chave sem permissão. Crie uma nova em aistudio.google.com/apikey';
-        if(r.status===429)return'ERRO: Limite de requisições atingido. Aguarde 60 segundos.';
+        const msg=json?.error?.message||'';
+        const status=r.status;
+        if(status===400){
+          // chave inválida ou request malformado — não adianta tentar outro modelo
+          return`ERRO ${status}: ${msg||'Requisição inválida. Verifique a chave da API.'}`;
+        }
+        if(status===403){
+          return`ERRO 403: Chave sem permissão para este modelo (${m}). Tente gerar uma nova chave em aistudio.google.com/apikey`;
+        }
+        if(status===429){
+          // tenta próximo modelo antes de desistir
+          if(models.indexOf(m)<models.length-1)continue;
+          return`ERRO 429: Cota esgotada em todos os modelos.\n\nSoluções:\n• Aguarde 1 minuto e tente novamente\n• Verifique sua cota em aistudio.google.com\n• O plano gratuito permite 15 req/min no gemini-1.5-flash`;
+        }
+        if(status===503||status===500){
+          if(models.indexOf(m)<models.length-1)continue;
+          return`ERRO ${status}: Servidores do Google instáveis. Aguarde alguns segundos e tente novamente.`;
+        }
+        // outro erro — tenta próximo modelo
         continue;
       }
-      const d=await r.json();
-      const t=d?.candidates?.[0]?.content?.parts?.[0]?.text;
+      const t=json?.candidates?.[0]?.content?.parts?.[0]?.text;
       if(t)return t;
-    }catch(e){if(models.indexOf(m)===models.length-1)return`ERRO: ${e.message}`;}
+      // sem texto mas request ok — tenta próximo
+    }catch(e){
+      if(models.indexOf(m)===models.length-1)return`ERRO de conexão: ${e.message}`;
+    }
   }
-  return'ERRO: Sem resposta dos servidores.';
+  return'Sem resposta. Verifique sua conexão e tente novamente.';
 }
 
 /* ─── CONTEXTS ─── */
@@ -1166,35 +1186,14 @@ const ctxConfig={
       'Ui, ficou bravo? Que lindinho o nervosinho dele!'
     ],
     refs:[{y:'Kemper 1994',t:'Elderspeak'},{y:'Ryan 1986',t:'Communication Predicament'},{y:'Williams 2003',t:'84% em ILPI'},{y:'Bombar 1996',t:'Baby talk adultos'}],
-    prompt:(txt)=>`Você é PHONOBASE CLINICAL, sistema de análise linguística profissional para fonoaudiólogos.
+    prompt:(txt)=>`Fonoaudióloga especialista em fala infantilizada (Kemper 1994, Ryan 1986). Analise APENAS o texto fornecido. Não invente marcadores ausentes. Se não houver, score baixo.
 
-REGRAS ABSOLUTAS DE HONESTIDADE:
-- Analise SOMENTE o que está no texto. Não invente marcadores ausentes.
-- Se o texto for curto, diga isso. Se não houver marcadores claros, diga score baixo.
-- Não crie diagnósticos clínicos — aponte padrões linguísticos observáveis.
-- Diferencie o que é certeza (presente no texto) do que é suspeita (possível interpretação).
+Marcadores: diminutivos excessivos, superendereçamento afetivo, negação de agência ("a gente vai"), elogio patronizante, vocabulário infantilizado, dúvida na capacidade do adulto.
 
-BASE CIENTÍFICA:
-• Elderspeak (Kemper 1994): diminutivos excessivos, tom supra-agudo descrito, frases hipersimplificadas, superendereçamento afetivo não solicitado, negação de agência, elogio patronizante para ações básicas.
-• Communication Predicament Model (Ryan 1986): fala adaptada para "baixo" comunica incapacidade → profecia autorrealizável.
-• Patronizing speech (Hummert): condescendência generalizada em adultos — trabalho, saúde, família.
-• Baby talk entre adultos (Bombar & Littig 1996): assimetria afetiva.
+TEXTO: "${txt}"
 
-TEXTO ANALISADO:
-"${txt}"
-
-Responda SOMENTE em JSON válido, sem markdown, sem texto fora do JSON:
-{
-  "score": [0-100, baseado APENAS no texto acima],
-  "verdict": "[Sem marcadores | Traços leves | Moderado | Severo]",
-  "certezas": ["marcadores claramente presentes no texto"],
-  "suspeitas": ["possíveis padrões que precisam de mais contexto para confirmar"],
-  "o_que_nao_da_pra_saber": "O que a análise de texto NÃO pode revelar (tom de voz real, entonação, contexto presencial)",
-  "impacto": "Impacto documentado destes padrões específicos neste contexto.",
-  "base": "Qual autor/pesquisa fundamenta este diagnóstico.",
-  "alternativa": "Reescreva preservando a intenção sem os marcadores identificados.",
-  "limitacao": "Honestamente: o que faltaria para uma análise mais precisa?"
-}`
+JSON sem markdown:
+{"score":0-100,"verdict":"Sem marcadores|Traços leves|Moderado|Severo","certezas":["só o que está no texto"],"suspeitas":["padrões que precisam de contexto"],"impacto":"impacto clínico destes padrões","alternativa":"reescreva sem infantilização","limitacao":"o que análise de texto não revela"}`
   },
   voz:{
     label:'Análise de Padrão Vocal',
@@ -1207,29 +1206,14 @@ Responda SOMENTE em JSON válido, sem markdown, sem texto fora do JSON:
       'Quando forço a voz sinto uma pressão no pescoço e dói um pouco.'
     ],
     refs:[{y:'Hirano 1974',t:'GRBAS Scale'},{y:'Ptacek & Sander 1966',t:'Voz senil'},{y:'Titze 2003',t:'SOVT'},{y:'Froeschels 1924',t:'Método Mastigado'}],
-    prompt:(txt)=>`Você é PHONOBASE CLINICAL, sistema de análise para fonoaudiólogos.
+    prompt:(txt)=>`Fonoaudióloga especialista em voz clínica. Analise APENAS o que está descrito no texto. Não invente sintomas. Não faça diagnóstico definitivo — levante hipóteses.
 
-REGRAS DE HONESTIDADE:
-- Analise SOMENTE o que está descrito no texto. Não invente sintomas.
-- Diferencie o que o texto confirma do que é hipótese.
-- Não faça diagnóstico definitivo — aponte padrões e hipóteses diagnósticas para investigação.
-- Se o texto for anamnese, identifique os dados presentes e os dados ausentes relevantes.
+Considere: disfonia hiperfuncional, DTM, nódulos, pólipo, paralisia de prega vocal, presbifonia, edema de Reinke, refluxo laringofaríngeo.
 
-DOMÍNIO: Análise vocal — disfonia funcional, organofuncional, orgânica, voz profissional, presbifonia, disfonia por tensão muscular (DTM), paralisia de prega vocal, nódulos, pólipo, edema de Reinke.
+TEXTO/RELATO: "${txt}"
 
-TEXTO/RELATO:
-"${txt}"
-
-Responda em JSON válido sem markdown:
-{
-  "presentes_no_relato": ["dados objetivamente mencionados no texto"],
-  "hipoteses_diagnosticas": [{"hipotese": "nome", "justificativa": "por que este relato sugere", "probabilidade": "alta/moderada/baixa"}],
-  "ausentes_importantes": ["dados que deveriam ser investigados e não estão no texto"],
-  "sinais_de_alerta": ["flags que exigem encaminhamento urgente, se houver — deixe vazio se não houver"],
-  "conduta_sugerida": "Próximos passos clínicos baseados neste relato.",
-  "avaliacao_necessaria": "Quais avaliações confirmariam ou descartariam as hipóteses.",
-  "limitacao": "O que a análise de texto não consegue determinar sobre este caso."
-}`
+JSON sem markdown:
+{"presentes_no_relato":["dados mencionados"],"hipoteses_diagnosticas":[{"hipotese":"nome","justificativa":"por quê","probabilidade":"alta|moderada|baixa"}],"sinais_de_alerta":["flags urgentes se houver"],"ausentes_importantes":["dados que faltam para melhor análise"],"conduta_sugerida":"próximos passos","limitacao":"o que texto não permite determinar"}`
   },
   fluencia:{
     label:'Análise de Fluência',
@@ -1242,31 +1226,15 @@ Responda em JSON válido sem markdown:
       'Eu tenho vinte e, ahn, como eu diria, vinte e dois anos né.'
     ],
     refs:[{y:'Travis 1931',t:'Dominância cerebral'},{y:'Van Riper 1973',t:'Modificação gagueira'},{y:'Shapiro 1999',t:'Stuttering management'},{y:'Guitar 2006',t:'Classificação disfluências'}],
-    prompt:(txt)=>`Você é PHONOBASE CLINICAL, sistema de análise de fluência para fonoaudiólogos.
+    prompt:(txt)=>`Fonoaudióloga especialista em fluência. Tipifique as disfluências do texto transcrito. Se não houver marcações temporais, diga que taxa real não pode ser calculada.
 
-REGRAS DE HONESTIDADE:
-- Analise APENAS o que está transcrito. Taxa de disfluência real requer medição temporal — informe isso.
-- Se não houver marcações de bloqueio/duração, diga que a análise é parcial.
-- Não diagnostique gagueira por texto — indique necessidade de avaliação presencial.
+Disfluências gagas: repetição de som/sílaba, prolongamento, bloqueio, revisão por tensão.
+Comuns: hesitação, interjeição, repetição de palavra inteira, revisão por formulação.
 
-CLASSIFICAÇÃO DE DISFLUÊNCIAS (Van Riper / Guitar):
-- Disfluências gagas: repetição de sons/sílabas, prolongamentos, bloqueios, revisões por tensão
-- Disfluências comuns: hesitações, interjeições (ahn), revisões por formulação, repetição de palavras inteiras
-- Comportamentos secundários: se mencionados no relato
+TRANSCRIÇÃO: "${txt}"
 
-TEXTO TRANSCRITO:
-"${txt}"
-
-Responda em JSON válido sem markdown:
-{
-  "disfluencias_identificadas": [{"tipo": "nome", "ocorrencias": n, "exemplos_do_texto": ["trecho"]}],
-  "total_disfluencias_contadas": n,
-  "ratio_gagas_vs_comuns": "X gagas / Y comuns — se possível calcular",
-  "padrao": "Descrição do padrão observado nesta amostra.",
-  "suspeita_clinica": "Gagueira / Disfluência comum / Inconclusivo — com justificativa baseada no texto.",
-  "o_que_falta": "O que uma avaliação presencial precisaria medir para diagnóstico.",
-  "limitacao": "O texto é suficiente para análise? O que não é possível determinar só por texto?"
-}`
+JSON sem markdown:
+{"disfluencias_identificadas":[{"tipo":"nome","ocorrencias":0,"exemplos":["trecho"]}],"total":0,"ratio":"X gagas / Y comuns","suspeita_clinica":"Gagueira|Disfluência comum|Inconclusivo — justificativa","limitacao":"o que texto não permite determinar"}`
   },
   linguagem:{
     label:'Análise de Linguagem',
@@ -1279,35 +1247,14 @@ Responda em JSON válido sem markdown:
       'Então tipo... a gente foi lá né... e aí... e aí aconteceu aquilo sabe?'
     ],
     refs:[{y:'Hernandorena 1991',t:'Normas PT-BR'},{y:'Luria 1947',t:'Neuroling.'},{y:'Bates 1994',t:'Complexidade sintática'},{y:'Coelho 2002',t:'Coerência discurso'}],
-    prompt:(txt)=>`Você é PHONOBASE CLINICAL, sistema de análise linguística para fonoaudiólogos.
+    prompt:(txt)=>`Fonoaudióloga especialista em linguagem. Analise SOMENTE o texto fornecido. Não assuma idade ou diagnóstico não informado.
 
-REGRAS DE HONESTIDADE:
-- Analise SOMENTE o que está no texto fornecido.
-- Não assuma idade, diagnóstico ou contexto que não foram informados.
-- Indique claramente o que exigiria mais amostra ou contexto.
+Avalie: complexidade sintática, coesão/coerência, diversidade lexical, padrões alterados (perseveração, agramatismo, neologismo, jargonofasia, tangencialidade).
 
-PARÂMETROS DE ANÁLISE:
-- Complexidade sintática: tipos e diversidade de estruturas frasais
-- Coesão: uso de conectivos, pronomes, referência
-- Coerência: organização do discurso, manutenção de tópico
-- Vocabulário: diversidade lexical, palavras de conteúdo vs. função
-- Erros gramaticais: morfossintaxe, concordância
-- Padrões de alteração: perseveração, tangencialidade, neologismo, agramatismo, jargonofasia
+TEXTO: "${txt}"
 
-TEXTO:
-"${txt}"
-
-Responda em JSON válido sem markdown:
-{
-  "complexidade_sintatica": "Análise das estruturas presentes.",
-  "coesao_coerencia": "Análise de conexão e organização do discurso.",
-  "diversidade_lexical": "Variedade vocabular observada.",
-  "padroes_alterados": ["padrões linguísticos alterados identificados, com exemplos do texto"],
-  "nivel_estimado": "Nível de elaboração linguística desta amostra.",
-  "hipoteses": ["hipóteses de alteração de linguagem a investigar, se houver"],
-  "tamanho_amostra": "A amostra é adequada para análise? Quantas palavras aproximadamente?",
-  "limitacao": "O que não é possível determinar com esta amostra."
-}`
+JSON sem markdown:
+{"complexidade_sintatica":"análise","coesao_coerencia":"análise","diversidade_lexical":"análise","padroes_alterados":["padrões com exemplos do texto"],"nivel_estimado":"elaboração desta amostra","hipoteses":["hipóteses se houver"],"tamanho_amostra":"adequada|insuficiente","limitacao":"o que amostra não permite determinar"}`
   },
   degluticao:{
     label:'Triagem de Disfagia por Relato',
@@ -1320,37 +1267,14 @@ Responda em JSON válido sem markdown:
       'Sinto que a comida vai para o lado errado, às vezes tusso muito durante as refeições.'
     ],
     refs:[{y:'Logemann 1982',t:'Videofluoroscopia'},{y:'Pommerenke 1948',t:'Zonas gatilho'},{y:'Daniels 1997',t:'Triagem disfagia'},{y:'Crary 2013',t:'MASA'}],
-    prompt:(txt)=>`Você é PHONOBASE CLINICAL, sistema de triagem de disfagia para fonoaudiólogos.
+    prompt:(txt)=>`Fonoaudióloga especialista em disfagia. Triagem por relato — NÃO confirma disfagia, apenas estratifica risco.
 
-REGRAS DE HONESTIDADE:
-- Analise SOMENTE os sintomas descritos no texto.
-- Triagem por relato NÃO confirma disfagia — apenas estratifica risco.
-- Não indique grau de disfagia sem avaliação instrumental.
-- Seja explícito sobre o que é sinal de alerta vs. o que é suspeita.
+Sinais de alerta: tosse durante/após deglutição, engasgo com líquidos, pneumonia de repetição, perda de peso, mudança após AVC/cirurgia, tempo de refeição aumentado, regurgitação nasal.
 
-SINAIS DE ALERTA PRIMÁRIOS (encaminhamento urgente):
-- Tosse durante/após deglutição
-- Engasgo frequente com líquidos
-- Pneumonia de repetição
-- Perda de peso não explicada
-- Mudança após evento neurológico (AVC, TCE, cirurgia)
-- Tempo de refeição muito aumentado
-- Regurgitação nasal
+RELATO: "${txt}"
 
-RELATO:
-"${txt}"
-
-Responda em JSON válido sem markdown:
-{
-  "sinais_presentes": ["sintomas mencionados no relato"],
-  "sinais_de_alerta": ["flags de alto risco presentes — deixe vazio se nenhum"],
-  "hipoteses_fase": ["fase provável afetada: oral / faríngea / esofágica — com justificativa"],
-  "risco_aspiracao": "Baixo / Moderado / Alto — justificado pelo relato",
-  "urgencia_encaminhamento": "Rotina / Prioritário / Urgente — com justificativa",
-  "avaliacao_recomendada": "Avaliação clínica / VFS / FEES — qual e por quê",
-  "dados_ausentes": ["informações importantes não mencionadas no relato"],
-  "limitacao": "O que esta triagem por relato não consegue determinar."
-}`
+JSON sem markdown:
+{"sinais_presentes":["mencionados no relato"],"sinais_de_alerta":["flags de risco — vazio se nenhum"],"hipoteses_fase":["oral|faríngea|esofágica com justificativa"],"risco_aspiracao":"Baixo|Moderado|Alto","urgencia":"Rotina|Prioritário|Urgente","avaliacao_recomendada":"clínica|VFS|FEES","dados_ausentes":["informações que faltam"],"limitacao":"o que triagem por relato não determina"}`
   },
   afasia:{
     label:'Análise de Afasia / Linguagem Neurológica',
@@ -1363,37 +1287,14 @@ Responda em JSON válido sem markdown:
       'Os paciente são muito bem cuidado pelos enfermeira do hospital.'
     ],
     refs:[{y:'Luria 1947',t:'Reorganização cerebral'},{y:'Schuell 1964',t:'Estimulação auditiva'},{y:'Goodglass 1983',t:'BDAE'},{y:'Kertesz 1982',t:'WAB'}],
-    prompt:(txt)=>`Você é PHONOBASE CLINICAL, sistema de análise de afasia para fonoaudiólogos.
+    prompt:(txt)=>`Fonoaudióloga especialista em afasia. Análise de amostra de fala NÃO diagnostica — levanta hipóteses para avaliação formal (BDAE/WAB). Diga quando amostra é insuficiente.
 
-REGRAS DE HONESTIDADE:
-- Análise de amostra de fala NÃO diagnostica afasia — levanta hipóteses para avaliação formal.
-- Diferencie claramente o que está no texto (certeza) do que é inferência (hipótese).
-- Classificação de afasia requer bateria padronizada — diga isso.
-- Se a amostra for pequena, diga que é insuficiente para conclusões firmes.
+Tipos: Broca (não fluente, agramatismo), Wernicke (fluente, parafasias, jargão), Global (não fluente + compreensão comprometida), Anomia (evocação lexical), Condução (parafasias fonêmicas, repetição ruim), Apraxia de fala (inconsistência articulatória).
 
-TIPOS DE AFASIA A CONSIDERAR:
-- Broca: não fluente, agramatismo, compreensão relativamente preservada
-- Wernicke: fluente, parafasias, jargão, compreensão comprometida
-- Global: não fluente, compreensão comprometida, prognóstico reservado
-- Anomia: fluente, dificuldade de evocação lexical, circunlóquios
-- Condução: fluente, parafasias fonêmicas, repetição comprometida
-- Transcortical motora: não fluente, repetição preservada
-- Apraxia de fala: inconsistência articulatória, sem parafasias semânticas
+AMOSTRA: "${txt}"
 
-AMOSTRA:
-"${txt}"
-
-Responda em JSON válido sem markdown:
-{
-  "fluencia_aparente": "Fluente / Não fluente / Inconclusivo — justificado pela amostra",
-  "parafasias": {"fonemicas": ["exemplos se houver"], "semanticas": ["exemplos se houver"], "neologismos": ["exemplos se houver"]},
-  "agramatismo": "Presente / Ausente / Inconclusivo — com exemplos",
-  "anomia": "Sinais de dificuldade de evocação lexical presentes? Exemplos.",
-  "hipoteses_tipo_afasia": [{"tipo": "nome", "compatibilidade": "alta/moderada", "justificativa": "baseada na amostra"}],
-  "avaliacao_formal_indicada": "BDAE / WAB / Boston Naming Test — quais e por quê",
-  "tamanho_amostra": "A amostra é suficiente para hipóteses?",
-  "limitacao": "O que esta análise de texto não pode determinar sobre o quadro."
-}`
+JSON sem markdown:
+{"fluencia_aparente":"Fluente|Não fluente|Inconclusivo","parafasias":{"fonemicas":[],"semanticas":[],"neologismos":[]},"agramatismo":"Presente|Ausente|Inconclusivo — exemplos","anomia":"sinais presentes?","hipoteses_tipo_afasia":[{"tipo":"nome","compatibilidade":"alta|moderada","justificativa":"baseada na amostra"}],"avaliacao_formal":"BDAE|WAB|outro","tamanho_amostra":"suficiente|insuficiente","limitacao":"o que texto não permite determinar"}`
   }
 };
 
@@ -1735,30 +1636,15 @@ async function runConsult(){
   const btn=document.getElementById('ci-send');
   btn.disabled=true;btn.textContent='…';
 
-  const modeCtx={
-    clinica:'Responda com foco CLÍNICO: protocolo, critérios diagnósticos, conduta, encaminhamento, evidência.',
-    historica:'Responda com foco HISTÓRICO: contexto da descoberta, por que foi esquecida, o que foi redescoberto, o que ainda é ignorado.',
-    brasil:'Responda focando nas LACUNAS BRASILEIRAS: o que não é feito no Brasil, normas PT-BR inexistentes, pesquisas necessárias.'
+  const modeMap={
+    clinica:'Responda com foco clínico: protocolo, diagnóstico diferencial, conduta, encaminhamento. Seja direto e baseado em evidência.',
+    historica:'Responda com foco histórico: contexto da descoberta, por que foi esquecida, o que foi redescoberto.',
+    brasil:'Foque nas lacunas brasileiras: o que não é feito no Brasil, normas PT-BR ausentes, pesquisas necessárias.'
   };
-
-  const sys=`Você é PHONOBASE CLINICAL — especialista sênior em fonoaudiologia com 170 anos de pesquisa como contexto.
-
-BANCO HISTÓRICO (seu diferencial):
-• García 1854: espelho de dentista → fundou a laringologia
-• Semon 1881: lei de paralisia NLR — abdutores afetados antes de adutores
-• Froeschels 1924: Método Mastigado — 78% resolução disfonia funcional
-• Travis & Orton 1927: competição hemisférica e gagueira — neuroimagem 2024 confirma
-• Luria 1947: reorganização funcional cerebral → base da neuroreabilitação
-• Pommerenke 1948: zonas gatilho faríngeas → estimulação sensorial disfagia
-• Wolff 1956: discriminação tonal em bebês → 30 anos antes do BERA
-• Schuell 1964: estimulação auditiva intensa → afasia severa em platô, redescoberta 2008
-• Ptacek & Sander 1966: acústica da voz senil → normativos ignorados no Brasil
-• Ryan 1986: Communication Predicament Model → fala infantilizada como profecia autorrealizável
-• Kemper 1994: elderspeak → danos cognitivos, autoestima, adesão ao cuidado
-• Williams 2004: 4h de treino → −58% elderspeak em ILPI
-
-MODO: ${modeCtx[consultMode]}
-REGRAS: Seja direto. Cite autores e anos. Separe certeza de hipótese. Máx 500 palavras. PT-BR.`;
+  const sys=`Fonoaudióloga clínica sênior com conhecimento de pesquisas históricas esquecidas:
+García 1854 (laringoscópio), Semon 1881 (lei NLR), Froeschels 1924 (Método Mastigado 78% resolução), Travis 1927 (dominância cerebral gagueira), Luria 1947 (reorganização cerebral), Pommerenke 1948 (zonas gatilho disfagia), Wolff 1956 (audição neonatal), Schuell 1964 (afasia severa), Ptacek 1966 (voz senil), Ryan 1986 (Communication Predicament), Kemper 1994 (elderspeak), Williams 2004 (−58% ILPI).
+${modeMap[consultMode]}
+Cite autores/anos. Separe certeza de hipótese. Máx 400 palavras. PT-BR.`;
 
   const output=document.getElementById('consult-output');
   const entry=document.createElement('div');
@@ -1768,6 +1654,7 @@ REGRAS: Seja direto. Cite autores e anos. Separe certeza de hipótese. Máx 500 
   output.appendChild(entry);
 
   const resp=await gemini(sys+'\n\nPergunta: '+q);
+
   btn.disabled=false;btn.textContent='Enviar';
   sessionStats.consults++;updateStats();
 
