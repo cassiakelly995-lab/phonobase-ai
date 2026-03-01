@@ -233,6 +233,7 @@ body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;min-
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--line);border-radius:2px}
 
+@keyframes spin{to{transform:rotate(360deg)}}
 @media(max-width:640px){
   .levels-grid{grid-template-columns:repeat(3,1fr)}
   .result-cards{grid-template-columns:repeat(2,1fr)}
@@ -482,11 +483,18 @@ body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;min-
     <div style="text-align:center;margin-bottom:32px">
       <div style="font-size:2.2rem;margin-bottom:8px">🧠</div>
       <div style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;letter-spacing:-.03em;margin-bottom:8px">Prova de Compreensão</div>
-      <div style="font-size:.95rem;color:var(--ink2);line-height:1.6">Responda <strong>sem voltar ao texto</strong>. Suas respostas determinam se você realmente leu — ou só passou os olhos.</div>
+      <div style="font-size:.95rem;color:var(--ink2);line-height:1.6">Responda <strong>sem voltar ao texto</strong>. As perguntas cobrem início, meio e fim — quem não leu tudo, não passa.</div>
     </div>
-    <div id="quizQuestions" style="display:flex;flex-direction:column;gap:20px;margin-bottom:28px"></div>
-    <button class="btn btn-accent" style="width:100%;font-size:1rem;padding:16px" onclick="submitQuiz()">✔ Confirmar Respostas e Ver Resultado</button>
-    <div style="text-align:center;margin-top:14px;font-size:.75rem;color:var(--ink3)">Você não pode voltar ao texto agora. Responda com o que lembra.</div>
+
+    <!-- Loading state -->
+    <div id="quizLoading" style="text-align:center;padding:40px 0">
+      <div style="font-size:1.5rem;margin-bottom:12px;animation:spin 1s linear infinite;display:inline-block">⚙️</div>
+      <div style="font-size:.9rem;color:var(--ink3)">Gerando perguntas sobre o texto...</div>
+    </div>
+
+    <div id="quizQuestions" style="display:none;flex-direction:column;gap:20px;margin-bottom:28px"></div>
+    <button id="quizSubmitBtn" class="btn btn-accent" style="width:100%;font-size:1rem;padding:16px;display:none" onclick="submitQuiz()">✔ Confirmar Respostas e Ver Resultado</button>
+    <div id="quizFooter" style="text-align:center;margin-top:14px;font-size:.75rem;color:var(--ink3);display:none">Você não pode voltar ao texto agora. Responda com o que lembra.</div>
   </div>
 </div>
 
@@ -1111,198 +1119,74 @@ function updateCharCount() {
   document.getElementById('charCount').textContent = words + ' palavras';
 }
 
-// ===== QUIZ DE COMPREENSÃO =====
-// 3 perguntas por texto, cada uma com 4 opções, gabarito = índice 0 (embaralhado na exibição)
-const QUIZ_DATA = {
-  e1:[
-    {q:'Como se chama a neta que visitou a vovó?',a:['Ana','Maria','Júlia','Clara'],c:0},
-    {q:'O que a vovó ensinou a neta a fazer?',a:['Plantar uma semente','Regar as rosas','Cozinhar','Tecer'],c:0},
-    {q:'O que a vovó disse sobre um jardim?',a:['É uma promessa que se cumpre devagar','Precisa de adubo todo dia','É difícil de manter','Deve ter só rosas'],c:0}
-  ],
-  e2:[
-    {q:'Para onde Pedro e a mãe viajavam de trem?',a:['Cidade da avó','Cidade do avô','Capital','Praia'],c:0},
-    {q:'O que Pedro viu correndo junto ao trem?',a:['Um cavalo','Uma vaca','Um cachorro','Um veado'],c:0},
-    {q:'O que a avó prometeu para a próxima viagem?',a:['Chocolate quente no vagão restaurante','Sorvete na estação','Um presente surpresa','Sentar na janela'],c:0}
-  ],
-  e3:[
-    {q:'Como se chamava o cachorro da história?',a:['Tobi','Rex','Bolinha','Faísca'],c:0},
-    {q:'O que caiu no buraco?',a:['O osso','A bola','O graveto','A patinha'],c:0},
-    {q:'Qual foi a recompensa de Tobi pelo seu problema ser resolvido?',a:['Dois ossos por jantar','Um brinquedo novo','Mais espaço no quintal','Uma medalha'],c:0}
-  ],
-  e4:[
-    {q:'Por quanto tempo Luísa ensaiou a dança?',a:['Duas semanas','Três dias','Um mês','Uma semana'],c:0},
-    {q:'Qual era a fantasia de Luísa?',a:['Borboleta','Fada','Princesa','Abelha'],c:0},
-    {q:'O que a turma do terceiro ano fez na festa?',a:['Cantou','Dançou','Apresentou teatro','Recitou poemas'],c:0}
-  ],
-  e5:[
-    {q:'Onde a família de Marcos ia pescar todo verão?',a:['Rio das Pedras','Rio Verde','Lago Azul','Represa do Sol'],c:0},
-    {q:'O que o pai prometeu se Marcos pescasse um peixe grande?',a:['Cozinhar no fogão à lenha','Comprar uma vara nova','Ir a um restaurante','Tirar uma foto'],c:0},
-    {q:'O que Marcos e o pai fizeram com o peixe?',a:['Soltaram de volta na água','Assaram na fogueira','Levaram para casa','Deram a outro pescador'],c:0}
-  ],
-  e6:[
-    {q:'Onde estava guardada a carta?',a:['Na gaveta da mesa de cabeceira','Numa caixa no sótão','Na bolsa da vovó','Num baú antigo'],c:0},
-    {q:'De quem era a carta?',a:['De um amigo de infância','Do marido da vovó','De uma prima','De um professor'],c:0},
-    {q:'O que o remetente dizia na carta?',a:['Falava de saudade e um jardim com macieiras','Pedia para a vovó visitá-lo','Contava sobre um novo emprego','Mandava fotos antigas'],c:0}
-  ],
-  e7:[
-    {q:'O que aconteceu na casa do tio Geraldo naquele sábado?',a:['Choveu e o telhado pingou','A luz acabou','O cano estourou','A janela quebrou'],c:0},
-    {q:'O que o tio Geraldo propôs fazer com os baldes?',a:['Uma orquestra','Um jogo de pular','Uma competição','Uma brincadeira de pescar'],c:0},
-    {q:'Quem ficou para jantar?',a:['A vizinha','A avó','Uma prima','Uma amiga da escola'],c:0}
-  ],
-  e8:[
-    {q:'Como se chamava o coelho da história?',a:['Pipoca','Farofa','Bolinha','Brigadeiro'],c:0},
-    {q:'O que Pipoca detestava comer?',a:['Cenoura','Alface','Pepino','Beterraba'],c:0},
-    {q:'O que Pipoca realmente amava comer?',a:['Banana','Maçã','Morango','Melancia'],c:0}
-  ],
-  e9:[
-    {q:'Qual era a cor da bicicleta de Sofia?',a:['Laranja','Azul','Rosa','Vermelha'],c:0},
-    {q:'O que o avô disse a Sofia quando ela estava aprendendo?',a:['Olha para frente, não para baixo','Pedala mais devagar','Segura no guidão firme','Dobra os joelhos'],c:0},
-    {q:'Quantas vezes Sofia caiu antes de o avô ajudá-la?',a:['Sete','Três','Cinco','Dez'],c:0}
-  ],
-  m1:[
-    {q:'O que o mercado da história vendia?',a:['Memórias','Livros antigos','Fotografias','Cartas antigas'],c:0},
-    {q:'Qual era o dilema central do protagonista no mercado?',a:['Comprar ou preservar uma memória','Encontrar a memória perdida de alguém','Vender sua própria memória','Descobrir memórias falsas'],c:0},
-    {q:'O que o texto sugere sobre memórias que vendemos?',a:['Deixam uma lacuna permanente','Se regeneram com o tempo','Podem ser recuperadas','São sempre substituíveis'],c:0}
-  ],
-  m2:[
-    {q:'Para quem a carta do texto é endereçada?',a:['Ao oceano','A um amor perdido','A uma cidade','Ao próprio autor'],c:0},
-    {q:'Qual o tom predominante da carta?',a:['Melancólico e nostálgico','Raivoso e acusatório','Alegre e esperançoso','Indiferente e distante'],c:0},
-    {q:'O que o narrador pede ao oceano?',a:['Que guarde suas memórias','Que traga alguém de volta','Que afogue suas dores','Que responda suas perguntas'],c:0}
-  ],
-  m3:[
-    {q:'Por que a última livraria estava ameaçada?',a:['Pelo avanço do digital e falta de clientes','Por um incêndio','Por dívidas do proprietário','Por reforma do bairro'],c:0},
-    {q:'Quem era o dono da livraria?',a:['Um velho que herdou do pai','Uma jovem que comprou recentemente','Um coletivo de leitores','Uma família há gerações'],c:0},
-    {q:'Qual era o argumento do texto sobre livros físicos?',a:['Carregam uma experiência sensorial insubstituível','São mais baratos que e-books','Duram mais que arquivos digitais','São mais fáceis de anotar'],c:0}
-  ],
-  m4:[
-    {q:'O que o homem da história colecionava?',a:['Despedidas','Cartas não enviadas','Fotografias de partidas','Bilhetes de viagem'],c:0},
-    {q:'Por que ele colecionava isso?',a:['Para entender o que cada fim revela sobre o que foi','Para se lembrar das pessoas','Por hábito compulsivo','Para escrever um livro'],c:0},
-    {q:'Qual é a ironia central do personagem?',a:['Nunca conseguia se despedir de verdade','Guardava despedidas mas não se lembrava dos nomes','Colecionava despedidas mas nunca partia','Suas coleções desapareciam'],c:0}
-  ],
-  m5:[
-    {q:'O texto é estruturado como o quê?',a:['Uma receita culinária','Um diário','Uma carta','Uma lista de regras'],c:0},
-    {q:'Qual o "ingrediente" principal mencionado para dias ruins?',a:['Tempo e silêncio','Amigos e conversas','Chá e livros','Movimento e ar fresco'],c:0},
-    {q:'O que a receita adverte sobre tentar se curar rápido?',a:['Que acelerar a cura piora o estado','Que é possível mas exige esforço','Que depende da pessoa','Que nunca funciona'],c:0}
-  ],
-  m6:[
-    {q:'O que aconteceu com o bairro descrito?',a:['Foi demolido e substituído','Ficou abandonado','Foi inundado','Mudou de nome'],c:0},
-    {q:'Como o narrador se relaciona com esse bairro?',a:['Cresceu lá e sente saudade','Visitou uma vez','Ouviu histórias de parentes','Leu sobre em livros'],c:0},
-    {q:'O que o texto questiona sobre progresso urbano?',a:['O custo humano e afetivo das demolições','Se a modernização é necessária','Quem decide o que demolir','Os benefícios econômicos'],c:0}
-  ],
-  d1:[
-    {q:'Qual fenômeno o texto analisa principalmente?',a:['Como a percepção do tempo varia com a experiência','A física do tempo relativo','A memória de longo prazo','O envelhecimento cognitivo'],c:0},
-    {q:'Segundo o texto, por que dias monótonos parecem curtos na memória?',a:['Geram poucos marcadores mnêmicos','São menos estressantes','Passam mais rápido no relógio','São mais comuns na infância'],c:0},
-    {q:'Qual é a implicação prática do argumento central?',a:['Buscar experiências novas alonga a percepção da vida','Meditar desacelera o tempo subjetivo','Dormir mais melhora a percepção temporal','Trabalhar menos faz os dias parecerem maiores'],c:0}
-  ],
-  d2:[
-    {q:'O texto usa geometria como metáfora para o quê?',a:['Decisões que não podem ser desfeitas','A complexidade das relações humanas','O peso da responsabilidade','A inevitabilidade do erro'],c:0},
-    {q:'O que o autor argumenta sobre arrependimento?',a:['É um mapeamento inútil de trajetórias impossíveis','É necessário para o crescimento','Deve ser confrontado diretamente','É uma forma de aprendizado'],c:0},
-    {q:'Qual é o ponto central sobre irreversibilidade?',a:['Aceitar o passado é condição para agir no presente','Toda decisão pode ser corrigida indiretamente','O futuro compensa decisões ruins','Irreversibilidade é uma ilusão cognitiva'],c:0}
-  ],
-  d3:[
-    {q:'O "mito" que o texto desmonta é qual?',a:['Que o cérebro adulto não muda','Que a inteligência é hereditária','Que só crianças aprendem rápido','Que o QI é fixo'],c:0},
-    {q:'O que é neuroplasticidade segundo o texto?',a:['A capacidade do cérebro de reorganizar conexões','A velocidade de processar informação','A memória de trabalho','A resistência ao estresse'],c:0},
-    {q:'Qual limitação o texto reconhece na neuroplasticidade?',a:['Diminui com a idade mas não desaparece','É exclusiva de cérebros saudáveis','Só funciona com estimulação intensa','Varia muito entre indivíduos'],c:0}
-  ],
-  d4:[
-    {q:'Qual é a tese central sobre linguagem?',a:['A língua que falamos molda nossa percepção da realidade','Toda linguagem é arbitrária','Línguas diferentes têm a mesma estrutura profunda','A linguagem é apenas comunicação'],c:0},
-    {q:'O conceito de "habitat" sugere que a linguagem é:',a:['O ambiente em que o pensamento habita','Uma ferramenta externa ao pensamento','Um sistema de regras neutras','Uma convenção social modificável'],c:0},
-    {q:'O que o texto diz sobre tradução entre línguas?',a:['Sempre implica perda ou transformação de sentido','É possível com precisão total','Depende da habilidade do tradutor','Funciona bem para conceitos concretos'],c:0}
-  ],
-  d5:[
-    {q:'Qual é o paradoxo central do texto?',a:['Mais escolhas levam a menos satisfação','Liberdade de escolha é sempre boa','Poucas opções causam frustração','A escolha certa elimina o arrependimento'],c:0},
-    {q:'O que o texto chama de "paralisia por análise"?',a:['Incapacidade de decidir diante de muitas opções','Excesso de informação sobre uma opção','Medo irracional de errar','Hesitação causada por falta de dados'],c:0},
-    {q:'Qual solução o texto sugere para o paradoxo?',a:['Limitar deliberadamente as opções consideradas','Decidir mais rápido sem analisar','Pedir ajuda para decidir','Aceitar que toda escolha é errada'],c:0}
-  ],
-  d6:[
-    {q:'O que é viés de confirmação segundo o texto?',a:['Tendência de buscar informações que confirmam crença prévia','Erro de lógica em argumentos formais','Memória seletiva de eventos positivos','Preferência por fontes conhecidas'],c:0},
-    {q:'Como o texto descreve a arquitetura das crenças?',a:['Como estruturas autorreferentes que resistem a evidências contrárias','Como construções racionais baseadas em fatos','Como sistemas abertos à revisão','Como mapas precisos da realidade'],c:0},
-    {q:'O que o texto propõe como antídoto ao viés?',a:['Buscar ativamente evidências contra suas próprias crenças','Ler mais fontes diversas','Debater com pessoas diferentes','Estudar lógica formal'],c:0}
-  ],
-  a1:[
-    {q:'O que o texto entende por "incompreensão mútua"?',a:['Falha estrutural na comunicação entre subjetividades distintas','Falta de vocabulário comum','Diferença cultural entre interlocutores','Limitação da linguagem escrita'],c:0},
-    {q:'Qual é o argumento fenomenológico central?',a:['A experiência vivida é intransferível em sua plenitude','A empatia supera a incompreensão','A linguagem pode capturar toda experiência','Compreensão total é possível com esforço'],c:0},
-    {q:'Que papel o texto atribui ao silêncio na comunicação?',a:['Pode comunicar o que palavras não alcançam','É sempre sinal de ruptura','Deve ser evitado em diálogos sérios','É neutro e sem significado'],c:0}
-  ],
-  a2:[
-    {q:'Como o texto relaciona entropia e informação?',a:['Alta entropia corresponde a alta informação potencial','São conceitos opostos e não relacionados','Informação reduz a entropia permanentemente','Entropia mede a perda de informação'],c:0},
-    {q:'Qual é o "custo da ordem" mencionado?',a:['Criar ordem local exige aumentar desordem no entorno','Organização consome energia sem retorno','Ordem é uma ilusão de sistemas complexos','Todo sistema ordenado colapsa inevitavelmente'],c:0},
-    {q:'O texto usa esse argumento para questionar o quê?',a:['A sustentabilidade de sistemas que buscam controle total','A validade da termodinâmica clássica','A possibilidade de inteligência artificial','A eficiência de organizações humanas'],c:0}
-  ],
-  a3:[
-    {q:'Qual é a tese principal sobre "realidade social"?',a:['É construída intersubjetivamente e não existe independente de atores','É objetiva e mensurável como a realidade física','Varia entre culturas mas tem núcleo universal','É uma ilusão produzida pela linguagem'],c:0},
-    {q:'Qual o "limite" da construção social que o texto reconhece?',a:['Há constrangimentos materiais que resistem à construção','Toda construção é igualmente válida','A biologia determina os limites','Construções são permanentes uma vez estabelecidas'],c:0},
-    {q:'O conceito de "instituição" no texto refere-se a:',a:['Padrões de ação tipificados e habitualizados','Apenas organizações formais como bancos e governos','Regras escritas e codificadas','Hierarquias de poder estabelecidas'],c:0}
-  ],
-  a4:[
-    {q:'O que o texto critica no "cognitivismo clássico"?',a:['A separação entre mente, corpo e ambiente','O uso de metáforas computacionais','A ênfase na linguagem','A negação do inconsciente'],c:0},
-    {q:'O que é "cognição incorporada" segundo o texto?',a:['Cognição que depende do corpo e do ambiente para se realizar','Pensamento baseado em experiências físicas passadas','Memória muscular e habilidades motoras','Emoções que influenciam o raciocínio'],c:0},
-    {q:'Qual é a implicação para Inteligência Artificial?',a:['IA sem corpo físico não replicará cognição humana completa','IA superará humanos independente de ter corpo','O problema é computacional, não físico','Robótica resolve o problema da incorporação'],c:0}
-  ],
-  x1:[
-    {q:'Qual paradoxo o texto explora?',a:['Sistemas que se autodeterminam precisam de uma base que não escolheram','Todo sistema é determinado por fatores externos','Liberdade e causalidade são incompatíveis','A consciência é uma ilusão determinista'],c:0},
-    {q:'O conceito de "reflexividade" no texto significa:',a:['A capacidade de um sistema se observar e modificar a si mesmo','A repetição de padrões ao longo do tempo','A influência mútua entre sistemas diferentes','A previsibilidade de comportamentos complexos'],c:0},
-    {q:'Como o texto resolve (ou não) a aporia?',a:['Propõe que a aporia é constitutiva e não resolúvel','Apresenta uma solução dialética','Afirma que é um pseudoproblema linguístico','Defende a compatibilidade entre os termos'],c:0}
-  ],
-  x2:[
-    {q:'O que é "colapso epistêmico" no contexto do texto?',a:['Falha dos fundamentos que sustentavam um sistema de conhecimento','Perda de memória coletiva de uma sociedade','Contradição interna em um argumento filosófico','Incapacidade de comunicar conhecimento complexo'],c:0},
-    {q:'O que o texto entende por "certeza funcional"?',a:['Certeza suficiente para agir, mesmo sem fundamento absoluto','Certeza baseada em provas empíricas verificadas','Confiança gerada por repetição de experiências','Acordo intersubjetivo sobre fatos básicos'],c:0},
-    {q:'Qual é a posição pragmática do texto diante da incerteza?',a:['Agir é necessário mesmo sem certeza fundacional','A incerteza deve paralisar ação responsável','Buscar certeza absoluta antes de agir','Delegar decisões a sistemas mais confiáveis'],c:0}
-  ],
-  x3:[
-    {q:'O que é "capital simbólico" segundo Bourdieu, citado no texto?',a:['Reconhecimento e prestígio acumulados em um campo social','Riqueza cultural em forma de obras de arte','Conhecimento acadêmico certificado','Influência política em instituições'],c:0},
-    {q:'O que o texto entende por "campos de poder diferenciados"?',a:['Arenas sociais com lógicas próprias de legitimidade e disputa','Hierarquias políticas em diferentes países','Formas de violência em contextos distintos','Mercados econômicos com regras diferentes'],c:0},
-    {q:'Qual crítica o texto dirige à teoria dos campos?',a:['Subestima a agência individual e mudanças históricas rápidas','Exagera o peso da economia','Ignora o papel da linguagem','Superestima a resistência dos dominados'],c:0}
-  ],
-  x4:[
-    {q:'Qual é a questão central da metaética abordada?',a:['Se valores morais existem independentemente de quem os sustenta','Como ensinar ética nas escolas','Qual sistema ético é mais consistente','Se a moral é universal ou relativa'],c:0},
-    {q:'O "realismo moral" no texto defende que:',a:['Fatos morais existem objetivamente no mundo','Moral é construção social negociável','Valores são expressões de preferências subjetivas','Ética depende de contexto cultural'],c:0},
-    {q:'Como o texto trata o "expressivismo"?',a:['Como posição que reduz moral a expressão de atitudes, não fatos','Como teoria que valoriza a expressão cultural','Como defesa da liberdade de expressão moral','Como posição intermediária entre relativismo e realismo'],c:0}
-  ],
-  x5:[
-    {q:'O que é "complexidade irredutível" segundo o texto?',a:['Sistemas cujo comportamento não pode ser previsto por análise de componentes','Problemas matemáticos sem solução conhecida','Fenômenos que resistem à observação científica','Sistemas que crescem indefinidamente em tamanho'],c:0},
-    {q:'Qual é o limite da modelagem computacional mencionado?',a:['Modelos eliminam a complexidade que tentam capturar','Computadores são lentos para sistemas grandes','Dados insuficientes impedem modelos precisos','Modelos só funcionam para sistemas físicos'],c:0},
-    {q:'O texto assume qual postura epistemológica?',a:['Humildade diante dos limites do conhecimento formal','Otimismo sobre o progresso da ciência','Ceticismo radical sobre qualquer modelo','Pragmatismo sem compromisso teórico'],c:0}
-  ]
-};
+// ===== QUIZ DE COMPREENSÃO — gerado por IA em tempo real =====
+let quizAnswers = [];
+let quizCorrect = 0;
+let pendingResultData = null;
+let _aiQuestions = []; // [{q, opts, correctIdx}] — gabarito só em memória, nunca no DOM
 
-let quizAnswers = [];      // respostas escolhidas pelo usuário
-let quizCorrect = 0;       // quantas acertou
-let pendingResultData = null; // guarda dados enquanto faz o quiz
+async function generateQuizAI(textBody) {
+  const thirds = Math.floor(textBody.length / 3);
+  const part1 = textBody.slice(0, thirds);
+  const part2 = textBody.slice(thirds, thirds * 2);
+  const part3 = textBody.slice(thirds * 2);
 
-// Hash simples para ofuscar gabarito no objeto — não é criptografia, mas dificulta inspeção casual
-function _h(s){ let h=0; for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0;} return h.toString(36); }
+  const prompt = `Você é um examinador rigoroso. Dado o texto abaixo, crie EXATAMENTE 5 perguntas de múltipla escolha que testam se a pessoa leu o texto COMPLETO.
 
-function generateQuiz(textId) {
-  const raw = QUIZ_DATA[textId];
-  if (!raw) return null;
+REGRAS OBRIGATÓRIAS:
+- Pelo menos 1 pergunta sobre algo que acontece na PRIMEIRA PARTE do texto
+- Pelo menos 1 pergunta sobre algo que acontece na PARTE DO MEIO do texto  
+- Pelo menos 2 perguntas sobre algo que acontece na ÚLTIMA PARTE do texto
+- As perguntas devem ser sobre DETALHES ESPECÍFICOS (nomes, números, ações, falas, objetos concretos) — não sobre temas gerais
+- Cada pergunta deve ter 4 opções onde apenas 1 é correta
+- As 3 opções erradas devem ser plausíveis mas claramente erradas para quem leu
+- NÃO faça perguntas sobre o tema ou assunto geral — faça sobre detalhes que só aparecem no texto
+- As perguntas devem ser impossíveis de responder sem ter lido aquela parte específica
 
-  return raw.map(item => {
-    const opts = [...item.a];
-    const correctStr = opts[item.c];
-    // Fisher-Yates shuffle
+PRIMEIRA PARTE:
+${part1}
+
+PARTE DO MEIO:
+${part2}
+
+ÚLTIMA PARTE:
+${part3}
+
+Responda APENAS com JSON válido neste formato exato, sem markdown, sem explicações:
+{"questions":[{"q":"pergunta","opts":["certa","errada1","errada2","errada3"],"c":0},{"q":"pergunta","opts":["certa","errada1","errada2","errada3"],"c":0},{"q":"pergunta","opts":["certa","errada1","errada2","errada3"],"c":0},{"q":"pergunta","opts":["certa","errada1","errada2","errada3"],"c":0},{"q":"pergunta","opts":["certa","errada1","errada2","errada3"],"c":0}]}`;
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+
+  if (!response.ok) throw new Error('API error ' + response.status);
+  const data = await response.json();
+  const text = data.content.map(b => b.text || '').join('').trim();
+  const clean = text.replace(/```json|```/g, '').trim();
+  const parsed = JSON.parse(clean);
+  return parsed.questions;
+}
+
+function shuffleQuestions(rawQuestions) {
+  // Shuffle options of each question, keep correct answer in memory only
+  return rawQuestions.map(item => {
+    const opts = [...item.opts];
+    const correct = opts[item.c];
+    // Fisher-Yates
     for(let i=opts.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[opts[i],opts[j]]=[opts[j],opts[i]];}
-    // Store hash of correct answer + a salt from textId — string no longer directly readable
-    const correctHash = _h(correctStr + textId);
-    return { q: item.q, opts, _ch: correctHash, _tid: textId };
+    const correctIdx = opts.indexOf(correct);
+    return { q: item.q, opts, correctIdx }; // correctIdx only in JS memory
   });
 }
 
-function _checkAnswer(question, answer) {
-  return _h(answer + question._tid) === question._ch;
-}
-
-function showQuiz(resultData) {
-  pendingResultData = resultData;
-  const questions = generateQuiz(currentText.id);
-
-  if (!questions) {
-    // Texto customizado — sem quiz, vai direto ao resultado
-    quizCorrect = -1; // -1 = sem quiz
-    renderResult(pendingResultData);
-    return;
-  }
-
+function renderQuizQuestions(questions) {
+  _aiQuestions = questions;
   quizAnswers = new Array(questions.length).fill(null);
 
   const container = document.getElementById('quizQuestions');
@@ -1312,11 +1196,12 @@ function showQuiz(resultData) {
     const block = document.createElement('div');
     block.style.cssText = 'background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:18px 20px';
     block.innerHTML = `
+      <div style="font-size:.78rem;font-family:DM Mono,monospace;color:var(--ink3);margin-bottom:6px">${qi < 1 ? '📖 INÍCIO DO TEXTO' : qi < 2 ? '📄 MEIO DO TEXTO' : '📌 FINAL DO TEXTO'}</div>
       <div style="font-size:1rem;font-weight:600;color:var(--ink);margin-bottom:14px;line-height:1.5">${qi+1}. ${q.q}</div>
       <div style="display:flex;flex-direction:column;gap:8px" id="opts-${qi}">
         ${q.opts.map((opt,oi)=>`
           <label style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;border:1.5px solid var(--line);cursor:pointer;font-size:.92rem;transition:all .15s" id="opt-${qi}-${oi}">
-            <input type="radio" name="q${qi}" value="${opt}" onchange="selectAnswer(${qi},'${opt.replace(/'/g,"\\'")}',${oi})" style="display:none">
+            <input type="radio" name="q${qi}" value="${oi}" onchange="selectAnswer(${qi},${oi})" style="display:none">
             <span style="width:18px;height:18px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;transition:all .15s" id="radio-${qi}-${oi}"></span>
             <span>${opt}</span>
           </label>
@@ -1325,17 +1210,60 @@ function showQuiz(resultData) {
     `;
     container.appendChild(block);
   });
-
-  // Store questions for grading
-  container._questions = questions;
-
-  showScreen('quiz');
-  window.scrollTo(0,0);
 }
 
-function selectAnswer(qi, val, oi) {
-  quizAnswers[qi] = val;
-  // Visual update — reset all options in this question then highlight selected
+async function showQuiz(resultData) {
+  pendingResultData = resultData;
+
+  // Show quiz screen with loading state immediately
+  document.getElementById('quizLoading').style.display = '';
+  document.getElementById('quizQuestions').style.display = 'none';
+  document.getElementById('quizSubmitBtn').style.display = 'none';
+  document.getElementById('quizFooter').style.display = 'none';
+  showScreen('quiz');
+  window.scrollTo(0,0);
+
+  // Custom text — no body to quiz on, skip
+  if (!currentText || currentText.id === '__custom__') {
+    quizCorrect = -1;
+    renderResult(pendingResultData);
+    return;
+  }
+
+  try {
+    const rawQs = await generateQuizAI(currentText.body);
+    const questions = shuffleQuestions(rawQs);
+    renderQuizQuestions(questions);
+
+    document.getElementById('quizLoading').style.display = 'none';
+    document.getElementById('quizQuestions').style.display = 'flex';
+    document.getElementById('quizSubmitBtn').style.display = '';
+    document.getElementById('quizFooter').style.display = '';
+  } catch(err) {
+    // API failed — show error and skip quiz
+    document.getElementById('quizLoading').innerHTML = `
+      <div style="color:var(--dificil);font-size:.9rem;margin-bottom:16px">⚠️ Não foi possível gerar as perguntas.<br>Verifique sua conexão.</div>
+      <button class="btn btn-accent" onclick="retryQuiz()">🔄 Tentar novamente</button>
+      <button class="btn btn-ghost" style="margin-top:8px;display:block;width:100%" onclick="skipQuiz()">Pular verificação</button>
+    `;
+  }
+}
+
+function retryQuiz() {
+  document.getElementById('quizLoading').innerHTML = `
+    <div style="font-size:1.5rem;margin-bottom:12px;animation:spin 1s linear infinite;display:inline-block">⚙️</div>
+    <div style="font-size:.9rem;color:var(--ink3)">Gerando perguntas sobre o texto...</div>
+  `;
+  showQuiz(pendingResultData);
+}
+
+function skipQuiz() {
+  quizCorrect = -1;
+  renderResult(pendingResultData);
+}
+
+function selectAnswer(qi, oi) {
+  quizAnswers[qi] = oi; // store option INDEX, not text
   const qBlock = document.getElementById(`opts-${qi}`);
   const labels = qBlock.querySelectorAll('label');
   labels.forEach((lbl, i) => {
@@ -1352,29 +1280,24 @@ function selectAnswer(qi, val, oi) {
 }
 
 function submitQuiz() {
-  const container = document.getElementById('quizQuestions');
-  const questions = container._questions;
-
-  // Check all answered
   const unanswered = quizAnswers.findIndex(a => a === null);
   if (unanswered !== -1) {
     showToast(`Responda a pergunta ${unanswered+1} antes de continuar.`);
     return;
   }
 
-  // Grade using hash check — correct string not exposed
+  // Grade — compare stored answer index against correctIdx in memory
   quizCorrect = 0;
-  questions.forEach((q, i) => {
-    if (quizAnswers[i] !== null && _checkAnswer(q, quizAnswers[i])) quizCorrect++;
+  _aiQuestions.forEach((q, i) => {
+    if (quizAnswers[i] === q.correctIdx) quizCorrect++;
   });
 
-  // Show answer feedback briefly before result
-  questions.forEach((q, qi) => {
-    const opts = document.getElementById(`opts-${qi}`).querySelectorAll('label');
-    opts.forEach((lbl, oi) => {
-      const val = q.opts[oi];
-      const isCorrect = _checkAnswer(q, val);
-      const isSelected = quizAnswers[qi] === val;
+  // Show feedback
+  _aiQuestions.forEach((q, qi) => {
+    const labels = document.getElementById(`opts-${qi}`).querySelectorAll('label');
+    labels.forEach((lbl, oi) => {
+      const isCorrect = oi === q.correctIdx;
+      const isSelected = quizAnswers[qi] === oi;
       if (isCorrect) {
         lbl.style.borderColor = 'var(--easy)';
         lbl.style.background = 'var(--easy-bg)';
@@ -1385,7 +1308,11 @@ function submitQuiz() {
     });
   });
 
-  setTimeout(() => renderResult(pendingResultData), 1200);
+  // Disable submit
+  document.getElementById('quizSubmitBtn').disabled = true;
+  document.getElementById('quizSubmitBtn').textContent = '⏳ Calculando resultado...';
+
+  setTimeout(() => renderResult(pendingResultData), 1400);
 }
 
 // ===== TIMER MODE (countdown toggle) =====
@@ -1602,24 +1529,27 @@ function renderResult(d) {
 
   // Adjust grade based on comprehension
   let finalGrade = grade, finalLabel = label, finalColor = color;
+  // 5 perguntas: 0-1 acertos = F, 2 = -2 graus, 3 = -1 grau, 4 = -0 graus, 5 = mantém
   if (quizCorrect !== -1) {
-    if (quizCorrect === 0) {
-      finalGrade = 'F'; finalLabel = 'Leu ou não leu?'; finalColor = '#888';
-    } else if (quizCorrect === 1) {
-      // Drop two grades
-      const order = ['S','A','B','C','D','F'];
+    const order = ['S','A','B','C','D','F'];
+    const n = _aiQuestions.length || 5;
+    const pctCorrect = quizCorrect / n;
+    if (pctCorrect === 0) {
+      finalGrade = 'F'; finalLabel = 'Não leu — zero compreensão'; finalColor = '#888';
+    } else if (pctCorrect <= 0.25) {
+      finalGrade = 'F'; finalLabel = 'Velocidade sem compreensão'; finalColor = '#888';
+    } else if (pctCorrect <= 0.45) {
       const idx = Math.min(order.indexOf(grade) + 2, 5);
       finalGrade = order[idx];
-      finalLabel = finalGrade === 'F' ? 'Velocidade sem compreensão' : 'Compreensão insatisfatória';
-      finalColor = finalGrade === 'F' ? '#888' : finalGrade === 'D' ? '#c0392b' : '#b06a00';
-    } else if (quizCorrect === 2) {
-      // Drop one grade
-      const order = ['S','A','B','C','D','F'];
+      finalLabel = 'Compreensão muito baixa';
+      finalColor = finalGrade === 'F' ? '#888' : '#c0392b';
+    } else if (pctCorrect <= 0.65) {
       const idx = Math.min(order.indexOf(grade) + 1, 5);
       finalGrade = order[idx];
-      if(idx > order.indexOf(grade)) finalLabel = 'Compreensão parcial';
+      finalLabel = 'Compreensão parcial';
+      finalColor = finalGrade === 'F' ? '#888' : '#b06a00';
     }
-    // quizCorrect === 3 → mantém nota original
+    // >= 66% mantém nota original
   }
 
   document.getElementById('resultGrade').textContent = finalGrade;
@@ -1637,9 +1567,10 @@ function renderResult(d) {
     compEl.textContent = '—';
     compEl.style.color = 'var(--ink3)';
   } else {
-    const pct = Math.round((quizCorrect/3)*100);
-    compEl.textContent = `${quizCorrect}/3`;
-    compEl.style.color = quizCorrect === 3 ? 'var(--easy)' : quizCorrect === 2 ? 'var(--medio)' : 'var(--dificil)';
+    const n = _aiQuestions.length || 5;
+    const pct = quizCorrect / n;
+    compEl.textContent = `${quizCorrect}/${n}`;
+    compEl.style.color = pct >= 0.8 ? 'var(--easy)' : pct >= 0.6 ? 'var(--medio)' : 'var(--dificil)';
   }
 
   const pct = Math.min(98,Math.max(2,(wpm/500)*100));
@@ -1718,14 +1649,16 @@ function buildFullReport(wpm, secs, words, level, grade) {
 
   // 4. Compreensão — resultado brutal
   if (quizCorrect !== -1) {
-    if (quizCorrect === 3) {
-      mainItems.push({icon:'🧠', text:`<strong>Compreensão: 3/3 — leu de verdade.</strong><br><span style="color:var(--ink2)">Acertou todas as perguntas sem consultar o texto. Isso confirma que velocidade e absorção coexistiram. Resultado legítimo.</span>`});
-    } else if (quizCorrect === 2) {
-      mainItems.push({icon:'⚠️', text:`<strong>Compreensão: 2/3 — parcial.</strong><br><span style="color:var(--ink2)">Leu, mas não absorveu tudo. Sua nota foi rebaixada um nível. Velocidade sem compreensão total é leitura de fachada.</span>`});
-    } else if (quizCorrect === 1) {
-      mainItems.push({icon:'🚨', text:`<strong>Compreensão: 1/3 — muito baixa.</strong><br><span style="color:var(--ink2)">Errou 2 de 3 perguntas diretas. Passou rápido demais ou estava distraído. Nota rebaixada dois níveis. Ler sem absorver é perda de tempo.</span>`});
+    const n = _aiQuestions.length || 5;
+    const pct = quizCorrect / n;
+    if (pct >= 0.8) {
+      mainItems.push({icon:'🧠', text:`<strong>Compreensão: ${quizCorrect}/${n} — leu de verdade.</strong><br><span style="color:var(--ink2)">Acertou a maioria das perguntas sobre início, meio e fim do texto. Isso confirma que velocidade e absorção coexistiram. Resultado legítimo.</span>`});
+    } else if (pct >= 0.6) {
+      mainItems.push({icon:'⚠️', text:`<strong>Compreensão: ${quizCorrect}/${n} — parcial.</strong><br><span style="color:var(--ink2)">Leu, mas não absorveu partes do texto. Sua nota foi rebaixada. Velocidade sem compreensão completa é leitura de fachada.</span>`});
+    } else if (pct >= 0.3) {
+      mainItems.push({icon:'🚨', text:`<strong>Compreensão: ${quizCorrect}/${n} — muito baixa.</strong><br><span style="color:var(--ink2)">Errou a maioria das perguntas sobre detalhes do texto. Ou passou rápido demais, ou leu só partes. Nota rebaixada dois níveis.</span>`});
     } else {
-      mainItems.push({icon:'💀', text:`<strong>Compreensão: 0/3 — não leu.</strong><br><span style="color:var(--ink2)">Zero acertos. Isso não é leitura — são olhos se movendo sem processamento. Nota F automática. Não importa quanto tempo gastou.</span>`});
+      mainItems.push({icon:'💀', text:`<strong>Compreensão: ${quizCorrect}/${n} — não leu.</strong><br><span style="color:var(--ink2)">As perguntas cobrem início, meio e fim do texto com detalhes específicos. Essa pontuação indica que você não leu — ou leu sem processar nada. Nota F automática.</span>`});
     }
   }
 
@@ -1740,13 +1673,15 @@ function buildFullReport(wpm, secs, words, level, grade) {
   // ── ERROS E PROBLEMAS ESPECÍFICOS ──────────────────────
   const problems = [];
 
-  if(quizCorrect !== -1 && quizCorrect < 3){
-    if(quizCorrect === 0){
-      problems.push({icon:'💀', text:`<strong>REPROVAÇÃO POR COMPREENSÃO ZERO.</strong><br><span style="color:var(--ink2)">Não acertou nenhuma das 3 perguntas sobre o texto que acabou de "ler". Isso invalida qualquer métrica de velocidade. Refaça a leitura prestando atenção de verdade, não buscando terminar rápido.</span>`});
-    } else if(quizCorrect === 1){
-      problems.push({icon:'🚨', text:`<strong>PROBLEMA GRAVE: Velocidade destruiu a compreensão.</strong><br><span style="color:var(--ink2)">1 acerto em 3 indica que você priorizou terminar rápido em detrimento de entender. Reduza o ritmo até acertar consistentemente 3/3 — só então acelere de novo.</span>`});
-    } else {
-      problems.push({icon:'⚠️', text:`<strong>Compreensão incompleta (2/3).</strong><br><span style="color:var(--ink2)">Quase lá, mas errou 1 pergunta. Pode ser distração pontual ou velocidade ligeiramente acima do seu ponto de absorção. Treine até 3/3 virar padrão.</span>`});
+  if(quizCorrect !== -1){
+    const n = _aiQuestions.length || 5;
+    const pct = quizCorrect / n;
+    if(pct === 0){
+      problems.push({icon:'💀', text:`<strong>REPROVAÇÃO: Zero compreensão.</strong><br><span style="color:var(--ink2)">As perguntas cobriram início, meio e fim do texto. Nenhuma resposta correta. Isso não foi leitura. Refaça prestando atenção em cada parágrafo.</span>`});
+    } else if(pct <= 0.45){
+      problems.push({icon:'🚨', text:`<strong>PROBLEMA GRAVE: Velocidade destruiu a compreensão.</strong><br><span style="color:var(--ink2)">${quizCorrect}/${n} acertos. Você priorizou terminar rápido e não absorveu partes inteiras do texto. Reduza o ritmo até acertar 4/${n} de forma consistente, só então acelere.</span>`});
+    } else if(pct <= 0.65){
+      problems.push({icon:'⚠️', text:`<strong>Compreensão incompleta (${quizCorrect}/${n}).</strong><br><span style="color:var(--ink2)">Leu partes mas não o todo. As perguntas erradas provavelmente eram sobre seções que você pulou ou leu distraído. Treine até 4/${n} virar padrão.</span>`});
     }
   }
 
