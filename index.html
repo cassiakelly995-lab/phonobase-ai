@@ -564,6 +564,7 @@ canvas.evo-chart{background:var(--s2);border:1px solid var(--border);border-radi
    DATA
 ═══════════════════════════════════════════ */
 const TEXTS = {
+/* ══════ NÍVEL 1 · FÁCIL ══════ */
 1:[
   {id:'1a',name:'O Gato e o Sol',words:80,
    title:'O Gato e o Sol',subtitle:'Nível 1 · Fácil · Vocabulário básico · Alta frequência',
@@ -580,8 +581,25 @@ const TEXTS = {
      {q:'Como é a mochila da Ana?',opts:['Vermelha','Verde','Azul com estrelas','Rosa'],correct:2},
      {q:'Qual o nome da professora?',opts:['Dona Lúcia','Dona Maria','Dona Ana','Dona Rosa'],correct:1},
      {q:'O que Ana faz depois do dever?',opts:['Dorme','Assiste desenho','Brinca','Lê'],correct:1}
+   ]},
+  {id:'1c',name:'O Parque',words:85,
+   title:'Um Dia no Parque',subtitle:'Nível 1 · Fácil · Narrativa simples · Frases curtas',
+   content:'João foi ao parque com o pai. O parque tem muitas árvores e flores bonitas. João correu no gramado verde e subiu no balanço. Ele viu um cachorro branco brincando com uma bola. O pai comprou um sorvete de morango para João. Eles sentaram num banco à sombra de uma árvore grande. João comeu o sorvete devagar para não derrubar. O sol estava quente mas havia um vento fresco. Depois de brincar muito, João ficou cansado. O pai o carregou no colo até o carro. Foi um dia muito feliz para os dois.',
+   questions:[
+     {q:'Com quem João foi ao parque?',opts:['Com a mãe','Com o pai','Com a vovó','Com amigos'],correct:1},
+     {q:'Que sabor era o sorvete de João?',opts:['Chocolate','Baunilha','Morango','Limão'],correct:2},
+     {q:'Como João voltou até o carro?',opts:['Caminhando','Correndo','No colo do pai','De bicicleta'],correct:2}
+   ]},
+  {id:'1d',name:'A Chuva',words:78,
+   title:'A Chuva e o Arco-íris',subtitle:'Nível 1 · Fácil · Natureza · Palavras simples',
+   content:'Hoje choveu muito. As crianças ficaram em casa olhando pela janela. A chuva caía forte no telhado e fazia barulho. As ruas ficaram cheias de água. Os passarinhos se esconderam nas árvores. Depois de um tempo, a chuva parou. O sol voltou a brilhar no céu azul. Então apareceu um lindo arco-íris com muitas cores. As cores eram vermelho, laranja, amarelo, verde, azul e roxo. As crianças correram para o jardim para ver de perto. Que coisa bonita é a natureza depois da chuva.',
+   questions:[
+     {q:'O que as crianças fizeram durante a chuva?',opts:['Brincaram na rua','Ficaram em casa olhando pela janela','Foram à escola','Dormiram'],correct:1},
+     {q:'O que apareceu depois que a chuva parou?',opts:['Trovão','Neblina','Arco-íris','Neve'],correct:2},
+     {q:'Para onde as crianças correram depois?',opts:['Para a cozinha','Para o quarto','Para o jardim','Para a escola'],correct:2}
    ]}
 ],
+/* ══════ NÍVEL 2 · MÉDIO ══════ */
 2:[
   {id:'2a',name:'A Floresta Amazônica',words:112,
    title:'A Floresta Amazônica',subtitle:'Nível 2 · Médio · Vocabulário intermediário · Frases compostas',
@@ -598,8 +616,25 @@ const TEXTS = {
      {q:'Quantos planetas tem o sistema solar?',opts:['7','8','9','10'],correct:1},
      {q:'Por que Marte é vermelho?',opts:['Lava vulcânica','Óxido de ferro','Luz do sol','Poeira azul'],correct:1},
      {q:'Qual o maior planeta?',opts:['Saturno','Terra','Júpiter','Netuno'],correct:2}
+   ]},
+  {id:'2c',name:'Alimentação Saudável',words:105,
+   title:'A Importância da Alimentação Saudável',subtitle:'Nível 2 · Médio · Saúde · Frases compostas',
+   content:'Uma alimentação saudável é fundamental para o bom funcionamento do nosso corpo. Devemos comer frutas, verduras e legumes todos os dias, pois eles fornecem vitaminas e minerais essenciais. As proteínas, encontradas nas carnes, ovos e feijão, ajudam a construir e reparar os tecidos do corpo. Os carboidratos, presentes no arroz, no pão e na batata, fornecem energia para as atividades diárias. Devemos evitar o excesso de açúcar, sal e gordura, que podem causar doenças como diabetes e hipertensão. Beber bastante água também é muito importante para manter o corpo hidratado. Fazer refeições em horários regulares e comer devagar ajuda na digestão. Uma boa alimentação, combinada com exercícios físicos, garante uma vida mais saudável e feliz.',
+   questions:[
+     {q:'Qual alimento fornece proteínas?',opts:['Arroz','Maçã','Feijão','Batata'],correct:2},
+     {q:'O que os carboidratos fornecem ao corpo?',opts:['Vitaminas','Energia','Proteínas','Gorduras'],correct:1},
+     {q:'O que deve ser evitado em excesso?',opts:['Frutas e verduras','Água','Açúcar, sal e gordura','Proteínas'],correct:2}
+   ]},
+  {id:'2d',name:'Os Animais do Cerrado',words:115,
+   title:'A Fauna do Cerrado Brasileiro',subtitle:'Nível 2 · Médio · Natureza · Brasil · Frases médias',
+   content:'O cerrado é o segundo maior bioma do Brasil e abriga uma fauna rica e diversificada. Entre os animais mais conhecidos do cerrado estão a onça-pintada, o tamanduá-bandeira e o lobo-guará. O lobo-guará é o maior canídeo da América do Sul e se alimenta principalmente de frutos, pequenos mamíferos e aves. O tamanduá-bandeira usa sua longa língua pegajosa para capturar formigas e cupins nos ninhos. A ema é uma ave que não voa, mas corre muito rápido pelo campo aberto. O tatu-canastra escava tocas profundas no solo duro do cerrado para se proteger. Muitos desses animais estão ameaçados de extinção por causa do desmatamento e da expansão agropecuária. Preservar o cerrado é essencial para manter viva essa biodiversidade única.',
+   questions:[
+     {q:'Qual é o maior canídeo da América do Sul?',opts:['Cachorro-do-mato','Lobo-guará','Raposa','Quati'],correct:1},
+     {q:'Do que se alimenta o tamanduá-bandeira?',opts:['Frutas e peixes','Formigas e cupins','Pequenos pássaros','Raízes'],correct:1},
+     {q:'Por que os animais do cerrado estão ameaçados?',opts:['Por predadores naturais','Por doenças','Por desmatamento e expansão agropecuária','Por secas extremas'],correct:2}
    ]}
 ],
+/* ══════ NÍVEL 3 · DIFÍCIL ══════ */
 3:[
   {id:'3a',name:'Revolução Industrial',words:133,
    title:'A Revolução Industrial',subtitle:'Nível 3 · Difícil · Texto histórico · Vocabulário técnico',
@@ -616,8 +651,25 @@ const TEXTS = {
      {q:'Qual estrutura é central na memória episódica?',opts:['Amígdala','Córtex pré-frontal','Hipocampo','Cerebelo'],correct:2},
      {q:'Quando o cérebro consolida memórias?',opts:['Durante exercícios','Durante o sono','Durante refeições','Durante leituras'],correct:1},
      {q:'Por que memórias emocionais são mais vívidas?',opts:['Pelo hipocampo maior','Pela amígdala potencializando o hipocampo','Por mais dopamina','Por mais glutamato'],correct:1}
+   ]},
+  {id:'3c',name:'Mudanças Climáticas',words:135,
+   title:'As Mudanças Climáticas e Seus Efeitos',subtitle:'Nível 3 · Difícil · Atualidades · Ciência ambiental',
+   content:'As mudanças climáticas representam um dos maiores desafios enfrentados pela humanidade no século vinte e um. O aquecimento global, causado principalmente pela emissão de gases de efeito estufa como o dióxido de carbono e o metano, está alterando os padrões climáticos em todo o planeta. As consequências já são visíveis: derretimento das calotas polares, elevação do nível do mar, eventos climáticos extremos cada vez mais frequentes e intensos, como furacões, secas prolongadas e enchentes devastadoras. Populações vulneráveis, especialmente em países em desenvolvimento, são as mais afetadas por essas transformações. A transição para fontes de energia renovável, como a solar e a eólica, é considerada essencial para reduzir as emissões e limitar o aumento da temperatura global a um ponto e meio grau Celsius, conforme estabelecido pelo Acordo de Paris. A adaptação e a mitigação exigem cooperação internacional urgente e mudanças profundas nos padrões de produção e consumo.',
+   questions:[
+     {q:'O que causa o aquecimento global?',opts:['Maremotos e terremotos','Emissão de gases de efeito estufa','Desmatamento apenas','Erupções vulcânicas'],correct:1},
+     {q:'Qual é o limite de temperatura do Acordo de Paris?',opts:['0,5°C','1,0°C','1,5°C','2,5°C'],correct:2},
+     {q:'Quais são exemplos de energia renovável citados?',opts:['Nuclear e carvão','Solar e eólica','Petróleo e gás','Hidrelétrica e nuclear'],correct:1}
+   ]},
+  {id:'3d',name:'Comunicação Humana',words:122,
+   title:'A Comunicação Humana e Seus Componentes',subtitle:'Nível 3 · Difícil · Linguagem · Fonoaudiologia introdutória',
+   content:'A comunicação humana é um processo complexo que envolve a transmissão e a recepção de mensagens entre indivíduos. Para que a comunicação ocorra de forma eficaz, são necessários um emissor, uma mensagem, um canal e um receptor. A linguagem verbal, oral e escrita, é a forma mais elaborada de comunicação humana e depende de estruturas cerebrais específicas para sua produção e compreensão. A linguagem não verbal, que inclui gestos, expressões faciais, postura corporal e olhar, complementa e às vezes substitui a comunicação verbal. A prosódia, ou seja, a melodia da fala, transmite informações emocionais e pragmáticas que o conteúdo verbal sozinho não consegue expressar. Alterações em qualquer componente desse sistema complexo podem comprometer a comunicação e a participação social do indivíduo, gerando necessidade de avaliação e intervenção fonoaudiológica especializada.',
+   questions:[
+     {q:'Quais são os elementos básicos da comunicação?',opts:['Voz, língua, ouvido','Emissor, mensagem, canal, receptor','Palavras, frases, parágrafos','Tom, ritmo, velocidade'],correct:1},
+     {q:'O que a prosódia transmite?',opts:['Apenas o conteúdo das palavras','Informações emocionais e pragmáticas','A escrita correta','A gramática da língua'],correct:1},
+     {q:'O que pode comprometer a participação social?',opts:['Falar muito','Alterações em qualquer componente comunicativo','Falar pouco','Usar gestos'],correct:1}
    ]}
 ],
+/* ══════ NÍVEL 4 · AVANÇADO ══════ */
 4:[
   {id:'4a',name:'Disfagia Orofaríngea',words:148,
    title:'Fisiopatologia da Disfagia Orofaríngea',subtitle:'Nível 4 · Avançado · Terminologia fonoaudiológica clínica',
@@ -634,8 +686,25 @@ const TEXTS = {
      {q:'O que mede o jitter?',opts:['Perturbação de amplitude','Perturbação de frequência','Ruído aperiódico','Frequência fundamental'],correct:1},
      {q:'Qual software é citado para análise acústica?',opts:['Audacity','Praat','GarageBand','MATLAB'],correct:1},
      {q:'HNR abaixo de 15 dB indica o quê?',opts:['Voz normal','Frequência alta','Excesso de ruído aperiódico','Boa coaptação glótica'],correct:2}
+   ]},
+  {id:'4c',name:'Afasia e Reabilitação',words:145,
+   title:'Afasia: Classificação e Abordagem Terapêutica',subtitle:'Nível 4 · Avançado · Neurologia · Fonoaudiologia',
+   content:'A afasia é um distúrbio adquirido da linguagem resultante de lesão cerebral, mais frequentemente causada por acidente vascular encefálico isquêmico ou hemorrágico. As afasias são classificadas de acordo com a fluência do discurso, a compreensão auditiva, a repetição e a nomeação. A afasia de Broca caracteriza-se por fala não fluente, telegráfica e laboriosa, com compreensão relativamente preservada e comprometimento da repetição. A afasia de Wernicke apresenta fala fluente com parafasias semânticas e fonêmicas, compreensão gravemente comprometida e repetição alterada. A afasia de condução distingue-se pela repetição severamente prejudicada com fluência e compreensão relativamente preservadas. O tratamento fonoaudiológico baseia-se em abordagens que exploram a neuroplasticidade, como a terapia de indução por restrição do membro afetado adaptada para a linguagem, a terapia de entonação melódica e o uso de comunicação aumentativa e alternativa para pacientes com afasia grave e não fluente.',
+   questions:[
+     {q:'O que caracteriza a afasia de Broca?',opts:['Fala fluente com parafasias','Fala não fluente e telegráfica','Boa repetição mas sem compreensão','Apenas dificuldade de nomeação'],correct:1},
+     {q:'Na afasia de Wernicke, o que está comprometido?',opts:['Apenas a fala','Compreensão e repetição','Somente a nomeação','A memória de trabalho'],correct:1},
+     {q:'O que é a terapia de entonação melódica?',opts:['Técnica de canto para relaxamento','Abordagem que usa melodia para reabilitar a fala','Análise de frequência fundamental','Exercício respiratório'],correct:1}
+   ]},
+  {id:'4d',name:'Desenvolvimento da Linguagem',words:138,
+   title:'Marcos do Desenvolvimento de Linguagem na Infância',subtitle:'Nível 4 · Avançado · Fonoaudiologia pediátrica · Desenvolvimento',
+   content:'O desenvolvimento da linguagem na infância segue uma trajetória relativamente previsível, com marcos que servem de referência para a identificação precoce de alterações. Nos primeiros dois meses de vida, o bebê já emite sons vegetativos e apresenta reações reflexas ao som. Entre três e seis meses surgem o sorriso responsivo, o balbucio e a vocalização em resposta à voz humana. Aos doze meses, espera-se que a criança produza as primeiras palavras com significado, geralmente associadas a pessoas ou objetos do cotidiano. Entre dezoito e vinte e quatro meses, o vocabulário expande-se rapidamente e surgem as primeiras combinações de duas palavras. Aos três anos, a criança deve produzir frases de três a quatro palavras e ser compreendida por pessoas fora do núcleo familiar. A partir dos quatro anos, a estrutura morfossintática torna-se progressivamente mais complexa. Atrasos nesses marcos devem ser investigados por fonoaudiólogo, com diferenciação entre atraso simples de linguagem e transtorno específico de linguagem.',
+   questions:[
+     {q:'Quando surgem as primeiras palavras com significado?',opts:['3 meses','6 meses','12 meses','18 meses'],correct:2},
+     {q:'Aos 3 anos, a criança deve ser compreendida por quem?',opts:['Apenas pela mãe','Apenas pela família próxima','Pessoas fora do núcleo familiar','Apenas pelo fonoaudiólogo'],correct:2},
+     {q:'O que diferencia atraso simples de transtorno específico de linguagem?',opts:['A idade da criança','Investigação fonoaudiológica especializada','A inteligência da criança','O número de palavras'],correct:1}
    ]}
 ],
+/* ══════ NÍVEL 5 · EXPERT ══════ */
 5:[
   {id:'5a',name:'Epigenética e Linguagem',words:162,
    title:'Epigenética, Plasticidade Cerebral e Aquisição de Linguagem',subtitle:'Nível 5 · Expert · Alta complexidade científica',
@@ -652,8 +721,25 @@ const TEXTS = {
      {q:'O que demonstram as metanálises de fMRI na gagueira?',opts:['Hiperativação bilateral','Hipoativação do giro frontal esquerdo','Alteração no cerebelo','Aumento do hipocampo'],correct:1},
      {q:'Qual neurotransmissor é modulatório na gagueira?',opts:['Serotonina','Glutamato','Dopamina','GABA'],correct:2},
      {q:'O que a abordagem ACT prioriza na gagueira?',opts:['Supressão de disfluências','Qualidade de vida e participação comunicativa','Medicação antidopaminérgica','Análise acústica'],correct:1}
+   ]},
+  {id:'5c',name:'Presbifonia e Envelhecimento',words:155,
+   title:'Presbifonia: Alterações Vocais no Envelhecimento',subtitle:'Nível 5 · Expert · Gerontologia · Fonoaudiologia · Texto técnico',
+   content:'A presbifonia designa as alterações vocais decorrentes do processo fisiológico de envelhecimento laríngeo, distinguindo-se das disfonias de etiologia patológica por sua natureza progressiva e multifatorial. As alterações morfológicas subjacentes incluem atrofia das fibras musculares da camada muscular das pregas vocais, calcificação das cartilagens laríngeas, alterações na lâmina própria e ressecamento das mucosas por redução da produção glandular. Do ponto de vista perceptivo-auditivo, a presbifonia manifesta-se por voz trêmula, soprosa, redução da intensidade vocal e restrição da extensão fonatória. Os parâmetros acústicos típicos incluem elevação do jitter e shimmer, redução da proporção harmônico-ruído e instabilidade da frequência fundamental. A diferenciação entre presbifonia fisiológica e patologias superimpostas, como paralisia de prega vocal, lesões benignas ou malignas, exige videoestroboscopia laríngea. A terapia vocal na presbifonia tem como objetivos funcionais a otimização do suporte respiratório, o aumento do esforço glótico e a reorganização da biomecânica fonatória, com evidências crescentes de reversibilidade parcial das alterações musculares por meio do exercício vocal sistematizado.',
+   questions:[
+     {q:'O que é presbifonia?',opts:['Alteração vocal por lesão laríngea','Alteração vocal fisiológica pelo envelhecimento','Disfonia por uso excessivo da voz','Paralisia de prega vocal'],correct:1},
+     {q:'O que é calcificação das cartilagens laríngeas?',opts:['Processo inflamatório','Alteração estrutural do envelhecimento','Tumor benigno','Reação alérgica'],correct:1},
+     {q:'Qual exame diferencia presbifonia de patologias superimpostas?',opts:['Ressonância magnética','Tomografia','Videoestroboscopia laríngea','Audiometria'],correct:2}
+   ]},
+  {id:'5d',name:'Processamento Auditivo Central',words:160,
+   title:'Transtorno do Processamento Auditivo Central: Diagnóstico e Intervenção',subtitle:'Nível 5 · Expert · Audiologia · Processamento auditivo',
+   content:'O transtorno do processamento auditivo central, designado pela sigla TPAC, caracteriza-se por dificuldades no processamento das informações acústicas pelo sistema nervoso auditivo central, na presença de limiares auditivos periféricos dentro dos padrões de normalidade. O diagnóstico diferencial entre TPAC e outros transtornos do neurodesenvolvimento, como o transtorno do déficit de atenção e hiperatividade e o transtorno do espectro autista, representa um dos maiores desafios clínicos contemporâneos, dado que esses quadros compartilham manifestações funcionais e podem coexistir. A avaliação do processamento auditivo central inclui testes comportamentais de escuta dicótica, resolução temporal, localização sonora e processamento de padrões tonais e de duração. Testes eletrofisiológicos como o potencial evocado auditivo de longa latência e o mismatch negativity fornecem dados objetivos sobre o processamento cortical do estímulo acústico. As abordagens de intervenção incluem terapia fonoaudiológica direta com treino auditivo formal, modificações ambientais para melhora do campo acústico e o uso de sistemas de frequência modulada em contextos educacionais. A plasticidade auditiva cortical fornece o substrato neurobiológico para os efeitos do tratamento.',
+   questions:[
+     {q:'O que caracteriza o TPAC?',opts:['Surdez periférica','Dificuldade no processamento central com audição periférica normal','Perda auditiva condutiva','Alteração do nervo auditivo'],correct:1},
+     {q:'O que avalia o teste de escuta dicótica?',opts:['Limiares de audição pura','Processamento de sons em ambas as orelhas simultaneamente','Reflexo cócleo-palpebral','Emissões otoacústicas'],correct:1},
+     {q:'O que fornece substrato para os efeitos do tratamento do TPAC?',opts:['Medicação específica','Cirurgia laríngea','Plasticidade auditiva cortical','Amplificação sonora'],correct:2}
    ]}
 ],
+/* ══════ NÍVEL 6 · EXTREMO ══════ */
 6:[
   {id:'6a',name:'Fonologia Extrema',words:143,
    title:'Processamento Fonológico em Transtornos Complexos da Comunicação',subtitle:'Nível 6 · EXTREMO · Articulação máxima · Trava-línguas clínicos',
@@ -661,15 +747,31 @@ const TEXTS = {
    questions:[
      {q:'O que distingue o transtorno fonológico inconsistente da dispraxia?',opts:['Maior número de erros','Preservação relativa da praxis não-verbal','Alteração na voz','Comprometimento auditivo'],correct:1},
      {q:'O que é estimulabilidade?',opts:['Capacidade de imitar sons com modelo','Força muscular da língua','Discriminação auditiva','Velocidade de fala'],correct:0},
-     {q:'Quais traços distintivos são citados no texto?',opts:['Tom e ritmo','Sonoridade, vozeamento, ponto e modo','Frequência e amplitude','Jitter e shimmer'],correct:1}
+     {q:'Quais traços distintivos são citados?',opts:['Tom e ritmo','Sonoridade, vozeamento, ponto e modo','Frequência e amplitude','Jitter e shimmer'],correct:1}
    ]},
-  {id:'6b',name:'Texto Multissistêmico Extremo',words:158,
+  {id:'6b',name:'Texto Multissistêmico',words:158,
    title:'Avaliação Multidimensional dos Subsistemas da Fala',subtitle:'Nível 6 · EXTREMO · Prosódia · Articulação · Fluência · Voz · Cognição',
    content:'Subsistemas da fala — respiração, fonação, ressonância, articulação, prosódia — operam em sinergia neuromuscular que pressupõe integridade dos nervos cranianos cinco, sete, nove, dez, onze e doze, do nervo frênico e dos nervos intercostais. Leia em voz alta mantendo qualidade vocal, taxa de fala adequada e prosódia expressiva variada: pseudopseudohipoparatiroidismo, esternocleidomastoideo, hepatoesplenomegalia, feocromocitoma, pneumonoultramicroscopicosilicovolcanoconiose. Agora com ênfase expressiva e entoação ascendente-descendente: "O xenofóbico xerife extraordinariamente excêntrico exigiu que expulsassem extemporaneamente os exploradores estrangeiros experientes." Com ritmo metricamente regular: "Três pratos de trigo para três tigres tristes e magros." Mais complexo ainda: "O rato roeu a roupa do rei de Roma enquanto a rainha com raiva rasgava o restante." Avalie agora sua própria prosódia: variou adequadamente o tom? Manteve a velocidade regular? Controlou pausas sintáticas? A leitura oral de textos tecnicamente densos exige integração simultânea entre processamento fonológico, morfossintático, semântico e pragmático.',
    questions:[
      {q:'Quantos subsistemas da fala são citados?',opts:['3','4','5','6'],correct:2},
      {q:'Quais nervos cranianos são mencionados?',opts:['1,2,3,4,5','5,7,9,10,11,12','3,4,5,6,7,8','7,8,9,10,11,12'],correct:1},
      {q:'O que a leitura de textos densos exige?',opts:['Apenas memória','Integração de múltiplos processamentos simultâneos','Velocidade máxima','Apenas articulação'],correct:1}
+   ]},
+  {id:'6c',name:'Disfunções Neuromotoras da Fala',words:165,
+   title:'Disartrias: Classificação Neuromotora e Biomecânica da Fala Comprometida',subtitle:'Nível 6 · EXTREMO · Neurologia · Motricidade orofacial · Densidade máxima',
+   content:'As disartrias constituem um conjunto heterogêneo de distúrbios motores da fala decorrentes de lesões do sistema nervoso central ou periférico que afetam a execução neuromuscular dos subsistemas fonatório, articulatório, velofaríngeo e respiratório. A classificação de Mayo, sistematizada por Darley, Aronson e Brown na década de sessenta, distingue seis subtipos: flácida, espástica, atáxica, hipocinética, hipercinética e mista. A disartria flácida resulta de lesão do neurônio motor inferior, caracterizando-se por hipotonia, flacidez muscular, voz soprosa, hipernasalidade e articulação distorcida por redução da força muscular. A disartria espástica, associada a lesões bilaterais do neurônio motor superior, apresenta hipertonia, voz forçada e estrangulada, articulação imprecisa e taxa de fala reduzida. A disartria atáxica, resultante de lesão cerebelar, caracteriza-se por prosódia irregular, articulação explosiva e instabilidade de frequência e intensidade. A avaliação fonoaudiológica das disartrias utiliza protocolos como o Frenchay Dysarthria Assessment e exige análise perceptivo-auditiva sistemática aliada à mensuração acústica de parâmetros como o Diadococinesia Articulatória, avaliado pela rapidez e regularidade de sequências silábicas repetidas como pataca e badaga.',
+   questions:[
+     {q:'Qual subclassificação resulta de lesão do neurônio motor inferior?',opts:['Espástica','Atáxica','Flácida','Hipocinética'],correct:2},
+     {q:'O que avalia a Diadococinesia Articulatória?',opts:['Qualidade vocal','Rapidez e regularidade de sílabas repetidas','Compreensão auditiva','Fluência'],correct:1},
+     {q:'Qual sistema é afetado na disartria atáxica?',opts:['Neurônio motor inferior','Sistema piramidal','Cerebelo','Gânglios da base'],correct:2}
+   ]},
+  {id:'6d',name:'Consciência Fonológica Avançada',words:152,
+   title:'Consciência Fonológica, Dislexia e Intervenção Neuropsicopedagógica',subtitle:'Nível 6 · EXTREMO · Leitura · Fonologia · Dislexia · Neuropsicologia',
+   content:'A consciência fonológica, entendida como a capacidade metalinguística de refletir e manipular os segmentos sonoros da fala, constitui o preditor mais robusto do sucesso na aprendizagem da leitura e da escrita em sistemas alfabéticos. Sua estrutura hierárquica compreende habilidades de consciência silábica, intrassilábica e fonêmica, sendo esta última a mais relacionada à decodificação grafofônica. A dislexia desenvolvimental, classificada como transtorno específico de aprendizagem com prejuízo na leitura no DSM-5 e na CID-11, manifesta-se por dificuldades persistentes e inesperadas na decodificação fonológica, na fluência leitora e na soletração, não explicadas por déficits intelectuais, sensoriais ou de oportunidade educacional. O modelo de dupla rota da leitura, proposto por Coltheart, distingue a via lexical ou visual, responsável pelo reconhecimento global de palavras familiares, da via fonológica ou sublexical, utilizada para a decodificação de palavras desconhecidas e pseudopalavras. Intervenções fonoaudiológicas baseadas em evidência para dislexia incluem o treino explícito e sistematizado da consciência fonêmica, combinado ao ensino da correspondência grafema-fonema e à prática de leitura repetida cronometrada com feedback corretivo imediato, em frequência mínima de três a quatro sessões semanais para efeitos neuroplásticos mensuráveis.',
+   questions:[
+     {q:'O que é o preditor mais robusto de sucesso na leitura?',opts:['Memória visual','Consciência fonológica','Vocabulário oral','Inteligência geral'],correct:1},
+     {q:'O que distingue a via lexical da via fonológica na leitura?',opts:['A velocidade de leitura','Lexical reconhece palavras familiares; fonológica decodifica novas','O tipo de letra usada','A compreensão do texto'],correct:1},
+     {q:'Qual frequência mínima de intervenção é recomendada para efeitos neuroplásticos?',opts:['1 vez por semana','2 vezes por semana','3 a 4 vezes por semana','Diariamente'],correct:2}
    ]}
 ]
 };
@@ -878,6 +980,7 @@ function setMark(mode) {
 }
 
 function markWord(idx) {
+  idx = Number(idx); // SEMPRE número para evitar bug de string vs número
   const el = document.getElementById('w' + idx);
   if (!el) return;
   const typeClass = {error:'w-error',hesit:'w-hesit',subst:'w-subst',omiss:'w-omiss',add:'w-add'};
@@ -885,15 +988,22 @@ function markWord(idx) {
     delete marks[idx];
     el.className = 'word';
   } else {
-    if (marks[idx] === markMode) { delete marks[idx]; el.className = 'word'; }
-    else { marks[idx] = markMode; el.className = 'word ' + (typeClass[markMode] || ''); }
+    if (marks[idx] === markMode) {
+      delete marks[idx];
+      el.className = 'word';
+    } else {
+      marks[idx] = markMode;
+      el.className = 'word ' + (typeClass[markMode] || '');
+    }
   }
   updateMetrics();
 }
 
 function clearAll() {
   marks = {};
-  document.querySelectorAll('.word').forEach(el => el.className = 'word');
+  // Resetar visualmente TODAS as palavras do texto atual
+  const container = document.getElementById('tc-words');
+  if (container) container.querySelectorAll('.word').forEach(el => { el.className = 'word'; });
   updateMetrics();
 }
 
@@ -946,14 +1056,19 @@ function updateTimerDisplay() {
   document.getElementById('fs-timer').textContent = str;
 }
 function updateMetrics() {
-  const errCnt = Object.values(marks).filter(v => v === 'error').length;
-  const hesCnt = Object.values(marks).filter(v => v === 'hesit').length;
-  document.getElementById('m-errors').textContent = errCnt;
+  const vals = Object.values(marks);
+  const errCnt = vals.filter(v => v === 'error').length;
+  const hesCnt = vals.filter(v => v === 'hesit').length;
+  const subCnt = vals.filter(v => v === 'subst').length;
+  const omiCnt = vals.filter(v => v === 'omiss').length;
+  const addCnt = vals.filter(v => v === 'add').length;
+  const totalErr = errCnt + subCnt + omiCnt + addCnt; // hesitação não é erro de precisão
+  document.getElementById('m-errors').textContent = totalErr;
   document.getElementById('m-hesit').textContent = hesCnt;
   if (elapsedSec > 0 && currentText) {
     const total = wordElements.length;
     const wpm = Math.round((total / elapsedSec) * 60);
-    const acc = Math.round(((total - errCnt) / total) * 100);
+    const acc = Math.max(0, Math.round(((total - totalErr) / total) * 100));
     document.getElementById('m-wpm').textContent = wpm;
     document.getElementById('m-accuracy').textContent = acc + '%';
     const prog = Math.min(100, Math.round((elapsedSec / Math.max(30, elapsedSec)) * 100));
@@ -1086,11 +1201,11 @@ function buildReport() {
   const intelligibility = Math.max(0, Math.min(100, accuracy - (hesCnt * 0.5)));
 
   // Error words by type
-  const errWords = Object.entries(marks).filter(([,v])=>v==='error').map(([i])=>wordElements[i]).filter(Boolean);
-  const hesWords = Object.entries(marks).filter(([,v])=>v==='hesit').map(([i])=>wordElements[i]).filter(Boolean);
-  const subWords = Object.entries(marks).filter(([,v])=>v==='subst').map(([i])=>wordElements[i]).filter(Boolean);
-  const omiWords = Object.entries(marks).filter(([,v])=>v==='omiss').map(([i])=>wordElements[i]).filter(Boolean);
-  const addWords = Object.entries(marks).filter(([,v])=>v==='add').map(([i])=>wordElements[i]).filter(Boolean);
+  const errWords = Object.entries(marks).filter(([,v])=>v==='error').map(([i])=>wordElements[Number(i)]).filter(Boolean);
+  const hesWords = Object.entries(marks).filter(([,v])=>v==='hesit').map(([i])=>wordElements[Number(i)]).filter(Boolean);
+  const subWords = Object.entries(marks).filter(([,v])=>v==='subst').map(([i])=>wordElements[Number(i)]).filter(Boolean);
+  const omiWords = Object.entries(marks).filter(([,v])=>v==='omiss').map(([i])=>wordElements[Number(i)]).filter(Boolean);
+  const addWords = Object.entries(marks).filter(([,v])=>v==='add').map(([i])=>wordElements[Number(i)]).filter(Boolean);
 
   // Phonological analysis
   const allErrWords = [...errWords, ...subWords, ...omiWords];
