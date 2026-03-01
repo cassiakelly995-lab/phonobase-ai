@@ -960,23 +960,21 @@ function getTargetSeconds(words, level) {
 
 function resetTimerDisplay(){
   if(!currentText) return;
+  document.getElementById('timerDisplay').textContent = '00:00';
+  document.getElementById('timerDisplay').className = 'timer-display';
+  document.getElementById('timerDisplay').style.color = '';
   if(countdownMode){
     const words = currentText.body.trim().split(/\s+/).length;
     countdownTotal = getTargetSeconds(words, currentText.level);
     countdownRemaining = countdownTotal;
-    const m = Math.floor(countdownTotal/60), s = countdownTotal%60;
-    document.getElementById('timerDisplay').textContent = pad(m)+':'+pad(s);
-    document.getElementById('timerDisplay').className = 'timer-display';
-    document.getElementById('timerDisplay').style.color = '';
+    const tm = Math.floor(countdownTotal/60), ts = countdownTotal%60;
     document.getElementById('countdownBar').style.display = '';
-    document.getElementById('countdownFill').style.width = '100%';
+    document.getElementById('countdownFill').style.width = '0%';
     document.getElementById('countdownFill').style.background = 'var(--easy)';
-    document.getElementById('countdownPct').textContent = '100%';
-    document.getElementById('countdownLabel').textContent = '⏳ Tempo restante';
+    document.getElementById('countdownPct').textContent = '0% usado';
+    document.getElementById('countdownLabel').textContent = `🏁 Limite: ${pad(tm)}:${pad(ts)} — termine antes!`;
+    document.getElementById('countdownHint').textContent = '⚡ Quanto menos tempo usar, maior sua nota!';
   } else {
-    document.getElementById('timerDisplay').textContent = '00:00';
-    document.getElementById('timerDisplay').className = 'timer-display';
-    document.getElementById('timerDisplay').style.color = '';
     document.getElementById('countdownBar').style.display = 'none';
   }
 }
@@ -1048,10 +1046,10 @@ function startTimer() {
       timerSeconds++;
       countdownRemaining = Math.max(0, countdownTotal - timerSeconds);
       updateTimerDisplay();
-      if(countdownRemaining <= 0){
+      if(timerSeconds >= countdownTotal){
         clearInterval(timerInterval);
         timerRunning = false;
-        showToast('⏰ Tempo esgotado!');
+        showToast('⏰ Tempo limite atingido!');
         setTimeout(()=>showResult(), 600);
       }
     }, 1000);
@@ -1079,25 +1077,30 @@ function stopTimer() {
 }
 
 function updateTimerDisplay() {
-  if(countdownMode){
-    const rem = Math.max(0, countdownRemaining);
-    const m = Math.floor(rem/60), s = rem%60;
-    document.getElementById('timerDisplay').textContent = pad(m)+':'+pad(s);
-    const pct = countdownTotal > 0 ? rem/countdownTotal : 0;
-    const pctRound = Math.round(pct*100);
-    document.getElementById('countdownFill').style.width = pctRound+'%';
-    document.getElementById('countdownPct').textContent = pctRound+'%';
-    let barColor='var(--easy)', labelText='⏳ Tempo restante';
-    if(pct < 0.15){ barColor='var(--dificil)'; labelText='🔥 APRESSE-SE!'; }
-    else if(pct < 0.35){ barColor='var(--medio)'; labelText='⚡ Acelere!'; }
-    else if(pct < 0.6){ barColor='#e9c46a'; }
+  // Timer display always shows elapsed time going UP
+  const m = Math.floor(timerSeconds/60), s = timerSeconds%60;
+  document.getElementById('timerDisplay').textContent = pad(m)+':'+pad(s);
+
+  if(countdownMode && countdownTotal > 0){
+    // Bar shows how much of the time budget has been CONSUMED (fills up = pressure)
+    const usedPct = Math.min(1, timerSeconds / countdownTotal);
+    const usedRound = Math.round(usedPct * 100);
+    document.getElementById('countdownFill').style.width = usedRound + '%';
+    document.getElementById('countdownPct').textContent = usedRound + '% usado';
+
+    // Color + label gets more urgent as budget runs out
+    let barColor = 'var(--easy)', labelText = '🟢 Ótimo ritmo — continue!';
+    if(usedPct >= 0.9){      barColor = 'var(--dificil)'; labelText = '🔥 ÚLTIMOS SEGUNDOS!'; }
+    else if(usedPct >= 0.7){ barColor = 'var(--medio)';   labelText = '⚡ APRESSE-SE!'; }
+    else if(usedPct >= 0.5){ barColor = '#e9c46a';        labelText = '⏩ Acelere o ritmo!'; }
     document.getElementById('countdownFill').style.background = barColor;
     document.getElementById('countdownLabel').textContent = labelText;
-    document.getElementById('timerDisplay').style.color = pct < 0.2 ? 'var(--dificil)' : pct < 0.4 ? 'var(--medio)' : 'var(--accent)';
+    document.getElementById('timerDisplay').style.color =
+      usedPct >= 0.85 ? 'var(--dificil)' : usedPct >= 0.65 ? 'var(--medio)' : 'var(--accent)';
   } else {
-    const m = Math.floor(timerSeconds/60), s = timerSeconds%60;
-    document.getElementById('timerDisplay').textContent = pad(m)+':'+pad(s);
+    document.getElementById('timerDisplay').style.color = '';
   }
+
   if(timerSeconds > 5 && currentText){
     const wc = currentText.body.trim().split(/\s+/).length;
     document.getElementById('wpmLive').textContent = Math.round((wc/timerSeconds)*60)+' PPM';
@@ -1195,19 +1198,21 @@ function buildFullReport(wpm, secs, words, level, grade) {
     mainItems.push({icon:'⏱️', text:`<strong>Tempo: ${fmtTime(secs)} — Sessão válida.</strong><br><span style="color:var(--ink2)">${Math.round(mins)} minutos é suficiente para uma medição real. Com ${words} palavras, o PPM calculado reflete seu desempenho atual.</span>`});
   }
 
-  // 3. Modo Desafio — resultado honesto
+  // 3. Modo Desafio — resultado honesto baseado em % do tempo usado
   if(countdownMode && countdownTotal > 0){
     const usedPct = Math.round((secs / countdownTotal) * 100);
     const targetWpm = Math.round((words/countdownTotal)*60);
-    const finishedInTime = secs < countdownTotal;
-    if(!finishedInTime){
-      mainItems.push({icon:'❌', text:`<strong>Modo Desafio: FALHOU.</strong><br><span style="color:var(--ink2)">O tempo esgotou antes de você terminar. A meta era ${targetWpm} PPM — você ficou em ${wpm} PPM. O desafio foi calibrado para ser alcançável com esforço real. Se não chegou, significa que sua velocidade atual ainda não é suficiente para esse nível.</span>`});
+    const hitLimit = secs >= countdownTotal;
+    if(hitLimit){
+      mainItems.push({icon:'❌', text:`<strong>Modo Desafio: FALHOU — tempo limite atingido.</strong><br><span style="color:var(--ink2)">Você usou 100% do tempo disponível sem terminar. A meta era ${targetWpm} PPM. Você ficou em ${wpm} PPM. O limite foi calibrado para ser alcançável com esforço real. Se não chegou, sua velocidade atual não é suficiente para esse nível.</span>`});
+    } else if(usedPct <= 50){
+      mainItems.push({icon:'🥇', text:`<strong>Modo Desafio: EXCELENTE — ${usedPct}% do tempo usado.</strong><br><span style="color:var(--ink2)">Você terminou usando menos da metade do limite. Isso é leitura de alto desempenho. Suba de nível — esse desafio já não serve mais para você crescer.</span>`});
     } else if(usedPct <= 70){
-      mainItems.push({icon:'🏆', text:`<strong>Modo Desafio: PASSOU com folga (${usedPct}% do tempo usado).</strong><br><span style="color:var(--ink2)">Meta era ${targetWpm} PPM, você fez ${wpm} PPM. Bom resultado. Agora suba o nível — ficar confortável no desafio é sinal de que ele não é mais desafiador.</span>`});
-    } else if(usedPct <= 90){
-      mainItems.push({icon:'⚡', text:`<strong>Modo Desafio: PASSOU (${usedPct}% do tempo usado).</strong><br><span style="color:var(--ink2)">Você chegou lá — mas sem folga. Isso indica que ${wpm} PPM ainda é seu teto, não sua velocidade confortável. Repita até conseguir 75% do tempo de forma consistente.</span>`});
+      mainItems.push({icon:'🏆', text:`<strong>Modo Desafio: ÓTIMO — ${usedPct}% do tempo usado.</strong><br><span style="color:var(--ink2)">Terminou com folga confortável. Bom resultado. Para o próximo desafio, mire abaixo de 50% do tempo — é aí que a melhora real acontece.</span>`});
+    } else if(usedPct <= 85){
+      mainItems.push({icon:'⚡', text:`<strong>Modo Desafio: PASSOU — ${usedPct}% do tempo usado.</strong><br><span style="color:var(--ink2)">Completou dentro do limite, mas sem muita folga. Isso indica que ${wpm} PPM ainda é próximo do seu teto. Treine até conseguir terminar com 30%+ sobrando de forma consistente.</span>`});
     } else {
-      mainItems.push({icon:'⚠️', text:`<strong>Modo Desafio: PASSOU raspando (${usedPct}% do tempo).</strong><br><span style="color:var(--ink2)">Tecnicamente dentro do tempo, mas com apenas ${100-usedPct}% sobrando. Isso não é domínio — é sobrevivência. Treine mais antes de considerar que superou esse nível.</span>`});
+      mainItems.push({icon:'⚠️', text:`<strong>Modo Desafio: PASSOU RASPANDO — ${usedPct}% do tempo usado.</strong><br><span style="color:var(--ink2)">Tecnicamente dentro do limite, mas com apenas ${100-usedPct}% sobrando. Isso não é domínio — é sobrevivência. Repita até conseguir terminar usando no máximo 70% do tempo.</span>`});
     }
   }
 
@@ -1272,8 +1277,9 @@ function buildFullReport(wpm, secs, words, level, grade) {
     strengths.push({icon:'💪', text:`<strong>Escolha honesta de dificuldade (${lvlNames[level]}).</strong><br><span style="color:var(--ink2)">Ir direto ao nível confortável seria mais fácil. Você não fez isso. Isso é o que separa quem melhora de quem fica estagnado.</span>`});
   }
 
-  if(countdownMode && countdownTotal > 0 && secs < countdownTotal * 0.85){
-    strengths.push({icon:'🏅', text:`<strong>Desempenho sólido no Modo Desafio.</strong><br><span style="color:var(--ink2)">Terminar com folga no cronômetro regressivo mostra que você tem margem — não está no limite. Isso é um indicador real de progresso.</span>`});
+  if(countdownMode && countdownTotal > 0 && secs < countdownTotal * 0.7){
+    const usedPct = Math.round((secs/countdownTotal)*100);
+    strengths.push({icon:'🏅', text:`<strong>Velocidade real no Modo Desafio (${usedPct}% do tempo usado).</strong><br><span style="color:var(--ink2)">Terminar usando menos de 70% do limite não é sorte — é resultado de leitura eficiente. Isso é um indicador confiável de progresso real.</span>`});
   }
 
   if(strengths.length > 0){
@@ -1298,7 +1304,7 @@ function buildFullReport(wpm, secs, words, level, grade) {
   }
 
   const meta = Math.round(wpm * 1.15);
-  plan.push({icon:'🎯', text:`<strong>META PRÓXIMA SESSÃO: ${meta} PPM no nível ${lvlNames[level]}.</strong><br><span style="color:var(--ink2)">+15% sobre hoje. É desconfortável? Ótimo. Conforto é estagnação. Use o Modo Desafio — deixe o cronômetro te forçar, porque sua vontade vai ceder quando ficar difícil.</span>`});
+  plan.push({icon:'🎯', text:`<strong>META PRÓXIMA SESSÃO: ${meta} PPM no nível ${lvlNames[level]}.</strong><br><span style="color:var(--ink2)">+15% sobre hoje. Use o Modo Desafio e tente terminar usando menos de ${countdownMode ? Math.max(10, Math.round((secs/countdownTotal)*100) - 15) : 70}% do tempo limite. Quanto menos tempo gastar, mais forte você está ficando.</span>`});
 
   renderItems('planItems', plan);
 }
