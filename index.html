@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -15,7 +16,7 @@
   --extremo-bg:#1a1410;--accent:#e85d04;--accent-light:#fff0e8;
   --speech:#0077cc;--speech-bg:#e8f4ff;
 }
-html{font-size:15px}
+html{font-size:19px}
 body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;min-height:100vh}
 
 /* SCREENS */
@@ -160,7 +161,7 @@ body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;min-
 
 /* Problems list */
 .problems-list{display:flex;flex-direction:column;gap:8px}
-.problem-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-radius:10px;font-size:.82rem;line-height:1.5}
+.problem-item{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-radius:10px;font-size:.9rem;line-height:1.6}
 .problem-item.error{background:#fdecea;border-left:3px solid var(--dificil)}
 .problem-item.warning{background:#fff4e0;border-left:3px solid var(--medio)}
 .problem-item.info{background:var(--speech-bg);border-left:3px solid var(--speech)}
@@ -341,6 +342,16 @@ body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;min-
         <div id="speechSupportBadge" style="font-size:.7rem;font-family:'DM Mono',monospace;color:var(--easy)">● API disponível</div>
       </div>
       <div class="speech-panel-body">
+
+        <!-- BOTÃO NO TOPO -->
+        <div style="text-align:center;margin-bottom:20px">
+          <button class="btn btn-speech" id="btnRecord" onclick="toggleRecord()" style="font-size:1.15rem;padding:18px 40px;border-radius:14px;width:100%;justify-content:center;gap:12px;font-weight:700">
+            <span id="btnRecIcon" style="font-size:1.4rem">⏺</span>
+            <span id="btnRecText">🎙 INICIAR GRAVAÇÃO</span>
+          </button>
+          <div style="font-size:0.75rem;color:var(--ink3);margin-top:8px;font-family:'DM Mono',monospace">▲ Clique para começar a gravar</div>
+        </div>
+
         <div class="rec-status" id="recStatus">
           <div class="rec-dot" id="recDot"></div>
           <div class="rec-status-text" id="recStatusText">Pronto para gravar. Clique em Iniciar.</div>
@@ -365,11 +376,7 @@ body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;min-
         </div>
 
         <div class="speech-controls">
-          <button class="btn btn-speech" id="btnRecord" onclick="toggleRecord()">
-            <span id="btnRecIcon">⏺</span>
-            <span id="btnRecText">Iniciar Gravação</span>
-          </button>
-          <button class="btn btn-ghost" id="btnAnalyze" onclick="analyzeCurrentSpeech()" style="display:none">🔍 Analisar</button>
+          <button class="btn btn-ghost" id="btnAnalyze" onclick="analyzeCurrentSpeech()" style="display:none">🔍 Analisar Agora</button>
           <button class="btn btn-ghost" onclick="clearSpeech()">🗑 Limpar</button>
         </div>
       </div>
@@ -377,7 +384,7 @@ body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;min-
 
     <!-- Problems found -->
     <div class="speech-panel" id="problemsPanel" style="display:none">
-      <div class="speech-panel-header"><div class="speech-panel-title">📋 Diagnóstico da Fala</div></div>
+      <div class="speech-panel-header"><div class="speech-panel-title">📋 Relatório Completo da Fala</div></div>
       <div class="speech-panel-body">
         <div class="problems-list" id="problemsList"></div>
       </div>
@@ -1316,13 +1323,14 @@ function stopWaveform(){
   document.getElementById('waveIdleMsg').textContent='🎤 aguardando gravação…';
 }
 
-// ===== SPEECH ANALYSIS =====
+// ===== SPEECH ANALYSIS - COMPLETA =====
 function analyzeCurrentSpeech(){
   if(!fullTranscript.trim()){ showToast('Grave algo primeiro!'); return; }
 
   const words = fullTranscript.trim().split(/\s+/).filter(Boolean);
   const totalWords = words.length;
   const wpm = recSeconds>0 ? Math.round((totalWords/recSeconds)*60) : 0;
+  const durationMin = recSeconds/60;
 
   // Filler detection
   const fillerFound = {};
@@ -1339,70 +1347,126 @@ function analyzeCurrentSpeech(){
     if(a===b && a.length>2) repeated[a]=(repeated[a]||0)+1;
   }
 
-  // Speed assessment
-  const speedOk = wpm>=100 && wpm<=180;
-  const speedFast = wpm>180;
-  const speedSlow = wpm<80;
+  // Speed classification
+  let speedClass, speedLabel, speedColor, speedDica;
+  if(wpm<60){
+    speedClass='error'; speedLabel='⚠️ MUITO LENTA'; speedColor='var(--dificil)';
+    speedDica='Sua fala está extremamente lenta. Isso pode causar perda de atenção do ouvinte. Treine leitura em voz alta diariamente para ganhar fluidez natural.';
+  } else if(wpm<80){
+    speedClass='warning'; speedLabel='🐢 LENTA'; speedColor='var(--medio)';
+    speedDica='Velocidade abaixo do ideal. Fale com mais confiança — insegurança costuma deixar a fala arrastada. Respire fundo antes de começar e mantenha o ritmo.';
+  } else if(wpm<=100){
+    speedClass='info'; speedLabel='🚶 BOA (Moderada)'; speedColor='var(--speech)';
+    speedDica='Velocidade levemente abaixo da ideal, mas ainda boa. Adequada para explicações técnicas ou audiências que precisam absorver muito conteúdo.';
+  } else if(wpm<=160){
+    speedClass='success'; speedLabel='✅ IDEAL'; speedColor='var(--easy)';
+    speedDica='Parabéns! Velocidade ideal para comunicação clara e profissional. Continue mantendo esse ritmo.';
+  } else if(wpm<=180){
+    speedClass='info'; speedLabel='🚀 BOA (Animada)'; speedColor='var(--speech)';
+    speedDica='Velocidade um pouco elevada, mas ainda aceitável. Lembre-se de respirar entre os períodos e dar pausas de ênfase nas palavras importantes.';
+  } else if(wpm<=220){
+    speedClass='warning'; speedLabel='🏎️ RÁPIDA'; speedColor='var(--medio)';
+    speedDica='Você está falando rápido demais. O ouvinte pode perder partes. Tente desacelerar conscientemente, especialmente em trechos importantes.';
+  } else {
+    speedClass='error'; speedLabel='⚡ MUITO RÁPIDA'; speedColor='var(--dificil)';
+    speedDica='Velocidade extremamente alta. Dificilmente alguém consegue acompanhar. Faça exercícios de respiração diafragmática e pratique falar mais devagar.';
+  }
 
   // Hesitation ratio
-  const hesitRatio = totalWords>0 ? hesitationCount/totalWords : 0;
+  const hesitRatio = totalWords>0 ? Math.round((hesitationCount/totalWords)*100) : 0;
 
   // Score 0-100
   let score = 100;
-  if(speedFast) score-=15;
-  if(speedSlow) score-=15;
+  if(wpm<60) score-=25; else if(wpm<80) score-=15; else if(wpm>220) score-=25; else if(wpm>180) score-=10;
   score -= Math.min(30, Object.values(fillerFound).reduce((a,b)=>a+b,0)*5);
   score -= Math.min(20, hesitationCount*3);
   score -= Math.min(15, pauseCount*3);
   score -= Math.min(10, Object.values(repeated).reduce((a,b)=>a+b,0)*4);
   score = Math.max(0, Math.min(100, score));
 
-  // Update metrics
+  // Grade
+  const grade = score>=90?'S':score>=80?'A':score>=70?'B':score>=60?'C':score>=50?'D':'F';
+  const gradeDesc = {S:'Excepcional',A:'Ótimo',B:'Bom',C:'Regular',D:'Fraco',F:'Crítico'}[grade];
+
+  // Update metrics display
   document.getElementById('metWPM').textContent = wpm;
   document.getElementById('metPauses').textContent = pauseCount;
   document.getElementById('metHesit').textContent = hesitationCount;
   document.getElementById('metScore').textContent = score;
-  document.getElementById('metWPM').style.color = speedOk?'var(--easy)':speedFast?'var(--medio)':'var(--dificil)';
+  document.getElementById('metWPM').style.color = speedColor;
   document.getElementById('metScore').style.color = score>=80?'var(--easy)':score>=60?'var(--medio)':'var(--dificil)';
   document.getElementById('speechMetrics').style.display='';
 
-  // Build problems
+  // Build problems list
   const problems = [];
 
-  // WPM feedback
-  if(speedSlow) problems.push({type:'warning',icon:'🐢',title:'Fala muito lenta',desc:`${wpm} PPM — abaixo de 80 PPM. Tente falar com mais fluidez e confiança. Pausas em excesso podem indicar insegurança ou falta de familiaridade com o conteúdo.`});
-  else if(speedFast) problems.push({type:'warning',icon:'🏎',title:'Fala muito rápida',desc:`${wpm} PPM — acima de 180 PPM. Velocidade elevada dificulta compreensão do ouvinte. Tente respirar entre frases e dar peso às palavras importantes.`});
-  else problems.push({type:'success',icon:'✅',title:'Ritmo de fala adequado',desc:`${wpm} PPM — dentro da faixa ideal (100–180 PPM). Boa velocidade para comunicação clara.`});
+  // 1. SCORE GERAL com grade
+  const scoreEmoji = score>=80?'🏆':score>=60?'📈':'📉';
+  const scoreTipo = score>=80?'success':score>=60?'info':'error';
+  problems.push({type:scoreTipo, icon:scoreEmoji, title:`Score Geral: ${score}/100 — Nota ${grade} (${gradeDesc})`,
+    desc:`Você falou ${totalWords} palavras em ${Math.floor(recSeconds/60)}m${recSeconds%60}s. ${score>=80?'Ótima performance! Continue praticando para manter o nível.':score>=60?'Desempenho satisfatório. Com foco nos pontos abaixo você melhora rapidamente.':'Vários aspectos precisam de atenção. Foque em um ponto de cada vez.'}`});
 
-  // Hesitations
-  if(hesitationCount>3) problems.push({type:'error',icon:'😬',title:`${hesitationCount} hesitações detectadas`,desc:`Palavras como "ã", "ê", "hm", "ah" indicam insegurança ou busca de palavras. Pratique pausas em silêncio em vez de sons de hesitação — o silêncio soa mais profissional.`});
-  else if(hesitationCount>0) problems.push({type:'info',icon:'💬',title:`${hesitationCount} hesitação(ões)`,desc:`Leve ocorrência de hesitações — normal em fala espontânea. Se recorrente, pratique o conteúdo com antecedência.`});
+  // 2. VELOCIDADE - bloco detalhado
+  problems.push({type:speedClass, icon:'🎙️', title:`Velocidade: ${wpm} PPM — ${speedLabel}`,
+    desc:`${speedDica} Referência: abaixo de 80 = lenta | 80–100 = moderada | 100–160 = ideal | 160–180 = animada | acima de 180 = rápida demais.`});
 
-  // Fillers
-  const fillerList = Object.entries(fillerFound).map(([w,c])=>`"${w}" (${c}x)`).join(', ');
-  if(fillerList) problems.push({type:'error',icon:'🔁',title:'Vícios de linguagem',desc:`Detectado(s): ${fillerList}. Esses termos enfraquecem a comunicação. Substitua por pausas em silêncio ou frases mais diretas.`});
+  // 3. HESITAÇÕES
+  if(hesitationCount===0){
+    problems.push({type:'success',icon:'🎯',title:'Zero hesitações! Fala muito fluente',desc:'Você não usou sons de hesitação como "ã", "ê", "hm" ou "ah". Isso demonstra domínio do conteúdo e segurança ao falar.'});
+  } else if(hesitationCount<=2){
+    problems.push({type:'info',icon:'💬',title:`${hesitationCount} hesitação(ões) detectada(s)`,desc:`Ocorrência leve de "ã", "ê", "hm" — normal em fala espontânea. Se quiser eliminar, tente pausar em silêncio em vez de emitir sons de preenchimento.`});
+  } else if(hesitationCount<=5){
+    problems.push({type:'warning',icon:'😐',title:`${hesitationCount} hesitações — nível moderado`,desc:`Hesitações frequentes podem indicar falta de familiaridade com o conteúdo ou nervosismo. Dica: grave mais vezes o mesmo texto até fluir naturalmente.`});
+  } else {
+    problems.push({type:'error',icon:'😬',title:`${hesitationCount} hesitações — nível alto (${hesitRatio}% das palavras)`,desc:`Alta taxa de hesitações. Sons como "ã", "ê", "hm", "ah" enfraquecem sua comunicação e transmitem insegurança. Pratique pausas em silêncio — o silêncio é mais profissional do que sons de hesitação.`});
+  }
 
-  // Repetitions
-  const repList = Object.entries(repeated).map(([w,c])=>`"${w}"`).join(', ');
-  if(repList) problems.push({type:'warning',icon:'🔄',title:'Repetição de palavras consecutivas',desc:`Palavras repetidas seguidas: ${repList}. Pode indicar nervosismo ou distração. Releia seu texto antes de falar.`});
+  // 4. VÍCIOS DE LINGUAGEM
+  const fillerTotal = Object.values(fillerFound).reduce((a,b)=>a+b,0);
+  if(fillerTotal===0){
+    problems.push({type:'success',icon:'✨',title:'Nenhum vício de linguagem detectado',desc:'Excelente! Você não usou palavras-vício como "né", "tipo", "assim", "basicamente" etc. Isso demonstra vocabulário rico e comunicação limpa.'});
+  } else {
+    const fillerList = Object.entries(fillerFound).sort((a,b)=>b[1]-a[1]).map(([w,c])=>`"${w}" ${c}x`).join(' · ');
+    problems.push({type: fillerTotal>5?'error':'warning', icon:'🔁', title:`${fillerTotal} vícios de linguagem detectados`,
+      desc:`Palavras-vício encontradas: ${fillerList}. Essas expressões enfraquecem sua comunicação. Quando sentir vontade de usá-las, substitua por uma pausa curta em silêncio.`});
+  }
 
-  // Pauses
-  if(pauseCount>4) problems.push({type:'warning',icon:'⏸',title:`${pauseCount} pausas longas (>3s)`,desc:`Muitas pausas longas podem quebrar o ritmo do discurso. Se necessário para pensar, tente pausas menores ou sinalize com "vou refletir um momento".`});
-  else if(pauseCount>0) problems.push({type:'info',icon:'⏸',title:`${pauseCount} pausa(s) longa(s)`,desc:`Pausas ocasionais são normais e até saudáveis para dar ênfase. Apenas evite pausas não planejadas em excesso.`});
+  // 5. REPETIÇÕES
+  const repTotal = Object.values(repeated).reduce((a,b)=>a+b,0);
+  if(repTotal>0){
+    const repList = Object.keys(repeated).map(w=>`"${w}"`).join(', ');
+    problems.push({type:'warning',icon:'🔄',title:`${repTotal} repetição(ões) consecutiva(s) de palavras`,
+      desc:`Palavras ditas duas vezes seguidas: ${repList}. Isso pode indicar distração ou nervosismo. Releia o conteúdo antes de gravar e mantenha o foco.`});
+  }
 
-  // Text mode comparison
+  // 6. PAUSAS
+  if(pauseCount===0){
+    problems.push({type:'success',icon:'▶️',title:'Fala sem pausas longas excessivas',desc:'Você manteve um fluxo contínuo sem interrupções longas. Ótimo para demonstrar domínio do conteúdo.'});
+  } else if(pauseCount<=2){
+    problems.push({type:'info',icon:'⏸️',title:`${pauseCount} pausa(s) longa(s) — aceitável`,desc:'Pausas ocasionais são normais e podem até criar ênfase. Apenas cuide para não interromper o raciocínio do ouvinte.'});
+  } else if(pauseCount<=4){
+    problems.push({type:'warning',icon:'⏸️',title:`${pauseCount} pausas longas detectadas`,desc:'Muitas pausas longas quebram o ritmo e fazem o ouvinte perder o fio. Tente manter o fluxo e organize seu raciocínio antes de falar.'});
+  } else {
+    problems.push({type:'error',icon:'🛑',title:`${pauseCount} pausas longas — impacto alto`,desc:`${pauseCount} interrupções longas (>3s) foram identificadas. Isso prejudica significativamente a experiência do ouvinte. Pratique o conteúdo até dominar bem, e evite improvisar sem preparação.`});
+  }
+
+  // 7. COBERTURA DE TEXTO (modo texto)
   if(speechMode==='text' && speechTextWords.length>0){
     const coverage = Math.min(100,Math.round((spokenWordIndex/speechTextWords.length)*100));
     const missed = speechTextWords.length - spokenWordIndex;
-    if(coverage<70) problems.push({type:'error',icon:'📄',title:`${coverage}% do texto lido`,desc:`Você leu apenas ${coverage}% do texto de referência. ${missed} palavras foram puladas ou não reconhecidas. Tente falar mais claramente e cobrir todo o texto.`});
-    else if(coverage<90) problems.push({type:'warning',icon:'📄',title:`${coverage}% do texto coberto`,desc:`Boa cobertura! Algumas palavras não foram reconhecidas. Trabalhe a dicção nas partes mais difíceis.`});
-    else problems.push({type:'success',icon:'📄',title:`${coverage}% do texto coberto`,desc:`Excelente! Você leu praticamente todo o texto com clareza suficiente para reconhecimento.`});
+    if(coverage<70){
+      problems.push({type:'error',icon:'📄',title:`Apenas ${coverage}% do texto foi coberto`,desc:`${missed} palavras foram puladas ou não reconhecidas. Fale mais claramente e devagar para o reconhecimento de voz funcionar melhor. Tente novamente cobrindo todo o texto.`});
+    } else if(coverage<90){
+      problems.push({type:'warning',icon:'📄',title:`${coverage}% do texto coberto — bom!`,desc:`Quase lá! Algumas palavras não foram reconhecidas. Trabalhe a dicção especialmente em palavras difíceis ou técnicas.`});
+    } else {
+      problems.push({type:'success',icon:'📄',title:`${coverage}% do texto coberto — excelente!`,desc:'Você leu praticamente todo o texto com clareza suficiente para o reconhecimento de voz captar. Ótima dicção!'});
+    }
   }
 
-  // Overall score
-  if(score>=80) problems.unshift({type:'success',icon:'🏆',title:`Score geral: ${score}/100`,desc:`Ótima performance! Sua fala é clara, fluente e bem cadenciada.`});
-  else if(score>=60) problems.unshift({type:'info',icon:'📈',title:`Score geral: ${score}/100`,desc:`Desempenho razoável. Com prática nos pontos indicados abaixo, você pode melhorar rapidamente.`});
-  else problems.unshift({type:'error',icon:'📉',title:`Score geral: ${score}/100`,desc:`Há vários aspectos a melhorar. Foque nos problemas indicados abaixo um de cada vez.`});
+  // 8. DICA PERSONALIZADA FINAL
+  const topProblem = score<60?'hesitações e vícios':hesitationCount>3?'hesitações':fillerTotal>3?'vícios de linguagem':pauseCount>3?'pausas longas':'ritmo';
+  problems.push({type:'info',icon:'💡',title:'Dica personalizada para você',
+    desc:`Com base na sua análise, o foco principal deve ser: ${topProblem}. Grave-se todos os dias por 5 minutos lendo em voz alta. A consistência é mais importante que a duração da prática.`});
 
   // Render
   const list = document.getElementById('problemsList');
@@ -1410,7 +1474,7 @@ function analyzeCurrentSpeech(){
   problems.forEach(p=>{
     const d = document.createElement('div');
     d.className = `problem-item ${p.type}`;
-    d.innerHTML = `<span class="problem-icon">${p.icon}</span><div class="problem-text"><strong>${p.title}</strong><br>${p.desc}</div>`;
+    d.innerHTML = `<span class="problem-icon" style="font-size:1.2rem">${p.icon}</span><div class="problem-text"><strong style="font-size:.9rem">${p.title}</strong><br><span style="font-size:.82rem">${p.desc}</span></div>`;
     list.appendChild(d);
   });
   document.getElementById('problemsPanel').style.display='';
