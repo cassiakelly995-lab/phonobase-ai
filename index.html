@@ -3,820 +3,410 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LeituraPRO — Treine sua Leitura</title>
+<title>LeituraPRO — Treine sua Leitura e Fala</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap');
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#faf8f4;--paper:#fffef9;--ink:#1a1410;--ink2:#4a4030;--ink3:#9a8870;
+  --line:#e8e0d0;--easy:#2d7a3a;--easy-bg:#eaf7ec;--medio:#b06a00;
+  --medio-bg:#fff4e0;--dificil:#c0392b;--dificil-bg:#fdecea;
+  --avancado:#6a1fc2;--avancado-bg:#f3eaff;--extremo:#0a0a0a;
+  --extremo-bg:#1a1410;--accent:#e85d04;--accent-light:#fff0e8;
+  --speech:#0077cc;--speech-bg:#e8f4ff;
+}
+html{font-size:15px}
+body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;min-height:100vh}
 
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+/* SCREENS */
+.screen{display:none;min-height:100vh}
+.screen.active{display:block}
 
-:root {
-  --bg: #faf8f4;
-  --paper: #fffef9;
-  --ink: #1a1410;
-  --ink2: #4a4030;
-  --ink3: #9a8870;
-  --line: #e8e0d0;
-  --easy: #2d7a3a;
-  --easy-bg: #eaf7ec;
-  --medio: #b06a00;
-  --medio-bg: #fff4e0;
-  --dificil: #c0392b;
-  --dificil-bg: #fdecea;
-  --avancado: #6a1fc2;
-  --avancado-bg: #f3eaff;
-  --extremo: #0a0a0a;
-  --extremo-bg: #1a1410;
-  --accent: #e85d04;
-  --accent-light: #fff0e8;
-}
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(250,248,244,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 24px;gap:12px;z-index:100}
+.brand{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:900;color:var(--ink);letter-spacing:-0.02em}
+.brand em{color:var(--accent);font-style:italic}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.topbar-tabs{display:flex;gap:2px;background:var(--line);border-radius:8px;padding:3px}
+.topbar-tab{padding:5px 14px;border-radius:6px;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all .15s;color:var(--ink3);border:none;background:transparent}
+.topbar-tab.active{background:var(--paper);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08)}
 
-html { font-size: 15px; }
+/* BTNS */
+.btn{font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:600;padding:8px 18px;border-radius:8px;border:none;cursor:pointer;transition:all .18s}
+.btn-ghost{background:transparent;color:var(--ink2);border:1.5px solid var(--line)}
+.btn-ghost:hover{border-color:var(--ink3);color:var(--ink)}
+.btn-solid{background:var(--ink);color:#fff}
+.btn-solid:hover{background:var(--accent)}
+.btn-accent{background:var(--accent);color:#fff;font-size:.9rem;padding:12px 28px;border-radius:10px}
+.btn-accent:hover{background:#c44a00;transform:translateY(-2px);box-shadow:0 6px 20px rgba(232,93,4,.3)}
+.btn-speech{background:var(--speech);color:#fff;font-size:.85rem;padding:10px 22px;border-radius:10px;display:flex;align-items:center;gap:8px}
+.btn-speech:hover{background:#005fa3;transform:translateY(-1px)}
+.btn-speech.recording{background:#c0392b;animation:pulse-rec .8s ease-in-out infinite}
+@keyframes pulse-rec{0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,.4)}50%{box-shadow:0 0 0 8px rgba(192,57,43,0)}}
 
-body {
-  background: var(--bg);
-  color: var(--ink);
-  font-family: 'DM Sans', sans-serif;
-  min-height: 100vh;
-}
+/* HOME */
+.home-wrap{padding-top:80px;max-width:900px;margin:0 auto;padding-left:24px;padding-right:24px;padding-bottom:60px}
+.home-hero{text-align:center;padding:40px 0 36px;border-bottom:1px solid var(--line);margin-bottom:32px}
+.home-hero h1{font-family:'Playfair Display',serif;font-size:2.8rem;font-weight:900;letter-spacing:-0.04em;line-height:1.1;margin-bottom:12px}
+.home-hero h1 em{color:var(--accent);font-style:italic}
+.home-hero p{font-size:.95rem;color:var(--ink2);font-weight:300;max-width:480px;margin:0 auto 24px;line-height:1.7}
+.stats-row{display:flex;justify-content:center;gap:32px;margin-top:24px}
+.stat-item{text-align:center}
+.stat-num{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;display:block}
+.stat-label{font-size:.7rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em}
+.section-title{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;margin-bottom:4px}
+.section-sub{font-size:.8rem;color:var(--ink3);margin-bottom:18px}
 
-/* ---- TELA INICIAL ---- */
-#screen-home, #screen-reading, #screen-result, #screen-custom {
-  display: none;
-  min-height: 100vh;
-}
-#screen-home.active, #screen-reading.active, #screen-result.active, #screen-custom.active {
-  display: block;
-}
+/* LEVEL CARDS */
+.levels-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:32px}
+.level-card{border-radius:12px;padding:14px 10px;cursor:pointer;border:2px solid transparent;transition:all .2s;text-align:center}
+.level-card.selected{transform:translateY(-3px)}
+.level-card:hover{transform:translateY(-2px)}
+.level-card.easy{background:var(--easy-bg)}.level-card.easy.selected{border-color:var(--easy);box-shadow:0 6px 20px rgba(45,122,58,.15)}
+.level-card.medio{background:var(--medio-bg)}.level-card.medio.selected{border-color:var(--medio);box-shadow:0 6px 20px rgba(176,106,0,.15)}
+.level-card.dificil{background:var(--dificil-bg)}.level-card.dificil.selected{border-color:var(--dificil);box-shadow:0 6px 20px rgba(192,57,43,.15)}
+.level-card.avancado{background:var(--avancado-bg)}.level-card.avancado.selected{border-color:var(--avancado);box-shadow:0 6px 20px rgba(106,31,194,.15)}
+.level-card.extremo{background:var(--extremo-bg)}.level-card.extremo.selected{border-color:#555;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+.level-emoji{font-size:1.5rem;display:block;margin-bottom:5px}
+.level-name{font-weight:600;font-size:.78rem;display:block;margin-bottom:2px}
+.level-card.easy .level-name{color:var(--easy)}.level-card.medio .level-name{color:var(--medio)}
+.level-card.dificil .level-name{color:var(--dificil)}.level-card.avancado .level-name{color:var(--avancado)}
+.level-card.extremo .level-name{color:#fff}.level-card.extremo .level-desc{color:#888}
+.level-desc{font-size:.66rem;color:var(--ink3);line-height:1.3}
 
-/* TOP BAR */
-.topbar {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: 56px;
-  background: rgba(250,248,244,0.92);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--line);
-  display: flex;
-  align-items: center;
-  padding: 0 24px;
-  gap: 16px;
-  z-index: 100;
-}
+/* TEXT SELECTOR */
+.text-selector{background:var(--paper);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:18px}
+.text-tabs{display:flex;border-bottom:1px solid var(--line);background:var(--bg)}
+.text-tab{padding:11px 18px;font-size:.78rem;font-weight:500;color:var(--ink3);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.text-tab.active{color:var(--ink);border-bottom-color:var(--accent);background:var(--paper)}
+.text-tab-content{display:none;padding:14px}.text-tab-content.active{display:block}
+.text-list{display:flex;flex-direction:column;gap:6px}
+.text-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;border:1.5px solid transparent;cursor:pointer;transition:all .18s;background:var(--bg)}
+.text-item:hover{border-color:var(--line);background:var(--paper)}
+.text-item.selected{border-color:var(--accent);background:var(--accent-light)}
+.text-item-badge{font-size:.6rem;font-weight:600;padding:3px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0;font-family:'DM Mono',monospace}
+.badge-easy{background:var(--easy-bg);color:var(--easy)}.badge-medio{background:var(--medio-bg);color:var(--medio)}
+.badge-dificil{background:var(--dificil-bg);color:var(--dificil)}.badge-avancado{background:var(--avancado-bg);color:var(--avancado)}
+.badge-extremo{background:#1a1410;color:#ccc}
+.text-item-info{flex:1}.text-item-title{font-size:.83rem;font-weight:600;margin-bottom:2px}
+.text-item-meta{font-size:.68rem;color:var(--ink3);font-family:'DM Mono',monospace}
+.custom-area{width:100%;min-height:140px;border:1.5px solid var(--line);border-radius:10px;padding:12px;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--ink);background:var(--paper);resize:vertical;outline:none;line-height:1.6}
+.custom-area:focus{border-color:var(--accent)}
+.custom-meta{display:flex;gap:10px;margin-top:8px;align-items:center}
+.custom-input{border:1.5px solid var(--line);border-radius:8px;padding:7px 12px;font-family:'DM Sans',sans-serif;font-size:.8rem;color:var(--ink);background:var(--paper);outline:none;flex:1}
+.custom-input:focus{border-color:var(--accent)}
+.char-count{font-size:.7rem;color:var(--ink3);font-family:'DM Mono',monospace;margin-left:auto}
+.start-row{display:flex;align-items:center;justify-content:space-between;padding-top:6px}
 
-.brand {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.2rem;
-  font-weight: 900;
-  color: var(--ink);
-  letter-spacing: -0.02em;
-}
-.brand em { color: var(--accent); font-style: italic; }
+/* READING SCREEN */
+.reading-wrap{padding-top:72px;max-width:760px;margin:0 auto;padding-left:24px;padding-right:24px}
+.reading-header{padding:16px 0 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);margin-bottom:20px}
+.reading-info{display:flex;align-items:center;gap:14px}
+.timer-display{font-family:'DM Mono',monospace;font-size:2rem;font-weight:500;color:var(--ink);letter-spacing:-0.02em;min-width:100px}
+.timer-display.running{color:var(--accent)}.timer-display.paused{color:var(--ink3)}
+.reading-meta-box{display:flex;flex-direction:column;gap:2px}
+.reading-meta{font-size:.7rem;color:var(--ink3);font-family:'DM Mono',monospace}
+.timer-controls{display:flex;gap:8px;align-items:center}
+.ctrl{border:none;cursor:pointer;border-radius:8px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.76rem;padding:8px 14px;transition:all .15s}
+.ctrl-start{background:var(--accent);color:#fff}.ctrl-start:hover{background:#c44a00}
+.ctrl-pause{background:var(--line);color:var(--ink2)}.ctrl-pause:hover{background:#ddd}
+.ctrl-stop{background:var(--dificil-bg);color:var(--dificil);border:1.5px solid var(--dificil)}.ctrl-stop:hover{background:var(--dificil);color:#fff}
+.progress-bar-wrap{position:fixed;top:56px;left:0;right:0;height:3px;background:var(--line);z-index:99}
+.progress-bar-fill{height:100%;background:var(--accent);transition:width .5s;width:0%}
+.reading-level-badge{display:inline-flex;align-items:center;gap:6px;font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:20px;margin-bottom:14px;font-family:'DM Mono',monospace}
+.text-title-display{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:18px;line-height:1.2}
+.text-body{font-family:'DM Sans',sans-serif;font-size:1.05rem;line-height:1.9;color:var(--ink);font-weight:300;padding-bottom:80px;user-select:none}
+.text-body.level-extremo{font-size:.9rem;line-height:1.7;font-weight:400}
 
-.topbar-right {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+/* SPEECH TAB on home */
+.speech-hero{text-align:center;padding:40px 0 32px;border-bottom:1px solid var(--line);margin-bottom:28px}
+.speech-hero h2{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;letter-spacing:-0.04em;margin-bottom:10px}
+.speech-hero h2 em{color:var(--speech);font-style:italic}
+.speech-hero p{font-size:.9rem;color:var(--ink2);font-weight:300;max-width:460px;margin:0 auto;line-height:1.7}
 
-.btn {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 8px 18px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.18s;
-  letter-spacing: 0.01em;
-}
-.btn-ghost {
-  background: transparent;
-  color: var(--ink2);
-  border: 1.5px solid var(--line);
-}
-.btn-ghost:hover { border-color: var(--ink3); color: var(--ink); }
+/* SPEECH ANALYZER */
+.speech-modes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+.speech-mode-card{background:var(--paper);border:2px solid var(--line);border-radius:14px;padding:20px;cursor:pointer;transition:all .2s;text-align:center}
+.speech-mode-card:hover{border-color:#aac8e8;transform:translateY(-2px)}
+.speech-mode-card.selected{border-color:var(--speech);background:var(--speech-bg);box-shadow:0 4px 16px rgba(0,119,204,.1)}
+.speech-mode-icon{font-size:2rem;display:block;margin-bottom:8px}
+.speech-mode-title{font-weight:700;font-size:.9rem;margin-bottom:4px}
+.speech-mode-desc{font-size:.74rem;color:var(--ink3);line-height:1.4}
 
-.btn-solid {
-  background: var(--ink);
-  color: #fff;
-}
-.btn-solid:hover { background: var(--accent); transform: translateY(-1px); }
+/* SPEECH PANEL */
+.speech-panel{background:var(--paper);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:20px}
+.speech-panel-header{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.speech-panel-title{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700}
+.speech-panel-body{padding:20px}
 
-.btn-accent {
-  background: var(--accent);
-  color: #fff;
-  font-size: 0.9rem;
-  padding: 12px 28px;
-  border-radius: 10px;
-}
-.btn-accent:hover { background: #c44a00; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(232,93,4,0.3); }
+/* Waveform canvas */
+.waveform-wrap{background:#0d1117;border-radius:10px;overflow:hidden;margin-bottom:16px;position:relative;height:80px;display:flex;align-items:center;justify-content:center}
+#waveformCanvas{width:100%;height:80px;display:block}
+.wave-idle-msg{position:absolute;font-size:.78rem;color:#555;font-family:'DM Mono',monospace;pointer-events:none}
 
-/* ---- HOME ---- */
-.home-wrap {
-  padding-top: 80px;
-  max-width: 900px;
-  margin: 0 auto;
-  padding-left: 24px;
-  padding-right: 24px;
-  padding-bottom: 60px;
-}
+/* Transcription */
+.transcript-box{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;min-height:80px;font-size:.9rem;line-height:1.7;color:var(--ink2);margin-bottom:16px;position:relative}
+.transcript-placeholder{color:var(--ink3);font-style:italic;font-size:.85rem}
+.transcript-word{display:inline}
+.transcript-word.problem{background:#ffeaea;color:#c0392b;border-radius:3px;padding:0 2px;border-bottom:2px solid #c0392b;cursor:help;position:relative}
+.transcript-word.slow{background:#fff3cd;color:#856404;border-radius:3px;padding:0 2px;border-bottom:2px dotted #856404}
+.transcript-word.hesitation{background:#e8f0fe;color:#1a73e8;border-radius:3px;padding:0 2px}
 
-.home-hero {
-  text-align: center;
-  padding: 48px 0 40px;
-  border-bottom: 1px solid var(--line);
-  margin-bottom: 36px;
-}
+/* Speech metrics */
+.speech-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.speech-metric{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center}
+.speech-metric-val{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;display:block;margin-bottom:2px}
+.speech-metric-label{font-size:.65rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em}
 
-.home-hero h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: 3rem;
-  font-weight: 900;
-  letter-spacing: -0.04em;
-  line-height: 1.1;
-  margin-bottom: 14px;
-}
-.home-hero h1 em { color: var(--accent); font-style: italic; }
+/* Problems list */
+.problems-list{display:flex;flex-direction:column;gap:8px}
+.problem-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-radius:10px;font-size:.82rem;line-height:1.5}
+.problem-item.error{background:#fdecea;border-left:3px solid var(--dificil)}
+.problem-item.warning{background:#fff4e0;border-left:3px solid var(--medio)}
+.problem-item.info{background:var(--speech-bg);border-left:3px solid var(--speech)}
+.problem-item.success{background:var(--easy-bg);border-left:3px solid var(--easy)}
+.problem-icon{font-size:1rem;flex-shrink:0;margin-top:1px}
+.problem-text{flex:1}
+.problem-text strong{font-weight:600}
 
-.home-hero p {
-  font-size: 1rem;
-  color: var(--ink2);
-  font-weight: 300;
-  max-width: 480px;
-  margin: 0 auto 28px;
-  line-height: 1.7;
-}
+/* Speech text selector */
+.speech-text-select{margin-bottom:16px}
+.speech-text-select label{font-size:.78rem;font-weight:600;color:var(--ink2);display:block;margin-bottom:6px}
+.speech-select{width:100%;border:1.5px solid var(--line);border-radius:8px;padding:8px 12px;font-family:'DM Sans',sans-serif;font-size:.82rem;color:var(--ink);background:var(--paper);outline:none;cursor:pointer}
+.speech-select:focus{border-color:var(--speech)}
 
-.stats-row {
-  display: flex;
-  justify-content: center;
-  gap: 32px;
-  margin-top: 28px;
-}
-.stat-item { text-align: center; }
-.stat-num {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--ink);
-  display: block;
-}
-.stat-label {
-  font-size: 0.72rem;
-  color: var(--ink3);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
+/* Reference text for speech */
+.speech-ref-text{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:16px;font-size:.88rem;line-height:1.8;color:var(--ink2);max-height:180px;overflow-y:auto}
+.speech-ref-word{display:inline}
+.speech-ref-word.spoken-correct{background:rgba(45,122,58,.15);color:var(--easy);border-radius:2px;padding:0 1px}
+.speech-ref-word.spoken-wrong{background:rgba(192,57,43,.15);color:var(--dificil);border-radius:2px;padding:0 1px;text-decoration:line-through}
+.speech-ref-word.current{background:var(--accent);color:#fff;border-radius:3px;padding:0 3px}
 
-/* Levels grid */
-.section-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.4rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin-bottom: 6px;
-}
-.section-sub {
-  font-size: 0.82rem;
-  color: var(--ink3);
-  margin-bottom: 20px;
-}
+/* Recording status */
+.rec-status{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:10px 14px;border-radius:10px;background:var(--bg);border:1px solid var(--line);font-size:.82rem}
+.rec-dot{width:10px;height:10px;border-radius:50%;background:var(--ink3);flex-shrink:0}
+.rec-dot.active{background:#c0392b;animation:blink-rec .6s ease-in-out infinite}
+.rec-dot.ready{background:var(--easy)}
+@keyframes blink-rec{0%,100%{opacity:1}50%{opacity:.2}}
+.rec-status-text{flex:1;color:var(--ink2)}
+.rec-timer{font-family:'DM Mono',monospace;font-size:.8rem;color:var(--ink3);margin-left:auto}
 
-.levels-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
-  margin-bottom: 36px;
-}
+/* Controls row */
+.speech-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 
-.level-card {
-  border-radius: 12px;
-  padding: 16px 12px;
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: all 0.2s;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-.level-card.selected { border-width: 2px; transform: translateY(-3px); }
-.level-card:hover { transform: translateY(-2px); }
+/* RESULT SCREEN */
+.result-wrap{padding-top:80px;max-width:760px;margin:0 auto;padding-left:24px;padding-right:24px;padding-bottom:60px}
+.result-hero{text-align:center;padding:32px 0 28px;border-bottom:1px solid var(--line);margin-bottom:28px}
+.result-grade{font-family:'Playfair Display',serif;font-size:4.5rem;font-weight:900;letter-spacing:-0.05em;line-height:1;margin-bottom:6px}
+.result-label{font-size:.95rem;color:var(--ink2);font-weight:300}
+.result-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
+.result-card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px 12px;text-align:center}
+.result-card-val{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;margin-bottom:3px;display:block}
+.result-card-label{font-size:.68rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em}
+.wpm-gauge{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:18px}
+.gauge-title{font-weight:600;font-size:.83rem;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center}
+.gauge-scale{position:relative;height:40px}
+.gauge-track{height:10px;border-radius:6px;background:linear-gradient(to right,var(--easy-bg) 0%,var(--easy) 20%,var(--medio) 40%,var(--dificil) 60%,var(--avancado) 80%,#000 100%);position:relative;margin-top:14px}
+.gauge-marker{position:absolute;top:-14px;transform:translateX(-50%);transition:left 1s cubic-bezier(.34,1.56,.64,1)}
+.gauge-arrow{width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:10px solid var(--accent);margin:0 auto}
+.gauge-marker-val{font-family:'DM Mono',monospace;font-size:.68rem;font-weight:500;white-space:nowrap;text-align:center;color:var(--accent);margin-bottom:2px}
+.gauge-labels{display:flex;justify-content:space-between;margin-top:6px;font-size:.6rem;color:var(--ink3);font-family:'DM Mono',monospace}
+.analysis-box{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:18px}
+.analysis-box h3{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;margin-bottom:14px}
+.analysis-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:.82rem;line-height:1.5;color:var(--ink2)}
+.analysis-item:last-child{border-bottom:none}
+.analysis-icon{font-size:.95rem;flex-shrink:0;margin-top:1px}
+.result-actions{display:flex;gap:10px;justify-content:center;padding-top:6px}
 
-.level-card.easy { background: var(--easy-bg); }
-.level-card.easy.selected { border-color: var(--easy); box-shadow: 0 6px 20px rgba(45,122,58,0.15); }
-.level-card.medio { background: var(--medio-bg); }
-.level-card.medio.selected { border-color: var(--medio); box-shadow: 0 6px 20px rgba(176,106,0,0.15); }
-.level-card.dificil { background: var(--dificil-bg); }
-.level-card.dificil.selected { border-color: var(--dificil); box-shadow: 0 6px 20px rgba(192,57,43,0.15); }
-.level-card.avancado { background: var(--avancado-bg); }
-.level-card.avancado.selected { border-color: var(--avancado); box-shadow: 0 6px 20px rgba(106,31,194,0.15); }
-.level-card.extremo { background: var(--extremo-bg); }
-.level-card.extremo.selected { border-color: #555; box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
-
-.level-emoji { font-size: 1.6rem; display: block; margin-bottom: 6px; }
-.level-name {
-  font-weight: 600;
-  font-size: 0.8rem;
-  display: block;
-  margin-bottom: 3px;
-}
-.level-card.easy .level-name { color: var(--easy); }
-.level-card.medio .level-name { color: var(--medio); }
-.level-card.dificil .level-name { color: var(--dificil); }
-.level-card.avancado .level-name { color: var(--avancado); }
-.level-card.extremo .level-name { color: #fff; }
-.level-card.extremo .level-desc { color: #888; }
-
-.level-desc {
-  font-size: 0.68rem;
-  color: var(--ink3);
-  line-height: 1.3;
-}
-
-/* Text selector */
-.text-selector {
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  overflow: hidden;
-  margin-bottom: 20px;
-}
-
-.text-tabs {
-  display: flex;
-  border-bottom: 1px solid var(--line);
-  background: var(--bg);
-}
-.text-tab {
-  padding: 12px 20px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--ink3);
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  transition: all 0.15s;
-  white-space: nowrap;
-}
-.text-tab.active {
-  color: var(--ink);
-  border-bottom-color: var(--accent);
-  background: var(--paper);
-}
-
-.text-tab-content { display: none; padding: 16px; }
-.text-tab-content.active { display: block; }
-
-.text-list { display: flex; flex-direction: column; gap: 8px; }
-
-.text-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  border-radius: 10px;
-  border: 1.5px solid transparent;
-  cursor: pointer;
-  transition: all 0.18s;
-  background: var(--bg);
-}
-.text-item:hover { border-color: var(--line); background: var(--paper); }
-.text-item.selected { border-color: var(--accent); background: var(--accent-light); }
-
-.text-item-badge {
-  font-size: 0.62rem;
-  font-weight: 600;
-  padding: 3px 8px;
-  border-radius: 20px;
-  white-space: nowrap;
-  flex-shrink: 0;
-  font-family: 'DM Mono', monospace;
-}
-.badge-easy { background: var(--easy-bg); color: var(--easy); }
-.badge-medio { background: var(--medio-bg); color: var(--medio); }
-.badge-dificil { background: var(--dificil-bg); color: var(--dificil); }
-.badge-avancado { background: var(--avancado-bg); color: var(--avancado); }
-.badge-extremo { background: #1a1410; color: #ccc; }
-
-.text-item-info { flex: 1; }
-.text-item-title {
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-bottom: 2px;
-}
-.text-item-meta {
-  font-size: 0.7rem;
-  color: var(--ink3);
-  font-family: 'DM Mono', monospace;
-}
-
-/* Custom textarea */
-.custom-area {
-  width: 100%;
-  min-height: 160px;
-  border: 1.5px solid var(--line);
-  border-radius: 10px;
-  padding: 14px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.9rem;
-  color: var(--ink);
-  background: var(--paper);
-  resize: vertical;
-  transition: border-color 0.15s;
-  outline: none;
-  line-height: 1.6;
-}
-.custom-area:focus { border-color: var(--accent); }
-.custom-area::placeholder { color: var(--ink3); }
-
-.custom-meta {
-  display: flex;
-  gap: 12px;
-  margin-top: 10px;
-  align-items: center;
-}
-.custom-input {
-  border: 1.5px solid var(--line);
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.82rem;
-  color: var(--ink);
-  background: var(--paper);
-  outline: none;
-  flex: 1;
-}
-.custom-input:focus { border-color: var(--accent); }
-
-.char-count {
-  font-size: 0.72rem;
-  color: var(--ink3);
-  font-family: 'DM Mono', monospace;
-  margin-left: auto;
-}
-
-.start-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 8px;
-}
-
-/* ---- READING SCREEN ---- */
-.reading-wrap {
-  padding-top: 56px;
-  max-width: 760px;
-  margin: 0 auto;
-  padding-left: 24px;
-  padding-right: 24px;
-}
-
-.reading-header {
-  padding: 20px 0 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--line);
-  margin-bottom: 24px;
-}
-
-.reading-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.timer-display {
-  font-family: 'DM Mono', monospace;
-  font-size: 2.2rem;
-  font-weight: 500;
-  color: var(--ink);
-  letter-spacing: -0.02em;
-  min-width: 110px;
-}
-.timer-display.running { color: var(--accent); }
-.timer-display.paused { color: var(--ink3); }
-
-.timer-controls { display: flex; gap: 8px; align-items: center; }
-
-.ctrl {
-  border: none;
-  cursor: pointer;
-  border-radius: 8px;
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 600;
-  font-size: 0.78rem;
-  padding: 8px 16px;
-  transition: all 0.15s;
-}
-.ctrl-start { background: var(--accent); color: #fff; }
-.ctrl-start:hover { background: #c44a00; }
-.ctrl-pause { background: var(--line); color: var(--ink2); }
-.ctrl-pause:hover { background: #ddd; }
-.ctrl-stop { background: var(--dificil-bg); color: var(--dificil); border: 1.5px solid var(--dificil); }
-.ctrl-stop:hover { background: var(--dificil); color: #fff; }
-
-.reading-meta {
-  display: flex;
-  gap: 20px;
-  font-size: 0.72rem;
-  color: var(--ink3);
-  font-family: 'DM Mono', monospace;
-}
-
-/* Text display area */
-.reading-level-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.72rem;
-  font-weight: 600;
-  padding: 4px 12px;
-  border-radius: 20px;
-  margin-bottom: 16px;
-  font-family: 'DM Mono', monospace;
-}
-
-.text-title-display {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.6rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin-bottom: 20px;
-  line-height: 1.2;
-}
-
-.text-body {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 1.05rem;
-  line-height: 1.9;
-  color: var(--ink);
-  font-weight: 300;
-  padding-bottom: 80px;
-  user-select: none;
-}
-.text-body.level-extremo {
-  font-size: 0.9rem;
-  line-height: 1.7;
-  font-weight: 400;
-}
-
-/* Progress bar */
-.progress-bar-wrap {
-  position: fixed;
-  top: 56px;
-  left: 0; right: 0;
-  height: 3px;
-  background: var(--line);
-  z-index: 99;
-}
-.progress-bar-fill {
-  height: 100%;
-  background: var(--accent);
-  transition: width 0.3s;
-  width: 0%;
-}
-
-/* ---- RESULT SCREEN ---- */
-.result-wrap {
-  padding-top: 80px;
-  max-width: 760px;
-  margin: 0 auto;
-  padding-left: 24px;
-  padding-right: 24px;
-  padding-bottom: 60px;
-}
-
-.result-hero {
-  text-align: center;
-  padding: 36px 0 32px;
-  border-bottom: 1px solid var(--line);
-  margin-bottom: 32px;
-}
-
-.result-grade {
-  font-family: 'Playfair Display', serif;
-  font-size: 5rem;
-  font-weight: 900;
-  letter-spacing: -0.05em;
-  line-height: 1;
-  margin-bottom: 8px;
-}
-
-.result-label {
-  font-size: 1rem;
-  color: var(--ink2);
-  font-weight: 300;
-}
-
-.result-cards {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 28px;
-}
-
-.result-card {
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 18px 14px;
-  text-align: center;
-}
-
-.result-card-val {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.8rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  margin-bottom: 4px;
-  display: block;
-}
-
-.result-card-label {
-  font-size: 0.7rem;
-  color: var(--ink3);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-/* WPM gauge */
-.wpm-gauge {
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 24px;
-  margin-bottom: 20px;
-}
-
-.gauge-title {
-  font-weight: 600;
-  font-size: 0.85rem;
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.gauge-scale {
-  position: relative;
-  height: 40px;
-}
-.gauge-track {
-  height: 10px;
-  border-radius: 6px;
-  background: linear-gradient(to right, var(--easy-bg) 0%, var(--easy) 20%, var(--medio) 40%, var(--dificil) 60%, var(--avancado) 80%, #000 100%);
-  position: relative;
-  margin-top: 14px;
-}
-.gauge-marker {
-  position: absolute;
-  top: -14px;
-  transform: translateX(-50%);
-  transition: left 1s cubic-bezier(0.34,1.56,0.64,1);
-}
-.gauge-arrow {
-  width: 0; height: 0;
-  border-left: 7px solid transparent;
-  border-right: 7px solid transparent;
-  border-top: 10px solid var(--accent);
-  margin: 0 auto;
-}
-.gauge-marker-val {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.7rem;
-  font-weight: 500;
-  white-space: nowrap;
-  text-align: center;
-  color: var(--accent);
-  margin-bottom: 2px;
-}
-.gauge-labels {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 6px;
-  font-size: 0.62rem;
-  color: var(--ink3);
-  font-family: 'DM Mono', monospace;
-}
-
-/* Analysis */
-.analysis-box {
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 24px;
-  margin-bottom: 20px;
-}
-.analysis-box h3 {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin-bottom: 16px;
-}
-.analysis-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--line);
-  font-size: 0.84rem;
-  line-height: 1.5;
-  color: var(--ink2);
-}
-.analysis-item:last-child { border-bottom: none; }
-.analysis-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
-
-.result-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  padding-top: 8px;
-}
-
-/* ---- HISTORY ---- */
-.history-list { display: flex; flex-direction: column; gap: 8px; }
-.history-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 12px 16px;
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  font-size: 0.82rem;
-}
-.history-wpm {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.3rem;
-  font-weight: 700;
-  min-width: 60px;
-}
-.history-info { flex: 1; }
-.history-title { font-weight: 500; margin-bottom: 2px; }
-.history-meta { font-size: 0.7rem; color: var(--ink3); font-family: 'DM Mono', monospace; }
-.history-grade {
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 20px;
-}
-
-/* Toast */
-.toast {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  background: var(--ink);
-  color: #fff;
-  padding: 12px 20px;
-  border-radius: 10px;
-  font-size: 0.82rem;
-  font-weight: 500;
-  z-index: 999;
-  transform: translateY(80px);
-  opacity: 0;
-  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-}
-.toast.show { transform: translateY(0); opacity: 1; }
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;padding:11px 18px;border-radius:10px;font-size:.8rem;font-weight:500;z-index:999;transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1)}
+.toast.show{transform:translateY(0);opacity:1}
 
 /* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.result-card { animation: fadeIn 0.4s ease both; }
-.result-card:nth-child(1){animation-delay:0.05s}
-.result-card:nth-child(2){animation-delay:0.1s}
-.result-card:nth-child(3){animation-delay:0.15s}
-.result-card:nth-child(4){animation-delay:0.2s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.result-card{animation:fadeUp .4s ease both}
+.result-card:nth-child(1){animation-delay:.05s}.result-card:nth-child(2){animation-delay:.1s}
+.result-card:nth-child(3){animation-delay:.15s}.result-card:nth-child(4){animation-delay:.2s}
 
-/* Responsive */
-@media(max-width:650px) {
-  .levels-grid { grid-template-columns: repeat(3,1fr); }
-  .result-cards { grid-template-columns: repeat(2,1fr); }
-  .home-hero h1 { font-size: 2rem; }
-  .timer-display { font-size: 1.6rem; }
+/* Scrollbar */
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:2px}
+
+@media(max-width:640px){
+  .levels-grid{grid-template-columns:repeat(3,1fr)}
+  .result-cards{grid-template-columns:repeat(2,1fr)}
+  .speech-metrics{grid-template-columns:repeat(2,1fr)}
+  .speech-modes{grid-template-columns:1fr}
+  .home-hero h1{font-size:2rem}
+  .timer-display{font-size:1.6rem}
 }
 </style>
 </head>
 <body>
-
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <!-- ===== HOME ===== -->
-<div id="screen-home" class="active">
+<div class="screen active" id="screen-home">
   <div class="topbar">
     <div class="brand">Leitura<em>PRO</em></div>
+    <div class="topbar-tabs">
+      <button class="topbar-tab active" id="tabBtnReading" onclick="switchMainTab('reading')">📖 Leitura</button>
+      <button class="topbar-tab" id="tabBtnSpeech" onclick="switchMainTab('speech')">🎤 Fala</button>
+    </div>
     <div class="topbar-right">
       <button class="btn btn-ghost" onclick="showHistory()">📊 Histórico</button>
     </div>
   </div>
 
-  <div class="home-wrap">
+  <!-- TAB: LEITURA -->
+  <div id="mainTabReading" class="home-wrap">
     <div class="home-hero">
       <h1>Treine sua<br><em>velocidade de leitura</em></h1>
-      <p>Cronometre, analise e evolua — do texto fácil ao desafio extremo. Acompanhe suas palavras por minuto e veja seu progresso.</p>
-      <div class="stats-row" id="globalStats">
+      <p>Cronometre, analise e evolua — do texto fácil ao desafio extremo.</p>
+      <div class="stats-row">
         <div class="stat-item"><span class="stat-num" id="statSessions">0</span><span class="stat-label">Sessões</span></div>
         <div class="stat-item"><span class="stat-num" id="statAvgWPM">—</span><span class="stat-label">Méd. PPM</span></div>
         <div class="stat-item"><span class="stat-num" id="statBestWPM">—</span><span class="stat-label">Melhor PPM</span></div>
       </div>
     </div>
 
-    <!-- NÍVEIS -->
-    <div style="margin-bottom:10px">
-      <div class="section-title">Escolha o Nível</div>
-      <div class="section-sub">Do relaxante ao extremamente desafiador</div>
-    </div>
-    <div class="levels-grid" id="levelsGrid">
-      <div class="level-card easy selected" data-level="easy" onclick="selectLevel('easy')">
-        <span class="level-emoji">🌱</span>
-        <span class="level-name">Fácil</span>
-        <span class="level-desc">Textos curtos e simples</span>
-      </div>
-      <div class="level-card medio" data-level="medio" onclick="selectLevel('medio')">
-        <span class="level-emoji">📖</span>
-        <span class="level-name">Médio</span>
-        <span class="level-desc">Vocabulário variado</span>
-      </div>
-      <div class="level-card dificil" data-level="dificil" onclick="selectLevel('dificil')">
-        <span class="level-emoji">⚡</span>
-        <span class="level-name">Difícil</span>
-        <span class="level-desc">Textos densos e técnicos</span>
-      </div>
-      <div class="level-card avancado" data-level="avancado" onclick="selectLevel('avancado')">
-        <span class="level-emoji">🧠</span>
-        <span class="level-name">Avançado</span>
-        <span class="level-desc">Linguagem complexa</span>
-      </div>
-      <div class="level-card extremo" data-level="extremo" onclick="selectLevel('extremo')">
-        <span class="level-emoji">💀</span>
-        <span class="level-name">Extremo</span>
-        <span class="level-desc">Máximo desafio</span>
-      </div>
+    <div style="margin-bottom:10px"><div class="section-title">Escolha o Nível</div><div class="section-sub">Do relaxante ao extremamente desafiador</div></div>
+    <div class="levels-grid">
+      <div class="level-card easy selected" data-level="easy" onclick="selectLevel('easy')"><span class="level-emoji">🌱</span><span class="level-name">Fácil</span><span class="level-desc">Textos simples</span></div>
+      <div class="level-card medio" data-level="medio" onclick="selectLevel('medio')"><span class="level-emoji">📖</span><span class="level-name">Médio</span><span class="level-desc">Vocabulário variado</span></div>
+      <div class="level-card dificil" data-level="dificil" onclick="selectLevel('dificil')"><span class="level-emoji">⚡</span><span class="level-name">Difícil</span><span class="level-desc">Textos técnicos</span></div>
+      <div class="level-card avancado" data-level="avancado" onclick="selectLevel('avancado')"><span class="level-emoji">🧠</span><span class="level-name">Avançado</span><span class="level-desc">Linguagem complexa</span></div>
+      <div class="level-card extremo" data-level="extremo" onclick="selectLevel('extremo')"><span class="level-emoji">💀</span><span class="level-name">Extremo</span><span class="level-desc">Máximo desafio</span></div>
     </div>
 
-    <!-- SELETOR DE TEXTO -->
-    <div style="margin-bottom:10px">
-      <div class="section-title">Escolha o Texto</div>
-      <div class="section-sub">Textos prontos ou insira o seu</div>
-    </div>
+    <div style="margin-bottom:10px"><div class="section-title">Escolha o Texto</div><div class="section-sub">Textos prontos ou insira o seu</div></div>
     <div class="text-selector">
       <div class="text-tabs">
         <div class="text-tab active" onclick="switchTab('library')">📚 Biblioteca</div>
         <div class="text-tab" onclick="switchTab('custom')">✏️ Meu Texto</div>
       </div>
-
-      <div class="text-tab-content active" id="tab-library">
-        <div class="text-list" id="textList">
-          <!-- populated by JS -->
-        </div>
-      </div>
-
+      <div class="text-tab-content active" id="tab-library"><div class="text-list" id="textList"></div></div>
       <div class="text-tab-content" id="tab-custom">
         <textarea class="custom-area" id="customText" placeholder="Cole ou escreva seu texto aqui..." oninput="updateCharCount()"></textarea>
         <div class="custom-meta">
-          <input type="text" class="custom-input" id="customTitle" placeholder="Título do texto (opcional)">
+          <input type="text" class="custom-input" id="customTitle" placeholder="Título (opcional)">
           <span class="char-count" id="charCount">0 palavras</span>
         </div>
       </div>
     </div>
-
     <div class="start-row">
-      <div style="font-size:0.8rem;color:var(--ink3)">Texto selecionado: <strong id="selectedTextName" style="color:var(--ink)">Nenhum</strong></div>
+      <div style="font-size:.78rem;color:var(--ink3)">Selecionado: <strong id="selectedTextName" style="color:var(--ink)">Nenhum</strong></div>
       <button class="btn btn-accent" onclick="startReading()">▶ Começar Leitura</button>
+    </div>
+  </div>
+
+  <!-- TAB: FALA -->
+  <div id="mainTabSpeech" class="home-wrap" style="display:none">
+    <div class="speech-hero">
+      <h2>Analise sua <em>fala</em></h2>
+      <p>Grave sua voz lendo em voz alta ou fale livremente. O sistema identifica problemas de dicção, ritmo, hesitações e muito mais.</p>
+    </div>
+
+    <div class="speech-modes">
+      <div class="speech-mode-card selected" id="modeCard-free" onclick="selectSpeechMode('free')">
+        <span class="speech-mode-icon">🎙️</span>
+        <div class="speech-mode-title">Fala Livre</div>
+        <div class="speech-mode-desc">Fale qualquer coisa. O sistema analisa ritmo, fluência, pausas e vícios de linguagem.</div>
+      </div>
+      <div class="speech-mode-card" id="modeCard-text" onclick="selectSpeechMode('text')">
+        <span class="speech-mode-icon">📄</span>
+        <div class="speech-mode-title">Leitura em Voz Alta</div>
+        <div class="speech-mode-desc">Escolha um texto e leia em voz alta. Detecta erros de pronúncia e palavras puladas.</div>
+      </div>
+    </div>
+
+    <!-- Text select (only for text mode) -->
+    <div id="speechTextSelector" style="display:none" class="speech-panel">
+      <div class="speech-panel-header"><div class="speech-panel-title">Texto para Leitura</div></div>
+      <div class="speech-panel-body">
+        <div class="speech-text-select">
+          <label>Escolha um texto da biblioteca:</label>
+          <select class="speech-select" id="speechTextSelect" onchange="loadSpeechText()">
+            <option value="">— selecione —</option>
+          </select>
+        </div>
+        <div id="speechRefText" class="speech-ref-text" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- Recorder Panel -->
+    <div class="speech-panel">
+      <div class="speech-panel-header">
+        <div class="speech-panel-title">🎤 Gravação e Análise</div>
+        <div id="speechSupportBadge" style="font-size:.7rem;font-family:'DM Mono',monospace;color:var(--easy)">● API disponível</div>
+      </div>
+      <div class="speech-panel-body">
+        <div class="rec-status" id="recStatus">
+          <div class="rec-dot" id="recDot"></div>
+          <div class="rec-status-text" id="recStatusText">Pronto para gravar. Clique em Iniciar.</div>
+          <div class="rec-timer" id="recTimer">00:00</div>
+        </div>
+
+        <div class="waveform-wrap">
+          <canvas id="waveformCanvas"></canvas>
+          <div class="wave-idle-msg" id="waveIdleMsg">🎤 aguardando gravação…</div>
+        </div>
+
+        <div class="transcript-box" id="transcriptBox">
+          <span class="transcript-placeholder" id="transcriptPlaceholder">A transcrição da sua fala aparecerá aqui durante a gravação...</span>
+          <span id="transcriptContent" style="display:none"></span>
+        </div>
+
+        <div class="speech-metrics" id="speechMetrics" style="display:none">
+          <div class="speech-metric"><span class="speech-metric-val" id="metWPM">—</span><span class="speech-metric-label">PPM</span></div>
+          <div class="speech-metric"><span class="speech-metric-val" id="metPauses">—</span><span class="speech-metric-label">Pausas</span></div>
+          <div class="speech-metric"><span class="speech-metric-val" id="metHesit">—</span><span class="speech-metric-label">Hesitações</span></div>
+          <div class="speech-metric"><span class="speech-metric-val" id="metScore">—</span><span class="speech-metric-label">Score</span></div>
+        </div>
+
+        <div class="speech-controls">
+          <button class="btn btn-speech" id="btnRecord" onclick="toggleRecord()">
+            <span id="btnRecIcon">⏺</span>
+            <span id="btnRecText">Iniciar Gravação</span>
+          </button>
+          <button class="btn btn-ghost" id="btnAnalyze" onclick="analyzeCurrentSpeech()" style="display:none">🔍 Analisar</button>
+          <button class="btn btn-ghost" onclick="clearSpeech()">🗑 Limpar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Problems found -->
+    <div class="speech-panel" id="problemsPanel" style="display:none">
+      <div class="speech-panel-header"><div class="speech-panel-title">📋 Diagnóstico da Fala</div></div>
+      <div class="speech-panel-body">
+        <div class="problems-list" id="problemsList"></div>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- ===== LEITURA ===== -->
-<div id="screen-reading">
+<div class="screen" id="screen-reading">
   <div class="topbar">
     <div class="brand">Leitura<em>PRO</em></div>
-    <div class="topbar-right">
-      <button class="btn btn-ghost" onclick="goHome()">← Voltar</button>
-    </div>
+    <div class="topbar-right"><button class="btn btn-ghost" onclick="goHome()">← Voltar</button></div>
   </div>
   <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
-
   <div class="reading-wrap">
     <div class="reading-header">
       <div class="reading-info">
         <div class="timer-display" id="timerDisplay">00:00</div>
-        <div class="reading-meta">
-          <span id="wpmLive">— PPM</span>
-          <span id="wordCount">0 palavras</span>
+        <div class="reading-meta-box">
+          <span class="reading-meta" id="wpmLive">— PPM</span>
+          <span class="reading-meta" id="wordCount">0 palavras</span>
         </div>
       </div>
       <div class="timer-controls">
         <button class="ctrl ctrl-start" id="btnStart" onclick="startTimer()">▶ Iniciar</button>
         <button class="ctrl ctrl-pause" id="btnPause" onclick="pauseTimer()" style="display:none">⏸ Pausar</button>
-        <button class="ctrl ctrl-stop" id="btnStop" onclick="stopTimer()">■ Finalizar</button>
+        <button class="ctrl ctrl-stop" onclick="stopTimer()">■ Finalizar</button>
       </div>
     </div>
-
     <div id="readingLevelBadge" class="reading-level-badge"></div>
     <div class="text-title-display" id="readingTitle"></div>
     <div class="text-body" id="readingBody"></div>
@@ -824,61 +414,31 @@ body {
 </div>
 
 <!-- ===== RESULTADO ===== -->
-<div id="screen-result">
+<div class="screen" id="screen-result">
   <div class="topbar">
     <div class="brand">Leitura<em>PRO</em></div>
-    <div class="topbar-right">
-      <button class="btn btn-ghost" onclick="goHome()">← Início</button>
-    </div>
+    <div class="topbar-right"><button class="btn btn-ghost" onclick="goHome()">← Início</button></div>
   </div>
-
   <div class="result-wrap">
     <div class="result-hero">
       <div class="result-grade" id="resultGrade">A</div>
       <div class="result-label" id="resultLabel">Excelente desempenho!</div>
     </div>
-
     <div class="result-cards">
-      <div class="result-card">
-        <span class="result-card-val" id="res-wpm">—</span>
-        <span class="result-card-label">Palavras/min</span>
-      </div>
-      <div class="result-card">
-        <span class="result-card-val" id="res-time">—</span>
-        <span class="result-card-label">Tempo Total</span>
-      </div>
-      <div class="result-card">
-        <span class="result-card-val" id="res-words">—</span>
-        <span class="result-card-label">Palavras</span>
-      </div>
-      <div class="result-card">
-        <span class="result-card-val" id="res-level">—</span>
-        <span class="result-card-label">Nível</span>
-      </div>
+      <div class="result-card"><span class="result-card-val" id="res-wpm">—</span><span class="result-card-label">Palavras/min</span></div>
+      <div class="result-card"><span class="result-card-val" id="res-time">—</span><span class="result-card-label">Tempo Total</span></div>
+      <div class="result-card"><span class="result-card-val" id="res-words">—</span><span class="result-card-label">Palavras</span></div>
+      <div class="result-card"><span class="result-card-val" id="res-level">—</span><span class="result-card-label">Nível</span></div>
     </div>
-
     <div class="wpm-gauge">
-      <div class="gauge-title">
-        Velocidade de Leitura
-        <span style="font-size:0.72rem;color:var(--ink3);font-family:'DM Mono',monospace">Média adulta: 200-300 PPM</span>
-      </div>
+      <div class="gauge-title">Velocidade de Leitura <span style="font-size:.7rem;color:var(--ink3);font-family:'DM Mono',monospace">Média adulta: 200-300 PPM</span></div>
       <div class="gauge-scale">
-        <div class="gauge-marker" id="gaugeMarker" style="left:30%">
-          <div class="gauge-marker-val" id="gaugeVal">—</div>
-          <div class="gauge-arrow"></div>
-        </div>
+        <div class="gauge-marker" id="gaugeMarker" style="left:30%"><div class="gauge-marker-val" id="gaugeVal">—</div><div class="gauge-arrow"></div></div>
         <div class="gauge-track"></div>
       </div>
-      <div class="gauge-labels">
-        <span>0</span><span>100</span><span>200</span><span>300</span><span>400</span><span>500+</span>
-      </div>
+      <div class="gauge-labels"><span>0</span><span>100</span><span>200</span><span>300</span><span>400</span><span>500+</span></div>
     </div>
-
-    <div class="analysis-box">
-      <h3>Análise Detalhada</h3>
-      <div id="analysisItems"></div>
-    </div>
-
+    <div class="analysis-box"><h3>Análise Detalhada</h3><div id="analysisItems"></div></div>
     <div class="result-actions">
       <button class="btn btn-ghost" onclick="goHome()">🏠 Início</button>
       <button class="btn btn-solid" onclick="tryAgain()">🔄 Tentar Novamente</button>
@@ -888,7 +448,6 @@ body {
 </div>
 
 <script>
-// ===== DATA =====
 const TEXTS = {
   easy: [
     {
@@ -1220,17 +779,28 @@ let timerInterval = null;
 let timerRunning = false;
 let timerStarted = false;
 let timerPaused = false;
-let history = JSON.parse(localStorage.getItem('leitura_history') || '[]');
+let history = [];
+try { history = JSON.parse(localStorage.getItem('leitura_history') || '[]'); } catch(e){ history = []; }
+
+// ===== MAIN TAB SWITCH =====
+function switchMainTab(tab) {
+  document.getElementById('mainTabReading').style.display = tab === 'reading' ? '' : 'none';
+  document.getElementById('mainTabSpeech').style.display = tab === 'speech' ? '' : 'none';
+  document.getElementById('tabBtnReading').classList.toggle('active', tab === 'reading');
+  document.getElementById('tabBtnSpeech').classList.toggle('active', tab === 'speech');
+}
 
 // ===== INIT =====
 function init() {
   updateStats();
   renderTextList();
+  populateSpeechTextSelect();
+  checkSpeechSupport();
 }
 
 function updateStats() {
   document.getElementById('statSessions').textContent = history.length;
-  if (history.length === 0) return;
+  if (!history.length) return;
   const wpms = history.map(h => h.wpm);
   document.getElementById('statAvgWPM').textContent = Math.round(wpms.reduce((a,b)=>a+b,0)/wpms.length);
   document.getElementById('statBestWPM').textContent = Math.max(...wpms);
@@ -1240,19 +810,13 @@ function renderTextList() {
   const list = document.getElementById('textList');
   list.innerHTML = '';
   const texts = TEXTS[currentLevel] || [];
+  const lvlLabels = {easy:'Fácil',medio:'Médio',dificil:'Difícil',avancado:'Avançado',extremo:'Extremo'};
   texts.forEach(t => {
-    const wordCount = t.body.trim().split(/\s+/).length;
+    const wc = t.body.trim().split(/\s+/).length;
     const el = document.createElement('div');
     el.className = 'text-item' + (currentTextId === t.id ? ' selected' : '');
-    el.onclick = () => selectText(t);
-    const lvlLabels = {easy:'Fácil',medio:'Médio',dificil:'Difícil',avancado:'Avançado',extremo:'Extremo'};
-    el.innerHTML = `
-      <span class="text-item-badge badge-${t.level}">${lvlLabels[t.level]}</span>
-      <div class="text-item-info">
-        <div class="text-item-title">${t.title}</div>
-        <div class="text-item-meta">${wordCount} palavras · ~${Math.ceil(wordCount/200)} min de leitura</div>
-      </div>
-    `;
+    el.onclick = () => { selectText(t); document.querySelectorAll('.text-item').forEach(x => x.classList.remove('selected')); el.classList.add('selected'); };
+    el.innerHTML = `<span class="text-item-badge badge-${t.level}">${lvlLabels[t.level]||t.level}</span><div class="text-item-info"><div class="text-item-title">${t.title}</div><div class="text-item-meta">${wc} palavras · ~${Math.ceil(wc/200)} min</div></div>`;
     list.appendChild(el);
   });
 }
@@ -1260,11 +824,17 @@ function renderTextList() {
 function selectLevel(l) {
   currentLevel = l;
   currentTextId = null;
+  isCustom = false;
   document.getElementById('selectedTextName').textContent = 'Nenhum';
   document.querySelectorAll('.level-card').forEach(c => c.classList.remove('selected'));
   document.querySelector(`.level-card[data-level="${l}"]`).classList.add('selected');
   renderTextList();
-  document.querySelector('.text-tab[onclick="switchTab(\'library\')"]').click();
+  // go back to library tab
+  document.querySelectorAll('.text-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.text-tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.text-tab')[0].classList.add('active');
+  document.getElementById('tab-library').classList.add('active');
+  isCustom = false;
 }
 
 function switchTab(tab) {
@@ -1287,8 +857,6 @@ function selectText(t) {
   currentTextId = t.id;
   currentText = t;
   isCustom = false;
-  document.querySelectorAll('.text-item').forEach(el => el.classList.remove('selected'));
-  event.currentTarget.classList.add('selected');
   document.getElementById('selectedTextName').textContent = t.title;
 }
 
@@ -1304,21 +872,19 @@ function startReading() {
     const body = document.getElementById('customText').value.trim();
     if (!body) { showToast('Cole seu texto antes de começar!'); return; }
     const title = document.getElementById('customTitle').value.trim() || 'Meu Texto';
-    currentText = { id: '__custom__', title, level: currentLevel, body };
+    currentText = { id:'__custom__', title, level: currentLevel, body };
   } else {
-    if (!currentTextId) { showToast('Selecione um texto antes de começar!'); return; }
+    if (!currentText) { showToast('Selecione um texto da biblioteca!'); return; }
   }
 
-  // Setup reading screen
   const lvlMap = {
-    easy: {label:'🌱 Fácil', cls:'badge-easy', bg:'var(--easy-bg)', color:'var(--easy)'},
-    medio: {label:'📖 Médio', cls:'badge-medio', bg:'var(--medio-bg)', color:'var(--medio)'},
-    dificil: {label:'⚡ Difícil', cls:'badge-dificil', bg:'var(--dificil-bg)', color:'var(--dificil)'},
-    avancado: {label:'🧠 Avançado', cls:'badge-avancado', bg:'var(--avancado-bg)', color:'var(--avancado)'},
-    extremo: {label:'💀 Extremo', cls:'badge-extremo', bg:'var(--extremo-bg)', color:'#ccc'}
+    easy:{label:'🌱 Fácil',bg:'var(--easy-bg)',color:'var(--easy)'},
+    medio:{label:'📖 Médio',bg:'var(--medio-bg)',color:'var(--medio)'},
+    dificil:{label:'⚡ Difícil',bg:'var(--dificil-bg)',color:'var(--dificil)'},
+    avancado:{label:'🧠 Avançado',bg:'var(--avancado-bg)',color:'var(--avancado)'},
+    extremo:{label:'💀 Extremo',bg:'var(--extremo-bg)',color:'#ccc'}
   };
   const lvl = lvlMap[currentText.level] || lvlMap.easy;
-
   const badge = document.getElementById('readingLevelBadge');
   badge.textContent = lvl.label;
   badge.style.background = lvl.bg;
@@ -1332,7 +898,6 @@ function startReading() {
   const words = currentText.body.trim().split(/\s+/).length;
   document.getElementById('wordCount').textContent = words + ' palavras';
 
-  // reset timer
   timerSeconds = 0;
   timerRunning = false;
   timerStarted = false;
@@ -1343,6 +908,7 @@ function startReading() {
   document.getElementById('wpmLive').textContent = '— PPM';
   document.getElementById('progressBar').style.width = '0%';
   document.getElementById('btnStart').style.display = '';
+  document.getElementById('btnStart').textContent = '▶ Iniciar';
   document.getElementById('btnPause').style.display = 'none';
 
   showScreen('reading');
@@ -1351,17 +917,15 @@ function startReading() {
 
 // ===== TIMER =====
 function startTimer() {
-  if (timerStarted && !timerPaused) return;
+  if (timerRunning) return;
   timerRunning = true;
   timerStarted = true;
   timerPaused = false;
   document.getElementById('timerDisplay').className = 'timer-display running';
   document.getElementById('btnStart').style.display = 'none';
   document.getElementById('btnPause').style.display = '';
-  timerInterval = setInterval(() => {
-    timerSeconds++;
-    updateTimerDisplay();
-  }, 1000);
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => { timerSeconds++; updateTimerDisplay(); }, 1000);
 }
 
 function pauseTimer() {
@@ -1383,183 +947,534 @@ function stopTimer() {
 }
 
 function updateTimerDisplay() {
-  const m = Math.floor(timerSeconds / 60);
-  const s = timerSeconds % 60;
-  document.getElementById('timerDisplay').textContent =
-    String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
-
+  const m = Math.floor(timerSeconds/60);
+  const s = timerSeconds%60;
+  document.getElementById('timerDisplay').textContent = pad(m)+':'+pad(s);
   if (timerSeconds > 5) {
-    const words = currentText.body.trim().split(/\s+/).length;
-    const wpm = Math.round((words / timerSeconds) * 60);
-    document.getElementById('wpmLive').textContent = wpm + ' PPM';
+    const wc = currentText.body.trim().split(/\s+/).length;
+    document.getElementById('wpmLive').textContent = Math.round((wc/timerSeconds)*60)+' PPM';
   }
-
-  // progress (estimated by time vs expected)
-  const words = currentText.body.trim().split(/\s+/).length;
-  const avgWPM = 200;
-  const expectedSecs = (words / avgWPM) * 60;
-  const prog = Math.min(100, (timerSeconds / expectedSecs) * 100);
-  document.getElementById('progressBar').style.width = prog + '%';
+  const wc = currentText.body.trim().split(/\s+/).length;
+  const exp = (wc/200)*60;
+  document.getElementById('progressBar').style.width = Math.min(100,(timerSeconds/exp)*100)+'%';
 }
+function pad(n){ return String(n).padStart(2,'0'); }
 
 // ===== RESULT =====
 function showResult() {
   const words = currentText.body.trim().split(/\s+/).length;
-  const wpm = timerSeconds > 0 ? Math.round((words / timerSeconds) * 60) : 0;
+  const wpm = timerSeconds > 0 ? Math.round((words/timerSeconds)*60) : 0;
+  const m = Math.floor(timerSeconds/60), s = timerSeconds%60;
+  const timeStr = pad(m)+':'+pad(s);
 
-  const m = Math.floor(timerSeconds / 60);
-  const s = timerSeconds % 60;
-  const timeStr = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
-
-  // Grade
-  let grade, gradeLabel, gradeColor;
-  const lvlBonus = {easy:0, medio:20, dificil:50, avancado:80, extremo:120};
-  const bonus = lvlBonus[currentText.level] || 0;
-  const adjWPM = wpm + bonus;
-
-  if (adjWPM >= 350) { grade='S'; gradeLabel='Leitura excepcional!'; gradeColor='#c8ff00'; }
-  else if (adjWPM >= 280) { grade='A'; gradeLabel='Excelente desempenho!'; gradeColor=var('--easy'); }
-  else if (adjWPM >= 220) { grade='B'; gradeLabel='Bom desempenho!'; gradeColor='#2d7a3a'; }
-  else if (adjWPM >= 160) { grade='C'; gradeLabel='Desempenho médio'; gradeColor='#b06a00'; }
-  else if (adjWPM >= 100) { grade='D'; gradeLabel='Continue praticando!'; gradeColor='#c0392b'; }
-  else { grade='F'; gradeLabel='Pratique mais!'; gradeColor='#888'; }
+  const lvlBonus = {easy:0,medio:20,dificil:50,avancado:80,extremo:120};
+  const adj = wpm + (lvlBonus[currentText.level]||0);
+  let grade, label, color;
+  if(adj>=350){grade='S';label='Leitura excepcional!';color='#c8a000';}
+  else if(adj>=280){grade='A';label='Excelente desempenho!';color='#2d7a3a';}
+  else if(adj>=220){grade='B';label='Bom desempenho!';color='#4caf50';}
+  else if(adj>=160){grade='C';label='Desempenho médio';color='#b06a00';}
+  else if(adj>=100){grade='D';label='Continue praticando!';color:'#c0392b';}
+  else{grade='F';label='Pratique mais!';color='#888';}
 
   document.getElementById('resultGrade').textContent = grade;
-  document.getElementById('resultGrade').style.color = gradeColor;
-  document.getElementById('resultLabel').textContent = gradeLabel;
-
+  document.getElementById('resultGrade').style.color = color;
+  document.getElementById('resultLabel').textContent = label;
   document.getElementById('res-wpm').textContent = wpm;
   document.getElementById('res-time').textContent = timeStr;
   document.getElementById('res-words').textContent = words;
-  const lvlNames = {easy:'Fácil',medio:'Médio',dificil:'Difícil',avancado:'Avançado',extremo:'Extremo'};
-  document.getElementById('res-level').textContent = lvlNames[currentText.level] || '—';
+  const lvlNames={easy:'Fácil',medio:'Médio',dificil:'Difícil',avancado:'Avançado',extremo:'Extremo'};
+  document.getElementById('res-level').textContent = lvlNames[currentText.level]||'—';
 
-  // Gauge
-  const maxWPM = 500;
-  const pct = Math.min(98, Math.max(2, (wpm / maxWPM) * 100));
-  setTimeout(() => {
-    document.getElementById('gaugeMarker').style.left = pct + '%';
-    document.getElementById('gaugeVal').textContent = wpm + ' PPM';
-  }, 300);
+  const pct = Math.min(98,Math.max(2,(wpm/500)*100));
+  setTimeout(()=>{
+    document.getElementById('gaugeMarker').style.left = pct+'%';
+    document.getElementById('gaugeVal').textContent = wpm+' PPM';
+  },300);
 
-  // Analysis
   const items = buildAnalysis(wpm, timerSeconds, words, currentText.level);
-  const aiDiv = document.getElementById('analysisItems');
-  aiDiv.innerHTML = '';
+  const box = document.getElementById('analysisItems');
+  box.innerHTML = '';
   items.forEach(item => {
     const d = document.createElement('div');
     d.className = 'analysis-item';
     d.innerHTML = `<span class="analysis-icon">${item.icon}</span><div>${item.text}</div>`;
-    aiDiv.appendChild(d);
+    box.appendChild(d);
   });
 
-  // Save history
-  history.unshift({ wpm, time: timeStr, words, level: currentText.level, title: currentText.title, grade, date: new Date().toLocaleDateString('pt-BR') });
-  if (history.length > 50) history.pop();
-  localStorage.setItem('leitura_history', JSON.stringify(history));
+  history.unshift({wpm,time:timeStr,words,level:currentText.level,title:currentText.title,grade,date:new Date().toLocaleDateString('pt-BR')});
+  if(history.length>50) history.pop();
+  try { localStorage.setItem('leitura_history',JSON.stringify(history)); } catch(e){}
 
   showScreen('result');
   window.scrollTo(0,0);
 }
 
-function var_(name) { return getComputedStyle(document.documentElement).getPropertyValue(name); }
+function buildAnalysis(wpm,secs,words,level){
+  const items=[];
+  if(wpm<100) items.push({icon:'🐢',text:`Velocidade de <strong>${wpm} PPM</strong> — abaixo da média. Adultos leem 200–300 PPM. Pratique eliminar a subvocalização (repetir mentalmente cada palavra).`});
+  else if(wpm<200) items.push({icon:'🚶',text:`<strong>${wpm} PPM</strong> — ritmo lento a moderado. Normal para leitura atenta. Tente ampliar o campo visual para capturar grupos de palavras.`});
+  else if(wpm<300) items.push({icon:'🏃',text:`<strong>${wpm} PPM</strong> — velocidade média de adulto educado. Para avançar, tente capturar mais de uma palavra por fixação ocular.`});
+  else if(wpm<400) items.push({icon:'⚡',text:`<strong>${wpm} PPM</strong> — acima da média! Você está na faixa de leitores ávidos. Mantenha a compreensão como prioridade.`});
+  else items.push({icon:'🚀',text:`<strong>${wpm} PPM</strong> — leitura excepcional! Top 10% dos leitores. Certifique-se que a compreensão acompanha.`});
 
-function buildAnalysis(wpm, secs, words, level) {
-  const items = [];
+  const mins=secs/60;
+  if(mins<2) items.push({icon:'⏱',text:`Sessão curta (${Math.round(mins*10)/10} min). Sessões de 10–20 min trazem mais benefício para o treino.`});
+  else items.push({icon:'⏱',text:`<strong>${Math.round(mins)} minutos</strong> de leitura concentrada — ótimo para treinar resistência de foco.`});
 
-  // WPM category
-  if (wpm < 100) items.push({icon:'🐢', text:`Sua velocidade de <strong>${wpm} PPM</strong> está abaixo da média. A maioria dos adultos lê entre 200–300 PPM. Com prática diária, você pode dobrar essa marca em semanas.`});
-  else if (wpm < 200) items.push({icon:'🚶', text:`<strong>${wpm} PPM</strong> — ritmo lento a moderado. Está dentro do normal para leitura atenta. Trabalhe na eliminação da subvocalização (o "dizer as palavras mentalmente") para ganhar velocidade.`});
-  else if (wpm < 300) items.push({icon:'🏃', text:`<strong>${wpm} PPM</strong> — velocidade média de adulto educado. Você está numa boa faixa. Para avançar, tente ampliar o "span visual" — capturar grupos de palavras em vez de uma por vez.`});
-  else if (wpm < 400) items.push({icon:'⚡', text:`<strong>${wpm} PPM</strong> — leitura acima da média! Você está na faixa de leitores ávidos e profissionais. Manter a compreensão nessa velocidade é o próximo desafio.`});
-  else items.push({icon:'🚀', text:`<strong>${wpm} PPM</strong> — leitura excepcional! Você está entre os 10% mais rápidos. Verifique se a compreensão acompanha — velocidade sem compreensão não é leitura.`});
-
-  // Time insight
-  const mins = secs / 60;
-  if (mins < 2) items.push({icon:'⏱', text:`Sessão muito curta (<strong>${Math.round(mins)} min</strong>). Textos curtos são bons para aquecimento, mas sessões de 10–20 minutos trazem mais benefício para o treino de leitura.`});
-  else if (mins < 10) items.push({icon:'⏱', text:`Boa sessão de <strong>${Math.round(mins)} minutos</strong>. Você manteve o foco pelo tempo suficiente para criar um dado confiável de PPM.`});
-  else items.push({icon:'⏱', text:`Excelente resistência! <strong>${Math.round(mins)} minutos</strong> de leitura concentrada. Isso treina não só velocidade, mas memória de trabalho e compreensão de textos longos.`});
-
-  // Level insight
-  const lvlInsights = {
-    easy: 'Textos fáceis são ideais para aquecer e medir sua velocidade base sem sobrecarga cognitiva.',
-    medio: 'Nível médio equilibra desafio e fluidez — ótimo para progressão consistente.',
-    dificil: 'Textos difíceis exigem mais processamento semântico, o que pode reduzir a PPM. Isso é normal e desejável para desenvolver compreensão profunda.',
-    avancado: 'Excelente escolha desafiadora. Leitura de textos avançados expande vocabulário ativo e capacidade de raciocínio abstrato.',
-    extremo: 'Nível extremo: você enfrentou vocabulário técnico denso e estruturas argumentativas complexas. A PPM mais baixa aqui é esperada — o ganho é de compreensão, não velocidade.'
-  };
-  items.push({icon:'📊', text: lvlInsights[level] || ''});
-
-  // Comparison
-  items.push({icon:'📚', text:`Para referência: leitores casuais ficam em torno de <strong>150–200 PPM</strong>, profissionais entre <strong>300–400 PPM</strong>, e leitores treinados em speed reading podem chegar a <strong>600–800 PPM</strong> (com menor compreensão). Seu foco deve ser o ponto ótimo entre velocidade e entendimento.`});
-
+  const insights={easy:'Textos fáceis medem sua velocidade base sem sobrecarga cognitiva.',medio:'Nível médio equilibra desafio e fluidez — ideal para progressão consistente.',dificil:'Textos técnicos reduzem PPM — normal. O ganho é de vocabulário e compreensão.',avancado:'Parabéns pelo desafio avançado! Expande vocabulário ativo e raciocínio abstrato.',extremo:'Nível extremo: densidade máxima. PPM mais baixo aqui é esperado e saudável.'};
+  items.push({icon:'📊',text:insights[level]||''});
+  items.push({icon:'📚',text:`Referência: leitores casuais <strong>150–200 PPM</strong>, profissionais <strong>300–400 PPM</strong>, speed readers <strong>600–800 PPM</strong>. Foco no equilíbrio entre velocidade e compreensão.`});
   return items;
 }
 
-// ===== NAVIGATION =====
-function showScreen(name) {
-  document.querySelectorAll('[id^="screen-"]').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + name).classList.add('active');
+function tryAgain(){ startReading(); }
+function nextText(){
+  const texts = TEXTS[currentLevel]||[];
+  const idx = texts.findIndex(t=>t.id===currentTextId);
+  const next = texts[(idx+1)%texts.length];
+  if(next){ currentTextId=next.id; currentText=next; startReading(); }
+  else goHome();
 }
 
-function goHome() {
+// ===== SPEECH ANALYZER =====
+let speechMode = 'free';
+let mediaRecorder = null;
+let audioContext = null;
+let analyserNode = null;
+let recognition = null;
+let recSeconds = 0;
+let recInterval = null;
+let isRecording = false;
+let fullTranscript = '';
+let wordTimestamps = [];
+let pauseCount = 0;
+let hesitationCount = 0;
+let speechWordCount = 0;
+let lastWordTime = 0;
+let speechTextWords = [];
+let spokenWordIndex = 0;
+
+const HESITATION_WORDS = ['ã','ê','né','tipo','assim','então','sabe','tá','é','ahn','hm','hmm','ah','uh','eh','uhm'];
+const FILLER_WORDS = ['né','tipo','assim','então','sabe','literalmente','basicamente','enfim','aliás','inclusive','meio que','tipo assim'];
+
+function checkSpeechSupport(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){
+    document.getElementById('speechSupportBadge').textContent = '⚠ Use Chrome/Edge';
+    document.getElementById('speechSupportBadge').style.color = 'var(--medio)';
+  }
+}
+
+function selectSpeechMode(mode){
+  speechMode = mode;
+  document.getElementById('modeCard-free').classList.toggle('selected', mode==='free');
+  document.getElementById('modeCard-text').classList.toggle('selected', mode==='text');
+  document.getElementById('speechTextSelector').style.display = mode==='text' ? '' : 'none';
+}
+
+function populateSpeechTextSelect(){
+  const sel = document.getElementById('speechTextSelect');
+  const lvlNames={easy:'Fácil',medio:'Médio',dificil:'Difícil',avancado:'Avançado',extremo:'Extremo'};
+  Object.values(TEXTS).flat().forEach(t=>{
+    const opt = document.createElement('option');
+    opt.value = t.id;
+    opt.textContent = `[${lvlNames[t.level]}] ${t.title}`;
+    sel.appendChild(opt);
+  });
+}
+
+function loadSpeechText(){
+  const id = document.getElementById('speechTextSelect').value;
+  if(!id){ document.getElementById('speechRefText').style.display='none'; return; }
+  const text = Object.values(TEXTS).flat().find(t=>t.id===id);
+  if(!text) return;
+  const box = document.getElementById('speechRefText');
+  box.style.display = '';
+  speechTextWords = text.body.trim().split(/\s+/);
+  spokenWordIndex = 0;
+  box.innerHTML = speechTextWords.map((w,i)=>`<span class="speech-ref-word" id="rw${i}">${w}</span> `).join('');
+  if(speechTextWords[0]) document.getElementById('rw0').className = 'speech-ref-word current';
+}
+
+function toggleRecord(){
+  if(isRecording) stopRecording();
+  else startRecording();
+}
+
+function startRecording(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){ showToast('Use Chrome ou Edge para o analisador de fala!'); return; }
+
+  isRecording = true;
+  fullTranscript = '';
+  wordTimestamps = [];
+  pauseCount = 0;
+  hesitationCount = 0;
+  speechWordCount = 0;
+  lastWordTime = Date.now();
+  spokenWordIndex = 0;
+  recSeconds = 0;
+  speechTextWords = speechMode==='text' ? (()=>{
+    const id=document.getElementById('speechTextSelect').value;
+    const t=id?Object.values(TEXTS).flat().find(x=>x.id===id):null;
+    return t?t.body.trim().split(/\s+/):[];
+  })() : [];
+
+  // Reset ref text
+  if(speechMode==='text') loadSpeechText();
+
+  document.getElementById('transcriptPlaceholder').style.display='none';
+  document.getElementById('transcriptContent').style.display='';
+  document.getElementById('transcriptContent').innerHTML='';
+  document.getElementById('speechMetrics').style.display='none';
+  document.getElementById('problemsPanel').style.display='none';
+
+  document.getElementById('recDot').className='rec-dot active';
+  document.getElementById('recStatusText').textContent='Gravando... fale agora!';
+  document.getElementById('btnRecIcon').textContent='⏹';
+  document.getElementById('btnRecText').textContent='Parar Gravação';
+  document.getElementById('btnRecord').classList.add('recording');
+  document.getElementById('btnAnalyze').style.display='none';
+  document.getElementById('waveIdleMsg').style.display='none';
+
+  recInterval = setInterval(()=>{
+    recSeconds++;
+    document.getElementById('recTimer').textContent=pad(Math.floor(recSeconds/60))+':'+pad(recSeconds%60);
+    checkForPause();
+  },1000);
+
+  startWaveform();
+  startRecognition();
+}
+
+function stopRecording(){
+  isRecording = false;
+  clearInterval(recInterval);
+  if(recognition) try{ recognition.stop(); }catch(e){}
+  stopWaveform();
+
+  document.getElementById('recDot').className='rec-dot ready';
+  document.getElementById('recStatusText').textContent=`Gravação concluída — ${recSeconds}s`;
+  document.getElementById('btnRecIcon').textContent='⏺';
+  document.getElementById('btnRecText').textContent='Nova Gravação';
+  document.getElementById('btnRecord').classList.remove('recording');
+
+  if(fullTranscript.trim()) {
+    document.getElementById('btnAnalyze').style.display='';
+    setTimeout(analyzeCurrentSpeech, 400);
+  }
+}
+
+function startRecognition(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.lang = 'pt-BR';
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.maxAlternatives = 1;
+
+  let interimEl = null;
+
+  recognition.onresult = (e) => {
+    let interim = '';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const res = e.results[i];
+      if(res.isFinal){
+        const text = res[0].transcript.trim();
+        processFinalText(text);
+        if(interimEl){ interimEl.remove(); interimEl=null; }
+      } else {
+        interim = res[0].transcript;
+      }
+    }
+    if(interim){
+      if(!interimEl){
+        interimEl=document.createElement('span');
+        interimEl.style.cssText='color:var(--ink3);font-style:italic';
+        document.getElementById('transcriptContent').appendChild(interimEl);
+      }
+      interimEl.textContent=' '+interim;
+    }
+  };
+
+  recognition.onerror = (e) => {
+    if(e.error==='no-speech') return;
+    if(isRecording && e.error!=='aborted') setTimeout(()=>{ if(isRecording) startRecognition(); },500);
+  };
+
+  recognition.onend = () => {
+    if(isRecording) setTimeout(()=>{ if(isRecording) startRecognition(); },200);
+  };
+
+  try { recognition.start(); } catch(e){}
+}
+
+function processFinalText(text){
+  if(!text) return;
+  lastWordTime = Date.now();
+  const words = text.split(/\s+/).filter(Boolean);
+  const container = document.getElementById('transcriptContent');
+
+  words.forEach(raw => {
+    const word = raw.toLowerCase().replace(/[.,!?;:]/g,'');
+    speechWordCount++;
+    wordTimestamps.push({word,time:Date.now()});
+
+    const span = document.createElement('span');
+    span.className = 'transcript-word';
+
+    const isHesit = HESITATION_WORDS.includes(word);
+    const isFiller = FILLER_WORDS.includes(word);
+
+    if(isHesit){ span.className+=' hesitation'; hesitationCount++; }
+    else if(isFiller){ span.className+=' problem'; }
+
+    span.textContent = raw + ' ';
+    span.title = isHesit ? '⚠ Hesitação detectada' : isFiller ? '⚠ Vício de linguagem' : '';
+    container.appendChild(span);
+
+    // Text mode: highlight reference
+    if(speechMode==='text' && speechTextWords.length){
+      const refWord = speechTextWords[spokenWordIndex]?.toLowerCase().replace(/[.,!?;:]/g,'');
+      if(refWord){
+        const refEl = document.getElementById('rw'+spokenWordIndex);
+        if(refEl){
+          if(word === refWord || levenshtein(word,refWord)<=1){
+            refEl.className='speech-ref-word spoken-correct';
+          } else {
+            refEl.className='speech-ref-word spoken-wrong';
+          }
+        }
+        spokenWordIndex++;
+        const nextEl = document.getElementById('rw'+spokenWordIndex);
+        if(nextEl) nextEl.className='speech-ref-word current';
+      }
+    }
+  });
+
+  fullTranscript += ' ' + text;
+}
+
+function checkForPause(){
+  if(!isRecording || !speechWordCount) return;
+  const elapsed = (Date.now() - lastWordTime)/1000;
+  if(elapsed > 3) pauseCount++;
+}
+
+// Waveform
+let animFrame = null;
+let streamRef = null;
+function startWaveform(){
+  navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
+    streamRef = stream;
+    audioContext = new (window.AudioContext||window.webkitAudioContext)();
+    const source = audioContext.createMediaStreamSource(stream);
+    analyserNode = audioContext.createAnalyser();
+    analyserNode.fftSize = 256;
+    source.connect(analyserNode);
+    drawWaveform();
+  }).catch(()=>{
+    document.getElementById('waveIdleMsg').textContent='🔇 Microfone não autorizado';
+    document.getElementById('waveIdleMsg').style.display='';
+  });
+}
+
+function drawWaveform(){
+  const canvas = document.getElementById('waveformCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth;
+  canvas.height = 80;
+  const buf = new Uint8Array(analyserNode.frequencyBinCount);
+
+  function draw(){
+    animFrame = requestAnimationFrame(draw);
+    analyserNode.getByteFrequencyData(buf);
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle='#0d1117';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    const barW = canvas.width/buf.length;
+    buf.forEach((v,i)=>{
+      const h = (v/255)*canvas.height;
+      const hue = 200+i*0.5;
+      ctx.fillStyle=`hsl(${hue},80%,${40+v*0.15}%)`;
+      ctx.fillRect(i*barW, canvas.height-h, barW-1, h);
+    });
+  }
+  draw();
+}
+
+function stopWaveform(){
+  if(animFrame) cancelAnimationFrame(animFrame);
+  if(streamRef) streamRef.getTracks().forEach(t=>t.stop());
+  if(audioContext) audioContext.close().catch(()=>{});
+  const canvas = document.getElementById('waveformCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle='#0d1117';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  document.getElementById('waveIdleMsg').style.display='';
+  document.getElementById('waveIdleMsg').textContent='🎤 aguardando gravação…';
+}
+
+// ===== SPEECH ANALYSIS =====
+function analyzeCurrentSpeech(){
+  if(!fullTranscript.trim()){ showToast('Grave algo primeiro!'); return; }
+
+  const words = fullTranscript.trim().split(/\s+/).filter(Boolean);
+  const totalWords = words.length;
+  const wpm = recSeconds>0 ? Math.round((totalWords/recSeconds)*60) : 0;
+
+  // Filler detection
+  const fillerFound = {};
+  words.forEach(w=>{
+    const clean = w.toLowerCase().replace(/[.,!?;:]/g,'');
+    if(FILLER_WORDS.includes(clean)) fillerFound[clean]=(fillerFound[clean]||0)+1;
+  });
+
+  // Repetition detection
+  const repeated = {};
+  for(let i=0;i<words.length-1;i++){
+    const a=words[i].toLowerCase().replace(/[.,!?;:]/g,'');
+    const b=words[i+1].toLowerCase().replace(/[.,!?;:]/g,'');
+    if(a===b && a.length>2) repeated[a]=(repeated[a]||0)+1;
+  }
+
+  // Speed assessment
+  const speedOk = wpm>=100 && wpm<=180;
+  const speedFast = wpm>180;
+  const speedSlow = wpm<80;
+
+  // Hesitation ratio
+  const hesitRatio = totalWords>0 ? hesitationCount/totalWords : 0;
+
+  // Score 0-100
+  let score = 100;
+  if(speedFast) score-=15;
+  if(speedSlow) score-=15;
+  score -= Math.min(30, Object.values(fillerFound).reduce((a,b)=>a+b,0)*5);
+  score -= Math.min(20, hesitationCount*3);
+  score -= Math.min(15, pauseCount*3);
+  score -= Math.min(10, Object.values(repeated).reduce((a,b)=>a+b,0)*4);
+  score = Math.max(0, Math.min(100, score));
+
+  // Update metrics
+  document.getElementById('metWPM').textContent = wpm;
+  document.getElementById('metPauses').textContent = pauseCount;
+  document.getElementById('metHesit').textContent = hesitationCount;
+  document.getElementById('metScore').textContent = score;
+  document.getElementById('metWPM').style.color = speedOk?'var(--easy)':speedFast?'var(--medio)':'var(--dificil)';
+  document.getElementById('metScore').style.color = score>=80?'var(--easy)':score>=60?'var(--medio)':'var(--dificil)';
+  document.getElementById('speechMetrics').style.display='';
+
+  // Build problems
+  const problems = [];
+
+  // WPM feedback
+  if(speedSlow) problems.push({type:'warning',icon:'🐢',title:'Fala muito lenta',desc:`${wpm} PPM — abaixo de 80 PPM. Tente falar com mais fluidez e confiança. Pausas em excesso podem indicar insegurança ou falta de familiaridade com o conteúdo.`});
+  else if(speedFast) problems.push({type:'warning',icon:'🏎',title:'Fala muito rápida',desc:`${wpm} PPM — acima de 180 PPM. Velocidade elevada dificulta compreensão do ouvinte. Tente respirar entre frases e dar peso às palavras importantes.`});
+  else problems.push({type:'success',icon:'✅',title:'Ritmo de fala adequado',desc:`${wpm} PPM — dentro da faixa ideal (100–180 PPM). Boa velocidade para comunicação clara.`});
+
+  // Hesitations
+  if(hesitationCount>3) problems.push({type:'error',icon:'😬',title:`${hesitationCount} hesitações detectadas`,desc:`Palavras como "ã", "ê", "hm", "ah" indicam insegurança ou busca de palavras. Pratique pausas em silêncio em vez de sons de hesitação — o silêncio soa mais profissional.`});
+  else if(hesitationCount>0) problems.push({type:'info',icon:'💬',title:`${hesitationCount} hesitação(ões)`,desc:`Leve ocorrência de hesitações — normal em fala espontânea. Se recorrente, pratique o conteúdo com antecedência.`});
+
+  // Fillers
+  const fillerList = Object.entries(fillerFound).map(([w,c])=>`"${w}" (${c}x)`).join(', ');
+  if(fillerList) problems.push({type:'error',icon:'🔁',title:'Vícios de linguagem',desc:`Detectado(s): ${fillerList}. Esses termos enfraquecem a comunicação. Substitua por pausas em silêncio ou frases mais diretas.`});
+
+  // Repetitions
+  const repList = Object.entries(repeated).map(([w,c])=>`"${w}"`).join(', ');
+  if(repList) problems.push({type:'warning',icon:'🔄',title:'Repetição de palavras consecutivas',desc:`Palavras repetidas seguidas: ${repList}. Pode indicar nervosismo ou distração. Releia seu texto antes de falar.`});
+
+  // Pauses
+  if(pauseCount>4) problems.push({type:'warning',icon:'⏸',title:`${pauseCount} pausas longas (>3s)`,desc:`Muitas pausas longas podem quebrar o ritmo do discurso. Se necessário para pensar, tente pausas menores ou sinalize com "vou refletir um momento".`});
+  else if(pauseCount>0) problems.push({type:'info',icon:'⏸',title:`${pauseCount} pausa(s) longa(s)`,desc:`Pausas ocasionais são normais e até saudáveis para dar ênfase. Apenas evite pausas não planejadas em excesso.`});
+
+  // Text mode comparison
+  if(speechMode==='text' && speechTextWords.length>0){
+    const coverage = Math.min(100,Math.round((spokenWordIndex/speechTextWords.length)*100));
+    const missed = speechTextWords.length - spokenWordIndex;
+    if(coverage<70) problems.push({type:'error',icon:'📄',title:`${coverage}% do texto lido`,desc:`Você leu apenas ${coverage}% do texto de referência. ${missed} palavras foram puladas ou não reconhecidas. Tente falar mais claramente e cobrir todo o texto.`});
+    else if(coverage<90) problems.push({type:'warning',icon:'📄',title:`${coverage}% do texto coberto`,desc:`Boa cobertura! Algumas palavras não foram reconhecidas. Trabalhe a dicção nas partes mais difíceis.`});
+    else problems.push({type:'success',icon:'📄',title:`${coverage}% do texto coberto`,desc:`Excelente! Você leu praticamente todo o texto com clareza suficiente para reconhecimento.`});
+  }
+
+  // Overall score
+  if(score>=80) problems.unshift({type:'success',icon:'🏆',title:`Score geral: ${score}/100`,desc:`Ótima performance! Sua fala é clara, fluente e bem cadenciada.`});
+  else if(score>=60) problems.unshift({type:'info',icon:'📈',title:`Score geral: ${score}/100`,desc:`Desempenho razoável. Com prática nos pontos indicados abaixo, você pode melhorar rapidamente.`});
+  else problems.unshift({type:'error',icon:'📉',title:`Score geral: ${score}/100`,desc:`Há vários aspectos a melhorar. Foque nos problemas indicados abaixo um de cada vez.`});
+
+  // Render
+  const list = document.getElementById('problemsList');
+  list.innerHTML = '';
+  problems.forEach(p=>{
+    const d = document.createElement('div');
+    d.className = `problem-item ${p.type}`;
+    d.innerHTML = `<span class="problem-icon">${p.icon}</span><div class="problem-text"><strong>${p.title}</strong><br>${p.desc}</div>`;
+    list.appendChild(d);
+  });
+  document.getElementById('problemsPanel').style.display='';
+  document.getElementById('problemsPanel').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function clearSpeech(){
+  fullTranscript='';
+  speechWordCount=0;
+  hesitationCount=0;
+  pauseCount=0;
+  recSeconds=0;
+  document.getElementById('transcriptContent').innerHTML='';
+  document.getElementById('transcriptPlaceholder').style.display='';
+  document.getElementById('transcriptContent').style.display='none';
+  document.getElementById('speechMetrics').style.display='none';
+  document.getElementById('problemsPanel').style.display='none';
+  document.getElementById('btnAnalyze').style.display='none';
+  document.getElementById('recTimer').textContent='00:00';
+  document.getElementById('recStatusText').textContent='Pronto para gravar.';
+  document.getElementById('recDot').className='rec-dot';
+  if(speechMode==='text') loadSpeechText();
+}
+
+// Levenshtein for word comparison
+function levenshtein(a,b){
+  const m=a.length,n=b.length;
+  const dp=Array.from({length:m+1},(_,i)=>Array.from({length:n+1},(_,j)=>i===0?j:j===0?i:0));
+  for(let i=1;i<=m;i++) for(let j=1;j<=n;j++) dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]:1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+  return dp[m][n];
+}
+
+// ===== NAVIGATION =====
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+}
+function goHome(){
   clearInterval(timerInterval);
-  timerRunning = false;
+  timerRunning=false;
   showScreen('home');
   updateStats();
 }
 
-function tryAgain() {
-  startReading();
-}
-
-function nextText() {
-  const texts = TEXTS[currentLevel] || [];
-  const idx = texts.findIndex(t => t.id === currentTextId);
-  const next = texts[(idx + 1) % texts.length];
-  if (next) {
-    currentTextId = next.id;
-    currentText = next;
-    startReading();
-  } else {
-    goHome();
-  }
-}
-
-function showHistory() {
-  if (history.length === 0) { showToast('Nenhum histórico ainda. Faça sua primeira leitura!'); return; }
-  const lvlNames = {easy:'Fácil',medio:'Médio',dificil:'Difícil',avancado:'Avançado',extremo:'Extremo'};
-  const gradeColors = {S:'#c8ff00',A:'#2d7a3a',B:'#4caf50',C:'#b06a00',D:'#c0392b',F:'#888'};
-  const html = history.slice(0,10).map(h => `
-    <div class="history-item">
-      <div class="history-wpm" style="color:${gradeColors[h.grade]||'#333'}">${h.wpm}</div>
-      <div class="history-info">
-        <div class="history-title">${h.title}</div>
-        <div class="history-meta">${h.date} · ${lvlNames[h.level]||h.level} · ${h.time}</div>
-      </div>
-      <div class="history-grade" style="background:${gradeColors[h.grade]}22;color:${gradeColors[h.grade]}">${h.grade}</div>
-    </div>
-  `).join('');
-
-  const win = window.open('','_blank','width=560,height=600');
-  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Histórico</title>
-  <style>body{font-family:DM Sans,sans-serif;background:#faf8f4;padding:24px;color:#1a1410}
-  h2{font-family:Playfair Display,serif;font-size:1.5rem;margin-bottom:20px}
-  .history-item{display:flex;align-items:center;gap:14px;padding:12px 16px;background:#fff;border:1px solid #e8e0d0;border-radius:10px;margin-bottom:8px}
-  .history-wpm{font-family:Playfair Display,serif;font-size:1.3rem;font-weight:700;min-width:60px}
-  .history-info{flex:1}.history-title{font-weight:500;margin-bottom:2px;font-size:.85rem}
-  .history-meta{font-size:.7rem;color:#9a8870;font-family:monospace}
-  .history-grade{font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:20px}
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500&display=swap');
-  </style></head><body><h2>📊 Histórico de Leituras</h2>${html}</body></html>`);
+// ===== HISTORY =====
+function showHistory(){
+  if(!history.length){ showToast('Nenhum histórico ainda!'); return; }
+  const lvlNames={easy:'Fácil',medio:'Médio',dificil:'Difícil',avancado:'Avançado',extremo:'Extremo'};
+  const gc={S:'#c8a000',A:'#2d7a3a',B:'#4caf50',C:'#b06a00',D:'#c0392b',F:'#888'};
+  const html=history.slice(0,15).map(h=>`
+    <div style="display:flex;align-items:center;gap:14px;padding:10px 16px;background:#fff;border:1px solid #e8e0d0;border-radius:10px;margin-bottom:8px">
+      <div style="font-family:serif;font-size:1.3rem;font-weight:700;color:${gc[h.grade]||'#333'};min-width:55px">${h.wpm}</div>
+      <div style="flex:1"><div style="font-weight:500;font-size:.83rem;margin-bottom:2px">${h.title}</div><div style="font-size:.68rem;color:#9a8870;font-family:monospace">${h.date} · ${lvlNames[h.level]||h.level} · ${h.time}</div></div>
+      <div style="font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:20px;background:${gc[h.grade]}22;color:${gc[h.grade]}">${h.grade}</div>
+    </div>`).join('');
+  const w=window.open('','_blank','width=560,height=620');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Histórico</title><style>body{font-family:sans-serif;background:#faf8f4;padding:24px;color:#1a1410}h2{font-family:serif;font-size:1.4rem;margin-bottom:18px}</style></head><body><h2>📊 Histórico de Leituras</h2>${html}</body></html>`);
 }
 
 // ===== TOAST =====
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
 }
 
 // ===== RUN =====
