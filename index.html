@@ -3,1317 +3,1391 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PHONO — Painel</title>
+<title>LeituraPRO — Treine sua Leitura</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Syne+Mono&family=Instrument+Sans:ital,wght@0,400;0,500;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap');
 
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-  :root {
-    --bg: #080810;
-    --surface: #0f0f1a;
-    --surface2: #14142a;
-    --border: rgba(255,255,255,0.06);
-    --accent: #c8ff00;
-    --accent2: #00ffcc;
-    --accent3: #ff3cac;
-    --text: #f0f0ff;
-    --muted: rgba(240,240,255,0.4);
-    --glow: rgba(200,255,0,0.15);
-  }
+:root {
+  --bg: #faf8f4;
+  --paper: #fffef9;
+  --ink: #1a1410;
+  --ink2: #4a4030;
+  --ink3: #9a8870;
+  --line: #e8e0d0;
+  --easy: #2d7a3a;
+  --easy-bg: #eaf7ec;
+  --medio: #b06a00;
+  --medio-bg: #fff4e0;
+  --dificil: #c0392b;
+  --dificil-bg: #fdecea;
+  --avancado: #6a1fc2;
+  --avancado-bg: #f3eaff;
+  --extremo: #0a0a0a;
+  --extremo-bg: #1a1410;
+  --accent: #e85d04;
+  --accent-light: #fff0e8;
+}
 
-  html { font-size: 14px; }
+html { font-size: 15px; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Instrument Sans', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-    cursor: none;
-  }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+}
 
-  /* Custom Cursor */
-  .cursor {
-    position: fixed;
-    width: 10px; height: 10px;
-    background: var(--accent);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    transition: transform 0.1s;
-    mix-blend-mode: exclusion;
-  }
-  .cursor-ring {
-    position: fixed;
-    width: 36px; height: 36px;
-    border: 1.5px solid var(--accent);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9998;
-    transform: translate(-50%, -50%);
-    transition: all 0.15s ease;
-    opacity: 0.5;
-  }
+/* ---- TELA INICIAL ---- */
+#screen-home, #screen-reading, #screen-result, #screen-custom {
+  display: none;
+  min-height: 100vh;
+}
+#screen-home.active, #screen-reading.active, #screen-result.active, #screen-custom.active {
+  display: block;
+}
 
-  /* Background FX */
-  .bg-grid {
-    position: fixed;
-    inset: 0;
-    background-image: 
-      linear-gradient(rgba(200,255,0,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(200,255,0,0.03) 1px, transparent 1px);
-    background-size: 48px 48px;
-    pointer-events: none;
-    z-index: 0;
-  }
-  .bg-glow {
-    position: fixed;
-    top: -200px; left: 50%;
-    transform: translateX(-50%);
-    width: 800px; height: 600px;
-    background: radial-gradient(ellipse, rgba(200,255,0,0.06) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-    animation: pulse-glow 6s ease-in-out infinite;
-  }
-  @keyframes pulse-glow {
-    0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
-    50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
-  }
+/* TOP BAR */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 56px;
+  background: rgba(250,248,244,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+  z-index: 100;
+}
 
-  /* Layout */
-  .shell {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: 220px 1fr;
-    grid-template-rows: 60px 1fr;
-    min-height: 100vh;
-  }
+.brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+.brand em { color: var(--accent); font-style: italic; }
 
-  /* Top Bar */
-  .topbar {
-    grid-column: 1 / -1;
-    display: flex;
-    align-items: center;
-    padding: 0 28px;
-    border-bottom: 1px solid var(--border);
-    background: rgba(8,8,16,0.8);
-    backdrop-filter: blur(20px);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    gap: 24px;
-  }
+.topbar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-  .logo {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 1.4rem;
-    letter-spacing: -0.03em;
-    color: var(--accent);
-    text-transform: uppercase;
-    flex-shrink: 0;
-  }
-  .logo span { color: var(--text); opacity: 0.3; }
+.btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.18s;
+  letter-spacing: 0.01em;
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--ink2);
+  border: 1.5px solid var(--line);
+}
+.btn-ghost:hover { border-color: var(--ink3); color: var(--ink); }
 
-  .topbar-search {
-    flex: 1;
-    max-width: 340px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 0 14px;
-    height: 36px;
-    color: var(--muted);
-    font-family: 'Syne Mono', monospace;
-    font-size: 0.75rem;
-    transition: border-color 0.2s;
-  }
-  .topbar-search:hover { border-color: rgba(200,255,0,0.2); }
-  .topbar-search svg { width: 14px; height: 14px; flex-shrink: 0; }
+.btn-solid {
+  background: var(--ink);
+  color: #fff;
+}
+.btn-solid:hover { background: var(--accent); transform: translateY(-1px); }
 
-  .topbar-right {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
+.btn-accent {
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.9rem;
+  padding: 12px 28px;
+  border-radius: 10px;
+}
+.btn-accent:hover { background: #c44a00; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(232,93,4,0.3); }
 
-  .status-dot {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.72rem;
-    color: var(--muted);
-    font-family: 'Syne Mono', monospace;
-  }
-  .dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--accent2);
-    box-shadow: 0 0 8px var(--accent2);
-    animation: blink 2s ease-in-out infinite;
-  }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+/* ---- HOME ---- */
+.home-wrap {
+  padding-top: 80px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-bottom: 60px;
+}
 
-  .avatar {
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent3), var(--accent));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 0.7rem;
-    color: #000;
-  }
+.home-hero {
+  text-align: center;
+  padding: 48px 0 40px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 36px;
+}
 
-  /* Sidebar */
-  .sidebar {
-    border-right: 1px solid var(--border);
-    padding: 24px 0;
-    background: rgba(8,8,16,0.5);
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
+.home-hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+.home-hero h1 em { color: var(--accent); font-style: italic; }
 
-  .nav-section {
-    padding: 0 16px;
-    margin-bottom: 8px;
-  }
-  .nav-label {
-    font-family: 'Syne Mono', monospace;
-    font-size: 0.62rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    padding: 12px 12px 6px;
-  }
+.home-hero p {
+  font-size: 1rem;
+  color: var(--ink2);
+  font-weight: 300;
+  max-width: 480px;
+  margin: 0 auto 28px;
+  line-height: 1.7;
+}
 
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 9px 12px;
-    border-radius: 8px;
-    font-size: 0.82rem;
-    font-weight: 500;
-    color: var(--muted);
-    cursor: pointer;
-    transition: all 0.18s;
-    position: relative;
-    margin: 1px 0;
-  }
-  .nav-item:hover {
-    background: var(--surface);
-    color: var(--text);
-  }
-  .nav-item.active {
-    background: linear-gradient(90deg, rgba(200,255,0,0.12), transparent);
-    color: var(--accent);
-    font-weight: 600;
-  }
-  .nav-item.active::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 20%; bottom: 20%;
-    width: 3px;
-    background: var(--accent);
-    border-radius: 0 2px 2px 0;
-    box-shadow: 0 0 8px var(--accent);
-  }
-  .nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
-  .nav-badge {
-    margin-left: auto;
-    background: var(--accent3);
-    color: white;
-    font-size: 0.6rem;
-    font-family: 'Syne Mono', monospace;
-    padding: 2px 6px;
-    border-radius: 20px;
-    line-height: 1.4;
-  }
+.stats-row {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 28px;
+}
+.stat-item { text-align: center; }
+.stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--ink);
+  display: block;
+}
+.stat-label {
+  font-size: 0.72rem;
+  color: var(--ink3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
 
-  .sidebar-bottom {
-    margin-top: auto;
-    padding: 0 16px;
-    border-top: 1px solid var(--border);
-    padding-top: 16px;
-  }
+/* Levels grid */
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+.section-sub {
+  font-size: 0.82rem;
+  color: var(--ink3);
+  margin-bottom: 20px;
+}
 
-  /* Main Content */
-  .main {
-    padding: 28px 32px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
+.levels-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 36px;
+}
 
-  .page-header {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-  }
-  .page-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.8rem;
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    line-height: 1;
-  }
-  .page-title span {
-    color: var(--accent);
-  }
-  .page-sub {
-    font-size: 0.78rem;
-    color: var(--muted);
-    margin-top: 4px;
-  }
+.level-card {
+  border-radius: 12px;
+  padding: 16px 12px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.level-card.selected { border-width: 2px; transform: translateY(-3px); }
+.level-card:hover { transform: translateY(-2px); }
 
-  .btn-primary {
-    background: var(--accent);
-    color: #000;
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 0.78rem;
-    padding: 10px 20px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.18s;
-    letter-spacing: 0.02em;
-  }
-  .btn-primary:hover {
-    background: #deff30;
-    transform: translateY(-1px);
-    box-shadow: 0 0 20px rgba(200,255,0,0.3);
-  }
+.level-card.easy { background: var(--easy-bg); }
+.level-card.easy.selected { border-color: var(--easy); box-shadow: 0 6px 20px rgba(45,122,58,0.15); }
+.level-card.medio { background: var(--medio-bg); }
+.level-card.medio.selected { border-color: var(--medio); box-shadow: 0 6px 20px rgba(176,106,0,0.15); }
+.level-card.dificil { background: var(--dificil-bg); }
+.level-card.dificil.selected { border-color: var(--dificil); box-shadow: 0 6px 20px rgba(192,57,43,0.15); }
+.level-card.avancado { background: var(--avancado-bg); }
+.level-card.avancado.selected { border-color: var(--avancado); box-shadow: 0 6px 20px rgba(106,31,194,0.15); }
+.level-card.extremo { background: var(--extremo-bg); }
+.level-card.extremo.selected { border-color: #555; box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
 
-  /* KPI Cards */
-  .kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
-  }
+.level-emoji { font-size: 1.6rem; display: block; margin-bottom: 6px; }
+.level-name {
+  font-weight: 600;
+  font-size: 0.8rem;
+  display: block;
+  margin-bottom: 3px;
+}
+.level-card.easy .level-name { color: var(--easy); }
+.level-card.medio .level-name { color: var(--medio); }
+.level-card.dificil .level-name { color: var(--dificil); }
+.level-card.avancado .level-name { color: var(--avancado); }
+.level-card.extremo .level-name { color: #fff; }
+.level-card.extremo .level-desc { color: #888; }
 
-  .kpi-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 20px;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.22s;
-    cursor: default;
-  }
-  .kpi-card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(200,255,0,0.04), transparent);
-    opacity: 0;
-    transition: opacity 0.22s;
-  }
-  .kpi-card:hover {
-    border-color: rgba(200,255,0,0.2);
-    transform: translateY(-2px);
-  }
-  .kpi-card:hover::after { opacity: 1; }
+.level-desc {
+  font-size: 0.68rem;
+  color: var(--ink3);
+  line-height: 1.3;
+}
 
-  .kpi-icon {
-    width: 36px; height: 36px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 16px;
-    font-size: 1.1rem;
-  }
-  .kpi-icon.green { background: rgba(200,255,0,0.1); }
-  .kpi-icon.cyan { background: rgba(0,255,204,0.1); }
-  .kpi-icon.pink { background: rgba(255,60,172,0.1); }
-  .kpi-icon.orange { background: rgba(255,160,30,0.1); }
+/* Text selector */
+.text-selector {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
 
-  .kpi-value {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.9rem;
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-  .kpi-label {
-    font-size: 0.74rem;
-    color: var(--muted);
-    margin-bottom: 12px;
-  }
-  .kpi-change {
-    font-size: 0.72rem;
-    font-family: 'Syne Mono', monospace;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .kpi-change.up { color: var(--accent2); }
-  .kpi-change.down { color: var(--accent3); }
+.text-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+}
+.text-tab {
+  padding: 12px 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--ink3);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.text-tab.active {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+  background: var(--paper);
+}
 
-  /* Waveform */
-  .waveform-bar {
-    display: inline-block;
-    width: 3px;
-    border-radius: 2px;
-    animation: wave 1.2s ease-in-out infinite;
-    margin: 0 1px;
-  }
-  @keyframes wave {
-    0%,100% { transform: scaleY(0.3); }
-    50% { transform: scaleY(1); }
-  }
+.text-tab-content { display: none; padding: 16px; }
+.text-tab-content.active { display: block; }
 
-  /* Content Grid */
-  .content-grid {
-    display: grid;
-    grid-template-columns: 1.6fr 1fr;
-    gap: 14px;
-  }
+.text-list { display: flex; flex-direction: column; gap: 8px; }
 
-  .panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
-  }
+.text-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: all 0.18s;
+  background: var(--bg);
+}
+.text-item:hover { border-color: var(--line); background: var(--paper); }
+.text-item.selected { border-color: var(--accent); background: var(--accent-light); }
 
-  .panel-header {
-    padding: 18px 20px 14px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .panel-title {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 0.85rem;
-    letter-spacing: -0.01em;
-  }
-  .panel-action {
-    font-size: 0.72rem;
-    color: var(--accent);
-    font-family: 'Syne Mono', monospace;
-    cursor: pointer;
-    opacity: 0.8;
-    transition: opacity 0.15s;
-  }
-  .panel-action:hover { opacity: 1; }
+.text-item-badge {
+  font-size: 0.62rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-family: 'DM Mono', monospace;
+}
+.badge-easy { background: var(--easy-bg); color: var(--easy); }
+.badge-medio { background: var(--medio-bg); color: var(--medio); }
+.badge-dificil { background: var(--dificil-bg); color: var(--dificil); }
+.badge-avancado { background: var(--avancado-bg); color: var(--avancado); }
+.badge-extremo { background: #1a1410; color: #ccc; }
 
-  /* Chart area */
-  .chart-area {
-    padding: 20px;
-    height: 200px;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    gap: 6px;
-  }
+.text-item-info { flex: 1; }
+.text-item-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.text-item-meta {
+  font-size: 0.7rem;
+  color: var(--ink3);
+  font-family: 'DM Mono', monospace;
+}
 
-  .chart-bar-wrap {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    height: 100%;
-    justify-content: flex-end;
-  }
-  .chart-bar {
-    width: 100%;
-    border-radius: 4px 4px 0 0;
-    background: linear-gradient(to top, var(--accent), rgba(200,255,0,0.3));
-    transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
-    position: relative;
-    cursor: pointer;
-  }
-  .chart-bar:hover {
-    background: linear-gradient(to top, #deff30, rgba(200,255,0,0.6));
-    filter: drop-shadow(0 -4px 12px rgba(200,255,0,0.4));
-  }
-  .chart-bar.secondary {
-    background: linear-gradient(to top, rgba(0,255,204,0.6), rgba(0,255,204,0.15));
-  }
-  .chart-bar.secondary:hover {
-    background: linear-gradient(to top, var(--accent2), rgba(0,255,204,0.4));
-    filter: drop-shadow(0 -4px 12px rgba(0,255,204,0.4));
-  }
+/* Custom textarea */
+.custom-area {
+  width: 100%;
+  min-height: 160px;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: var(--ink);
+  background: var(--paper);
+  resize: vertical;
+  transition: border-color 0.15s;
+  outline: none;
+  line-height: 1.6;
+}
+.custom-area:focus { border-color: var(--accent); }
+.custom-area::placeholder { color: var(--ink3); }
 
-  .chart-x-label {
-    font-family: 'Syne Mono', monospace;
-    font-size: 0.6rem;
-    color: var(--muted);
-    text-align: center;
-  }
+.custom-meta {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+  align-items: center;
+}
+.custom-input {
+  border: 1.5px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  color: var(--ink);
+  background: var(--paper);
+  outline: none;
+  flex: 1;
+}
+.custom-input:focus { border-color: var(--accent); }
 
-  /* Track List */
-  .track-list { padding: 8px 0; }
-  .track-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 20px;
-    transition: background 0.15s;
-    cursor: pointer;
-    position: relative;
-  }
-  .track-item:hover {
-    background: rgba(200,255,0,0.03);
-  }
-  .track-item.playing {
-    background: rgba(200,255,0,0.05);
-  }
+.char-count {
+  font-size: 0.72rem;
+  color: var(--ink3);
+  font-family: 'DM Mono', monospace;
+  margin-left: auto;
+}
 
-  .track-num {
-    width: 20px;
-    font-family: 'Syne Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    text-align: center;
-    flex-shrink: 0;
-  }
-  .track-item.playing .track-num {
-    color: var(--accent);
-  }
+.start-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+}
 
-  .track-thumb {
-    width: 36px; height: 36px;
-    border-radius: 8px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-  }
+/* ---- READING SCREEN ---- */
+.reading-wrap {
+  padding-top: 56px;
+  max-width: 760px;
+  margin: 0 auto;
+  padding-left: 24px;
+  padding-right: 24px;
+}
 
-  .track-info { flex: 1; min-width: 0; }
-  .track-name {
-    font-size: 0.82rem;
-    font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 2px;
-  }
-  .track-artist {
-    font-size: 0.72rem;
-    color: var(--muted);
-  }
+.reading-header {
+  padding: 20px 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 24px;
+}
 
-  .track-duration {
-    font-family: 'Syne Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    flex-shrink: 0;
-  }
+.reading-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
-  .track-plays {
-    font-family: 'Syne Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    flex-shrink: 0;
-    width: 50px;
-    text-align: right;
-  }
+.timer-display {
+  font-family: 'DM Mono', monospace;
+  font-size: 2.2rem;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  min-width: 110px;
+}
+.timer-display.running { color: var(--accent); }
+.timer-display.paused { color: var(--ink3); }
 
-  /* Playing waves inline */
-  .play-waves {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    height: 14px;
-  }
+.timer-controls { display: flex; gap: 8px; align-items: center; }
 
-  /* Bottom row */
-  .bottom-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1.2fr;
-    gap: 14px;
-  }
+.ctrl {
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 0.78rem;
+  padding: 8px 16px;
+  transition: all 0.15s;
+}
+.ctrl-start { background: var(--accent); color: #fff; }
+.ctrl-start:hover { background: #c44a00; }
+.ctrl-pause { background: var(--line); color: var(--ink2); }
+.ctrl-pause:hover { background: #ddd; }
+.ctrl-stop { background: var(--dificil-bg); color: var(--dificil); border: 1.5px solid var(--dificil); }
+.ctrl-stop:hover { background: var(--dificil); color: #fff; }
 
-  /* Donut */
-  .donut-wrap {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  .donut-svg {
-    width: 120px; height: 120px;
-    margin: 0 auto;
-    display: block;
-  }
-  .donut-legend {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.76rem;
-  }
-  .legend-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .legend-label { color: var(--muted); flex: 1; }
-  .legend-val { font-family: 'Syne Mono', monospace; font-size: 0.72rem; }
+.reading-meta {
+  display: flex;
+  gap: 20px;
+  font-size: 0.72rem;
+  color: var(--ink3);
+  font-family: 'DM Mono', monospace;
+}
 
-  /* Activity Feed */
-  .feed-list { padding: 8px 0; }
-  .feed-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 10px 20px;
-    transition: background 0.15s;
-  }
-  .feed-item:hover { background: rgba(255,255,255,0.02); }
-  .feed-icon {
-    width: 28px; height: 28px;
-    border-radius: 8px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.85rem;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-  .feed-text { flex: 1; }
-  .feed-msg { font-size: 0.78rem; line-height: 1.4; }
-  .feed-msg strong { color: var(--accent); font-weight: 600; }
-  .feed-time {
-    font-size: 0.65rem;
-    color: var(--muted);
-    font-family: 'Syne Mono', monospace;
-    margin-top: 2px;
-  }
+/* Text display area */
+.reading-level-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+  font-family: 'DM Mono', monospace;
+}
 
-  /* Mini Waveform Player */
-  .player-bar {
-    background: var(--surface2);
-    border-top: 1px solid var(--border);
-    padding: 14px 32px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    position: sticky;
-    bottom: 0;
-    z-index: 50;
-    backdrop-filter: blur(20px);
-  }
+.text-title-display {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
 
-  .player-track {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 240px;
-    flex-shrink: 0;
-  }
-  .player-thumb {
-    width: 40px; height: 40px;
-    border-radius: 8px;
-    background: linear-gradient(135deg, var(--accent3), var(--accent));
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.3rem;
-  }
-  .player-name {
-    font-size: 0.82rem;
-    font-weight: 600;
-    margin-bottom: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .player-artist {
-    font-size: 0.7rem;
-    color: var(--muted);
-  }
+.text-body {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.9;
+  color: var(--ink);
+  font-weight: 300;
+  padding-bottom: 80px;
+  user-select: none;
+}
+.text-body.level-extremo {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  font-weight: 400;
+}
 
-  .player-controls {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex: 1;
-    flex-direction: column;
-    max-width: 600px;
-    margin: 0 auto;
-  }
+/* Progress bar */
+.progress-bar-wrap {
+  position: fixed;
+  top: 56px;
+  left: 0; right: 0;
+  height: 3px;
+  background: var(--line);
+  z-index: 99;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.3s;
+  width: 0%;
+}
 
-  .player-btns {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  .ctrl-btn {
-    background: none;
-    border: none;
-    color: var(--muted);
-    cursor: pointer;
-    padding: 4px;
-    display: flex;
-    transition: color 0.15s, transform 0.15s;
-  }
-  .ctrl-btn:hover { color: var(--text); transform: scale(1.1); }
-  .ctrl-btn.play {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    background: var(--accent);
-    color: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .ctrl-btn.play:hover { background: #deff30; transform: scale(1.05); }
+/* ---- RESULT SCREEN ---- */
+.result-wrap {
+  padding-top: 80px;
+  max-width: 760px;
+  margin: 0 auto;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-bottom: 60px;
+}
 
-  .player-progress {
-    width: 100%;
-    height: 3px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 2px;
-    position: relative;
-    cursor: pointer;
-  }
-  .player-progress-fill {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 2px;
-    width: 38%;
-    position: relative;
-  }
-  .player-progress-fill::after {
-    content: '';
-    position: absolute;
-    right: -4px; top: 50%;
-    width: 8px; height: 8px;
-    background: var(--accent);
-    border-radius: 50%;
-    transform: translateY(-50%);
-    box-shadow: 0 0 8px var(--accent);
-    opacity: 0;
-    transition: opacity 0.15s;
-  }
-  .player-progress:hover .player-progress-fill::after { opacity: 1; }
+.result-hero {
+  text-align: center;
+  padding: 36px 0 32px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 32px;
+}
 
-  .player-time {
-    display: flex;
-    justify-content: space-between;
-    font-family: 'Syne Mono', monospace;
-    font-size: 0.62rem;
-    color: var(--muted);
-    width: 100%;
-    margin-top: -4px;
-  }
+.result-grade {
+  font-family: 'Playfair Display', serif;
+  font-size: 5rem;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  margin-bottom: 8px;
+}
 
-  .player-vol {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    width: 140px;
-    flex-shrink: 0;
-    margin-left: auto;
-  }
-  .vol-bar {
-    flex: 1;
-    height: 3px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 2px;
-    cursor: pointer;
-  }
-  .vol-fill {
-    height: 100%;
-    background: var(--muted);
-    border-radius: 2px;
-    width: 70%;
-    transition: background 0.15s;
-  }
-  .vol-bar:hover .vol-fill { background: var(--text); }
+.result-label {
+  font-size: 1rem;
+  color: var(--ink2);
+  font-weight: 300;
+}
 
-  /* Animations */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .kpi-card { animation: fadeUp 0.5s ease both; }
-  .kpi-card:nth-child(1) { animation-delay: 0.05s; }
-  .kpi-card:nth-child(2) { animation-delay: 0.10s; }
-  .kpi-card:nth-child(3) { animation-delay: 0.15s; }
-  .kpi-card:nth-child(4) { animation-delay: 0.20s; }
+.result-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
 
-  .panel { animation: fadeUp 0.5s 0.25s ease both; }
+.result-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 18px 14px;
+  text-align: center;
+}
 
-  /* Tooltip */
-  [data-tip] {
-    position: relative;
-  }
-  [data-tip]:hover::after {
-    content: attr(data-tip);
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: #111;
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'Syne Mono', monospace;
-    font-size: 0.65rem;
-    padding: 4px 8px;
-    border-radius: 6px;
-    white-space: nowrap;
-    pointer-events: none;
-    z-index: 999;
-  }
+.result-card-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 4px;
+  display: block;
+}
 
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-  ::-webkit-scrollbar-thumb:hover { background: rgba(200,255,0,0.2); }
+.result-card-label {
+  font-size: 0.7rem;
+  color: var(--ink3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* WPM gauge */
+.wpm-gauge {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.gauge-title {
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gauge-scale {
+  position: relative;
+  height: 40px;
+}
+.gauge-track {
+  height: 10px;
+  border-radius: 6px;
+  background: linear-gradient(to right, var(--easy-bg) 0%, var(--easy) 20%, var(--medio) 40%, var(--dificil) 60%, var(--avancado) 80%, #000 100%);
+  position: relative;
+  margin-top: 14px;
+}
+.gauge-marker {
+  position: absolute;
+  top: -14px;
+  transform: translateX(-50%);
+  transition: left 1s cubic-bezier(0.34,1.56,0.64,1);
+}
+.gauge-arrow {
+  width: 0; height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 10px solid var(--accent);
+  margin: 0 auto;
+}
+.gauge-marker-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  white-space: nowrap;
+  text-align: center;
+  color: var(--accent);
+  margin-bottom: 2px;
+}
+.gauge-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 0.62rem;
+  color: var(--ink3);
+  font-family: 'DM Mono', monospace;
+}
+
+/* Analysis */
+.analysis-box {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.analysis-box h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.analysis-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: var(--ink2);
+}
+.analysis-item:last-child { border-bottom: none; }
+.analysis-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+.result-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  padding-top: 8px;
+}
+
+/* ---- HISTORY ---- */
+.history-list { display: flex; flex-direction: column; gap: 8px; }
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 0.82rem;
+}
+.history-wpm {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  min-width: 60px;
+}
+.history-info { flex: 1; }
+.history-title { font-weight: 500; margin-bottom: 2px; }
+.history-meta { font-size: 0.7rem; color: var(--ink3); font-family: 'DM Mono', monospace; }
+.history-grade {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--ink);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  z-index: 999;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.result-card { animation: fadeIn 0.4s ease both; }
+.result-card:nth-child(1){animation-delay:0.05s}
+.result-card:nth-child(2){animation-delay:0.1s}
+.result-card:nth-child(3){animation-delay:0.15s}
+.result-card:nth-child(4){animation-delay:0.2s}
+
+/* Responsive */
+@media(max-width:650px) {
+  .levels-grid { grid-template-columns: repeat(3,1fr); }
+  .result-cards { grid-template-columns: repeat(2,1fr); }
+  .home-hero h1 { font-size: 2rem; }
+  .timer-display { font-size: 1.6rem; }
+}
 </style>
 </head>
 <body>
 
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
-<div class="bg-grid"></div>
-<div class="bg-glow"></div>
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
-<div class="shell">
-
-  <!-- TOP BAR -->
-  <header class="topbar">
-    <div class="logo">PHONO<span>●</span></div>
-    <div class="topbar-search">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      Buscar artistas, álbuns, faixas…
-    </div>
+<!-- ===== HOME ===== -->
+<div id="screen-home" class="active">
+  <div class="topbar">
+    <div class="brand">Leitura<em>PRO</em></div>
     <div class="topbar-right">
-      <div class="status-dot">
-        <div class="dot"></div>
-        SISTEMA ONLINE
-      </div>
-      <div style="display:flex;align-items:center;gap:6px;font-family:'Syne Mono',monospace;font-size:0.7rem;color:var(--muted)">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        3
-      </div>
-      <div class="avatar">DJ</div>
+      <button class="btn btn-ghost" onclick="showHistory()">📊 Histórico</button>
     </div>
-  </header>
+  </div>
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="nav-section">
-      <div class="nav-label">Menu</div>
-      <div class="nav-item active">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        Dashboard
-      </div>
-      <div class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-        Biblioteca
-        <span class="nav-badge">4.2k</span>
-      </div>
-      <div class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        Destaques
-      </div>
-      <div class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-        Playlists
-        <span class="nav-badge">12</span>
+  <div class="home-wrap">
+    <div class="home-hero">
+      <h1>Treine sua<br><em>velocidade de leitura</em></h1>
+      <p>Cronometre, analise e evolua — do texto fácil ao desafio extremo. Acompanhe suas palavras por minuto e veja seu progresso.</p>
+      <div class="stats-row" id="globalStats">
+        <div class="stat-item"><span class="stat-num" id="statSessions">0</span><span class="stat-label">Sessões</span></div>
+        <div class="stat-item"><span class="stat-num" id="statAvgWPM">—</span><span class="stat-label">Méd. PPM</span></div>
+        <div class="stat-item"><span class="stat-num" id="statBestWPM">—</span><span class="stat-label">Melhor PPM</span></div>
       </div>
     </div>
 
-    <div class="nav-section">
-      <div class="nav-label">Análise</div>
-      <div class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-        Estatísticas
+    <!-- NÍVEIS -->
+    <div style="margin-bottom:10px">
+      <div class="section-title">Escolha o Nível</div>
+      <div class="section-sub">Do relaxante ao extremamente desafiador</div>
+    </div>
+    <div class="levels-grid" id="levelsGrid">
+      <div class="level-card easy selected" data-level="easy" onclick="selectLevel('easy')">
+        <span class="level-emoji">🌱</span>
+        <span class="level-name">Fácil</span>
+        <span class="level-desc">Textos curtos e simples</span>
       </div>
-      <div class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        Histórico
+      <div class="level-card medio" data-level="medio" onclick="selectLevel('medio')">
+        <span class="level-emoji">📖</span>
+        <span class="level-name">Médio</span>
+        <span class="level-desc">Vocabulário variado</span>
       </div>
-      <div class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Artistas
+      <div class="level-card dificil" data-level="dificil" onclick="selectLevel('dificil')">
+        <span class="level-emoji">⚡</span>
+        <span class="level-name">Difícil</span>
+        <span class="level-desc">Textos densos e técnicos</span>
+      </div>
+      <div class="level-card avancado" data-level="avancado" onclick="selectLevel('avancado')">
+        <span class="level-emoji">🧠</span>
+        <span class="level-name">Avançado</span>
+        <span class="level-desc">Linguagem complexa</span>
+      </div>
+      <div class="level-card extremo" data-level="extremo" onclick="selectLevel('extremo')">
+        <span class="level-emoji">💀</span>
+        <span class="level-name">Extremo</span>
+        <span class="level-desc">Máximo desafio</span>
       </div>
     </div>
 
-    <div class="sidebar-bottom">
-      <div class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
-        Configurações
-      </div>
+    <!-- SELETOR DE TEXTO -->
+    <div style="margin-bottom:10px">
+      <div class="section-title">Escolha o Texto</div>
+      <div class="section-sub">Textos prontos ou insira o seu</div>
     </div>
-  </aside>
-
-  <!-- MAIN -->
-  <main class="main">
-
-    <div class="page-header">
-      <div>
-        <div class="page-title">Seu <span>Painel</span></div>
-        <div class="page-sub">Domingo, 01 de março de 2026 · Semana 09</div>
+    <div class="text-selector">
+      <div class="text-tabs">
+        <div class="text-tab active" onclick="switchTab('library')">📚 Biblioteca</div>
+        <div class="text-tab" onclick="switchTab('custom')">✏️ Meu Texto</div>
       </div>
-      <button class="btn-primary">+ Importar Faixas</button>
-    </div>
 
-    <!-- KPIs -->
-    <div class="kpi-grid">
-      <div class="kpi-card">
-        <div class="kpi-icon green">🎵</div>
-        <div class="kpi-value">24,831</div>
-        <div class="kpi-label">Reproduções este mês</div>
-        <div class="kpi-change up">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
-          +18.4% vs mês anterior
+      <div class="text-tab-content active" id="tab-library">
+        <div class="text-list" id="textList">
+          <!-- populated by JS -->
         </div>
       </div>
-      <div class="kpi-card">
-        <div class="kpi-icon cyan">⏱</div>
-        <div class="kpi-value">1,204h</div>
-        <div class="kpi-label">Tempo de escuta total</div>
-        <div class="kpi-change up">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
-          +7.2% crescimento
-        </div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-icon pink">🎤</div>
-        <div class="kpi-value">342</div>
-        <div class="kpi-label">Artistas únicos</div>
-        <div class="kpi-change down">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-          −3.1% novos artistas
-        </div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-icon orange">💿</div>
-        <div class="kpi-value">87</div>
-        <div class="kpi-label">Álbuns completos ouvidos</div>
-        <div class="kpi-change up">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
-          +22% este mês
+
+      <div class="text-tab-content" id="tab-custom">
+        <textarea class="custom-area" id="customText" placeholder="Cole ou escreva seu texto aqui..." oninput="updateCharCount()"></textarea>
+        <div class="custom-meta">
+          <input type="text" class="custom-input" id="customTitle" placeholder="Título do texto (opcional)">
+          <span class="char-count" id="charCount">0 palavras</span>
         </div>
       </div>
     </div>
 
-    <!-- Content Grid -->
-    <div class="content-grid">
-
-      <!-- Chart -->
-      <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title">Reproduções por Semana</div>
-          <div style="display:flex;gap:16px;align-items:center">
-            <div style="display:flex;align-items:center;gap:5px;font-size:0.68rem;color:var(--muted)">
-              <div style="width:8px;height:8px;border-radius:50%;background:var(--accent)"></div> 2026
-            </div>
-            <div style="display:flex;align-items:center;gap:5px;font-size:0.68rem;color:var(--muted)">
-              <div style="width:8px;height:8px;border-radius:50%;background:var(--accent2)"></div> 2025
-            </div>
-            <div class="panel-action">Ver tudo →</div>
-          </div>
-        </div>
-        <div class="chart-area" id="chartArea">
-          <!-- generated by JS -->
-        </div>
-      </div>
-
-      <!-- Top Tracks -->
-      <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title">Top Faixas</div>
-          <div class="panel-action">Ver mais →</div>
-        </div>
-        <div class="track-list">
-
-          <div class="track-item playing">
-            <div class="track-num">
-              <div class="play-waves">
-                <div class="waveform-bar" style="height:12px;background:var(--accent);animation-delay:0s"></div>
-                <div class="waveform-bar" style="height:12px;background:var(--accent);animation-delay:0.2s"></div>
-                <div class="waveform-bar" style="height:12px;background:var(--accent);animation-delay:0.4s"></div>
-              </div>
-            </div>
-            <div class="track-thumb" style="background:linear-gradient(135deg,#c8ff00,#00ffcc)">🔥</div>
-            <div class="track-info">
-              <div class="track-name">Noite Elétrica</div>
-              <div class="track-artist">Lara Vox · Eletrônica</div>
-            </div>
-            <div class="track-plays">8.3k</div>
-            <div class="track-duration">3:42</div>
-          </div>
-
-          <div class="track-item">
-            <div class="track-num">2</div>
-            <div class="track-thumb" style="background:linear-gradient(135deg,#ff3cac,#784ba0)">🎸</div>
-            <div class="track-info">
-              <div class="track-name">Cidade de Vidro</div>
-              <div class="track-artist">Marcos Fade · Indie Rock</div>
-            </div>
-            <div class="track-plays">6.1k</div>
-            <div class="track-duration">4:15</div>
-          </div>
-
-          <div class="track-item">
-            <div class="track-num">3</div>
-            <div class="track-thumb" style="background:linear-gradient(135deg,#00ffcc,#0099ff)">🎹</div>
-            <div class="track-info">
-              <div class="track-name">Madrugada Azul</div>
-              <div class="track-artist">BLVCK · Lo-Fi</div>
-            </div>
-            <div class="track-plays">5.7k</div>
-            <div class="track-duration">2:58</div>
-          </div>
-
-          <div class="track-item">
-            <div class="track-num">4</div>
-            <div class="track-thumb" style="background:linear-gradient(135deg,#ffa01e,#ff3cac)">🥁</div>
-            <div class="track-info">
-              <div class="track-name">Pulso Quente</div>
-              <div class="track-artist">KAS & Trio · Funk</div>
-            </div>
-            <div class="track-plays">4.9k</div>
-            <div class="track-duration">3:31</div>
-          </div>
-
-          <div class="track-item">
-            <div class="track-num">5</div>
-            <div class="track-thumb" style="background:linear-gradient(135deg,#7c3aed,#c8ff00)">🎷</div>
-            <div class="track-info">
-              <div class="track-name">Jazz do Amanhã</div>
-              <div class="track-artist">Nina · Jazz Alternativo</div>
-            </div>
-            <div class="track-plays">4.1k</div>
-            <div class="track-duration">5:04</div>
-          </div>
-
-        </div>
-      </div>
+    <div class="start-row">
+      <div style="font-size:0.8rem;color:var(--ink3)">Texto selecionado: <strong id="selectedTextName" style="color:var(--ink)">Nenhum</strong></div>
+      <button class="btn btn-accent" onclick="startReading()">▶ Começar Leitura</button>
     </div>
-
-    <!-- Bottom Row -->
-    <div class="bottom-grid">
-
-      <!-- Genres Donut -->
-      <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title">Por Gênero</div>
-          <div class="panel-action">Detalhes →</div>
-        </div>
-        <div class="donut-wrap">
-          <svg class="donut-svg" viewBox="0 0 120 120">
-            <circle cx="60" cy="60" r="50" fill="none" stroke="#1a1a2e" stroke-width="20"/>
-            <!-- Donut segments -->
-            <circle cx="60" cy="60" r="50" fill="none" stroke="#c8ff00" stroke-width="20"
-              stroke-dasharray="110 204" stroke-dashoffset="0" transform="rotate(-90 60 60)"/>
-            <circle cx="60" cy="60" r="50" fill="none" stroke="#00ffcc" stroke-width="20"
-              stroke-dasharray="70 244" stroke-dashoffset="-110" transform="rotate(-90 60 60)"/>
-            <circle cx="60" cy="60" r="50" fill="none" stroke="#ff3cac" stroke-width="20"
-              stroke-dasharray="50 264" stroke-dashoffset="-180" transform="rotate(-90 60 60)"/>
-            <circle cx="60" cy="60" r="50" fill="none" stroke="#ffa01e" stroke-width="20"
-              stroke-dasharray="30 284" stroke-dashoffset="-230" transform="rotate(-90 60 60)"/>
-            <circle cx="60" cy="60" r="50" fill="none" stroke="#7c3aed" stroke-width="20"
-              stroke-dasharray="54 260" stroke-dashoffset="-260" transform="rotate(-90 60 60)"/>
-            <text x="60" y="56" text-anchor="middle" fill="#f0f0ff" font-family="Syne,sans-serif" font-size="14" font-weight="800">24.8k</text>
-            <text x="60" y="70" text-anchor="middle" fill="rgba(240,240,255,0.4)" font-family="Syne Mono,monospace" font-size="7">PLAYS</text>
-          </svg>
-          <div class="donut-legend">
-            <div class="legend-item">
-              <div class="legend-dot" style="background:#c8ff00"></div>
-              <div class="legend-label">Eletrônica</div>
-              <div class="legend-val">34%</div>
-            </div>
-            <div class="legend-item">
-              <div class="legend-dot" style="background:#00ffcc"></div>
-              <div class="legend-label">Lo-Fi / Indie</div>
-              <div class="legend-val">22%</div>
-            </div>
-            <div class="legend-item">
-              <div class="legend-dot" style="background:#ff3cac"></div>
-              <div class="legend-label">Rock Alternativo</div>
-              <div class="legend-val">16%</div>
-            </div>
-            <div class="legend-item">
-              <div class="legend-dot" style="background:#ffa01e"></div>
-              <div class="legend-label">Funk / Soul</div>
-              <div class="legend-val">9%</div>
-            </div>
-            <div class="legend-item">
-              <div class="legend-dot" style="background:#7c3aed"></div>
-              <div class="legend-label">Jazz / MPB</div>
-              <div class="legend-val">19%</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Dispositivos -->
-      <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title">Dispositivos</div>
-        </div>
-        <div style="padding:20px;display:flex;flex-direction:column;gap:14px">
-          <div>
-            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-              <span style="font-size:0.78rem">📱 Mobile</span>
-              <span style="font-family:'Syne Mono',monospace;font-size:0.72rem;color:var(--accent)">62%</span>
-            </div>
-            <div style="height:5px;background:rgba(255,255,255,0.06);border-radius:3px">
-              <div style="height:100%;width:62%;background:var(--accent);border-radius:3px;box-shadow:0 0 8px rgba(200,255,0,0.4)"></div>
-            </div>
-          </div>
-          <div>
-            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-              <span style="font-size:0.78rem">💻 Desktop</span>
-              <span style="font-family:'Syne Mono',monospace;font-size:0.72rem;color:var(--accent2)">28%</span>
-            </div>
-            <div style="height:5px;background:rgba(255,255,255,0.06);border-radius:3px">
-              <div style="height:100%;width:28%;background:var(--accent2);border-radius:3px;box-shadow:0 0 8px rgba(0,255,204,0.4)"></div>
-            </div>
-          </div>
-          <div>
-            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-              <span style="font-size:0.78rem">📻 Smart TV</span>
-              <span style="font-family:'Syne Mono',monospace;font-size:0.72rem;color:var(--accent3)">10%</span>
-            </div>
-            <div style="height:5px;background:rgba(255,255,255,0.06);border-radius:3px">
-              <div style="height:100%;width:10%;background:var(--accent3);border-radius:3px"></div>
-            </div>
-          </div>
-
-          <div style="margin-top:8px;padding-top:16px;border-top:1px solid var(--border)">
-            <div style="font-size:0.72rem;color:var(--muted);font-family:'Syne Mono',monospace;margin-bottom:10px">PICO DE USO</div>
-            <div style="display:flex;gap:3px;align-items:flex-end;height:50px">
-              <script>/* bars rendered by JS below */</script>
-            </div>
-            <div id="hourBars" style="display:flex;gap:3px;align-items:flex-end;height:50px"></div>
-            <div style="display:flex;justify-content:space-between;margin-top:6px">
-              <span style="font-size:0.6rem;color:var(--muted);font-family:'Syne Mono',monospace">00h</span>
-              <span style="font-size:0.6rem;color:var(--muted);font-family:'Syne Mono',monospace">12h</span>
-              <span style="font-size:0.6rem;color:var(--muted);font-family:'Syne Mono',monospace">23h</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Activity Feed -->
-      <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title">Atividade Recente</div>
-          <div class="panel-action">Limpar →</div>
-        </div>
-        <div class="feed-list">
-          <div class="feed-item">
-            <div class="feed-icon">🔥</div>
-            <div class="feed-text">
-              <div class="feed-msg"><strong>Noite Elétrica</strong> atingiu 8k reproduções — novo recorde!</div>
-              <div class="feed-time">há 3 minutos</div>
-            </div>
-          </div>
-          <div class="feed-item">
-            <div class="feed-icon">📀</div>
-            <div class="feed-text">
-              <div class="feed-msg">Playlist <strong>Madrugada</strong> atualizada com 4 novas faixas</div>
-              <div class="feed-time">há 42 minutos</div>
-            </div>
-          </div>
-          <div class="feed-item">
-            <div class="feed-icon">👥</div>
-            <div class="feed-text">
-              <div class="feed-msg"><strong>15 amigos</strong> ouviram a mesma faixa que você hoje</div>
-              <div class="feed-time">há 1 hora</div>
-            </div>
-          </div>
-          <div class="feed-item">
-            <div class="feed-icon">🎯</div>
-            <div class="feed-text">
-              <div class="feed-msg">Meta semanal atingida: <strong>200h de escuta!</strong></div>
-              <div class="feed-time">há 3 horas</div>
-            </div>
-          </div>
-          <div class="feed-item">
-            <div class="feed-icon">⭐</div>
-            <div class="feed-text">
-              <div class="feed-msg">Novo artista recomendado: <strong>BLVCK</strong> baseado no seu gosto</div>
-              <div class="feed-time">há 5 horas</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-  </main>
-
+  </div>
 </div>
 
-<!-- PLAYER BAR -->
-<div class="player-bar">
-  <div class="player-track">
-    <div class="player-thumb">🔥</div>
-    <div>
-      <div class="player-name">Noite Elétrica</div>
-      <div class="player-artist">Lara Vox</div>
+<!-- ===== LEITURA ===== -->
+<div id="screen-reading">
+  <div class="topbar">
+    <div class="brand">Leitura<em>PRO</em></div>
+    <div class="topbar-right">
+      <button class="btn btn-ghost" onclick="goHome()">← Voltar</button>
     </div>
-    <svg style="margin-left:12px;color:var(--accent);cursor:pointer" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
   </div>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
 
-  <div class="player-controls">
-    <div class="player-btns">
-      <button class="ctrl-btn" title="Aleatório">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
-      </button>
-      <button class="ctrl-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
-      </button>
-      <button class="ctrl-btn play" id="playBtn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-      </button>
-      <button class="ctrl-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
-      </button>
-      <button class="ctrl-btn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-      </button>
-    </div>
-    <div>
-      <div class="player-progress">
-        <div class="player-progress-fill"></div>
+  <div class="reading-wrap">
+    <div class="reading-header">
+      <div class="reading-info">
+        <div class="timer-display" id="timerDisplay">00:00</div>
+        <div class="reading-meta">
+          <span id="wpmLive">— PPM</span>
+          <span id="wordCount">0 palavras</span>
+        </div>
       </div>
-      <div class="player-time"><span>1:25</span><span>3:42</span></div>
+      <div class="timer-controls">
+        <button class="ctrl ctrl-start" id="btnStart" onclick="startTimer()">▶ Iniciar</button>
+        <button class="ctrl ctrl-pause" id="btnPause" onclick="pauseTimer()" style="display:none">⏸ Pausar</button>
+        <button class="ctrl ctrl-stop" id="btnStop" onclick="stopTimer()">■ Finalizar</button>
+      </div>
+    </div>
+
+    <div id="readingLevelBadge" class="reading-level-badge"></div>
+    <div class="text-title-display" id="readingTitle"></div>
+    <div class="text-body" id="readingBody"></div>
+  </div>
+</div>
+
+<!-- ===== RESULTADO ===== -->
+<div id="screen-result">
+  <div class="topbar">
+    <div class="brand">Leitura<em>PRO</em></div>
+    <div class="topbar-right">
+      <button class="btn btn-ghost" onclick="goHome()">← Início</button>
     </div>
   </div>
 
-  <div class="player-vol">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--muted)"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-    <div class="vol-bar"><div class="vol-fill"></div></div>
+  <div class="result-wrap">
+    <div class="result-hero">
+      <div class="result-grade" id="resultGrade">A</div>
+      <div class="result-label" id="resultLabel">Excelente desempenho!</div>
+    </div>
+
+    <div class="result-cards">
+      <div class="result-card">
+        <span class="result-card-val" id="res-wpm">—</span>
+        <span class="result-card-label">Palavras/min</span>
+      </div>
+      <div class="result-card">
+        <span class="result-card-val" id="res-time">—</span>
+        <span class="result-card-label">Tempo Total</span>
+      </div>
+      <div class="result-card">
+        <span class="result-card-val" id="res-words">—</span>
+        <span class="result-card-label">Palavras</span>
+      </div>
+      <div class="result-card">
+        <span class="result-card-val" id="res-level">—</span>
+        <span class="result-card-label">Nível</span>
+      </div>
+    </div>
+
+    <div class="wpm-gauge">
+      <div class="gauge-title">
+        Velocidade de Leitura
+        <span style="font-size:0.72rem;color:var(--ink3);font-family:'DM Mono',monospace">Média adulta: 200-300 PPM</span>
+      </div>
+      <div class="gauge-scale">
+        <div class="gauge-marker" id="gaugeMarker" style="left:30%">
+          <div class="gauge-marker-val" id="gaugeVal">—</div>
+          <div class="gauge-arrow"></div>
+        </div>
+        <div class="gauge-track"></div>
+      </div>
+      <div class="gauge-labels">
+        <span>0</span><span>100</span><span>200</span><span>300</span><span>400</span><span>500+</span>
+      </div>
+    </div>
+
+    <div class="analysis-box">
+      <h3>Análise Detalhada</h3>
+      <div id="analysisItems"></div>
+    </div>
+
+    <div class="result-actions">
+      <button class="btn btn-ghost" onclick="goHome()">🏠 Início</button>
+      <button class="btn btn-solid" onclick="tryAgain()">🔄 Tentar Novamente</button>
+      <button class="btn btn-accent" onclick="nextText()">→ Próximo Texto</button>
+    </div>
   </div>
 </div>
 
 <script>
-// Custom cursor
-const cursor = document.getElementById('cursor');
-const ring = document.getElementById('cursorRing');
-let mx = 0, my = 0, rx = 0, ry = 0;
-document.addEventListener('mousemove', e => {
-  mx = e.clientX; my = e.clientY;
-  cursor.style.left = mx + 'px';
-  cursor.style.top = my + 'px';
-});
-function animateRing() {
-  rx += (mx - rx) * 0.12;
-  ry += (my - ry) *.12;
-  ring.style.left = rx + 'px';
-  ring.style.top = ry + 'px';
-  requestAnimationFrame(animateRing);
+// ===== DATA =====
+const TEXTS = {
+  easy: [
+    {
+      id:'e1', title:'O Jardim da Vovó', level:'easy',
+      body:`A vovó Maria acordava todos os dias às seis da manhã para cuidar do seu jardim. Ela regava as flores com carinho, tirava o mato ruim e conversava com os passarinhos que vinham cantar nas árvores.
+
+Seu jardim era famoso em toda a rua. As rosas vermelhas eram as mais bonitas, e o jasmim perfumava o ar de um jeito que todo mundo parava para sentir.
+
+Um dia, a neta Ana foi visitar a vovó. Ela ficou encantada com tantas cores e cheiros. A vovó ensinou a menina a plantar uma semente. Juntas, elas cuidaram da terra com amor.
+
+Semanas depois, uma flor pequenininha nasceu. Ana ficou feliz demais e prometeu que também teria um jardim um dia.`
+    },
+    {
+      id:'e2', title:'A Viagem de Trem', level:'easy',
+      body:`Pedro nunca tinha andado de trem. Quando sua mãe disse que iam viajar para a cidade da avó de trem, ele ficou animado de um jeito que mal conseguia dormir na noite anterior.
+
+Na estação, o trem estava enorme. As rodas de ferro brilhavam e a fumaça saía com um barulho forte. Pedro segurou a mão da mãe com força enquanto subiam as escadas.
+
+Dentro do trem, a janela era grande. Pedro ficou colado no vidro olhando as casas, as árvores e os campos passarem rapidinho. Uma vez, até viu um cavalo correndo junto com o trem.
+
+A viagem durou três horas, mas para Pedro pareceu um sonho. Quando chegaram, ele já queria voltar de trem de novo.`
+    },
+    {
+      id:'e3', title:'O Cachorro e o Osso', level:'easy',
+      body:`Tobi era um cachorro pequeno e muito esperto. Ele morava numa casa verde no fim da rua e adorava brincar no quintal. Seu dono, seu Zé, sempre lhe dava um osso depois do jantar.
+
+Numa tarde quente, Tobi pegou seu osso e foi até o quintal. Quando passava pela cerca, escorregou e o osso caiu num buraco fundo. Tobi ficou olhando tristinho para o buraco.
+
+Ele foi até a garagem, pegou um graveto no bico e voltou ao buraco. Enfiou o graveto devagarzinho e, depois de muito tentar, conseguiu empurrar o osso para um lado e pegar com a patinha.
+
+Seu Zé viu tudo da janela e deu uma gargalhada. Chamou a família toda para contar a façanha do cachorrinho mais esperto que ele já tinha conhecido.`
+    }
+  ],
+  medio: [
+    {
+      id:'m1', title:'O Mercado das Memórias', level:'medio',
+      body:`Existia na cidade velha um mercado que a maioria das pessoas nem sabia que existia. Ficava numa viela estreita entre dois prédios antigos, e só aparecia nas tardes de sábado quando a luz batia de um jeito diferente na pedra do calçamento.
+
+Lá vendiam de tudo: um pote de cheiro de chuva engarrafada, o som de uma risada que você já ouviu e esqueceu, a sensação exata de acordar cedo num dia frio de férias escolares.
+
+A moeda era memória. Você entrava, escolhia algo, e pagava com uma lembrança que abria mão de ter. Não doía. Simplesmente, num estalo, aquele momento deixava de existir dentro de você.
+
+Marina entrou pela primeira vez numa tarde de março. Saiu com o cheiro do cabelo da mãe que havia morrido dois anos antes, e deixou para trás o último desentendimento que tiveram. Pareceu um negócio justo.
+
+O mercado estava lá na semana seguinte. Mas Marina não lembrava mais do caminho para chegar até ele.`
+    },
+    {
+      id:'m2', title:'Carta ao Oceano', level:'medio',
+      body:`Nunca fui de escrever cartas, mas você não tem endereço de e-mail e seria estranho te mandar uma mensagem no celular. Por isso escrevo no papel, com caneta, do jeito que aprendi que cartas devem ser escritas.
+
+Nos vimos há três verões. Eu estava naquele penhasco de pedra vermelha e você estava sendo você mesmo — imenso, barulhento, absolutamente indiferente. Joguei um pedregulho em você e você nem percebeu.
+
+Foi aí que entendi o que os filósofos tentam dizer sobre a nossa irrelevância. Não como uma tristeza, mas como um alívio. Ninguém era tão importante quanto pensava. Nem eu, nem minhas preocupações de vinte e três anos.
+
+Hoje tenho vinte e oito. As preocupações mudaram, mas o tamanho delas parece o mesmo. Quando fico pequeno demais pra cabeça, lembro de você. Aquela imensidão azul que simplesmente continua.
+
+Obrigado por existir. Sei que você não leu isso. Mas escrevi mesmo assim.`
+    },
+    {
+      id:'m3', title:'A Última Livraria', level:'medio',
+      body:`A cidade tinha uma única livraria ainda aberta, e ela resistia com a teimosia típica das coisas velhas que recusam morrer de vez. As paredes eram de madeira escurecida pelo tempo, os livros se empilhavam sem muita ordem lógica, e o dono, seu Benedito, tinha setenta e três anos e a memória de um catalogador de museu.
+
+Você entrava e dizia o que estava sentindo — não o que queria ler, mas o que estava sentindo — e Benedito ia até algum canto do labirinto de prateleiras e voltava com um livro. Sempre o certo.
+
+Para a moça que chorava sem saber por quê, ele trouxe um conto curto de Clarice. Para o rapaz que estava com raiva do pai, uma biografia de alguém que também teve. Para a criança que sentia medo do escuro, um livro de astronomia sobre como as estrelas são feitas de explosões.
+
+A prefeitura queria o espaço para construir um estacionamento. Benedito disse que esperariam ele morrer. E ele, por pura teimosia literária, se recusava a morrer antes de ter lido tudo que ainda restava.`
+    }
+  ],
+  dificil: [
+    {
+      id:'d1', title:'Sobre a Dissolução do Tempo Percebido', level:'dificil',
+      body:`A percepção humana do tempo é, por definição, uma construção retroativa. O instante presente — aquilo que designamos coloquialmente como "agora" — é, em sentido estrito, inacessível à consciência no momento em que ocorre. O que percebemos como presente é, invariavelmente, um passado imediato processado e reconstruído pelo aparato cognitivo em frações de segundo.
+
+William James, ao cunhar o conceito de "presente especioso", já intuía essa defasagem constitutiva entre evento e percepção. O que a neurociência contemporânea confirma, com aparato experimental que James não dispunha, é que essa lacuna varia conforme estado emocional, nível de atenção e até temperatura corporal.
+
+Há uma implicação filosófica perturbadora nessa constatação: se o presente é ilusório, e o passado irrecuperável enquanto evento bruto, e o futuro apenas projeção probabilística, em que registro ontológico habitamos? A resposta mais honesta é: no registro da narrativa. Somos, antes de tudo, animais que constroem coerência onde há apenas fluxo.
+
+A memória, nesse contexto, não é arquivo — é ficção com pretensão documental. Cada vez que lembramos, reescrevemos. A versão acessada não é o evento original, mas a última versão que lembramos, já ela mesma uma versão anterior reescrita. A fidelidade decai a cada iteração.
+
+Isso não é tragédia epistemológica, é, talvez, a condição de possibilidade da identidade. Somos o acúmulo das nossas revisões.`
+    },
+    {
+      id:'d2', title:'A Geometria das Decisões Irreversíveis', level:'dificil',
+      body:`Existe uma categoria específica de decisão que os teóricos da escolha racional insistem em subestimar: a decisão cujo custo não é mensurável antes de ser tomada, porque o custo é precisamente a impossibilidade de tomá-la novamente. Chama-se, em alguns contextos, de "ponto de bifurcação existencial" — embora o termo carregue um peso dramático que nem sempre corresponde à dimensão dos eventos em questão.
+
+Aceitar um emprego em outra cidade. Não ligar numa madrugada quando se deveria ter ligado. Dizer uma palavra que não pode ser désagendada do registro de outra pessoa. Essas são as decisões que não cabem em matrizes de utilidade esperada, porque seu horizonte temporal é indefinido e seus efeitos, frequentemente, se manifestam em dimensões que não estavam no conjunto de variáveis consideradas no momento da escolha.
+
+O que torna esses momentos geometricamente interessantes — e psicologicamente árduos — é que eles possuem a estrutura topológica de um nó: uma vez atravessado, o espaço de possibilidades se reconfigura de maneira irredutível. Não é que o caminho não percorrido desapareça; ele persiste como espectro contrafactual, presente exatamente por sua ausência, habitando a consciência com a força das coisas que não aconteceram.
+
+A sabedoria convencional aconselha a "não olhar para trás". A sabedoria não convencional reconhece que olhar para trás com lucidez — sem nostalgia paralisante, mas também sem a amnésia conveniente — é precisamente o que permite que o próximo ponto de bifurcação seja navegado com maior integridade.`
+    }
+  ],
+  avancado: [
+    {
+      id:'a1', title:'Fenomenologia da Incompreensão Mútua', level:'avancado',
+      body:`A incompreensão entre sujeitos não é, como frequentemente se supõe no imaginário popular, um déficit comunicativo remediável pela adição de palavras. É, antes, uma propriedade estrutural da intersubjetividade — condição que Husserl denominaria a "alteridade irredutível" do outro e que Wittgenstein abordaria obliquamente ao afirmar que, mesmo que um leão pudesse falar, não o compreenderíamos.
+
+O problema não reside na insuficiência do código linguístico compartilhado, mas na assimetria constitutiva das perspectivas fenomenológicas. Cada sujeito habita um horizonte intencional construído a partir de sedimentações biográficas, afetivas e corporais que são, por princípio, intransmissíveis em sua integralidade. A linguagem funciona, nesse registro, não como canal de transposição de conteúdo, mas como dispositivo de coordenação de comportamentos e negociação de aproximações suficientemente funcionais — o que Wittgenstein chamaria de "jogos de linguagem" — nunca como veículo de coincidência mental.
+
+Daí a paradoxalidade fundamental das relações humanas mais intensas: quanto maior a intimidade, mais visível se torna a opacidade do outro. O estranho pode ser tratado como cifra temporariamente ilegível — cuja decifração se projeta no horizonte do possível. O próximo, cujo horizonte parcialmente conhecemos, revela por exatamente essa proximidade os contornos do que permanece e permanecerá inacessível.
+
+Amar alguém, nessa perspectiva fenomenológica, não seria eliminar essa distância — projeto impossível e, se possível, sufocante — mas aprender a habitá-la com tolerância, às vezes com reverência. A incompreensão que subsiste não como falha, mas como signo de que há ali, irredutível, um outro.`
+    },
+    {
+      id:'a2', title:'Entropia, Informação e o Custo da Ordem', level:'avancado',
+      body:`A segunda lei da termodinâmica tem uma beleza austera que transcende a física e contamina, com razão, a teoria da informação, a biologia evolutiva e, com alguma licença metafórica controlada, a filosofia da história. Em sua formulação mais geral: sistemas isolados tendem espontaneamente a estados de maior entropia — maior desordem, menor disponibilidade energética, maior distribuição homogênea.
+
+Shannon, ao desenvolver a teoria matemática da comunicação em 1948, realizou um movimento epistemológico de consequências inesperadas: utilizou o mesmo formalismo matemático da entropia termodinâmica para medir a informação. Nessa formulação, informação é precisamente a quantidade de surpresa — ou improbabilidade — de uma mensagem. Uma mensagem completamente previsível não transmite informação. É o inesperado, o improvável, que carrega conteúdo informacional.
+
+Há uma ironia estrutural nisso: a ordem — baixa entropia — é o que torna possível a comunicação (requer códigos estáveis, estruturas reconhecíveis), mas é exatamente a desordem relativa — o desvio da expectativa — que constitui a informação em si. Comunicar é, portanto, dançar no limite entre estrutura suficiente para ser compreendido e variação suficiente para dizer algo.
+
+Para sistemas biológicos, a implicação é ainda mais perturbadora. Manter a organização — a baixa entropia local que caracteriza um organismo vivo — exige importação contínua de energia do ambiente e exportação de entropia para fora do sistema. Viver é, literalmente, adiar o equilíbrio termodinâmico — que é a morte — às custas do ambiente. Somos bolsões temporários de improvável ordem num universo que caminha inexoravelmente para a homogeneidade.`
+    }
+  ],
+  extremo: [
+    {
+      id:'x1', title:'Aporia da Autodeterminação em Sistemas Reflexivos', level:'extremo',
+      body:`A questão da autodeterminação — entendida como capacidade de um sistema de estabelecer, a partir de si mesmo, as condições normativas de sua própria operação — constitui um dos nós gordianos da filosofia prática contemporânea, particularmente quando confrontada com as descobertas das ciências cognitivas sobre os mecanismos subpessoais que subjazem ao que fenomenologicamente se apresenta como decisão deliberada.
+
+Libet e colaboradores demonstraram experimentalmente, nos anos oitenta, que a atividade neural precursora de um movimento voluntário (o "Bereitschaftspotential") antecede em aproximadamente trezentos a quinhentos milissegundos a consciência subjetiva de ter decidido mover-se. Se a decisão consciente é epifenômeno de processos que já determinaram seu conteúdo antes de emergir à consciência, em que sentido ontológico o sujeito é autor de suas ações?
+
+As respostas deflacionárias — de que o livre-arbítrio é simplesmente compatível com o determinismo neurológico porque se refere a uma capacidade de nível de descrição diferente — preservam o vocabulário prático da agência às custas de esvaziar seu conteúdo intuitivo. O sujeito que "poderia ter agido de outra forma" nessa leitura compatibilista significa apenas que, em condições contrafactuais diferentes (outros estados cerebrais), a ação resultante seria diferente — o que é trivialmente verdadeiro e não restaura a intuição que se buscava preservar.
+
+A alternativa incompatibilista — que o livre-arbítrio genuíno requer a possibilidade real de alternativas causais — esbarra tanto no determinismo quanto, paradoxalmente, no indeterminismo quântico: aleatoriedade não é autonomia. Um evento causado por flutuações quânticas não é mais "meu" do que um causado por condicionamento determinístico.
+
+O que permanece quando se dissolve a ilusão de uma agência metafisicamente robusta? Talvez o que Strawson chamou de "atitudes reativas" — a gramática prática do elogio, da culpa, do ressentimento e da gratidão — que não requer fundação metafísica para ser operacionalmente indispensável. A responsabilidade como prática social, não como correspondência a um fato ontológico.
+
+Mas isso não responde à questão; apenas a transloca. A pergunta deixa de ser "somos realmente livres?" e se torna "que tipo de criatura é aquela que, mesmo não sendo metafisicamente livre, não pode deixar de se experimentar como tal, e organiza toda a sua vida moral a partir dessa experiência?"`,
+    },
+    {
+      id:'x2', title:'Colapso Epistêmico e a Pragmática da Certeza Funcional', level:'extremo',
+      body:`A epistemologia tradicional, desde Descartes, operou sob a premissa implícita de que a tarefa do conhecimento é a eliminação da dúvida — a fundação de crenças em bases indubitáveis que sirvam de ancoragem para uma estrutura cognitiva estável. O projeto cartesiano, mesmo em suas revisões pós-kantianas e analíticas, preservou essa orientação fundamentalista: conhecer bem é conhecer com garantias.
+
+O pragmatismo americano — de Peirce a Dewey, com a radicalização posterior de Rorty — subverteu essa orientação ao propor que a pergunta relevante não é "o que justifica esta crença?" mas "que diferença faz tê-la?". Verdade, nessa perspectiva, não é correspondência entre proposição e estado de coisas independente, mas propriedade funcional de crenças que funcionam bem — que permitem navegar o ambiente, coordenar ação com outros agentes, resolver problemas.
+
+Wittgenstein, em "Da Certeza", chegou a uma posição estruturalmente análoga por caminho diferente. Analisando as chamadas "proposições de dobradiça" — aquelas que não são verificadas, mas que sustentam a verificação de outras — concluiu que a base do edifício epistêmico não é conhecimento, mas ação. "No começo era o ato." Certas crenças não são justificadas porque são incorrigíveis; são incorrigíveis porque sua revisão desestabilizaria o sistema inteiro de práticas no qual o conhecimento se insere.
+
+Isso tem implicações radicais para a racionalidade em condições de incerteza genuína — que é a condição normal de decisão, não uma patologia excepcional. Se a certeza fundacional é inacessível e a demanda por ela é paralisante, a alternativa racional é desenvolver o que poderíamos chamar de "certeza funcional calibrada": comprometimento operacional com premissas suficientemente bem-testadas para sustentar ação, combinado com disposição estrutural para revisão quando as consequências práticas sinalizam inadequação do modelo.
+
+A diferença entre dogmatismo e racionalidade não está, nessa perspectiva, na ausência versus presença de comprometimentos não totalmente justificados — ambos os têm. Está na qualidade da disposição para revisar: o dogmático protege a crença das evidências; o racional recalibra a crença a partir delas, mantendo ao mesmo tempo o comprometimento operacional que torna a ação possível.`
+    }
+  ]
+};
+
+// ===== STATE =====
+let currentLevel = 'easy';
+let currentTextId = null;
+let currentText = null;
+let isCustom = false;
+let timerSeconds = 0;
+let timerInterval = null;
+let timerRunning = false;
+let timerStarted = false;
+let timerPaused = false;
+let history = JSON.parse(localStorage.getItem('leitura_history') || '[]');
+
+// ===== INIT =====
+function init() {
+  updateStats();
+  renderTextList();
 }
-animateRing();
 
-document.querySelectorAll('button, .nav-item, .track-item, .panel-action').forEach(el => {
-  el.addEventListener('mouseenter', () => {
-    cursor.style.transform = 'translate(-50%,-50%) scale(2.5)';
-    ring.style.transform = 'translate(-50%,-50%) scale(0.6)';
-    ring.style.opacity = '0.2';
-  });
-  el.addEventListener('mouseleave', () => {
-    cursor.style.transform = 'translate(-50%,-50%) scale(1)';
-    ring.style.transform = 'translate(-50%,-50%) scale(1)';
-    ring.style.opacity = '0.5';
-  });
-});
+function updateStats() {
+  document.getElementById('statSessions').textContent = history.length;
+  if (history.length === 0) return;
+  const wpms = history.map(h => h.wpm);
+  document.getElementById('statAvgWPM').textContent = Math.round(wpms.reduce((a,b)=>a+b,0)/wpms.length);
+  document.getElementById('statBestWPM').textContent = Math.max(...wpms);
+}
 
-// Bar chart
-const days = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
-const data2026 = [62, 78, 55, 90, 84, 100, 72];
-const data2025 = [45, 60, 70, 55, 68, 80, 58];
-const chartArea = document.getElementById('chartArea');
-chartArea.innerHTML = '';
-const max = Math.max(...data2026, ...data2025);
-days.forEach((d, i) => {
-  const wrap = document.createElement('div');
-  wrap.className = 'chart-bar-wrap';
-  const h26 = Math.round((data2026[i]/max)*150);
-  const h25 = Math.round((data2025[i]/max)*150);
-  wrap.innerHTML = `
-    <div style="display:flex;gap:3px;align-items:flex-end;flex:1;justify-content:center;width:100%">
-      <div class="chart-bar" style="height:${h26}px;flex:1" data-tip="${data2026[i]*248}"></div>
-      <div class="chart-bar secondary" style="height:${h25}px;flex:1" data-tip="${data2025[i]*248}"></div>
+function renderTextList() {
+  const list = document.getElementById('textList');
+  list.innerHTML = '';
+  const texts = TEXTS[currentLevel] || [];
+  texts.forEach(t => {
+    const wordCount = t.body.trim().split(/\s+/).length;
+    const el = document.createElement('div');
+    el.className = 'text-item' + (currentTextId === t.id ? ' selected' : '');
+    el.onclick = () => selectText(t);
+    const lvlLabels = {easy:'Fácil',medio:'Médio',dificil:'Difícil',avancado:'Avançado',extremo:'Extremo'};
+    el.innerHTML = `
+      <span class="text-item-badge badge-${t.level}">${lvlLabels[t.level]}</span>
+      <div class="text-item-info">
+        <div class="text-item-title">${t.title}</div>
+        <div class="text-item-meta">${wordCount} palavras · ~${Math.ceil(wordCount/200)} min de leitura</div>
+      </div>
+    `;
+    list.appendChild(el);
+  });
+}
+
+function selectLevel(l) {
+  currentLevel = l;
+  currentTextId = null;
+  document.getElementById('selectedTextName').textContent = 'Nenhum';
+  document.querySelectorAll('.level-card').forEach(c => c.classList.remove('selected'));
+  document.querySelector(`.level-card[data-level="${l}"]`).classList.add('selected');
+  renderTextList();
+  document.querySelector('.text-tab[onclick="switchTab(\'library\')"]').click();
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.text-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.text-tab-content').forEach(t => t.classList.remove('active'));
+  if (tab === 'library') {
+    document.querySelectorAll('.text-tab')[0].classList.add('active');
+    document.getElementById('tab-library').classList.add('active');
+    isCustom = false;
+  } else {
+    document.querySelectorAll('.text-tab')[1].classList.add('active');
+    document.getElementById('tab-custom').classList.add('active');
+    isCustom = true;
+    currentTextId = '__custom__';
+    document.getElementById('selectedTextName').textContent = 'Meu texto';
+  }
+}
+
+function selectText(t) {
+  currentTextId = t.id;
+  currentText = t;
+  isCustom = false;
+  document.querySelectorAll('.text-item').forEach(el => el.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  document.getElementById('selectedTextName').textContent = t.title;
+}
+
+function updateCharCount() {
+  const v = document.getElementById('customText').value.trim();
+  const words = v ? v.split(/\s+/).length : 0;
+  document.getElementById('charCount').textContent = words + ' palavras';
+}
+
+// ===== START READING =====
+function startReading() {
+  if (isCustom) {
+    const body = document.getElementById('customText').value.trim();
+    if (!body) { showToast('Cole seu texto antes de começar!'); return; }
+    const title = document.getElementById('customTitle').value.trim() || 'Meu Texto';
+    currentText = { id: '__custom__', title, level: currentLevel, body };
+  } else {
+    if (!currentTextId) { showToast('Selecione um texto antes de começar!'); return; }
+  }
+
+  // Setup reading screen
+  const lvlMap = {
+    easy: {label:'🌱 Fácil', cls:'badge-easy', bg:'var(--easy-bg)', color:'var(--easy)'},
+    medio: {label:'📖 Médio', cls:'badge-medio', bg:'var(--medio-bg)', color:'var(--medio)'},
+    dificil: {label:'⚡ Difícil', cls:'badge-dificil', bg:'var(--dificil-bg)', color:'var(--dificil)'},
+    avancado: {label:'🧠 Avançado', cls:'badge-avancado', bg:'var(--avancado-bg)', color:'var(--avancado)'},
+    extremo: {label:'💀 Extremo', cls:'badge-extremo', bg:'var(--extremo-bg)', color:'#ccc'}
+  };
+  const lvl = lvlMap[currentText.level] || lvlMap.easy;
+
+  const badge = document.getElementById('readingLevelBadge');
+  badge.textContent = lvl.label;
+  badge.style.background = lvl.bg;
+  badge.style.color = lvl.color;
+
+  document.getElementById('readingTitle').textContent = currentText.title;
+  const body = document.getElementById('readingBody');
+  body.textContent = currentText.body;
+  body.className = 'text-body' + (currentText.level === 'extremo' ? ' level-extremo' : '');
+
+  const words = currentText.body.trim().split(/\s+/).length;
+  document.getElementById('wordCount').textContent = words + ' palavras';
+
+  // reset timer
+  timerSeconds = 0;
+  timerRunning = false;
+  timerStarted = false;
+  timerPaused = false;
+  clearInterval(timerInterval);
+  document.getElementById('timerDisplay').textContent = '00:00';
+  document.getElementById('timerDisplay').className = 'timer-display';
+  document.getElementById('wpmLive').textContent = '— PPM';
+  document.getElementById('progressBar').style.width = '0%';
+  document.getElementById('btnStart').style.display = '';
+  document.getElementById('btnPause').style.display = 'none';
+
+  showScreen('reading');
+  window.scrollTo(0,0);
+}
+
+// ===== TIMER =====
+function startTimer() {
+  if (timerStarted && !timerPaused) return;
+  timerRunning = true;
+  timerStarted = true;
+  timerPaused = false;
+  document.getElementById('timerDisplay').className = 'timer-display running';
+  document.getElementById('btnStart').style.display = 'none';
+  document.getElementById('btnPause').style.display = '';
+  timerInterval = setInterval(() => {
+    timerSeconds++;
+    updateTimerDisplay();
+  }, 1000);
+}
+
+function pauseTimer() {
+  if (!timerRunning) return;
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerPaused = true;
+  document.getElementById('timerDisplay').className = 'timer-display paused';
+  document.getElementById('btnPause').style.display = 'none';
+  document.getElementById('btnStart').textContent = '▶ Continuar';
+  document.getElementById('btnStart').style.display = '';
+}
+
+function stopTimer() {
+  if (!timerStarted) { showToast('Inicie o cronômetro primeiro!'); return; }
+  clearInterval(timerInterval);
+  timerRunning = false;
+  showResult();
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timerSeconds / 60);
+  const s = timerSeconds % 60;
+  document.getElementById('timerDisplay').textContent =
+    String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+
+  if (timerSeconds > 5) {
+    const words = currentText.body.trim().split(/\s+/).length;
+    const wpm = Math.round((words / timerSeconds) * 60);
+    document.getElementById('wpmLive').textContent = wpm + ' PPM';
+  }
+
+  // progress (estimated by time vs expected)
+  const words = currentText.body.trim().split(/\s+/).length;
+  const avgWPM = 200;
+  const expectedSecs = (words / avgWPM) * 60;
+  const prog = Math.min(100, (timerSeconds / expectedSecs) * 100);
+  document.getElementById('progressBar').style.width = prog + '%';
+}
+
+// ===== RESULT =====
+function showResult() {
+  const words = currentText.body.trim().split(/\s+/).length;
+  const wpm = timerSeconds > 0 ? Math.round((words / timerSeconds) * 60) : 0;
+
+  const m = Math.floor(timerSeconds / 60);
+  const s = timerSeconds % 60;
+  const timeStr = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+
+  // Grade
+  let grade, gradeLabel, gradeColor;
+  const lvlBonus = {easy:0, medio:20, dificil:50, avancado:80, extremo:120};
+  const bonus = lvlBonus[currentText.level] || 0;
+  const adjWPM = wpm + bonus;
+
+  if (adjWPM >= 350) { grade='S'; gradeLabel='Leitura excepcional!'; gradeColor='#c8ff00'; }
+  else if (adjWPM >= 280) { grade='A'; gradeLabel='Excelente desempenho!'; gradeColor=var('--easy'); }
+  else if (adjWPM >= 220) { grade='B'; gradeLabel='Bom desempenho!'; gradeColor='#2d7a3a'; }
+  else if (adjWPM >= 160) { grade='C'; gradeLabel='Desempenho médio'; gradeColor='#b06a00'; }
+  else if (adjWPM >= 100) { grade='D'; gradeLabel='Continue praticando!'; gradeColor='#c0392b'; }
+  else { grade='F'; gradeLabel='Pratique mais!'; gradeColor='#888'; }
+
+  document.getElementById('resultGrade').textContent = grade;
+  document.getElementById('resultGrade').style.color = gradeColor;
+  document.getElementById('resultLabel').textContent = gradeLabel;
+
+  document.getElementById('res-wpm').textContent = wpm;
+  document.getElementById('res-time').textContent = timeStr;
+  document.getElementById('res-words').textContent = words;
+  const lvlNames = {easy:'Fácil',medio:'Médio',dificil:'Difícil',avancado:'Avançado',extremo:'Extremo'};
+  document.getElementById('res-level').textContent = lvlNames[currentText.level] || '—';
+
+  // Gauge
+  const maxWPM = 500;
+  const pct = Math.min(98, Math.max(2, (wpm / maxWPM) * 100));
+  setTimeout(() => {
+    document.getElementById('gaugeMarker').style.left = pct + '%';
+    document.getElementById('gaugeVal').textContent = wpm + ' PPM';
+  }, 300);
+
+  // Analysis
+  const items = buildAnalysis(wpm, timerSeconds, words, currentText.level);
+  const aiDiv = document.getElementById('analysisItems');
+  aiDiv.innerHTML = '';
+  items.forEach(item => {
+    const d = document.createElement('div');
+    d.className = 'analysis-item';
+    d.innerHTML = `<span class="analysis-icon">${item.icon}</span><div>${item.text}</div>`;
+    aiDiv.appendChild(d);
+  });
+
+  // Save history
+  history.unshift({ wpm, time: timeStr, words, level: currentText.level, title: currentText.title, grade, date: new Date().toLocaleDateString('pt-BR') });
+  if (history.length > 50) history.pop();
+  localStorage.setItem('leitura_history', JSON.stringify(history));
+
+  showScreen('result');
+  window.scrollTo(0,0);
+}
+
+function var_(name) { return getComputedStyle(document.documentElement).getPropertyValue(name); }
+
+function buildAnalysis(wpm, secs, words, level) {
+  const items = [];
+
+  // WPM category
+  if (wpm < 100) items.push({icon:'🐢', text:`Sua velocidade de <strong>${wpm} PPM</strong> está abaixo da média. A maioria dos adultos lê entre 200–300 PPM. Com prática diária, você pode dobrar essa marca em semanas.`});
+  else if (wpm < 200) items.push({icon:'🚶', text:`<strong>${wpm} PPM</strong> — ritmo lento a moderado. Está dentro do normal para leitura atenta. Trabalhe na eliminação da subvocalização (o "dizer as palavras mentalmente") para ganhar velocidade.`});
+  else if (wpm < 300) items.push({icon:'🏃', text:`<strong>${wpm} PPM</strong> — velocidade média de adulto educado. Você está numa boa faixa. Para avançar, tente ampliar o "span visual" — capturar grupos de palavras em vez de uma por vez.`});
+  else if (wpm < 400) items.push({icon:'⚡', text:`<strong>${wpm} PPM</strong> — leitura acima da média! Você está na faixa de leitores ávidos e profissionais. Manter a compreensão nessa velocidade é o próximo desafio.`});
+  else items.push({icon:'🚀', text:`<strong>${wpm} PPM</strong> — leitura excepcional! Você está entre os 10% mais rápidos. Verifique se a compreensão acompanha — velocidade sem compreensão não é leitura.`});
+
+  // Time insight
+  const mins = secs / 60;
+  if (mins < 2) items.push({icon:'⏱', text:`Sessão muito curta (<strong>${Math.round(mins)} min</strong>). Textos curtos são bons para aquecimento, mas sessões de 10–20 minutos trazem mais benefício para o treino de leitura.`});
+  else if (mins < 10) items.push({icon:'⏱', text:`Boa sessão de <strong>${Math.round(mins)} minutos</strong>. Você manteve o foco pelo tempo suficiente para criar um dado confiável de PPM.`});
+  else items.push({icon:'⏱', text:`Excelente resistência! <strong>${Math.round(mins)} minutos</strong> de leitura concentrada. Isso treina não só velocidade, mas memória de trabalho e compreensão de textos longos.`});
+
+  // Level insight
+  const lvlInsights = {
+    easy: 'Textos fáceis são ideais para aquecer e medir sua velocidade base sem sobrecarga cognitiva.',
+    medio: 'Nível médio equilibra desafio e fluidez — ótimo para progressão consistente.',
+    dificil: 'Textos difíceis exigem mais processamento semântico, o que pode reduzir a PPM. Isso é normal e desejável para desenvolver compreensão profunda.',
+    avancado: 'Excelente escolha desafiadora. Leitura de textos avançados expande vocabulário ativo e capacidade de raciocínio abstrato.',
+    extremo: 'Nível extremo: você enfrentou vocabulário técnico denso e estruturas argumentativas complexas. A PPM mais baixa aqui é esperada — o ganho é de compreensão, não velocidade.'
+  };
+  items.push({icon:'📊', text: lvlInsights[level] || ''});
+
+  // Comparison
+  items.push({icon:'📚', text:`Para referência: leitores casuais ficam em torno de <strong>150–200 PPM</strong>, profissionais entre <strong>300–400 PPM</strong>, e leitores treinados em speed reading podem chegar a <strong>600–800 PPM</strong> (com menor compreensão). Seu foco deve ser o ponto ótimo entre velocidade e entendimento.`});
+
+  return items;
+}
+
+// ===== NAVIGATION =====
+function showScreen(name) {
+  document.querySelectorAll('[id^="screen-"]').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+}
+
+function goHome() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  showScreen('home');
+  updateStats();
+}
+
+function tryAgain() {
+  startReading();
+}
+
+function nextText() {
+  const texts = TEXTS[currentLevel] || [];
+  const idx = texts.findIndex(t => t.id === currentTextId);
+  const next = texts[(idx + 1) % texts.length];
+  if (next) {
+    currentTextId = next.id;
+    currentText = next;
+    startReading();
+  } else {
+    goHome();
+  }
+}
+
+function showHistory() {
+  if (history.length === 0) { showToast('Nenhum histórico ainda. Faça sua primeira leitura!'); return; }
+  const lvlNames = {easy:'Fácil',medio:'Médio',dificil:'Difícil',avancado:'Avançado',extremo:'Extremo'};
+  const gradeColors = {S:'#c8ff00',A:'#2d7a3a',B:'#4caf50',C:'#b06a00',D:'#c0392b',F:'#888'};
+  const html = history.slice(0,10).map(h => `
+    <div class="history-item">
+      <div class="history-wpm" style="color:${gradeColors[h.grade]||'#333'}">${h.wpm}</div>
+      <div class="history-info">
+        <div class="history-title">${h.title}</div>
+        <div class="history-meta">${h.date} · ${lvlNames[h.level]||h.level} · ${h.time}</div>
+      </div>
+      <div class="history-grade" style="background:${gradeColors[h.grade]}22;color:${gradeColors[h.grade]}">${h.grade}</div>
     </div>
-    <div class="chart-x-label">${d}</div>
-  `;
-  chartArea.appendChild(wrap);
-});
+  `).join('');
 
-// Hour bars
-const hourBars = document.getElementById('hourBars');
-const hourData = [2,1,1,1,2,4,8,12,14,16,18,15,14,16,17,18,20,22,24,22,18,14,10,6];
-const hmax = Math.max(...hourData);
-hourData.forEach((v, i) => {
-  const b = document.createElement('div');
-  b.style.cssText = `flex:1;height:${Math.round((v/hmax)*46)+2}px;background:${i>=8&&i<=22?'rgba(200,255,0,0.5)':'rgba(255,255,255,0.08)'};border-radius:2px 2px 0 0;transition:all 0.2s`;
-  b.addEventListener('mouseenter', () => b.style.background = 'var(--accent)');
-  b.addEventListener('mouseleave', () => { b.style.background = i>=8&&i<=22?'rgba(200,255,0,0.5)':'rgba(255,255,255,0.08)'; });
-  hourBars.appendChild(b);
-});
+  const win = window.open('','_blank','width=560,height=600');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Histórico</title>
+  <style>body{font-family:DM Sans,sans-serif;background:#faf8f4;padding:24px;color:#1a1410}
+  h2{font-family:Playfair Display,serif;font-size:1.5rem;margin-bottom:20px}
+  .history-item{display:flex;align-items:center;gap:14px;padding:12px 16px;background:#fff;border:1px solid #e8e0d0;border-radius:10px;margin-bottom:8px}
+  .history-wpm{font-family:Playfair Display,serif;font-size:1.3rem;font-weight:700;min-width:60px}
+  .history-info{flex:1}.history-title{font-weight:500;margin-bottom:2px;font-size:.85rem}
+  .history-meta{font-size:.7rem;color:#9a8870;font-family:monospace}
+  .history-grade{font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:20px}
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500&display=swap');
+  </style></head><body><h2>📊 Histórico de Leituras</h2>${html}</body></html>`);
+}
 
-// Play button toggle
-let playing = true;
-const playBtn = document.getElementById('playBtn');
-playBtn.addEventListener('click', () => {
-  playing = !playing;
-  playBtn.innerHTML = playing
-    ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>`
-    : `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
-});
+// ===== TOAST =====
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
 
-// Animate bars on load
-setTimeout(() => {
-  document.querySelectorAll('.chart-bar').forEach((b, i) => {
-    b.style.opacity = '0';
-    b.style.transform = 'scaleY(0)';
-    b.style.transformOrigin = 'bottom';
-    setTimeout(() => {
-      b.style.transition = 'all 0.5s cubic-bezier(0.34,1.56,0.64,1)';
-      b.style.opacity = '1';
-      b.style.transform = 'scaleY(1)';
-    }, i * 40);
-  });
-}, 100);
-
-// Nav interaction
-document.querySelectorAll('.nav-item').forEach(item => {
-  item.addEventListener('click', function() {
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    this.classList.add('active');
-  });
-});
+// ===== RUN =====
+init();
 </script>
 </body>
 </html>
