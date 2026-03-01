@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PHONOBASE CONGRESS 2026</title>
+<title>PHONOBASE · Avaliação de Leitura Oral</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@300;400;500;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -17,570 +17,374 @@
   --red:#ff4f6b;--redD:rgba(255,79,107,.1);
   --pur:#b06cff;--purD:rgba(176,108,255,.1);
   --rose:#ff6b9d;
+  --lvl1:#00e5a0;--lvl2:#00d4ff;--lvl3:#ffb340;--lvl4:#ff4f6b;--lvl5:#b06cff;
 }
 html,body{height:100%;background:var(--bg);color:var(--t0);font-family:'Syne',sans-serif;font-size:13px;overflow:hidden}
-::-webkit-scrollbar{width:2px;height:2px}
+::-webkit-scrollbar{width:3px;height:3px}
 ::-webkit-scrollbar-thumb{background:var(--s5)}
 ::-webkit-scrollbar-track{background:transparent}
-
-/* ══ NOISE OVERLAY ══ */
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   background-size:256px;opacity:.4}
 
-/* ══ GRID ══ */
 .app{display:grid;grid-template-rows:52px 1fr;height:100vh;position:relative;z-index:1}
 
-/* ══ TOP BAR ══ */
+/* TOP BAR */
 .top{background:rgba(9,11,16,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);
-  display:flex;align-items:center;padding:0 20px;gap:0;z-index:100;position:relative}
+  display:flex;align-items:center;padding:0 20px;gap:12px;z-index:100;position:relative}
 .brand{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:11px;letter-spacing:3px;
   color:var(--t0);padding-right:18px;margin-right:6px;border-right:1px solid var(--border);white-space:nowrap;
   display:flex;align-items:center;gap:8px}
 .brand-icon{width:22px;height:22px;border-radius:50%;background:conic-gradient(var(--cyan),var(--pur),var(--rose),var(--cyan));
   display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
 .brand em{color:var(--cyan);font-style:normal}
-.brand span{color:var(--t3);font-size:9px;font-weight:300}
-.top-tabs{display:flex;overflow-x:auto;flex:1;gap:0}
-.top-tabs::-webkit-scrollbar{height:0}
-.ttab{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;
-  padding:0 16px;height:52px;display:flex;align-items:center;background:none;border:none;
-  color:var(--t3);cursor:pointer;transition:all .15s;border-bottom:2px solid transparent;white-space:nowrap;flex-shrink:0;gap:6px}
-.ttab:hover{color:var(--t1)}
-.ttab.on{color:var(--cyan);border-bottom-color:var(--cyan)}
-.top-r{display:flex;align-items:center;gap:8px;margin-left:auto;padding-left:16px}
-.api-btn{display:flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:9px;
-  letter-spacing:1.5px;text-transform:uppercase;padding:6px 12px;border:1px solid var(--border);
-  background:none;color:var(--t2);cursor:pointer;transition:all .15s;white-space:nowrap}
-.api-btn:hover{border-color:var(--cyan);color:var(--cyan)}
-.api-btn.on{color:var(--grn);border-color:rgba(0,229,160,.35)}
-.pulsedot{width:7px;height:7px;border-radius:50%;flex-shrink:0;background:var(--amb);animation:blink 2s infinite}
-.pulsedot.on{background:var(--grn);animation:none}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+.top-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--t2);text-transform:uppercase}
+.top-r{display:flex;align-items:center;gap:8px;margin-left:auto}
+.top-badge{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;
+  padding:4px 10px;border:1px solid var(--border);color:var(--t2);text-transform:uppercase}
+.top-badge.active{color:var(--grn);border-color:rgba(0,229,160,.3)}
+.pulsedot{width:6px;height:6px;border-radius:50%;background:var(--grn);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
 
-/* ══ BODY ══ */
-.body{display:grid;grid-template-columns:200px 1fr;overflow:hidden}
-.nav{background:var(--s1);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
-.nsec{border-bottom:1px solid var(--border2)}
-.nsl{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;
-  color:var(--t3);padding:12px 14px 5px}
-.ni{display:flex;align-items:center;gap:9px;padding:8px 14px;cursor:pointer;transition:all .12s;
-  font-size:11.5px;color:var(--t2);border-left:2px solid transparent;white-space:nowrap}
-.ni:hover{background:var(--s2);color:var(--t1)}
-.ni.on{background:var(--cyanD2);color:var(--cyan);border-left-color:var(--cyan)}
-.ni-ico{font-size:14px;flex-shrink:0;width:18px;text-align:center}
-.nav-foot{margin-top:auto;padding:14px;border-top:1px solid var(--border2);font-size:10px;color:var(--t3);line-height:1.7}
-.nav-foot strong{color:var(--cyan);font-size:11px;display:block;margin-bottom:3px;font-family:'IBM Plex Mono',monospace}
+/* LAYOUT */
+.body{display:grid;grid-template-columns:260px 1fr;overflow:hidden}
 
-/* ══ MAIN ══ */
-.main{overflow:hidden;display:flex;flex-direction:column}
-.panel{display:none;flex:1;overflow:hidden;flex-direction:column}
-.panel.on{display:flex}
+/* SIDEBAR */
+.sidebar{background:var(--s1);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
 
-/* ══ PANEL HEADER ══ */
-.ph{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;
-  justify-content:space-between;flex-shrink:0;background:var(--s1);gap:14px}
-.ph-l{display:flex;flex-direction:column;gap:2px}
-.ph-ttl{font-size:15px;font-weight:700;color:var(--t0);letter-spacing:.5px}
-.ph-sub{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:1px}
-.ph-r{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap}
-.btn{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
-  padding:6px 13px;border:1px solid var(--border);background:none;color:var(--t2);cursor:pointer;transition:all .15s}
-.btn:hover{border-color:var(--t1);color:var(--t0)}
-.btn.pri{background:var(--cyan);color:#000;border-color:var(--cyan);font-weight:700}
-.btn.pri:hover{background:#33dbff}
-.btn.suc{background:var(--grn);color:#000;border-color:var(--grn)}
-.btn.amb{background:var(--amb);color:#000;border-color:var(--amb)}
-.btn.danger{background:var(--red);color:#fff;border-color:var(--red)}
-.btn:disabled{opacity:.3;cursor:not-allowed}
+/* PATIENT FORM */
+.pat-form{padding:14px;border-bottom:1px solid var(--border2)}
+.sec-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--t3);margin-bottom:8px}
+.field{margin-bottom:8px}
+.field label{font-size:10px;color:var(--t2);display:block;margin-bottom:3px;font-family:'IBM Plex Mono',monospace;letter-spacing:1px}
+.field input,.field select{width:100%;background:var(--s2);border:1px solid var(--border);color:var(--t0);
+  font-family:'IBM Plex Mono',monospace;font-size:10px;padding:6px 8px;outline:none;transition:border .15s}
+.field input:focus,.field select:focus{border-color:var(--cyan)}
+.field select option{background:var(--s2)}
 
-/* ══ AGE TABS (faixa etária) ══ */
-.age-bar{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--s1);overflow-x:auto}
-.age-bar::-webkit-scrollbar{height:0}
-.age-tab{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
-  padding:10px 14px;background:none;border:none;color:var(--t3);cursor:pointer;transition:all .15s;
-  border-bottom:2px solid transparent;flex-shrink:0;display:flex;align-items:center;gap:7px;white-space:nowrap}
-.age-tab:hover{color:var(--t1)}
-.age-tab.on{color:var(--amber, #ffb340);border-bottom-color:var(--amb)}
-.age-tab[data-age="bebe"].on{color:#ff9de2;border-bottom-color:#ff9de2}
-.age-tab[data-age="crianca"].on{color:var(--grn);border-bottom-color:var(--grn)}
-.age-tab[data-age="adolescente"].on{color:var(--pur);border-bottom-color:var(--pur)}
-.age-tab[data-age="adulto"].on{color:var(--cyan);border-bottom-color:var(--cyan)}
-.age-tab[data-age="idoso"].on{color:var(--amb);border-bottom-color:var(--amb)}
-.age-pill{font-size:9px;padding:1px 6px;border-radius:20px;background:var(--glass2);font-family:'IBM Plex Mono',monospace;opacity:.6}
+/* LEVEL SELECTOR */
+.levels-sec{padding:14px;border-bottom:1px solid var(--border2)}
+.level-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.lvl-btn{padding:7px;background:var(--s2);border:1px solid var(--border);cursor:pointer;
+  font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;
+  color:var(--t2);transition:all .15s;text-align:center}
+.lvl-btn:hover{border-color:var(--t2);color:var(--t1)}
+.lvl-btn.active{color:var(--bg);font-weight:700}
+.lvl-btn[data-lvl="1"].active{background:var(--lvl1);border-color:var(--lvl1)}
+.lvl-btn[data-lvl="2"].active{background:var(--lvl2);border-color:var(--lvl2)}
+.lvl-btn[data-lvl="3"].active{background:var(--lvl3);border-color:var(--lvl3)}
+.lvl-btn[data-lvl="4"].active{background:var(--lvl4);border-color:var(--lvl4)}
+.lvl-btn[data-lvl="5"].active{background:var(--lvl5);border-color:var(--lvl5)}
+.lvl-btn[data-lvl="6"].active{background:linear-gradient(135deg,var(--red),var(--pur));border-color:var(--pur)}
 
-/* ══ ANALISADOR ══ */
-.az{flex:1;overflow:hidden;display:grid;grid-template-columns:1fr 1fr}
-.az-l{border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
-.az-r{display:flex;flex-direction:column;overflow:hidden}
-.ctx-bar{display:flex;overflow-x:auto;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--s2)}
-.ctx-bar::-webkit-scrollbar{height:0}
-.ctx-tab{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
-  padding:9px 13px;background:none;border:none;color:var(--t3);cursor:pointer;transition:all .15s;
-  border-bottom:2px solid transparent;flex-shrink:0;white-space:nowrap}
-.ctx-tab:hover{color:var(--t1)}
-.ctx-tab.on{color:var(--cyan);border-bottom-color:var(--cyan);background:var(--cyanD2)}
-.az-inp{flex:1;display:flex;flex-direction:column;padding:14px;gap:10px;overflow:hidden}
-.inplbl{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--t3)}
-.ta{flex:1;background:var(--s2);border:1px solid var(--border);color:var(--t0);
-  font-family:'DM Serif Display',serif;font-size:15px;line-height:1.85;padding:14px;
-  outline:none;resize:none;transition:border-color .2s}
-.ta:focus{border-color:var(--cyan)}
-.ta::placeholder{color:var(--t3);font-style:italic;font-size:13px;font-family:'Syne',sans-serif}
-.az-foot{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap;flex-shrink:0}
-.exlbl{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:5px}
-.exs{display:flex;flex-wrap:wrap;gap:4px}
-.ex{font-family:'IBM Plex Mono',monospace;font-size:9px;padding:4px 9px;border:1px solid var(--border);
-  background:none;color:var(--t3);cursor:pointer;transition:all .15s}
-.ex:hover{border-color:var(--cyan);color:var(--cyan)}
-.runbtn{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;padding:10px 22px;
-  background:var(--cyan);color:#000;border:none;cursor:pointer;transition:all .2s;
-  display:flex;align-items:center;gap:9px;flex-shrink:0;letter-spacing:.5px}
-.runbtn:hover{background:#33dbff;transform:translateY(-1px)}
-.runbtn:disabled{opacity:.3;cursor:not-allowed;transform:none}
-.sp{width:13px;height:13px;border-radius:50%;border:2px solid rgba(0,0,0,.25);border-top-color:#000;animation:spin .65s linear infinite;flex-shrink:0}
-@keyframes spin{to{transform:rotate(360deg)}}
-.az-warn{padding:9px 14px;border-top:1px solid var(--border2);font-family:'IBM Plex Mono',monospace;
-  font-size:9px;color:var(--t3);line-height:1.5;flex-shrink:0;display:flex;gap:7px;background:var(--s2)}
-.az-rhd{padding:10px 14px;border-bottom:1px solid var(--border);font-family:'IBM Plex Mono',monospace;
-  font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--t3);flex-shrink:0;background:var(--s2)}
-.res{flex:1;overflow-y:auto}
-.r-empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
-.r-empty-ico{font-size:32px;opacity:.08}
-.r-empty-msg{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--t3)}
-.r-load{display:flex;align-items:center;gap:12px;padding:20px;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--t3)}
-.spb{width:13px;height:13px;border-radius:50%;border:2px solid var(--s5);border-top-color:var(--cyan);animation:spin .65s linear infinite;flex-shrink:0}
-.r-score{display:grid;grid-template-columns:90px 1fr;border-bottom:1px solid var(--border)}
-.r-sn{padding:16px;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center}
-.snum{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:52px;line-height:1;letter-spacing:-2px}
-.slbl{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:1px;color:var(--t3);margin-top:3px}
-.r-verd{padding:16px}
-.vl{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
-.vv{font-size:17px;font-weight:700;line-height:1.2}
-.hi{color:var(--red)}.md{color:var(--amb)}.lo{color:var(--grn)}.nn{color:var(--t1)}
-.r-blocks{display:flex;flex-direction:column}
-.rb{padding:12px 14px;border-bottom:1px solid var(--border2)}
-.rblbl{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--t3);margin-bottom:7px;display:flex;align-items:center;gap:6px}
-.rbdot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
-.rbtxt{font-size:12px;color:var(--t1);line-height:1.75;white-space:pre-wrap}
-.ri{display:flex;align-items:flex-start;gap:8px;padding:6px 10px;background:var(--s2);
-  border-left:2px solid var(--cyan);margin-bottom:4px;font-size:11.5px;color:var(--t1);line-height:1.5}
-.ri::before{content:'↗';color:var(--cyan);font-family:'IBM Plex Mono',monospace;font-size:11px;flex-shrink:0;margin-top:1px}
-.ri.w{border-left-color:var(--amb)}.ri.w::before{color:var(--amb);content:'!'}
-.ri.d{border-left-color:var(--red)}.ri.d::before{color:var(--red);content:'⚠'}
-.r-alt{background:var(--grnD);border-left:2px solid var(--grn);padding:11px 14px;margin-bottom:4px;
-  font-family:'DM Serif Display',serif;font-size:15px;font-style:italic;color:#80f0d0;line-height:1.6}
-.r-err{margin:14px;padding:15px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--amb);
-  line-height:1.8;white-space:pre-wrap;background:var(--ambD);border-left:2px solid var(--amb)}
-.hipo{padding:9px 11px;background:var(--s2);margin-bottom:4px;border-left:2px solid var(--amb)}
-.hipo-n{font-size:12.5px;color:var(--t0);font-weight:600;margin-bottom:3px}
-.hipo-p{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;
-  padding:2px 7px;border:1px solid;display:inline-block;margin-bottom:4px}
-.pa{color:var(--red);border-color:var(--red)}.pm{color:var(--amb);border-color:var(--amb)}.pb{color:var(--t2);border-color:var(--t2)}
-.hipo-j{font-size:11.5px;color:var(--t2);line-height:1.55}
+.lvl-badge{display:inline-block;padding:2px 6px;font-size:8px;font-family:'IBM Plex Mono',monospace;margin-bottom:6px;border:1px solid;font-weight:700}
+.lvl1{color:var(--lvl1);border-color:rgba(0,229,160,.3);background:rgba(0,229,160,.05)}
+.lvl2{color:var(--lvl2);border-color:rgba(0,212,255,.3);background:rgba(0,212,255,.05)}
+.lvl3{color:var(--lvl3);border-color:rgba(255,179,64,.3);background:rgba(255,179,64,.05)}
+.lvl4{color:var(--lvl4);border-color:rgba(255,79,107,.3);background:rgba(255,79,107,.05)}
+.lvl5{color:var(--lvl5);border-color:rgba(176,108,255,.3);background:rgba(176,108,255,.05)}
+.lvl6{color:var(--rose);border-color:rgba(255,107,157,.3);background:rgba(255,107,157,.05)}
 
-/* ══ GRAVAÇÃO ══ */
-.grav-wrap{flex:1;overflow:hidden;display:grid;grid-template-columns:1fr 1fr}
-.grav-l{border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
-.grav-r{display:flex;flex-direction:column;overflow:hidden}
-.gc-bar{display:flex;gap:4px;flex-wrap:wrap;padding:11px 14px;border-bottom:1px solid var(--border);background:var(--s2);flex-shrink:0}
-.gc{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;
-  padding:5px 11px;border:1px solid var(--border);background:none;color:var(--t3);cursor:pointer;transition:all .15s}
-.gc:hover{border-color:var(--cyan);color:var(--cyan)}
-.gc.on{background:var(--cyanD);color:var(--cyan);border-color:rgba(0,212,255,.4)}
-.mic-area{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;gap:18px;flex-shrink:0}
-/* EQ bars */
-.eq-wrap{display:flex;align-items:center;gap:4px;height:44px}
-.eq-b{width:4px;background:var(--s4);border-radius:3px;height:5px;transition:height .08s}
-.eq-b.act{background:var(--cyan)}
-.eq-b.act:nth-child(1){animation:eq1 .7s ease-in-out infinite}
-.eq-b.act:nth-child(2){animation:eq1 .7s ease-in-out infinite .06s}
-.eq-b.act:nth-child(3){animation:eq1 .7s ease-in-out infinite .12s}
-.eq-b.act:nth-child(4){animation:eq1 .7s ease-in-out infinite .18s}
-.eq-b.act:nth-child(5){animation:eq1 .7s ease-in-out infinite .24s}
-.eq-b.act:nth-child(6){animation:eq1 .7s ease-in-out infinite .18s}
-.eq-b.act:nth-child(7){animation:eq1 .7s ease-in-out infinite .12s}
-.eq-b.act:nth-child(8){animation:eq1 .7s ease-in-out infinite .06s}
-.eq-b.act:nth-child(9){animation:eq1 .7s ease-in-out infinite}
-@keyframes eq1{0%,100%{height:5px}50%{height:38px}}
-.mic-btn{width:86px;height:86px;border-radius:50%;border:2px solid var(--border);
-  background:var(--s2);cursor:pointer;display:flex;align-items:center;justify-content:center;
-  font-size:32px;transition:all .2s;position:relative}
-.mic-btn::after{content:'';position:absolute;inset:-4px;border-radius:50%;
-  border:1px solid transparent;transition:all .3s}
-.mic-btn:hover{border-color:var(--cyan);background:var(--cyanD)}
-.mic-btn:hover::after{border-color:rgba(0,212,255,.2)}
-.mic-btn.rec{border-color:var(--red);background:var(--redD);animation:micpulse 1.4s infinite}
-.mic-btn.rec::after{border-color:rgba(255,79,107,.3);inset:-8px}
-@keyframes micpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,79,107,.4)}50%{box-shadow:0 0 0 18px rgba(255,79,107,0)}}
-.mic-timer{font-family:'IBM Plex Mono',monospace;font-size:32px;font-weight:700;color:var(--t0);letter-spacing:5px}
-.mic-timer.rec{color:var(--red)}
-.mic-status{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--t3)}
-.mic-status.rec{color:var(--red)}
-.grav-tx{flex:1;overflow:hidden;display:flex;flex-direction:column;border-top:1px solid var(--border)}
-.grav-tx-hd{padding:9px 14px;border-bottom:1px solid var(--border2);font-family:'IBM Plex Mono',monospace;
-  font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--t3);
-  display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:var(--s2)}
-.grav-tx-body{flex:1;overflow-y:auto;padding:14px}
-.tt{font-family:'DM Serif Display',serif;font-size:16px;line-height:1.85;color:var(--t0);min-height:60px;word-wrap:break-word}
-.tt-int{color:var(--t2);font-style:italic}
-.grav-foot{padding:11px 14px;border-top:1px solid var(--border2);display:flex;gap:6px;flex-shrink:0;background:var(--s2);flex-wrap:wrap}
-/* voice report */
-.vr-wrap{flex:1;overflow-y:auto}
-.vr-hd{padding:10px 14px;border-bottom:1px solid var(--border2);font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--t3);background:var(--s2);flex-shrink:0}
-.vr-empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--t3);font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase}
-.vr-empty-ico{font-size:36px;opacity:.06}
-/* stats grid */
-.vr-stats{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border)}
-.vr-stat{padding:14px;border-right:1px solid var(--border2);border-bottom:1px solid var(--border2)}
-.vr-stat:nth-child(even){border-right:none}
-.vs-n{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:28px;line-height:1;color:var(--cyan)}
-.vs-u{font-size:10px;color:var(--t2);font-family:'IBM Plex Mono',monospace}
-.vs-l{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-top:4px}
-.vr-section{padding:12px 14px;border-bottom:1px solid var(--border2)}
-.vr-sec-ttl{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.vr-bar{height:5px;background:var(--s4);border-radius:3px;overflow:hidden;margin:4px 0 10px}
-.vr-bar-fill{height:100%;border-radius:3px;transition:width 1s cubic-bezier(.4,0,.2,1)}
-.vr-item{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border2);font-size:11.5px;color:var(--t1)}
-.vr-item:last-child{border:none}
-.vr-val{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--cyan)}
-.fluency-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:middle}
-.fl-ok{background:var(--grn)}.fl-warn{background:var(--amb)}.fl-err{background:var(--red)}
-.vr-ai-result{padding:12px 14px}
+/* TEXT LIST */
+.text-list{padding:14px;flex:1}
+.text-item{padding:8px;background:var(--s2);border:1px solid var(--border);margin-bottom:4px;cursor:pointer;transition:all .12s}
+.text-item:hover{border-color:var(--t2);background:var(--s3)}
+.text-item.selected{border-left:2px solid var(--cyan);background:var(--cyanD2)}
+.text-item-name{font-size:11px;color:var(--t1);margin-bottom:2px}
+.text-item-meta{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--t3);letter-spacing:1px}
 
-/* ══ LEITURA CRONOMETRADA ══ */
-.leit-wrap{flex:1;overflow:hidden;display:grid;grid-template-columns:280px 1fr}
-.leit-l{border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
-.leit-l-age{flex-shrink:0}
-.leit-r{display:flex;flex-direction:column;overflow:hidden}
-.text-list{padding:9px;display:flex;flex-direction:column;gap:5px;overflow-y:auto;flex:1}
-.text-item{padding:11px 13px;border:1px solid var(--border);background:var(--s2);cursor:pointer;transition:all .15s}
-.text-item:hover{border-color:rgba(0,212,255,.3);background:var(--s3)}
-.text-item.on{border-color:var(--cyan);background:var(--cyanD2)}
-.ti-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px;gap:8px}
-.ti-ttl{font-size:12.5px;font-weight:600;color:var(--t0);line-height:1.3}
-.ti-diff{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border:1px solid;flex-shrink:0}
-.df{color:var(--grn);border-color:rgba(0,229,160,.4)}
-.dm{color:var(--amb);border-color:rgba(255,179,64,.4)}
-.dd{color:var(--red);border-color:rgba(255,79,107,.4)}
-.dex{color:var(--pur);border-color:rgba(176,108,255,.4)}
-.ti-info{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t3)}
-.reading-ctrl{padding:13px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0;background:var(--s1);flex-wrap:wrap}
-.timer{font-family:'IBM Plex Mono',monospace;font-size:32px;font-weight:700;color:var(--t0);letter-spacing:4px;min-width:90px}
-.timer.run{color:var(--cyan)}
-.timer.done{color:var(--grn)}
-.prog{flex:1;height:4px;background:var(--s3);min-width:80px;border-radius:2px;overflow:hidden}
-.prog-fill{height:100%;background:var(--cyan);transition:width .4s;width:0%;border-radius:2px}
-.reading-body{flex:1;overflow-y:auto;padding:30px 36px}
-.r-txt-ttl{font-family:'DM Serif Display',serif;font-size:22px;color:var(--t0);margin-bottom:5px}
-.r-txt-meta{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3);margin-bottom:20px}
-.r-txt-body{font-family:'DM Serif Display',serif;font-size:16px;line-height:2;color:var(--t1);word-wrap:break-word}
-.r-txt-body strong{color:var(--t0);font-weight:400}
-.word{display:inline;cursor:default;transition:background .05s;border-radius:2px;padding:0 1px}
-.word.hl{background:rgba(0,212,255,.25);color:var(--t0)}
-.word.err{background:rgba(255,79,107,.25);color:var(--red)}
-.reading-report{overflow:hidden;display:flex;flex-direction:column}
-.rr-hd{padding:10px 14px;border-bottom:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--t3);flex-shrink:0;background:var(--s2);display:flex;justify-content:space-between;align-items:center}
-.rr-body{flex:1;overflow-y:auto}
-.rr-summary{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border)}
-.rrs{padding:13px;border-right:1px solid var(--border2);border-bottom:1px solid var(--border2)}
-.rrs:nth-child(even){border-right:none}
-.rrs-n{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:26px;line-height:1;color:var(--cyan)}
-.rrs-u{font-size:9px;color:var(--t2);font-family:'IBM Plex Mono',monospace}
-.rrs-l{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-top:4px}
-.rr-ai-result{flex:1;overflow-y:auto;min-height:80px}
+/* MAIN AREA */
+.main{display:flex;flex-direction:column;overflow:hidden}
 
-/* ══ PESQUISAS ══ */
-.pesq-wrap{flex:1;overflow:hidden;display:grid;grid-template-columns:260px 1fr}
-.pesq-l{border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
-.pesq-filters{padding:10px;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;gap:4px;flex-shrink:0;background:var(--s2)}
-.rf{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;
-  padding:4px 9px;border:1px solid var(--border);background:none;color:var(--t3);cursor:pointer;transition:all .15s}
-.rf:hover{border-color:var(--cyan);color:var(--cyan)}
-.rf.on{background:var(--cyanD);color:var(--cyan);border-color:rgba(0,212,255,.4)}
-.pesq-nav{flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:4px}
-.rni{padding:10px 12px;border:1px solid var(--border);background:var(--s2);cursor:pointer;transition:all .15s}
-.rni:hover{border-color:rgba(0,212,255,.3);background:var(--s3)}
-.rni.on{border-color:var(--cyan);background:var(--cyanD2)}
-.rni-y{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--cyan);margin-bottom:3px;font-weight:700}
-.rni-t{font-size:11.5px;color:var(--t1);line-height:1.35;font-weight:500}
-.pesq-r{display:flex;flex-direction:column;overflow-y:auto;padding:0}
-.redet-empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--t3);font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2.5px;text-transform:uppercase}
-.redet-empty-ico{font-size:40px;opacity:.06}
-.red-y{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--cyan);padding:20px 24px 5px;letter-spacing:2px}
-.red-ttl{font-family:'DM Serif Display',serif;font-size:24px;color:var(--t0);padding:0 24px 6px;line-height:1.2}
-.red-aut{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3);padding:0 24px 12px}
-.red-tags{display:flex;gap:5px;flex-wrap:wrap;padding:0 24px 16px;border-bottom:1px solid var(--border)}
-.rtag{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 9px;border:1px solid}
-.rtag.tv{color:var(--cyan);border-color:rgba(0,212,255,.35)}
-.rtag.tflu{color:var(--pur);border-color:rgba(176,108,255,.35)}
-.rtag.tafa{color:var(--rose);border-color:rgba(255,107,157,.35)}
-.rtag.tde{color:var(--amb);border-color:rgba(255,179,64,.35)}
-.rtag.tau{color:var(--grn);border-color:rgba(0,229,160,.35)}
-.rtag.tinf{color:#ff9de2;border-color:rgba(255,157,226,.35)}
-.rtag.tl{color:var(--t3);border-color:var(--border)}
-.red-sec{padding:14px 24px;border-bottom:1px solid var(--border2)}
-.red-slbl{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--t3);margin-bottom:7px}
-.red-stxt{font-size:13px;color:var(--t1);line-height:1.8}
-.red-app{background:var(--cyanD2);border-left:2px solid var(--cyan);padding:11px 14px;font-size:13px;color:var(--t0);line-height:1.8}
+/* HEADER WITH TIMER */
+.reading-header{background:var(--s2);border-bottom:1px solid var(--border);padding:12px 20px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.timer-display{font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:700;letter-spacing:4px;
+  color:var(--t0);min-width:90px}
+.timer-display.running{color:var(--cyan);text-shadow:0 0 20px rgba(0,212,255,.4)}
+.timer-display.stopped{color:var(--grn)}
+.timer-btns{display:flex;gap:6px}
+.tbtn{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:7px 14px;border:1px solid var(--border);background:none;color:var(--t2);cursor:pointer;transition:all .15s}
+.tbtn:hover{border-color:var(--t1);color:var(--t1)}
+.tbtn.start{border-color:rgba(0,229,160,.4);color:var(--grn)}
+.tbtn.start:hover{background:var(--grnD)}
+.tbtn.pause{border-color:rgba(255,179,64,.4);color:var(--amb)}
+.tbtn.stop{border-color:rgba(255,79,107,.4);color:var(--red)}
+.tbtn.report{border-color:rgba(176,108,255,.4);color:var(--pur)}
+.tbtn.report:hover{background:var(--purD)}
+.tbtn:disabled{opacity:.3;cursor:not-allowed}
 
-/* ══ CONSULTA IA ══ */
-.ci-wrap{flex:1;overflow:hidden;display:grid;grid-template-columns:1fr;flex-direction:column}
-.ci-out{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
-.co-e{border:1px solid var(--border);background:var(--s2);overflow:hidden}
-.co-q{padding:10px 14px;font-size:13px;color:var(--cyan);border-bottom:1px solid var(--border2);font-weight:600;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.5px}
-.co-a{padding:12px 14px;font-size:13px;color:var(--t1);line-height:1.8;white-space:pre-wrap}
-.caret{display:inline-block;width:2px;height:14px;background:var(--cyan);animation:blink .7s infinite;vertical-align:text-bottom;margin-left:2px}
-.ci-inp{padding:12px 14px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;background:var(--s1);flex-wrap:wrap;align-items:flex-end}
-.ci-ia{flex:1;min-width:200px}
-.ci-ta{width:100%;background:var(--s2);border:1px solid var(--border);color:var(--t0);
-  font-family:'Syne',sans-serif;font-size:13px;line-height:1.6;padding:10px 13px;
-  outline:none;resize:none;transition:border-color .2s;min-height:50px;max-height:120px}
-.ci-ta:focus{border-color:var(--cyan)}
-.ci-modes{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
-.mc{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;
-  padding:5px 11px;border:1px solid var(--border);background:none;color:var(--t3);cursor:pointer;transition:all .15s}
-.mc:hover{border-color:var(--cyan);color:var(--cyan)}
-.mc.on{background:var(--cyanD);color:var(--cyan);border-color:rgba(0,212,255,.4)}
-.ci-qs{display:flex;flex-wrap:wrap;gap:4px;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--s2);flex-shrink:0}
-.cq{font-family:'IBM Plex Mono',monospace;font-size:9px;padding:4px 10px;border:1px solid var(--border);background:none;color:var(--t3);cursor:pointer;transition:all .15s;text-align:left;white-space:nowrap}
-.cq:hover{border-color:var(--cyan);color:var(--cyan)}
+.metrics-row{display:flex;gap:10px;align-items:center;margin-left:auto;flex-wrap:wrap}
+.metric{text-align:center;padding:6px 12px;background:var(--s3);border:1px solid var(--border)}
+.metric-val{font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:700;color:var(--t0)}
+.metric-lbl{font-family:'IBM Plex Mono',monospace;font-size:7px;letter-spacing:2px;color:var(--t3);text-transform:uppercase;margin-top:1px}
 
-/* ══ MÓDULOS ══ */
-.mod-grid{flex:1;overflow-y:auto;padding:20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;align-content:start}
-.mod-card{background:var(--s2);border:1px solid var(--border);padding:18px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;gap:10px}
-.mod-card:hover{border-color:var(--cyan);background:var(--s3);transform:translateY(-2px)}
-.mod-ico{font-size:26px;margin-bottom:2px}
-.mod-ttl{font-size:14px;font-weight:700;color:var(--t0)}
-.mod-desc{font-size:12px;color:var(--t2);line-height:1.65}
-.mod-tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border:1px solid var(--border);color:var(--t3)}
-.mod-tag.novo{color:var(--grn);border-color:rgba(0,229,160,.4);background:var(--grnD)}
+/* PROGRESS BAR */
+.progress-bar{height:3px;background:var(--s3);position:relative;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--pur));transition:width .5s;width:0%}
 
-/* ══ MODAL API ══ */
-.modal-overlay{position:fixed;inset:0;background:rgba(5,6,8,.85);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
-.modal-overlay.on{display:flex}
-.modal{background:var(--s2);border:1px solid var(--border);padding:28px;width:400px;max-width:90vw}
-.modal-ttl{font-family:'DM Serif Display',serif;font-size:22px;color:var(--t0);margin-bottom:6px}
-.modal-sub{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t3);margin-bottom:18px;letter-spacing:1px}
-.modal-input{width:100%;background:var(--s1);border:1px solid var(--border);color:var(--t0);
-  font-family:'IBM Plex Mono',monospace;font-size:13px;padding:10px 13px;outline:none;
-  transition:border-color .2s;margin-bottom:12px}
-.modal-input:focus{border-color:var(--cyan)}
-.modal-note{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t3);line-height:1.7;margin-bottom:16px}
-.modal-note a{color:var(--cyan);text-decoration:none}
-.modal-btns{display:flex;gap:8px;justify-content:flex-end}
+/* TEXT AREA */
+.text-area{flex:1;overflow-y:auto;padding:32px 40px;display:flex;flex-direction:column;gap:16px}
+.text-container{max-width:780px;margin:0 auto;width:100%}
 
-/* ══ UTILITY ══ */
-.badge{display:inline-block;padding:4px 11px;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:12px}
-.ba{background:var(--redD);color:var(--red)}.bm{background:var(--ambD);color:var(--amb)}.bb{background:var(--grnD);color:var(--grn)}
-.tag-lbl{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2.5px;text-transform:uppercase}
+.text-meta{margin-bottom:20px}
+.text-title{font-family:'DM Serif Display',serif;font-size:24px;color:var(--t0);margin-bottom:6px;line-height:1.3}
+.text-subtitle{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t2);letter-spacing:2px}
 
-/* ══ AGE BANNER ══ */
-.age-banner{padding:8px 16px;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;gap:10px}
-.age-banner[data-age="bebe"]{background:rgba(255,157,226,.06);color:#ff9de2;border-bottom-color:rgba(255,157,226,.2)}
-.age-banner[data-age="crianca"]{background:rgba(0,229,160,.04);color:var(--grn);border-bottom-color:rgba(0,229,160,.15)}
-.age-banner[data-age="adolescente"]{background:rgba(176,108,255,.05);color:var(--pur);border-bottom-color:rgba(176,108,255,.2)}
-.age-banner[data-age="adulto"]{background:rgba(0,212,255,.04);color:var(--cyan);border-bottom-color:rgba(0,212,255,.15)}
-.age-banner[data-age="idoso"]{background:rgba(255,179,64,.04);color:var(--amb);border-bottom-color:rgba(255,179,64,.15)}
+.reading-text{font-size:17px;line-height:1.9;color:var(--t1);letter-spacing:.01em;font-weight:400;
+  font-family:'DM Serif Display',serif;user-select:none}
+.reading-text .word{cursor:pointer;transition:all .1s;border-radius:2px;padding:0 1px}
+.reading-text .word:hover{color:var(--t0)}
+.reading-text .word.error{background:rgba(255,79,107,.25);color:var(--red);text-decoration:line-through}
+.reading-text .word.hesitation{background:rgba(255,179,64,.2);color:var(--amb)}
+.reading-text .word.correct{color:var(--t0)}
 
-/* ══ READING AGE LEIT ══ */
-.reading-body-wrap{flex:1;overflow:hidden;display:grid;grid-template-columns:1fr 280px}
+.mark-controls{display:flex;gap:6px;flex-wrap:wrap;margin-top:16px;padding-top:16px;border-top:1px solid var(--border2)}
+.mark-btn{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:5px 10px;border:1px solid;background:none;cursor:pointer;transition:all .12s}
+.mark-btn.err-btn{color:var(--red);border-color:rgba(255,79,107,.3)}
+.mark-btn.err-btn:hover,.mark-btn.err-btn.active{background:rgba(255,79,107,.15)}
+.mark-btn.hes-btn{color:var(--amb);border-color:rgba(255,179,64,.3)}
+.mark-btn.hes-btn:hover,.mark-btn.hes-btn.active{background:rgba(255,179,64,.15)}
+.mark-btn.clr-btn{color:var(--t2);border-color:var(--border)}
+.mark-btn.clr-btn:hover{border-color:var(--t1);color:var(--t1)}
+.mark-hint{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--t3);letter-spacing:1px;align-self:center;margin-left:6px}
+
+/* ANNOTATIONS */
+.annotations{margin-top:16px;padding:12px;background:var(--s2);border:1px solid var(--border)}
+.ann-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--t3);margin-bottom:6px}
+.ann-textarea{width:100%;background:transparent;border:none;color:var(--t1);font-family:'Syne',sans-serif;font-size:12px;
+  resize:none;outline:none;line-height:1.6;min-height:60px}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:60px 20px;color:var(--t2)}
+.empty-icon{font-size:48px;margin-bottom:16px;opacity:.3}
+.empty-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--t1);margin-bottom:8px}
+.empty-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3);letter-spacing:1px}
+
+/* MODAL - REPORT */
+.modal-overlay{position:fixed;inset:0;background:rgba(5,6,8,.92);backdrop-filter:blur(10px);
+  z-index:999;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--s1);border:1px solid var(--border);max-width:760px;width:100%;max-height:90vh;
+  overflow-y:auto;position:relative}
+.modal-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;letter-spacing:2px;color:var(--t0);text-transform:uppercase}
+.modal-close{background:none;border:1px solid var(--border);color:var(--t2);width:28px;height:28px;cursor:pointer;
+  font-size:14px;transition:all .15s}
+.modal-close:hover{border-color:var(--red);color:var(--red)}
+
+/* REPORT CONTENT */
+.report-body{padding:24px}
+.report-section{margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--border2)}
+.report-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.report-sec-title{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--cyan);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.report-sec-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.report-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.report-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.rstat{padding:12px;background:var(--s2);border:1px solid var(--border)}
+.rstat-val{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700;color:var(--t0);line-height:1}
+.rstat-unit{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--t2);margin-left:3px}
+.rstat-lbl{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:1.5px;color:var(--t3);text-transform:uppercase;margin-top:4px}
+
+.score-bar-wrap{margin:12px 0}
+.score-bar-label{display:flex;justify-content:space-between;margin-bottom:4px}
+.score-bar-name{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t1);letter-spacing:1px}
+.score-bar-val{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t0)}
+.score-bar{height:4px;background:var(--s3);border-radius:0}
+.score-bar-fill{height:100%;transition:width 1s ease;border-radius:0}
+
+.report-text-block{background:var(--s2);border-left:3px solid var(--cyan);padding:12px 16px;margin:8px 0;
+  font-size:12px;line-height:1.7;color:var(--t1)}
+.report-text-block strong{color:var(--t0)}
+.report-text-block.warn{border-left-color:var(--amb)}
+.report-text-block.crit{border-left-color:var(--red)}
+.report-text-block.good{border-left-color:var(--grn)}
+
+.classification-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border:1px solid;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+
+.print-btn{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:8px 16px;border:1px solid rgba(0,229,160,.3);background:none;color:var(--grn);cursor:pointer;transition:all .15s;margin-top:16px}
+.print-btn:hover{background:var(--grnD)}
+
+/* ERRORS LIST */
+.error-list{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.error-tag{font-family:'IBM Plex Mono',monospace;font-size:9px;padding:2px 7px;background:rgba(255,79,107,.15);
+  border:1px solid rgba(255,79,107,.3);color:var(--red)}
+.hesitation-tag{font-family:'IBM Plex Mono',monospace;font-size:9px;padding:2px 7px;background:rgba(255,179,64,.15);
+  border:1px solid rgba(255,179,64,.3);color:var(--amb)}
+
+/* PHONOLOGICAL ANALYSIS */
+.phono-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.phono-item{padding:8px 10px;background:var(--s2);border:1px solid var(--border)}
+.phono-name{font-size:10px;color:var(--t1);margin-bottom:2px}
+.phono-sub{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--t3);letter-spacing:1px}
+.phono-val{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;float:right;margin-top:-16px}
+
+/* LEVEL COLOR HELPERS */
+.c1{color:var(--lvl1)}.c2{color:var(--lvl2)}.c3{color:var(--lvl3)}.c4{color:var(--lvl4)}.c5{color:var(--lvl5)}.c6{color:var(--rose)}
+.b1{background:rgba(0,229,160,.1);border-color:rgba(0,229,160,.3)}
+.b2{background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.3)}
+.b3{background:rgba(255,179,64,.1);border-color:rgba(255,179,64,.3)}
+.b4{background:rgba(255,79,107,.1);border-color:rgba(255,79,107,.3)}
+.b5{background:rgba(176,108,255,.1);border-color:rgba(176,108,255,.3)}
+.b6{background:rgba(255,107,157,.1);border-color:rgba(255,107,157,.3)}
+
+/* Responsive tweaks */
+@media(max-width:700px){
+  .body{grid-template-columns:1fr}
+  .sidebar{display:none}
+}
+
+/* PRINT STYLES */
+@media print{
+  .modal-overlay{position:relative;display:flex!important}
+  .modal{max-height:none;border:none}
+  .modal-close,.print-btn{display:none}
+  body::before,.top,.app{display:block}
+}
 </style>
 </head>
 <body>
 <div class="app">
+  <div class="top">
+    <div class="brand">
+      <div class="brand-icon">🎙</div>
+      PHONO<em>BASE</em>
+    </div>
+    <div class="top-title">Avaliação de Leitura Oral · Protocolo Fonoaudiológico</div>
+    <div class="top-r">
+      <div class="pulsedot"></div>
+      <div class="top-badge active">Fono</div>
+      <div class="top-badge" id="session-badge">Sessão —</div>
+    </div>
+  </div>
 
-<!-- TOP BAR -->
-<div class="top">
-  <div class="brand">
-    <div class="brand-icon">🎙</div>
-    PHONO<em>BASE</em> <span>CONGRESS</span>
-  </div>
-  <div class="top-tabs">
-    <button class="ttab on" data-p="analisador" onclick="goP(this)">⬡ Analisador</button>
-    <button class="ttab" data-p="gravacao" onclick="goP(this)">◎ Gravação</button>
-    <button class="ttab" data-p="leitura" onclick="goP(this)">⏱ Leitura Cronometrada</button>
-    <button class="ttab" data-p="pesquisas" onclick="goP(this)">◈ Pesquisas</button>
-    <button class="ttab" data-p="consulta" onclick="goP(this)">✦ Consulta IA</button>
-    <button class="ttab" data-p="modulos" onclick="goP(this)">⬚ Módulos</button>
-  </div>
-  <div class="top-r">
-    <button class="api-btn" id="kb" onclick="openModal()">
-      <span class="pulsedot" id="kd"></span><span id="kt">Ativar IA</span>
-    </button>
-  </div>
-</div>
+  <div class="body">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <!-- PACIENTE -->
+      <div class="pat-form">
+        <div class="sec-label">Dados do Paciente</div>
+        <div class="field">
+          <label>Nome completo</label>
+          <input type="text" id="pat-name" placeholder="Nome do paciente">
+        </div>
+        <div class="field">
+          <label>Data de nascimento</label>
+          <input type="date" id="pat-dob">
+        </div>
+        <div class="field">
+          <label>Fonoaudiólogo(a)</label>
+          <input type="text" id="pat-fono" placeholder="Nome do profissional">
+        </div>
+        <div class="field">
+          <label>Diagnóstico / Hipótese</label>
+          <input type="text" id="pat-diag" placeholder="Ex: Dislexia, gagueira...">
+        </div>
+        <div class="field">
+          <label>Escolaridade</label>
+          <select id="pat-escola">
+            <option value="">Selecionar</option>
+            <option>Pré-escola</option>
+            <option>1º ano EF</option>
+            <option>2º ano EF</option>
+            <option>3º ano EF</option>
+            <option>4º–5º ano EF</option>
+            <option>6º–9º ano EF</option>
+            <option>Ensino Médio</option>
+            <option>Ensino Superior</option>
+            <option>Adulto (sem EF completo)</option>
+          </select>
+        </div>
+      </div>
 
-<!-- BODY -->
-<div class="body">
-<!-- LEFT NAV -->
-<div class="nav">
-  <div class="nsec">
-    <div class="nsl">Análise de texto</div>
-    <div class="ni on" onclick="goP2('analisador','infantil')"><span class="ni-ico">🗣</span> Fala Infantilizada</div>
-    <div class="ni" onclick="goP2('analisador','voz')"><span class="ni-ico">🎙</span> Padrão Vocal</div>
-    <div class="ni" onclick="goP2('analisador','fluencia')"><span class="ni-ico">💬</span> Fluência</div>
-    <div class="ni" onclick="goP2('analisador','linguagem')"><span class="ni-ico">📝</span> Linguagem</div>
-    <div class="ni" onclick="goP2('analisador','degluticao')"><span class="ni-ico">🍽</span> Deglutição</div>
-    <div class="ni" onclick="goP2('analisador','afasia')"><span class="ni-ico">🧠</span> Afasia / Neuro</div>
-  </div>
-  <div class="nsec">
-    <div class="nsl">Por faixa etária</div>
-    <div class="ni" onclick="goP2('leitura');setAge('bebe')"><span class="ni-ico">🍼</span> Bebê (0–2a)</div>
-    <div class="ni" onclick="goP2('leitura');setAge('crianca')"><span class="ni-ico">🧒</span> Criança (3–11a)</div>
-    <div class="ni" onclick="goP2('leitura');setAge('adolescente')"><span class="ni-ico">🧑</span> Adolescente (12–17a)</div>
-    <div class="ni" onclick="goP2('leitura');setAge('adulto')"><span class="ni-ico">🧑‍💼</span> Adulto (18–59a)</div>
-    <div class="ni" onclick="goP2('leitura');setAge('idoso')"><span class="ni-ico">👴</span> Idoso (60a+)</div>
-  </div>
-  <div class="nsec">
-    <div class="nsl">Voz ao vivo</div>
-    <div class="ni" onclick="goP2('gravacao')"><span class="ni-ico">🎤</span> Gravação de Voz</div>
-  </div>
-  <div class="nsec">
-    <div class="nsl">Referência</div>
-    <div class="ni" onclick="goP2('pesquisas')"><span class="ni-ico">📚</span> Pesquisas Históricas</div>
-    <div class="ni" onclick="goP2('consulta')"><span class="ni-ico">🤖</span> Consulta IA</div>
-    <div class="ni" onclick="goP2('modulos')"><span class="ni-ico">⚙</span> Módulos Clínicos</div>
-  </div>
-  <div class="nav-foot">
-    <strong>PHONOBASE v3.0</strong>
-    Suporte de decisão clínica.<br>
-    Não substitui avaliação presencial.
-  </div>
-</div>
+      <!-- NÍVEL -->
+      <div class="levels-sec">
+        <div class="sec-label">Nível de dificuldade</div>
+        <div class="level-grid">
+          <button class="lvl-btn active" data-lvl="1" onclick="selectLevel(1,this)">🟢 Fácil</button>
+          <button class="lvl-btn" data-lvl="2" onclick="selectLevel(2,this)">🔵 Médio</button>
+          <button class="lvl-btn" data-lvl="3" onclick="selectLevel(3,this)">🟡 Difícil</button>
+          <button class="lvl-btn" data-lvl="4" onclick="selectLevel(4,this)">🔴 Avançado</button>
+          <button class="lvl-btn" data-lvl="5" onclick="selectLevel(5,this)">🟣 Expert</button>
+          <button class="lvl-btn" data-lvl="6" onclick="selectLevel(6,this)">💀 Extremo</button>
+        </div>
+      </div>
 
-<!-- MAIN CONTENT -->
-<div class="main">
+      <!-- TEXTOS -->
+      <div class="text-list">
+        <div class="sec-label">Textos disponíveis</div>
+        <div id="text-list-container"></div>
+      </div>
+    </div>
 
-<!-- ═══════════════ ANALISADOR ═══════════════ -->
-<div class="panel on" id="p-analisador">
-  <div class="ph">
-    <div class="ph-l"><div class="ph-ttl">Analisador de Fala</div><div class="ph-sub" id="az-sub">Selecione o contexto · cole o texto · analise com IA</div></div>
-    <div class="ph-r"><button class="btn" onclick="clrAz()">Limpar</button><button class="btn pri" onclick="runAz()">Analisar IA</button></div>
-  </div>
-  <div class="az">
-    <div class="az-l">
-      <div class="ctx-bar">
-        <button class="ctx-tab on" data-c="infantil" onclick="setC(this)">Fala Infantilizada</button>
-        <button class="ctx-tab" data-c="voz" onclick="setC(this)">Padrão Vocal</button>
-        <button class="ctx-tab" data-c="fluencia" onclick="setC(this)">Fluência</button>
-        <button class="ctx-tab" data-c="linguagem" onclick="setC(this)">Linguagem</button>
-        <button class="ctx-tab" data-c="degluticao" onclick="setC(this)">Deglutição</button>
-        <button class="ctx-tab" data-c="afasia" onclick="setC(this)">Afasia/Neuro</button>
-      </div>
-      <div class="az-inp">
-        <div class="inplbl" id="az-lbl">Transcrição ou relato do paciente:</div>
-        <textarea class="ta" id="az-ta" placeholder="Cole a transcrição da fala, relato do paciente, descrição de comportamento…"></textarea>
-        <div class="az-foot">
-          <div><div class="exlbl">Exemplos rápidos</div><div class="exs" id="az-exs"></div></div>
-          <button class="runbtn" id="runbtn" onclick="runAz()">
-            <div class="sp" id="rsp" style="display:none"></div><span id="rtxt">Analisar</span>
-          </button>
+    <!-- MAIN -->
+    <div class="main">
+      <!-- READING HEADER / TIMER -->
+      <div class="reading-header">
+        <div id="timer-display" class="timer-display">00:00</div>
+        <div class="timer-btns">
+          <button class="tbtn start" id="btn-start" onclick="startTimer()">▶ Iniciar</button>
+          <button class="tbtn pause" id="btn-pause" onclick="pauseTimer()" disabled>⏸ Pausar</button>
+          <button class="tbtn stop" id="btn-stop" onclick="stopTimer()" disabled>⏹ Parar</button>
+          <button class="tbtn" id="btn-reset" onclick="resetTimer()">↺ Reset</button>
+        </div>
+        <div class="metrics-row">
+          <div class="metric">
+            <div class="metric-val" id="m-wpm">—</div>
+            <div class="metric-lbl">PPM</div>
+          </div>
+          <div class="metric">
+            <div class="metric-val" id="m-errors">0</div>
+            <div class="metric-lbl">Erros</div>
+          </div>
+          <div class="metric">
+            <div class="metric-val" id="m-hesit">0</div>
+            <div class="metric-lbl">Hesit.</div>
+          </div>
+          <div class="metric">
+            <div class="metric-val" id="m-accuracy">—</div>
+            <div class="metric-lbl">Precisão</div>
+          </div>
+          <button class="tbtn report" id="btn-report" onclick="openReport()" disabled>📊 Relatório</button>
         </div>
       </div>
-      <div class="az-warn"><span style="color:var(--amb)">⚑</span> Identifica padrões no texto — não substitui avaliação presencial.</div>
-    </div>
-    <div class="az-r">
-      <div class="az-rhd">Resultado da análise</div>
-      <div class="res" id="res"><div class="r-empty"><div class="r-empty-ico">◈</div><div class="r-empty-msg">Aguardando análise</div></div></div>
-    </div>
-  </div>
-</div>
 
-<!-- ═══════════════ GRAVAÇÃO ═══════════════ -->
-<div class="panel" id="p-gravacao">
-  <div class="ph">
-    <div class="ph-l"><div class="ph-ttl">Gravação e Análise de Voz</div><div class="ph-sub">Grave · Transcrição automática PT-BR · Relatório da fala com IA</div></div>
-    <div class="ph-r">
-      <button class="btn" onclick="clrGrav()">Limpar</button>
-      <button class="btn pri" id="grav-ai-btn" onclick="analyzeGrav()" style="display:none">Gerar Relatório</button>
-    </div>
-  </div>
-  <div class="grav-wrap">
-    <div class="grav-l">
-      <div class="gc-bar">
-        <button class="gc on" data-gc="fluencia" onclick="setGC(this)">Fluência</button>
-        <button class="gc" data-gc="voz" onclick="setGC(this)">Padrão Vocal</button>
-        <button class="gc" data-gc="linguagem" onclick="setGC(this)">Linguagem</button>
-        <button class="gc" data-gc="infantil" onclick="setGC(this)">Fala Infant.</button>
-        <button class="gc" data-gc="afasia" onclick="setGC(this)">Afasia</button>
-      </div>
-      <div class="mic-area">
-        <div class="eq-wrap" id="eq-wrap">
-          <div class="eq-b"></div><div class="eq-b"></div><div class="eq-b"></div>
-          <div class="eq-b"></div><div class="eq-b"></div><div class="eq-b"></div>
-          <div class="eq-b"></div><div class="eq-b"></div><div class="eq-b"></div>
-        </div>
-        <button class="mic-btn" id="mic-btn" onclick="toggleMic()">🎤</button>
-        <div class="mic-timer" id="mic-timer">00:00</div>
-        <div class="mic-status" id="mic-status">Clique para gravar</div>
-      </div>
-      <div class="grav-tx">
-        <div class="grav-tx-hd">
-          <span>Transcrição em tempo real</span>
-          <button class="btn" style="padding:3px 8px;font-size:8px" onclick="copyTxt()">Copiar</button>
-        </div>
-        <div class="grav-tx-body">
-          <div class="tt" id="tt"><span style="color:var(--t3);font-style:italic;font-size:13px">A transcrição aparecerá aqui enquanto você fala…</span></div>
-        </div>
-        <div class="grav-foot">
-          <button class="btn" onclick="useInAnalyzer()">Usar no Analisador</button>
-        </div>
-      </div>
-    </div>
-    <!-- VOICE REPORT -->
-    <div class="grav-r">
-      <div class="vr-hd">Relatório da Fala</div>
-      <div class="vr-wrap" id="vr-wrap">
-        <div class="vr-empty" id="vr-empty">
-          <div class="vr-empty-ico">🎙</div>
-          <div>Grave para gerar o relatório</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+      <!-- PROGRESS -->
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
 
-<!-- ═══════════════ LEITURA CRONOMETRADA ═══════════════ -->
-<div class="panel" id="p-leitura">
-  <div class="ph">
-    <div class="ph-l"><div class="ph-ttl">Leitura Cronometrada</div><div class="ph-sub">Textos por faixa etária · relatório de tempo com IA</div></div>
-    <div class="ph-r">
-      <button class="btn" id="leit-start" onclick="toggleReading()">Iniciar</button>
-      <button class="btn suc" id="leit-finish" onclick="finishReading()" style="display:none">Finalizar</button>
-      <button class="btn" onclick="resetReading()">Reiniciar</button>
-      <button class="btn pri" id="rr-ai-btn" onclick="reportReading()" style="display:none">Gerar Relatório IA</button>
-    </div>
-  </div>
-  <!-- AGE TABS -->
-  <div class="age-bar">
-    <button class="age-tab on" data-age="bebe" onclick="setAge('bebe',this)">🍼 Bebê <span class="age-pill">0–2a</span></button>
-    <button class="age-tab" data-age="crianca" onclick="setAge('crianca',this)">🧒 Criança <span class="age-pill">3–11a</span></button>
-    <button class="age-tab" data-age="adolescente" onclick="setAge('adolescente',this)">🧑 Adolescente <span class="age-pill">12–17a</span></button>
-    <button class="age-tab" data-age="adulto" onclick="setAge('adulto',this)">🧑‍💼 Adulto <span class="age-pill">18–59a</span></button>
-    <button class="age-tab" data-age="idoso" onclick="setAge('idoso',this)">👴 Idoso <span class="age-pill">60a+</span></button>
-  </div>
-  <div class="leit-wrap">
-    <div class="leit-l">
-      <div class="text-list" id="text-list"></div>
-    </div>
-    <div class="leit-r">
-      <!-- TIMER CTRL -->
-      <div class="reading-ctrl">
-        <div class="timer" id="leit-timer">00:00</div>
-        <div class="prog"><div class="prog-fill" id="leit-prog"></div></div>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t3)" id="leit-wpm">— ppm</div>
+      <!-- MARK CONTROLS -->
+      <div style="padding:8px 20px;background:var(--s2);border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--t3);letter-spacing:1px;text-transform:uppercase">Marcar:</span>
+        <button class="mark-btn err-btn" id="mark-err-btn" onclick="setMarkMode('error')">✗ Erro</button>
+        <button class="mark-btn hes-btn" id="mark-hes-btn" onclick="setMarkMode('hesitation')">⏤ Hesitação</button>
+        <button class="mark-btn clr-btn" onclick="setMarkMode('clear')">○ Limpar</button>
+        <span class="mark-hint">Clique nas palavras para marcar</span>
+        <button class="mark-btn clr-btn" style="margin-left:auto" onclick="clearAllMarks()">Limpar tudo</button>
       </div>
-      <div class="reading-body-wrap">
-        <div class="reading-body" id="reading-body">
-          <div class="r-empty" style="height:100%"><div class="r-empty-ico" style="font-size:40px">📖</div><div class="r-empty-msg">Selecione um texto</div></div>
-        </div>
-        <!-- RIGHT MINI REPORT -->
-        <div class="reading-report" style="border-left:1px solid var(--border)">
-          <div class="rr-hd"><span>Relatório de Tempo</span></div>
-          <div class="rr-body">
-            <div class="rr-summary" id="rr-summary"></div>
-            <div class="rr-ai-result" id="rr-ai-result"><div class="r-empty" style="height:80px;opacity:.5"><div class="r-empty-msg">Aguardando leitura</div></div></div>
+
+      <!-- TEXT AREA -->
+      <div class="text-area" id="text-area">
+        <div class="text-container">
+          <div class="empty-state" id="empty-state">
+            <div class="empty-icon">📖</div>
+            <div class="empty-title">Selecione um texto</div>
+            <div class="empty-sub">Escolha o nível e o texto na barra lateral</div>
+          </div>
+          <div id="text-content" style="display:none">
+            <div class="text-meta">
+              <div class="text-title" id="tc-title"></div>
+              <div class="text-subtitle" id="tc-sub"></div>
+            </div>
+            <div class="reading-text" id="tc-words"></div>
+            <div class="annotations">
+              <div class="ann-label">Observações do fonoaudiólogo</div>
+              <textarea class="ann-textarea" id="ann-notes" placeholder="Anotações clínicas: qualidade de voz, postura, respiração, pausas, prosódia..." rows="3"></textarea>
+            </div>
           </div>
         </div>
       </div>
@@ -588,749 +392,580 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   </div>
 </div>
 
-<!-- ═══════════════ PESQUISAS ═══════════════ -->
-<div class="panel" id="p-pesquisas">
-  <div class="ph">
-    <div class="ph-l"><div class="ph-ttl">Pesquisas Históricas</div><div class="ph-sub">Descobertas que moldaram a fonoaudiologia — de 1854 a 2024</div></div>
-    <div class="ph-r"><div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3)" id="pesq-count"></div></div>
-  </div>
-  <div class="pesq-wrap">
-    <div class="pesq-l">
-      <div class="pesq-filters" id="refb"></div>
-      <div class="pesq-nav" id="renav"></div>
-    </div>
-    <div class="pesq-r" id="redet">
-      <div class="redet-empty"><div class="redet-empty-ico">◈</div><div>Selecione uma pesquisa</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════ CONSULTA IA ═══════════════ -->
-<div class="panel" id="p-consulta">
-  <div class="ph">
-    <div class="ph-l"><div class="ph-ttl">Consulta IA Clínica</div><div class="ph-sub">Fonoaudióloga sênior virtual · baseada em evidências</div></div>
-    <div class="ph-r"><button class="btn" onclick="clearCI()">Limpar</button></div>
-  </div>
-  <div style="display:flex;flex-direction:column;flex:1;overflow:hidden">
-    <div class="ci-qs">
-      <button class="cq" onclick="askCI('Diagnóstico diferencial: gagueira vs disfluência normal em criança de 4 anos')">Gagueira vs disfluência 4a</button>
-      <button class="cq" onclick="askCI('Sinais precoces de dislexia em crianças pré-escolares')">Sinais de dislexia pré-escolar</button>
-      <button class="cq" onclick="askCI('Protocolo de reabilitação em paralisia de prega vocal pós-tireoidectomia')">Paralisia pós-tireoidectomia</button>
-      <button class="cq" onclick="askCI('Como diferenciar presbifonia de disfonia patológica no idoso acima de 70 anos?')">Presbifonia vs disfonia</button>
-      <button class="cq" onclick="askCI('Quais pesquisas históricas confirmam a base da estimulação tátil-térmica em disfagia?')">Base histórica disfagia</button>
-      <button class="cq" onclick="askCI('Elderspeak: impacto cognitivo e protocolo de treinamento para cuidadores')">Elderspeak protocolo</button>
-      <button class="cq" onclick="askCI('Reorganização cerebral pós-AVC: o que Luria descobriu e o que aplicamos hoje?')">Luria e reabilitação AVC</button>
-    </div>
-    <div class="ci-out" id="ciout"></div>
-    <div class="ci-inp">
-      <div class="ci-ia">
-        <div class="ci-modes">
-          <button class="mc on" data-m="c" onclick="setM('c',this)">Clínico</button>
-          <button class="mc" data-m="h" onclick="setM('h',this)">Histórico</button>
-          <button class="mc" data-m="b" onclick="setM('b',this)">Lacunas BR</button>
-          <button class="mc" data-m="p" onclick="setM('p',this)">Pediátrico</button>
-          <button class="mc" data-m="g" onclick="setM('g',this)">Geriátrico</button>
-        </div>
-        <textarea class="ci-ta" id="cita" placeholder="Digite sua pergunta clínica… (Enter para enviar)" rows="2"
-          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();runCI()}"></textarea>
-      </div>
-      <button class="runbtn" id="cisend" onclick="runCI()"><span id="citxt">Enviar</span></button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════ MÓDULOS ═══════════════ -->
-<div class="panel" id="p-modulos">
-  <div class="ph">
-    <div class="ph-l"><div class="ph-ttl">Módulos Clínicos</div><div class="ph-sub">Ferramentas especializadas por área</div></div>
-  </div>
-  <div class="mod-grid">
-    <div class="mod-card" onclick="goP2('analisador','infantil')">
-      <div class="mod-ico">🗣</div><div class="mod-ttl">Fala Infantilizada (Elderspeak)</div>
-      <div class="mod-desc">Identifica padrões de elderspeak com base em Ryan 1986 e Kemper 1994. Avalia impacto cognitivo e gera protocolo de treinamento de cuidadores.</div>
-      <div class="mod-tag">Geriátrico</div>
-    </div>
-    <div class="mod-card" onclick="goP2('analisador','voz')">
-      <div class="mod-ico">🎙</div><div class="mod-ttl">Análise de Padrão Vocal</div>
-      <div class="mod-desc">Avalia hiperfunção, hipofunção, vozes tensas, soprosas. Diferencial de presbifonia baseado nos normativos de Ptacek & Sander 1966.</div>
-      <div class="mod-tag">Voz</div>
-    </div>
-    <div class="mod-card" onclick="goP2('leitura');setAge('bebe')">
-      <div class="mod-ico">🍼</div><div class="mod-ttl">Textos para Bebê (0–2a)</div>
-      <div class="mod-desc">Leituras para orientação de pais e cuidadores. Avalia linguagem receptiva, balbucios e marcos comunicativos do primeiro ao segundo ano.</div>
-      <div class="mod-tag novo">Por faixa etária</div>
-    </div>
-    <div class="mod-card" onclick="goP2('leitura');setAge('crianca')">
-      <div class="mod-ico">🧒</div><div class="mod-ttl">Textos para Criança (3–11a)</div>
-      <div class="mod-desc">Passagens calibradas por série escolar. Cronometradas para detecção de dislexia, alterações fonológicas e fluência de leitura.</div>
-      <div class="mod-tag novo">Por faixa etária</div>
-    </div>
-    <div class="mod-card" onclick="goP2('leitura');setAge('adolescente')">
-      <div class="mod-ico">🧑</div><div class="mod-ttl">Textos para Adolescente (12–17a)</div>
-      <div class="mod-desc">Textos de alta densidade lexical para avaliar prosódia, gagueira, voz em muda vocal e habilidades narrativas.</div>
-      <div class="mod-tag novo">Por faixa etária</div>
-    </div>
-    <div class="mod-card" onclick="goP2('leitura');setAge('adulto')">
-      <div class="mod-ico">🧑‍💼</div><div class="mod-ttl">Textos para Adulto (18–59a)</div>
-      <div class="mod-desc">Textos de nível universitário e profissional. Índices de Flesch-Kincaid extremos para detectar alterações sutis de processamento.</div>
-      <div class="mod-tag">Adulto</div>
-    </div>
-    <div class="mod-card" onclick="goP2('leitura');setAge('idoso')">
-      <div class="mod-ico">👴</div><div class="mod-ttl">Textos para Idoso (60a+)</div>
-      <div class="mod-desc">Avalia velocidade de leitura, compreensão e fluência com comparativos normativos para a terceira idade.</div>
-      <div class="mod-tag novo">Por faixa etária</div>
-    </div>
-    <div class="mod-card" onclick="goP2('analisador','afasia')">
-      <div class="mod-ico">🧠</div><div class="mod-ttl">Afasia e Neuro</div>
-      <div class="mod-desc">Baseado em Luria 1947 e Schuell 1964. Avalia tipo de afasia, gravidade e orienta protocolo de reorganização funcional.</div>
-      <div class="mod-tag">Neurológico</div>
-    </div>
-    <div class="mod-card" onclick="goP2('analisador','degluticao')">
-      <div class="mod-ico">🍽</div><div class="mod-ttl">Triagem de Disfagia</div>
-      <div class="mod-desc">Baseado em Pommerenke 1948. Identifica sinais de disfagia orofaríngea em relatos clínicos e orienta condutas de encaminhamento.</div>
-      <div class="mod-tag">Deglutição</div>
-    </div>
-    <div class="mod-card" onclick="goP2('gravacao')">
-      <div class="mod-ico">📊</div><div class="mod-ttl">Relatório Automático da Fala</div>
-      <div class="mod-desc">Grave a fala do paciente e receba relatório completo: velocidade (ppm), pausas, fluência, padrões, hipóteses diagnósticas.</div>
-      <div class="mod-tag novo">Novo</div>
-    </div>
-    <div class="mod-card" onclick="goP2('pesquisas')">
-      <div class="mod-ico">📚</div><div class="mod-ttl">Biblioteca de Pesquisas Esquecidas</div>
-      <div class="mod-desc">18 pesquisas de 1854 a 2024 com aplicação clínica atualizada. Desde García até a confirmação por fMRI de Travis em 2024.</div>
-      <div class="mod-tag">Referência</div>
-    </div>
-    <div class="mod-card" onclick="goP2('consulta')">
-      <div class="mod-ico">✦</div><div class="mod-ttl">IA Clínica Especializada</div>
-      <div class="mod-desc">Consulte uma fonoaudióloga virtual sênior. Modos: clínico, histórico, lacunas brasileiras, pediátrico e geriátrico.</div>
-      <div class="mod-tag novo">IA Integrada</div>
-    </div>
-  </div>
-</div>
-
-</div><!-- /main -->
-</div><!-- /body -->
-</div><!-- /app -->
-
-<!-- MODAL API KEY -->
-<div class="modal-overlay" id="modal">
+<!-- REPORT MODAL -->
+<div class="modal-overlay" id="report-modal">
   <div class="modal">
-    <div class="modal-ttl">Ativar IA Clínica</div>
-    <div class="modal-sub">ANTHROPIC API KEY · OBRIGATÓRIA PARA ANÁLISES</div>
-    <input class="modal-input" id="modal-key" type="password" placeholder="sk-ant-…" />
-    <div class="modal-note">
-      Chave armazenada localmente. Não transmitida para servidores da plataforma.<br>
-      Obtenha em <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>
+    <div class="modal-header">
+      <div class="modal-title">📊 Relatório Fonoaudiológico · Leitura Oral</div>
+      <button class="modal-close" onclick="closeReport()">✕</button>
     </div>
-    <div class="modal-btns">
-      <button class="btn" onclick="closeModal()">Cancelar</button>
-      <button class="btn pri" onclick="saveKey()">Salvar e Ativar</button>
-    </div>
+    <div class="report-body" id="report-body"></div>
   </div>
 </div>
 
 <script>
-/* ══════════════════════════════════════════════
-   CORE
-══════════════════════════════════════════════ */
-let _key='';
-function gk(){return _key||localStorage.getItem('pb_key')||'';}
-function openModal(){document.getElementById('modal').classList.add('on');document.getElementById('modal-key').value=gk();}
-function closeModal(){document.getElementById('modal').classList.remove('on');}
-function saveKey(){
-  const k=document.getElementById('modal-key').value.trim();
-  if(!k){alert('Insira a chave');return;}
-  _key=k;localStorage.setItem('pb_key',k);
-  document.getElementById('kd').classList.add('on');
-  document.getElementById('kt').textContent='IA Ativa';
-  document.getElementById('kb').classList.add('on');
-  closeModal();
-}
-(function(){const k=gk();if(k){_key=k;document.getElementById('kd').classList.add('on');document.getElementById('kt').textContent='IA Ativa';document.getElementById('kb').classList.add('on');}})();
-
-async function callAI(sys,userMsg){
-  const k=gk();
-  if(!k)return{e:true,m:'Configure a chave da API Anthropic.'};
-  try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':k,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:sys,messages:[{role:'user',content:userMsg||'Analise.'}]})
-    });
-    const d=await r.json();
-    if(d.error)return{e:true,m:'Erro API: '+d.error.message};
-    return{t:d.content[0].text};
-  }catch(e){return{e:true,m:'Erro de rede: '+e.message};}
-}
-
-/* ══ NAVIGATION ══ */
-function goP(btn){
-  document.querySelectorAll('.ttab').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  const p=btn.dataset.p;
-  document.querySelectorAll('.panel').forEach(el=>el.classList.remove('on'));
-  document.getElementById('p-'+p).classList.add('on');
-  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
-}
-function goP2(p,ctx){
-  document.querySelectorAll('.panel').forEach(el=>el.classList.remove('on'));
-  document.getElementById('p-'+p).classList.add('on');
-  document.querySelectorAll('.ttab').forEach(b=>b.classList.remove('on'));
-  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
-  if(ctx)setC(document.querySelector('.ctx-tab[data-c="'+ctx+'"]'));
-}
-
-/* ══════════════════════════════════════════════
-   ANALISADOR
-══════════════════════════════════════════════ */
-let curCtx='infantil';
-const CTX_CFG={
-  infantil:{lbl:'Transcrição da fala do paciente idoso ou relato de cuidador:',
-    exs:['Titia, quer fazer xixi? Deixa eu ajudinha.','Tá, tá, vovozinha quer mamá? Vem cá minha bebê!','Como a senhorinha tá hoje? Tá boazinha?'],
-    sys:`Fonoaudióloga clínica sênior brasileira especialista em comunicação geriátrica e fala infantilizada (elderspeak).
-Pesquisas dominadas: Ryan 1986 (Communication Predicament — fala adaptada comunica incapacidade), Kemper 1994 (elderspeak acelera declínio cognitivo, reduz autoestima), Williams 2004 (4h treinamento → −58% elderspeak).
-Analise o texto em busca de padrões elderspeak: diminutivos, pronomes coletivos, entonação exagerada, perguntas retóricas, simplificação gramatical, infantilização direta.
-Retorne JSON exato sem markdown:
-{"score":0-100,"severidade":"AUSENTE|LEVE|MODERADO|GRAVE","veredicto":"texto","padroes":["..."],"hipoteses":["..."],"alternativas":["alternativa frásica melhorada"],"recomendacoes":"texto","risco_cognitivo":"BAIXO|MODERADO|ALTO"}`},
-  voz:{lbl:'Relato clínico ou descrição vocal do paciente:',
-    exs:['Voz rouca, esforço para falar, cansa após 30 minutos.','Tom muito agudo, voz soprosa, fala em frases curtas.'],
-    sys:`Fonoaudióloga clínica sênior em voz. Pesquisas: Semon 1881 (lei paralisia laríngea — abdutores antes adutores), Froeschels 1924 (método mastigado 78% resolução disfonia funcional), Ptacek & Sander 1966 (normativos F0 por faixa etária — base do diagnóstico de presbifonia).
-Analise sinais vocais. Retorne JSON sem markdown:
-{"score":0-100,"severidade":"NORMAL|LEVE|MODERADO|GRAVE","veredicto":"texto","tipo_erros":["..."],"padroes":["..."],"hipoteses":[{"nome":"...","probabilidade":"ALTA|MÉDIA|BAIXA","justificativa":"..."}],"observacoes":"texto","recomendacoes":"texto"}`},
-  fluencia:{lbl:'Transcrição da fala (marque pausas com / e repetições com +):',
-    exs:['eu eu eu quero / brincar / no / parque hoje','quando fui fui fui ao médico / ele dis disse que'],
-    sys:`Fonoaudióloga clínica sênior em fluência. Pesquisas: Travis & Orton 1927 (dominância cerebral — confirmada fMRI 2024, ativação hemisfério direito em pessoas que gaguejam).
-Analise: taxa de disfluência, tipos (repetições, prolongamentos, bloqueios, pausas, interjections), porcentagem de sílabas gaguejadas.
-Retorne JSON sem markdown:
-{"score":0-100,"severidade":"FLUENTE|LEVE|MODERADO|GRAVE","veredicto":"texto","tipo_erros":["repetição de som","repetição de sílaba","bloqueio"],"padroes":["..."],"hipoteses":[{"nome":"...","probabilidade":"ALTA|MÉDIA|BAIXA","justificativa":"..."}],"observacoes":"texto","recomendacoes":"texto"}`},
-  linguagem:{lbl:'Amostra de linguagem ou relato clínico:',exs:['A criança usa frases de 2 palavras aos 3 anos, sem verbos.'],
-    sys:`Fonoaudióloga clínica sênior em linguagem infantil e adulta. Analise produção e compreensão. Retorne JSON sem markdown:
-{"score":0-100,"severidade":"NORMAL|LEVE|MODERADO|GRAVE","veredicto":"texto","tipo_erros":["..."],"padroes":["..."],"hipoteses":[{"nome":"...","probabilidade":"ALTA|MÉDIA|BAIXA","justificativa":"..."}],"observacoes":"texto","recomendacoes":"texto"}`},
-  degluticao:{lbl:'Relato de deglutição ou sinais observados:',exs:['Tosse após líquidos. Engole comida sólida com dificuldade.'],
-    sys:`Fonoaudióloga clínica sênior em disfagia. Pesquisas: Pommerenke 1948 (zonas de gatilho faríngeo — base da estimulação tátil-térmica). Analise sinais de disfagia orofaríngea e esofágica. Retorne JSON sem markdown:
-{"score":0-100,"severidade":"AUSENTE|LEVE|MODERADO|GRAVE","veredicto":"texto","tipo_erros":["..."],"padroes":["..."],"hipoteses":[{"nome":"...","probabilidade":"ALTA|MÉDIA|BAIXA","justificativa":"..."}],"observacoes":"texto","recomendacoes":"texto"}`},
-  afasia:{lbl:'Transcrição da fala ou descrição neurológica:',exs:['Fala telegráfica, nomeia objetos com dificuldade, compreensão preservada.'],
-    sys:`Fonoaudióloga clínica sênior em afasiologia e neuro. Pesquisas: Luria 1947 (reorganização cerebral pós-trauma — fundamento da neuroreabilitação), Schuell 1964 (estimulação auditiva intensa na afasia — redescoberta 2008 para afasias severas em platô). Classifique tipo de afasia e sugira protocolo. Retorne JSON sem markdown:
-{"score":0-100,"severidade":"LEVE|MODERADO|GRAVE|MUITO GRAVE","veredicto":"texto","tipo_erros":["..."],"padroes":["..."],"hipoteses":[{"nome":"...","probabilidade":"ALTA|MÉDIA|BAIXA","justificativa":"..."}],"observacoes":"texto","recomendacoes":"texto"}`}
+/* ══════════════════════════════════════════
+   TEXTS DATABASE
+══════════════════════════════════════════ */
+const TEXTS = {
+1: [
+  {
+    id:'1a', name:'O Gato e o Sol', words: 80,
+    title:'O Gato e o Sol',
+    subtitle:'Nível 1 · Vocabulário básico · Sílabas simples',
+    content:'O gato dorme ao sol. Ele é preto e tem quatro patas. O gato gosta de leite e de peixe. Ele mia quando quer comer. De manhã, o gato pula na cama e acorda a mamãe. À tarde, ele brinca com uma bola. À noite, o gato dorme no sofá. O gato é um animal muito carinhoso. Ele gosta de colo e de carinhos. Toda a família ama o gato da casa.'
+  },
+  {
+    id:'1b', name:'A Escola da Ana', words: 90,
+    title:'A Escola da Ana',
+    subtitle:'Nível 1 · Frases curtas · Alta frequência',
+    content:'Ana vai para a escola todo dia. Ela acorda cedo e toma café. A mochila dela é azul. Na escola, Ana aprende a ler e a escrever. A professora dela se chama Maria. Ana gosta muito de pintar e de cantar. Na hora do recreio, ela brinca com os amigos. Eles jogam bola e pulam corda. À tarde, Ana volta para casa. Ela faz o dever de casa e depois assiste televisão. Ana adora a escola.'
+  }
+],
+2: [
+  {
+    id:'2a', name:'A Amazônia', words: 110,
+    title:'A Floresta Amazônica',
+    subtitle:'Nível 2 · Vocabulário intermediário · Frases compostas',
+    content:'A floresta amazônica é a maior floresta tropical do mundo. Ela cobre grande parte do Brasil e de outros países da América do Sul. Na Amazônia, vivem milhares de espécies de animais e plantas. O rio Amazonas atravessa a floresta e deságua no oceano Atlântico. Muitas comunidades indígenas vivem na floresta e conhecem seus segredos. A Amazônia produz oxigênio para todo o planeta e regula o clima global. Por isso, é muito importante preservar essa floresta tão especial. O desmatamento é uma ameaça grave que precisa ser combatida por todos.'
+  },
+  {
+    id:'2b', name:'Os Planetas', words: 105,
+    title:'O Sistema Solar',
+    subtitle:'Nível 2 · Ciências · Vocabulário específico',
+    content:'O sistema solar é formado pelo Sol e por oito planetas. Os planetas giram ao redor do Sol em órbitas diferentes. Mercúrio é o planeta mais próximo do Sol e o mais quente. Vênus tem uma atmosfera densa e temperaturas altíssimas. A Terra é o único planeta onde existe vida conhecida. Marte é vermelho por causa do óxido de ferro em sua superfície. Júpiter é o maior planeta e tem uma grande tempestade chamada Mancha Vermelha. Saturno tem anéis formados de gelo e rocha. Urano e Netuno são os planetas mais distantes e mais frios.'
+  }
+],
+3: [
+  {
+    id:'3a', name:'Revolução Industrial', words: 130,
+    title:'A Revolução Industrial',
+    subtitle:'Nível 3 · Texto histórico · Vocabulário técnico',
+    content:'A Revolução Industrial transformou profundamente a sociedade europeia a partir do século XVIII. Iniciada na Inglaterra, essa transformação marcou a transição da produção artesanal para a produção mecanizada. A invenção da máquina a vapor por James Watt foi fundamental para esse processo, permitindo a criação de locomotivas, navios e fábricas. Trabalhadores abandonaram o campo e migraram para as cidades em busca de emprego nas indústrias. As condições de trabalho eram precárias: jornadas de doze a dezesseis horas, salários baixos e ausência de direitos trabalhistas. Esse contexto gerou os primeiros movimentos operários e sindicatos, que lutaram por melhores condições. A Revolução Industrial também intensificou o colonialismo, pois as potências europeias precisavam de matéria-prima e mercados consumidores.'
+  },
+  {
+    id:'3b', name:'Neurociência e Memória', words: 125,
+    title:'Como o Cérebro Forma Memórias',
+    subtitle:'Nível 3 · Ciências da saúde · Termos técnicos',
+    content:'A formação de memórias é um processo complexo que envolve diversas estruturas cerebrais. O hipocampo desempenha papel central na consolidação da memória episódica, aquela relacionada a eventos e experiências pessoais. Durante o sono, o cérebro reprocessa as informações adquiridas durante o dia, transferindo-as da memória de curto prazo para a de longo prazo. A plasticidade sináptica, especialmente o fenômeno conhecido como potenciação de longa duração, é o mecanismo celular subjacente ao aprendizado. Neurotransmissores como glutamato e dopamina modulam a intensidade com que as memórias são gravadas. Situações emocionalmente intensas produzem memórias mais vívidas porque a amígdala, estrutura relacionada às emoções, potencializa a atividade do hipocampo durante a codificação.'
+  }
+],
+4: [
+  {
+    id:'4a', name:'Disfagia Orofaríngea', words: 145,
+    title:'Fisiopatologia da Disfagia Orofaríngea',
+    subtitle:'Nível 4 · Texto científico · Terminologia fonoaudiológica',
+    content:'A disfagia orofaríngea caracteriza-se por dificuldade na deglutição decorrente de alterações nas fases oral, faríngea ou na transição faringoesofágica. As causas mais frequentes incluem acidente vascular encefálico, doença de Parkinson, esclerose lateral amiotrófica e neoplasias de cabeça e pescoço. Do ponto de vista neurofisiológico, a deglutição normal exige a coordenação precisa de mais de trinta músculos, regulados pelo tronco encefálico e por estruturas supratentoriais. A penetração laríngea e a aspiração traqueobrônquica representam as complicações mais graves, podendo resultar em pneumonia aspirativa com significativa morbimortalidade. A avaliação clínica fonoaudiológica, complementada pela videofluoroscopia da deglutição e pela videoendoscopia da deglutição com fibra óptica, constitui o padrão ouro diagnóstico. O manejo terapêutico inclui estratégias posturais, manobras de deglutição e modificação de consistências alimentares conforme a International Dysphagia Diet Standardisation Initiative.'
+  },
+  {
+    id:'4b', name:'Análise Acústica da Voz', words: 140,
+    title:'Parâmetros Acústicos na Avaliação Vocal',
+    subtitle:'Nível 4 · Fonoaudiologia clínica · Terminologia especializada',
+    content:'A avaliação acústica da voz constitui instrumento fundamental na prática fonoaudiológica contemporânea. Parâmetros como frequência fundamental, jitter, shimmer e proporção harmônico-ruído permitem quantificar objetivamente as características vibratórias das pregas vocais. A frequência fundamental média varia entre cento e vinte e duzentos e cinquenta hertz em homens adultos e entre cento e noventa e duzentos e noventa hertz em mulheres. Perturbações de frequência, mensuradas pelo jitter, acima de um por cento indicam irregularidade vibratória significativa. O shimmer, perturbação de amplitude, quando superior a três decibéis, sugere alteração na coaptação glótica. A proporção harmônico-ruído abaixo de quinze decibéis indica excesso de ruído no sinal vocal. Tais medidas, obtidas por softwares especializados como o Praat e o Multi-Dimensional Voice Program, devem ser interpretadas sempre em conjunto com a avaliação perceptivo-auditiva e laringoscópica, evitando conclusões reducionistas baseadas exclusivamente em dados acústicos isolados.'
+  }
+],
+5: [
+  {
+    id:'5a', name:'Epigenética e Linguagem', words: 165,
+    title:'Epigenética, Plasticidade Cerebral e Aquisição de Linguagem',
+    subtitle:'Nível 5 · Alta complexidade · Artigo científico',
+    content:'A intersecção entre epigenética e neurociência da linguagem tem revelado mecanismos surpreendentes pelos quais a experiência ambiental modula a expressão gênica em circuitos neuronais subjacentes à comunicação humana. Processos epigenéticos como metilação do DNA, modificações de histonas e regulação por RNA não codificante modulam a transcrição de genes relacionados à sinaptogênese e à mielinização em regiões como o giro frontal inferior, o plano temporal e o fascículo arqueado. Estudos longitudinais demonstram que a riqueza do input linguístico nos primeiros trinta e seis meses de vida produz modificações epigenéticas duradouras que influenciam trajetórias de desenvolvimento fonológico, morfossintático e lexical. O fenômeno conhecido como período crítico, durante o qual a plasticidade sináptica está maximizada, é parcialmente regulado pela expressão de fatores de transcrição como o FOXP2, cujas variantes têm sido associadas a transtornos específicos da linguagem. As implicações clínicas desse campo emergente para a intervenção fonoaudiológica precoce são profundas: sugerem que o timing e a qualidade da estimulação comunicativa na primeira infância transcendem o nível comportamental, operando em substratos moleculares com efeitos potencialmente transgeracionais.'
+  },
+  {
+    id:'5b', name:'Gagueira Neurogênica', words: 160,
+    title:'Neurobiologia da Gagueira: Da Disfunção à Intervenção Baseada em Evidência',
+    subtitle:'Nível 5 · Fonoaudiologia avançada · Literatura especializada',
+    content:'A gagueira desenvolvimental persistente tem substrato neurobiológico bem estabelecido, evidenciado por décadas de estudos de neuroimagem funcional e estrutural. Metanálises de exames por ressonância magnética funcional demonstram consistentemente hipoativação do giro frontal inferior esquerdo, especialmente a área de Broca, e hiperativação homóloga direita durante a fala, sugerindo atipicidade na lateralização hemisférica do processamento motor da fala. Anormalidades na substância branca do fascículo arqueado, do fascículo frontal orbital e das vias corticoespinhais foram identificadas por estudos de tensor de difusão, indicando comprometimento na transmissão de sinal entre regiões de planejamento e execução motora. A dopamina desempenha papel modulatório relevante, explicando a eficácia parcial de agentes antidopaminérgicos em subgrupos específicos. A abordagem terapêutica contemporânea, fundamentada nas terapias de regulação da fluência e nas abordagens de aceitação e comprometimento, reconhece que os desfechos em qualidade de vida e participação comunicativa são clinicamente superiores ao critério exclusivo de supressão de disfluências, demandando do fonoaudiólogo competências que integrem a neurocognição do controle motor da fala com a psicologia do autoconceito e da identidade do falante.'
+  }
+],
+6: [
+  {
+    id:'6a', name:'Trocas Fonológicas Extremas', words: 140,
+    title:'Processamento Fonológico em Transtornos Complexos da Comunicação',
+    subtitle:'Nível 6 · EXTREMO · Fonologia · Trava-línguas clínicos · Máxima dificuldade articulatória',
+    content:'O fonoaudiólogo, avaliando a fonoarticulação do paciente, perguntou: "Pode pronunciar pseudopalavras polisilábicas? Tente: frangipânzila, xifopágio, estrelitzia, psicotronismo, zaraguatão, esternocleidomastoideo, feocromocitoma, hepatoesplenomegalia." O processamento fonológico suprassegmental pressupõe representações lexicais especificadas com traços distintivos de sonoridade, vozeamento, ponto e modo de articulação. Fricativas sibilantes interdentais, africadas palatoalveolares, consoantes nasais velares: cada fonema demanda coordenação neuromuscular precisa entre laringe, véu palatino, língua e lábios. Transtornos fonológicos inconsistentes caracterizam-se por variabilidade imprevisível nos padrões de erro, distinguindo-se da dispraxia verbal desenvolvimental pela preservação relativa da praxis não-verbal. A estimulabilidade para sons-alvo ausentes do inventário fonológico prediz prognóstico terapêutico. Avalie: "O peito-azul-grande piou para o pica-pau-anão que protegia seus pintinhos no pé do ipê-de-jardim." Respire, controle o fluxo expiratório, coordene a fonação com a articulação.'
+  },
+  {
+    id:'6b', name:'Texto Extremo Multissistêmico', words: 155,
+    title:'Avaliação Multidimensional dos Subsistemas da Fala',
+    subtitle:'Nível 6 · EXTREMO · Prosódia · Articulação · Fluência · Voz · Cognição',
+    content:'Subsistemas da fala — respiração, fonação, ressonância, articulação, prosódia — operam em sinergia neuromuscular que pressupõe integridade dos nervos cranianos V, VII, IX, X, XI e XII, do nervo frênico e dos intercostais. Leia em voz alta, mantendo qualidade vocal, taxa de fala adequada e prosódia expressiva: "Pseudopseudohipoparatiroidismo, esternocleidomastoideo, hepatoesplenomegalia, feocromocitoma, pneumonoultramicroscopicosilicovolcanoconiose." Agora com ênfase expressiva: "O xenofóbico xerife extraordinariamente excêntrico exigiu que expulsassem extemporaneamente os exploradores estrangeiros." Com ritmo regular: "Três pratos de trigo para três tigres tristes." Mais complexo: "O rato roeu a roupa do rei de Roma; a rainha com raiva rasgou o resto." Avalie sua própria prosódia: variou o tom? Manteve a velocidade? Controlou pausas? A leitura oral de textos tecnicamente densos exige integração entre processamento fonológico, morfossintático, semântico e pragmático, além de suporte respiratório adequado, controle laríngeo e coordenação velofaríngea — todo o sistema de fala em operação simultânea.'
+  }
+]
 };
 
-function setC(btn){
-  if(!btn)return;
-  document.querySelectorAll('.ctx-tab').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  curCtx=btn.dataset.c;
-  const cfg=CTX_CFG[curCtx];
-  document.getElementById('az-lbl').textContent=cfg.lbl;
-  document.getElementById('az-sub').textContent='Contexto: '+btn.textContent;
-  renderExs();
-}
-function renderExs(){
-  const cfg=CTX_CFG[curCtx];
-  document.getElementById('az-exs').innerHTML=cfg.exs.map(e=>'<button class="ex" onclick="useEx(this)">'+e.slice(0,35)+'…</button>').join('');
-}
-function useEx(btn){document.getElementById('az-ta').value=btn.textContent.replace('…','');}
-function clrAz(){document.getElementById('az-ta').value='';document.getElementById('res').innerHTML='<div class="r-empty"><div class="r-empty-ico">◈</div><div class="r-empty-msg">Aguardando análise</div></div>';}
+const LEVEL_NAMES = {1:'Fácil',2:'Médio',3:'Difícil',4:'Avançado',5:'Expert',6:'Extremo'};
+const LEVEL_COLORS = {1:'c1',2:'c2',3:'c3',4:'c4',5:'c5',6:'c6'};
+const LEVEL_BADGES = {1:'lvl1',2:'lvl2',3:'lvl3',4:'lvl4',5:'lvl5',6:'lvl6'};
 
-async function runAz(){
-  const txt=document.getElementById('az-ta').value.trim();
-  if(!txt){alert('Cole um texto para analisar.');return;}
-  if(!gk()){openModal();return;}
-  const rb=document.getElementById('runbtn'),sp=document.getElementById('rsp'),rt=document.getElementById('rtxt');
-  rb.disabled=true;sp.style.display='flex';rt.textContent='Analisando…';
-  document.getElementById('res').innerHTML='<div class="r-load"><div class="spb"></div>Analisando com IA…</div>';
-  const cfg=CTX_CFG[curCtx];
-  const res=await callAI(cfg.sys,'Texto para análise:\n'+txt);
-  rb.disabled=false;sp.style.display='none';rt.textContent='Analisar';
-  if(!res||res.e){document.getElementById('res').innerHTML='<div class="r-err">'+( res?.m||'Erro.')+'</div>';return;}
-  let data;
-  try{data=JSON.parse(res.t.replace(/```json|```/g,'').trim());}
-  catch(e){document.getElementById('res').innerHTML='<div class="r-err">Erro ao processar resposta:\n'+res.t+'</div>';return;}
-  renderAzResult(data);
-}
-function renderAzResult(d){
-  const sc=d.score||0;
-  const cls=sc>70?'hi':sc>40?'md':'lo';
-  let h='<div class="r-score"><div class="r-sn"><div class="snum '+cls+'">'+sc+'</div><div class="slbl">Risco / 100</div></div>';
-  h+='<div class="r-verd"><div class="vl">Severidade</div><div class="vv '+(d.severidade==='GRAVE'||d.severidade==='MUITO GRAVE'?'hi':d.severidade==='MODERADO'?'md':d.severidade==='LEVE'?'nn':'lo')+'">'+d.severidade+'</div>';
-  if(d.veredicto)h+='<div style="font-size:12px;color:var(--t2);margin-top:6px;line-height:1.6">'+d.veredicto+'</div>';
-  h+='</div></div><div class="r-blocks">';
-  if(d.tipo_erros?.length)h+=rB('Padrões identificados','var(--red)',rL(d.tipo_erros,'d'));
-  if(d.padroes?.length)h+=rB('Observações clínicas','var(--amb)',rL(d.padroes,'w'));
-  if(d.hipoteses?.length)h+=rB('Hipóteses diagnósticas','var(--pur)',rH(d.hipoteses));
-  if(d.alternativas?.length)h+=rB('Alternativas de fala','var(--grn)',d.alternativas.map(a=>'<div class="r-alt">'+a+'</div>').join(''));
-  if(d.risco_cognitivo)h+=rB('Risco cognitivo','var(--red)','<span class="badge '+(d.risco_cognitivo==='ALTO'?'ba':d.risco_cognitivo==='MODERADO'?'bm':'bb')+'">'+d.risco_cognitivo+'</span>');
-  if(d.observacoes)h+=rB('Observações','var(--t3)','<div class="rbtxt">'+d.observacoes+'</div>');
-  if(d.recomendacoes)h+=rB('Recomendações','var(--grn)','<div class="rbtxt">'+d.recomendacoes+'</div>');
-  h+='</div>';
-  document.getElementById('res').innerHTML=h;
-}
-function rB(lbl,col,inner){return'<div class="rb"><div class="rblbl"><div class="rbdot" style="background:'+col+'"></div>'+lbl+'</div>'+inner+'</div>';}
-function rL(arr,cls){return arr.map(i=>'<div class="ri '+(cls||'')+'">'+i+'</div>').join('');}
-function rH(arr){if(typeof arr[0]==='string')return rL(arr,'w');return arr.map(h=>'<div class="hipo"><div class="hipo-n">'+h.nome+'</div><span class="hipo-p '+(h.probabilidade==='ALTA'?'pa':h.probabilidade==='MÉDIA'?'pm':'pb')+'">'+h.probabilidade+'</span><div class="hipo-j">'+h.justificativa+'</div></div>').join('');}
-renderExs();
+/* ══ STATE ══ */
+let currentLevel = 1;
+let currentText = null;
+let timerInterval = null;
+let elapsedSeconds = 0;
+let timerRunning = false;
+let timerStarted = false;
+let markMode = 'error';
+let wordElements = [];
+let errors = new Set();
+let hesitations = new Set();
+let sessionId = 'SES-' + Date.now().toString(36).toUpperCase();
 
-/* ══════════════════════════════════════════════
-   GRAVAÇÃO DE VOZ
-══════════════════════════════════════════════ */
-let recog=null,recTimer=null,recSec=0,recFinal='',recCtx='fluencia',recStart=0;
-function setGC(btn){document.querySelectorAll('.gc').forEach(b=>b.classList.remove('on'));btn.classList.add('on');recCtx=btn.dataset.gc;}
-function toggleMic(){
-  if(!recog){startRec();}
-  else{stopRec();}
-}
-function startRec(){
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){alert('Seu navegador não suporta reconhecimento de voz. Use Chrome.');return;}
-  recog=new SR();recog.lang='pt-BR';recog.continuous=true;recog.interimResults=true;
-  recFinal='';recStart=Date.now();
-  recog.onresult=e=>{
-    let interim='';
-    for(let i=e.resultIndex;i<e.results.length;i++){
-      if(e.results[i].isFinal)recFinal+=e.results[i][0].transcript+' ';
-      else interim+=e.results[i][0].transcript;
-    }
-    const tt=document.getElementById('tt');
-    tt.innerHTML=recFinal+'<span class="tt-int">'+interim+'</span>';
-  };
-  recog.onerror=e=>{console.error(e);stopRec();};
-  recog.start();
-  document.getElementById('mic-btn').classList.add('rec');
-  document.getElementById('mic-timer').classList.add('rec');
-  document.getElementById('mic-status').textContent='Gravando…';
-  document.getElementById('mic-status').classList.add('rec');
-  document.querySelectorAll('.eq-b').forEach(b=>b.classList.add('act'));
-  recSec=0;updateTimer();
-  recTimer=setInterval(()=>{recSec++;updateTimer();},1000);
-}
-function updateTimer(){
-  const m=String(Math.floor(recSec/60)).padStart(2,'0'),s=String(recSec%60).padStart(2,'0');
-  document.getElementById('mic-timer').textContent=m+':'+s;
-}
-function stopRec(){
-  if(recog){recog.stop();recog=null;}
-  clearInterval(recTimer);
-  document.getElementById('mic-btn').classList.remove('rec');
-  document.getElementById('mic-timer').classList.remove('rec');
-  document.getElementById('mic-status').textContent='Gravação concluída';
-  document.getElementById('mic-status').classList.remove('rec');
-  document.querySelectorAll('.eq-b').forEach(b=>b.classList.remove('act'));
-  if(recFinal.trim()){
-    document.getElementById('grav-ai-btn').style.display='';
-    generateVoiceReport();
-  }
-}
-function clrGrav(){
-  recFinal='';recSec=0;
-  document.getElementById('tt').innerHTML='<span style="color:var(--t3);font-style:italic;font-size:13px">A transcrição aparecerá aqui…</span>';
-  document.getElementById('mic-timer').textContent='00:00';
-  document.getElementById('mic-status').textContent='Clique para gravar';
-  document.getElementById('grav-ai-btn').style.display='none';
-  document.getElementById('vr-wrap').innerHTML='<div class="vr-empty" id="vr-empty"><div class="vr-empty-ico">🎙</div><div>Grave para gerar o relatório</div></div>';
-}
-function copyTxt(){navigator.clipboard.writeText(recFinal.trim()).then(()=>alert('Copiado!'));}
-function useInAnalyzer(){document.getElementById('az-ta').value=recFinal.trim();goP2('analisador');}
+/* ══ INIT ══ */
+document.getElementById('session-badge').textContent = sessionId.slice(0,12);
+selectLevel(1, document.querySelector('.lvl-btn[data-lvl="1"]'));
 
-/* VOICE REPORT */
-async function generateVoiceReport(){
-  const wrap=document.getElementById('vr-wrap');
-  wrap.innerHTML='<div class="r-load" style="padding:20px"><div class="spb"></div>Gerando relatório da fala…</div>';
-  
-  // Local metrics
-  const words=recFinal.trim().split(/\s+/).filter(Boolean);
-  const wc=words.length;
-  const dur=recSec||1;
-  const wpm=Math.round((wc/dur)*60);
-  const sentences=recFinal.split(/[.!?]+/).filter(s=>s.trim().length>3).length||1;
-  const avgWPS=Math.round(wc/sentences*10)/10;
-  // pause detection (rough)
-  const pauseMatches=(recFinal.match(/\/|\.\.\.|—/g)||[]).length;
-  
-  let metrics='<div class="vr-stats">';
-  metrics+=stat(wpm,'ppm','Velocidade de fala')+stat(wc,'palavras','Total de palavras');
-  metrics+=stat(dur+'s','duração','Tempo gravado')+stat(avgWPS,'p/frase','Palavras por frase');
-  metrics+='</div>';
+/* ══ LEVEL SELECT ══ */
+function selectLevel(lvl, btn) {
+  currentLevel = lvl;
+  document.querySelectorAll('.lvl-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTextList();
+  selectText(null);
+}
 
-  // Fluency bar
-  let flScore=100;
-  const reps=(recFinal.match(/\b(\w+)\s+\1\b/gi)||[]).length;
-  flScore-=reps*8;flScore-=pauseMatches*3;flScore=Math.max(0,Math.min(100,flScore));
-  const flColor=flScore>75?'var(--grn)':flScore>50?'var(--amb)':'var(--red)';
-  metrics+=`<div class="vr-section">
-    <div class="vr-sec-ttl"><div class="rbdot" style="background:${flColor}"></div>Índice de Fluência</div>
-    <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t2);margin-bottom:4px"><span>0</span><span style="color:${flColor};font-size:13px;font-weight:700">${flScore}/100</span><span>100</span></div>
-    <div class="vr-bar"><div class="vr-bar-fill" style="width:${flScore}%;background:${flColor}"></div></div>
-    <div style="font-size:11px;color:var(--t2);line-height:1.6">${flScore>75?'Fluência dentro dos padrões normais.':flScore>50?'Fluência levemente reduzida. Investigar padrões de hesitação.':'Fluência significativamente reduzida. Avaliação detalhada recomendada.'}</div>
-  </div>`;
+function renderTextList() {
+  const container = document.getElementById('text-list-container');
+  const texts = TEXTS[currentLevel] || [];
+  container.innerHTML = texts.map(t => `
+    <div class="text-item" id="ti-${t.id}" onclick="selectText('${t.id}')">
+      <div class="text-item-name">${t.name}</div>
+      <div class="text-item-meta">${t.words} palavras · Nível ${currentLevel}</div>
+    </div>
+  `).join('');
+}
 
-  // Detalhes
-  metrics+=`<div class="vr-section">
-    <div class="vr-sec-ttl">Detalhes da Fala</div>
-    <div class="vr-item"><span>Repetições detectadas</span><span class="vr-val">${reps}</span></div>
-    <div class="vr-item"><span>Marcadores de pausa</span><span class="vr-val">${pauseMatches}</span></div>
-    <div class="vr-item"><span>Frases identificadas</span><span class="vr-val">${sentences}</span></div>
-    <div class="vr-item"><span>Velocidade</span><span class="vr-val" style="color:${wpm<80||wpm>200?'var(--red)':wpm<100||wpm>170?'var(--amb)':'var(--grn)'}">${wpm<80?'Lenta':wpm>200?'Muito rápida':wpm>170?'Rápida':'Normal'}</span></div>
-  </div>`;
-
-  wrap.innerHTML=metrics+'<div class="vr-ai-result"><div class="r-load"><div class="spb"></div>Análise clínica IA…</div></div>';
-  
-  if(!gk()){
-    wrap.querySelector('.vr-ai-result').innerHTML='<div class="r-err" style="margin:12px">Configure a chave de API para análise clínica.</div>';
+/* ══ TEXT SELECT ══ */
+function selectText(id) {
+  if (!id) {
+    currentText = null;
+    document.getElementById('empty-state').style.display = 'block';
+    document.getElementById('text-content').style.display = 'none';
     return;
   }
   
-  const sys=`Fonoaudióloga clínica sênior brasileira. Analise os dados de fala abaixo e produza relatório clínico completo.
-Dados: velocidade=${wpm}ppm, ${wc} palavras em ${dur}s, ${reps} repetições, fluência=${flScore}/100, contexto clínico: ${recCtx}.
-Transcrição: "${recFinal.slice(0,600)}"
-Retorne análise em português claro, máx 250 palavras. Inclua: padrões identificados, hipóteses, recomendações.`;
+  resetTimer();
+  errors.clear();
+  hesitations.clear();
+  updateMetrics();
+
+  const texts = TEXTS[currentLevel];
+  currentText = texts.find(t => t.id === id);
   
-  const res=await callAI(sys,'Gere o relatório clínico da fala.');
-  const aiDiv=wrap.querySelector('.vr-ai-result');
-  if(!res||res.e){aiDiv.innerHTML='<div class="r-err" style="margin:12px">'+(res?.m||'Erro')+'</div>';return;}
-  aiDiv.innerHTML='<div class="rb"><div class="rblbl"><div class="rbdot" style="background:var(--cyan)"></div>Análise Clínica IA</div><div class="rbtxt">'+res.t.replace(/\n/g,'<br>')+'</div></div>';
+  document.querySelectorAll('.text-item').forEach(el => el.classList.remove('selected'));
+  const el = document.getElementById('ti-' + id);
+  if (el) el.classList.add('selected');
+
+  document.getElementById('empty-state').style.display = 'none';
+  document.getElementById('text-content').style.display = 'block';
+  document.getElementById('tc-title').textContent = currentText.title;
+  document.getElementById('tc-sub').textContent = currentText.subtitle;
+  document.getElementById('ann-notes').value = '';
+
+  renderWords();
+  document.getElementById('btn-start').disabled = false;
+  document.getElementById('btn-report').disabled = true;
 }
-function analyzeGrav(){if(recFinal.trim())generateVoiceReport();}
-function stat(val,unit,lbl){return`<div class="vr-stat"><div class="vs-n">${val}<span class="vs-u"> ${unit}</span></div><div class="vs-l">${lbl}</div></div>`;}
 
-/* ══════════════════════════════════════════════
-   LEITURA CRONOMETRADA POR FAIXA ETÁRIA
-══════════════════════════════════════════════ */
-const TEXTS={
-  bebe:[
-    {id:'b1',ttl:'Marcos Comunicativos: 0–6 meses',diff:'f',words:210,age:'0–6m',
-     meta:'Orientação parental · Fácil',
-     body:`Os primeiros meses de vida são marcados por uma explosão silenciosa de comunicação. O recém-nascido já distingue a voz materna das demais — memória auditiva que se formou ainda no útero, nas últimas semanas de gestação. Wolff (1956) demonstrou, três décadas antes da existência do BERA neonatal, que bebês pré-linguísticos discriminam frequências tonais com precisão surpreendente.
-
-Entre 0 e 2 meses, o bebê produz sons vegetativos — choro, tosse, espirro — que representam a primeira forma de comunicação intencional. O sorriso social surge entre 6 e 8 semanas e é um marco neurológico, não apenas afetivo. Entre 2 e 4 meses, surgem os primeiros arrulhos: sons vocálicos produzidos com satisfação, indicando que os mecanismos fonatórios estão sendo experimentados.
-
-O choro diferenciado — de fome, dor e desconforto — emerge entre 3 e 4 meses e é o primeiro sistema de comunicação simbólico do ser humano. Pais e cuidadores que respondem de forma consistente aos diferentes choros estão, sem saber, ensinando a criança que a comunicação tem poder — que sons produzem efeitos no mundo.
-
-A triagem auditiva neonatal, obrigatória no Brasil desde 2010, baseia-se conceitualmente naquilo que Wolff descobriu: a capacidade auditiva está presente e funcionando desde os primeiros dias. Perda auditiva não detectada até os 6 meses compromete irreversivelmente a janela crítica de aquisição fonológica.`},
-    {id:'b2',ttl:'Aquisição Fonológica: 6–12 meses',diff:'m',words:280,age:'6–12m',
-     meta:'Orientação parental · Médio',
-     body:`O balbucio reduplicated — sequências do tipo "bababa", "mamama", "dadada" — emerge entre 6 e 8 meses e representa uma transição neurológica fundamental: o sistema fonoarticulatório agora está sob controle voluntário parcial. A criança não apenas produz sons reflexos, mas experimenta, testa, repete, e aprecia o feedback auditivo de sua própria produção.
-
-Este período é marcado por um fenômeno que poucos pais reconhecem: o bebê que teve acesso a múltiplas línguas no ambiente começa, gradualmente, a filtrar os sons da língua materna e abandonar os sons estrangeiros. Por volta dos 10 meses, o inventário fonético está sendo podado para os padrões do português brasileiro. Sons que não existem na língua ambiente deixam de ser produzidos — e de ser percebidos com precisão.
-
-Entre 9 e 12 meses, surgem as primeiras proto-palavras: formas sonoras estáveis associadas a referentes específicos, mesmo que diferentes das formas adultas. "Au-au" para cachorro, "nham" para comida. A criança demonstra, pela primeira vez, que compreende o princípio simbólico — que sons representam objetos e conceitos.
-
-Sinais de alerta nesta faixa: ausência de balbucio após 6 meses; ausência de reação ao nome após 9 meses; ausência de gestos comunicativos (apontar, mostrar, dar) após 10 meses. Cada um destes sinais justifica encaminhamento fonoaudiológico imediato, pois a intervenção precoce tem impacto documentado e significativo no prognóstico.`},
-    {id:'b3',ttl:'Primeiras Palavras: 12–24 meses',diff:'d',words:320,age:'12–24m',
-     meta:'Diagnóstico precoce · Difícil',
-     body:`A primeira palavra — convencionalmente definida como forma sonora estável usada para referir-se consistentemente ao mesmo referente — emerge por volta dos 12 meses, mas a janela normativa se estende até os 14–16 meses. A aquisição lexical inicial é marcada por dois fenômenos que descrevem a natureza da cognição infantil: a superextensão (usar "cachorro" para todos os animais quadrúpedes) e a subextensão (usar "leite" apenas para o leite de mamadeira, não para o copo).
-
-O vocabulário cresce lentamente até os 18–20 meses, quando a maioria das crianças neurotypicas experimenta o "vocabulário burst" ou "explosão lexical": aquisição de 8 a 10 novas palavras por semana. Esta explosão coincide com a compreensão do princípio da nomeação — de que tudo tem um nome — e com a maturação das redes neurais de memória semântica no hipocampo e nas regiões temporais.
-
-Aos 24 meses, o indicador mais robusto de desenvolvimento comunicativo não é o número de palavras produzidas, mas a presença de combinações de duas palavras com intencionalidade comunicativa clara. "Mamã não", "carro caiu", "quer água" — estas combinações revelam que a criança compreende que a gramática é uma ferramenta para expressar relações entre conceitos.
-
-O late-talker — criança com menos de 50 palavras ou ausência de combinações aos 24 meses — exige investigação multidisciplinar. A história de resolução espontânea frequentemente citada por famílias e por profissionais menos atualizados é real, mas insuficiente como justificativa para observação passiva: 20% dos late-talkers tornam-se late-bloomers, mas 80% apresentam dificuldades persistentes em linguagem, leitura e aprendizado que poderiam ter sido mitigadas com intervenção precoce.`}
-  ],
-  crianca:[
-    {id:'c1',ttl:'Desenvolvimento Fonológico: 3–5 anos',diff:'f',words:250,age:'3–5a',
-     meta:'Triagem · Fácil',
-     body:`Entre 3 e 5 anos, a criança completa a maior parte de sua aquisição fonológica. Os processos fonológicos normais — simplificações sistemáticas da fala infantil — devem estar desaparecendo progressivamente. Aos 3 anos, é esperado que a criança seja inteligível para estranhos em pelo menos 75% das situações de fala espontânea. Aos 4 anos, a inteligibilidade deve ser praticamente total em contextos familiares.
-
-Os processos de simplificação ainda presentes aos 3 anos incluem: redução de encontros consonantais ("futa" por "fruta"), substituição de fricativas ("tato" por "gato"), e metátese de sílabas. Cada processo tem sua janela de normalidade: a redução de encontros é esperada até os 4 anos; substituições de líquidas (/l/ e /r/) podem persistir até os 6–7 anos sem que isso seja considerado patológico.
-
-A distinção entre processo fonológico normal e transtorno fonológico exige análise de consistência, inventário fonético, estimulabilidade e impacto na inteligibilidade. Uma criança que substitui /r/ por /l/ de forma consistente e estimulável apresenta prognóstico muito diferente de outra com padrão de substituições inconsistente e inventário fonético restrito.
-
-O período entre 4 e 5 anos coincide com o início da consciência fonológica explícita — a capacidade de manipular deliberadamente os sons da fala como unidades abstratas. Esta habilidade, e não a leitura em si, é o preditor mais robusto do sucesso em alfabetização, conforme demonstrado por décadas de pesquisa em linguística aplicada.`},
-    {id:'c2',ttl:'Gagueira Infantil: Diagnóstico Diferencial',diff:'m',words:290,age:'5–8a',
-     meta:'Diagnóstico · Médio',
-     body:`A gagueira afeta aproximadamente 5% das crianças em algum ponto do desenvolvimento, com prevalência de 1% na população adulta — indicando que a maioria resolve espontaneamente. O pico de início situa-se entre 2,5 e 5 anos, período de expansão linguística acelerada em que a demanda cognitiva por formulação de linguagem frequentemente supera a capacidade de execução motora da fala.
-
-O diagnóstico diferencial entre disfluência normal do desenvolvimento e gagueira requer análise qualitativa e quantitativa. Disfluências normais incluem: revisões ("Eu quero — quero ir"), interjeições ("É, eu acho que sim") e repetições de palavra inteira ("Eu eu quero ir"). Disfluências atípicas, sugestivas de gagueira, incluem: repetições de parte de palavra ("qu-qu-quero"), prolongamentos ("ssssim"), bloqueios com esforço visivelmente muscular, e tensão nos movimentos articulatórios.
-
-A teoria de dominância cerebral de Travis e Orton (1927) — que propunha competição hemisférica pelo controle motor da fala — foi considerada obsoleta por décadas. Estudos de fMRI publicados entre 2019 e 2024 confirmaram ativação anormal do hemisfério direito em adultos que gaguejam durante a fala fluente, validando parcialmente o raciocínio de Travis quase um século depois. A gagueira tem substrato neurológico real, o que tem implicações diretas para o aconselhamento familiar: não é causada por trauma psicológico, ansiedade ou estilo parental.
-
-Fatores de risco para cronicidade: sexo masculino, histórico familiar positivo, início após os 3,5 anos, persistência por mais de 12 meses sem melhora espontânea, e presença de comportamentos secundários como trocas de palavras e evitações situacionais.`},
-    {id:'c3',ttl:'Dislexia: Identificação e Intervenção Baseada em Evidências',diff:'d',words:350,age:'6–12a',
-     meta:'Diagnóstico · Difícil — NÍVEL MÁXIMO',
-     body:`A dislexia do desenvolvimento é um transtorno neurobiológico específico de aprendizagem caracterizado por dificuldades no reconhecimento preciso e fluente de palavras escritas, soletração e capacidade de decodificação. O déficit central — hoje amplamente validado pela neuroimagem — situa-se no processamento fonológico: a capacidade de manipular representações mentais dos sons da fala.
-
-A etimologia enganosa do termo — "dificuldade com palavras" — obscureceu por décadas a natureza fonológica do transtorno. Crianças com dislexia não têm problemas de visão; elas têm dificuldade em mapear grafemas para fonemas, pois as representações fonológicas que servem de base para este mapeamento são imprecisas ou instáveis. Pesquisas de neuroimagem funcional demonstraram de forma replicada hipoativação do giro angular esquerdo e do giro supramarginal em leitores com dislexia — regiões críticas para a conversão grafema-fonema.
-
-O modelo de resposta à intervenção (Response-to-Intervention) substituiu progressivamente o modelo de discrepância QI-desempenho como paradigma diagnóstico, mas a avaliação fonoaudiológica mantém papel central: processos fonológicos, consciência fonológica, memória fonológica de trabalho e nomeação serial rápida são os quatro pilares do diagnóstico diferencial da dislexia em relação a outras dificuldades de aprendizagem.
-
-A intervenção com maior suporte empírico é a instrução fônica sistemática e explícita — abordagem que mapeia direta e sequencialmente os padrões grafema-fonema do português. Estudos de meta-análise publicados entre 2015 e 2023 demonstram tamanhos de efeito entre d=0.58 e d=0.95 para intervenções fônicas intensivas, superiores a qualquer outra abordagem testada. A janela crítica de maior plasticidade situa-se entre os 6 e 8 anos, mas a intervenção é eficaz em qualquer idade com adaptações metodológicas apropriadas.
-
-Sinais de alerta que justificam avaliação fonoaudiológica antes dos 6 anos: histórico familiar de dislexia, dificuldades persistentes em rimas e aliterações, desenvolvimento tardio de nomes de letras e sons, e dificuldade em segmentar palavras em sílabas após os 5 anos.`}
-  ],
-  adolescente:[
-    {id:'ad1',ttl:'Muda Vocal: Fisiologia e Conduta Clínica',diff:'m',words:280,age:'12–16a',
-     meta:'Voz · Médio',
-     body:`A muda vocal — denominação clínica para as alterações vocais da puberdade — é um fenômeno universal que afeta tanto indivíduos do sexo masculino quanto feminino, embora com graus de intensidade e visibilidade social distintos. Nos meninos, o crescimento da laringe é dramático: o ângulo da cartilagem tireoide muda de 120° para 90°, o comprimento das pregas vocais aumenta aproximadamente 60%, e a frequência fundamental cai uma oitava — de 260–280 Hz para 130–145 Hz em média — no período de 3 a 6 meses.
-
-Nas meninas, a muda vocal é mais gradual e clinicamente subestimada: as pregas vocais crescem cerca de 30%, e a frequência fundamental cai aproximadamente quatro semitons. A rouquidão transitória, a fadiga vocal precoce e a redução da extensão vocal aguda são manifestações normais neste período, mas frequentemente interpretadas como patológicas pela própria adolescente e por pais.
-
-A disfonia mutacional — persistência de voz aguda infantil após a conclusão da muda — ocorre predominantemente em meninos e tem componentes psicossociais bem documentados. O tratamento é altamente eficaz: manipulação laríngea manual combinada com feedback auditivo produz resolução em uma a três sessões na maioria dos casos.
-
-O paradoxo da muda vocal em contextos de canto coral e performance — quando a ausência de instrução específica leva à exploração vocal inadequada — pode resultar em nódulos vocais ou outros traumas por esforço em plena maturação do tecido mucoso das pregas vocais. O fonoaudiólogo especialista em voz tem papel preventivo fundamental nesta faixa etária, especialmente em escolas de música e conservatórios.`},
-    {id:'ad2',ttl:'Fluência na Adolescência: Impacto Psicossocial e Abordagem Terapêutica',diff:'d',words:380,age:'14–18a',
-     meta:'Fluência · Difícil — NÍVEL MÁXIMO',
-     body:`A gagueira que persiste até a adolescência apresenta características qualitativas distintas da gagueira infantil. O adolescente que gagueja não apenas tem comportamentos de disfluência; ele desenvolveu um sistema complexo de anticipação, evitação, substituição lexical e comportamentos secundários que constitui uma resposta adaptativa — e simultaneamente limitante — ao medo da disfluência.
-
-A triangulação teórica proposta pelo Modelo da Demanda e Capacidade (Starkweather 1987), combinada com a Teoria de Anticipação Estocástica (Bloodstein 1995) e os achados recentes de neuroimagem funcional, oferece um framework explicativo robusto: a gagueira não é causa única, mas resulta da interação entre vulnerabilidade neurológica, demanda comunicativa e aprendizagem de respostas de evitação ao longo do desenvolvimento.
-
-O tratamento do adolescente que gagueja exige abordagem multicomponente. As técnicas de modificação da fluência — cancelamentos, pull-outs e preparações (Van Riper 1973) — ensinam o indivíduo a modificar o momento de disfluência em vez de evitá-lo. Esta abordagem produz redução do medo antecipatório a médio e longo prazo, com mecanismo análogo à exposição gradual na terapia cognitivo-comportamental para ansiedade. Paralelamente, as abordagens de modelagem da fluência — ritmo, fala suave, respiração diafragmática — oferecem ferramentas imediatas de autoregulação.
-
-A dimensão psicossocial é central e frequentemente subestimada: estudos longitudinais demonstram que adolescentes que gaguejam apresentam taxas significativamente elevadas de ansiedade social, evitação de situações comunicativas escolares e profissionais, e impacto mensurável na qualidade de vida. A abordagem puramente técnica — sem atenção às cognições, às crenças sobre a gagueira e ao impacto identitário — produz resultados de fluência temporários sem transformação duradoura da relação do indivíduo com a própria fala.
-
-Os grupos de suporte e as comunidades online de pessoas que gaguejam demonstraram, em estudos recentes, impacto positivo significativo na aceitação e na redução da vergonha — fatores que predizem independentemente o uso de situações comunicativas desafiadoras e, portanto, a integração social plena.`}
-  ],
-  adulto:[
-    {id:'au1',ttl:'Disfonia Funcional: Diagnóstico e Conduta',diff:'m',words:290,age:'Adulto',
-     meta:'Voz · Médio',
-     body:`A disfonia funcional — disfonia sem lesão estrutural identificável nas pregas vocais à laringoscopia — representa entre 20% e 40% dos encaminhamentos ambulatoriais em fonoaudiologia da voz, dependendo da série analisada. O paradoxo diagnóstico é que a ausência de lesão não indica ausência de patologia: o padrão de uso vocal hiperfuncional ou hipofuncional é, em si, o distúrbio.
-
-Emil Froeschels, em sua Policlínica de Viena (1924), desenvolveu o método mastigado: o paciente mastiga de forma exagerada com vocalização simultânea, o que produz automaticamente redução da tensão supraglótica e subglótica. Froeschels documentou taxa de resolução de 78% em disfonias funcionais em seis semanas — um resultado que, se publicado hoje, colocaria o método no topo das diretrizes baseadas em evidências. O trabalho foi praticamente perdido quando Froeschels fugiu da Europa na Segunda Guerra.
-
-O diagnóstico de disfonia funcional requer exclusão de causas orgânicas por videoestroboscopia, avaliação da qualidade vocal por parâmetros acústicos (F0, jitter, shimmer, HNR) e avaliação aerodinâmica da produção vocal. A classificação etiológica — hiperfuncional vs. hipofuncional, com ou sem componente psicogênico — orienta a conduta: técnicas de facilitação vocal direta (glide descendente, voz mumbada, mastigação de Froeschels) para hiperfuncionais; técnicas de ataque vocal para hipofuncionais.
-
-Profissionais de voz — professores, cantores, advogados, pastores — constituem a população de maior risco para disfonia funcional crônica. A sobrecarga vocal acumulada, sem higiene vocal adequada e sem técnica, produz padrões musculares compensatórios que se tornam habituais. A intervenção precoce evita a progressão para lesões estruturais como nódulos, pólipos e edema de Reinke.`},
-    {id:'au2',ttl:'Disfagia Orofaríngea no Adulto: Avaliação e Manejo Baseado em Evidências',diff:'d',words:400,age:'Adulto',
-     meta:'Deglutição · Difícil',
-     body:`A deglutição é um ato reflexo-voluntário altamente complexo que envolve a coordenação sequencial de mais de 30 pares musculares ao longo de aproximadamente 1,5 segundos na fase faríngea. A disfagia orofaríngea — dificuldade de transferência do bolo alimentar da cavidade oral à faringe e ao esôfago — é manifestação de disfunção neurológica, estrutural ou de ambas, com consequências que vão da desnutrição à pneumonia aspirativa potencialmente fatal.
-
-Pommerenke (1948) mapeou as zonas de gatilho faríngeo que disparam o reflexo de deglutição: pilares palatinos anteriores, base de língua e parede posterior da faringe. Este mapeamento — publicado no American Journal of Physiology, invisível ao radar clínico por décadas — é o fundamento científico da estimulação tátil-térmica: a aplicação de frio nos pilares palatinos produz potenciação do reflexo de deglutição, com efeito documentado de redução do atraso de disparo faríngeo. O cubo de gelo que toda fonoaudióloga usa em beira de leito tem raízes em Pommerenke 1948.
-
-A avaliação instrumental da disfagia — videofluoroscopia da deglutição (VFS) e videoendoscopia da deglutição (FEES) — fornece informações complementares e não substituíveis por avaliação clínica isolada. A VFS oferece visualização dinâmica de todas as fases da deglutição em tempo real, com quantificação de penetração e aspiração pelo Penetration-Aspiration Scale. A FEES oferece visualização direta da laringe e hipofaringe antes e após a deglutição, com vantagem logística de ser realizada à beira do leito.
-
-O manejo compensatório — posturas, modificações de textura e viscosidade, manobras de deglutição — produz redução imediata do risco de aspiração, mas não modifica a fisiologia subjacente. O manejo reabilitativo — estimulação neuromuscular, exercícios de fortalecimento da musculatura supra-hióidea, estimulação elétrica neuromuscular (NMES) — objetiva modificação fisiológica duradoura. A combinação das abordagens, calibrada pela avaliação instrumental e pelo perfil do paciente, constitui a prática contemporânea baseada em evidências.
-
-Populações de alto risco incluem pacientes com AVC (prevalência de disfagia: 30–50% na fase aguda), doença de Parkinson (70–80%), neoplasias de cabeça e pescoço pós-tratamento, traumatismo cranioencefálico e miopatias. A detecção precoce reduz significativamente a mortalidade por pneumonia aspirativa — causa de morte evitável e frequentemente subdiagnosticada nestas populações.`},
-    {id:'au3',ttl:'Afasia Pós-AVC: Avaliação, Prognóstico e Reabilitação',diff:'dex',words:420,age:'Adulto',
-     meta:'Neurológico · EXTREMO',
-     body:`A afasia adquirida pós-AVC constitui um dos desafios clínicos mais complexos da fonoaudiologia, pois intersecta neurologia, linguística, psicologia e medicina de reabilitação. Afeta aproximadamente 30–35% dos sobreviventes de AVC isquêmico, com impacto devastador na qualidade de vida, participação social e capacidade de retorno ao trabalho — dimensões que apenas recentemente começaram a ser incorporadas aos desfechos primários de ensaios clínicos.
-
-A classificação clássica de afasia — Broca, Wernicke, condução, global, transcortical motora e sensorial — mantém utilidade clínica como shorthand comunicativo entre profissionais, mas é insuficiente para orientar prognóstico e planejamento terapêutico individualizado. A análise do perfil linguístico — compreensão auditiva de palavras e sentenças, nomeação, fluência de discurso, repetição, leitura e escrita — oferece mapeamento mais preciso das capacidades preservadas e comprometidas.
-
-Alexander Luria, trabalhando no Instituto de Neurocirurgia de Moscou com soldados soviéticos com lesões cerebrais de guerra (1947), demonstrou que regiões encefálicas intactas podem assumir funções de áreas lesadas — o que denominou reorganização funcional cerebral. Publicado em russo e inicialmente suprimido como idealismo pelo regime stalinista, o trabalho foi traduzido para o inglês apenas em 1963. Sua tese central é o fundamento de toda neuroreabilitação contemporânea: a Melodic Intonation Therapy, que utiliza o hemisfério direito — normalmente envolvido no processamento musical — para bypassar lesões na área de Broca, é aplicação direta dos princípios de Luria.
-
-Hildred Schuell (1964) demonstrou que a linguagem em afasia não está destruída, mas funciona com eficiência reduzida — como um motor com mau contato. Sua conclusão terapêutica: estimulação auditiva intensa, repetitiva, com gradação cuidadosa de complexidade, reativa as redes linguísticas comprometidas. A dose terapêutica — intensidade e frequência das sessões — mostrou ser variável crítica, tanto ou mais importante que a técnica específica. A abordagem de Schuell foi redescoberta em 2008 para afasias severas em platô terapêutico, demonstrando que a história da ciência frequentemente avança em espirais, não em linhas retas.
-
-Os fatores prognósticos com maior suporte empírico para recuperação da afasia incluem: volume e localização da lesão, presença e extensão da área de penumbra, tempo de início da reabilitação, intensidade do tratamento (>5h/semana demonstra superioridade em meta-análises), nível pré-mórbido de escolaridade e repertório linguístico, e qualidade do suporte social e familiar. A reabilitação iniciada dentro de 24–48h do AVC, quando o estado clínico permite, associa-se a melhores desfechos em todas as dimensões.`}
-  ],
-  idoso:[
-    {id:'i1',ttl:'Presbifonia: Diagnóstico Diferencial e Manejo',diff:'m',words:300,age:'60a+',
-     meta:'Voz · Médio',
-     body:`A presbifonia — as alterações vocais decorrentes do envelhecimento fisiológico — é um diagnóstico frequentemente sub ou supradiagnosticado, e a distinção correta de disfonia patológica tem implicações terapêuticas significativas. Ptacek e Sander (1966) publicaram o primeiro mapeamento sistemático de frequência fundamental, jitter, shimmer e relação harmônico-ruído em adultos saudáveis por faixa etária. Seu trabalho — publicado antes da era digital, raramente citado na formação fonoaudiológica brasileira — definiu os normativos que tornam possível afirmar quando uma voz é simplesmente velha e quando é patológica.
-
-As alterações vocais do envelhecimento decorrem de múltiplos mecanismos concomitantes: atrofia da musculatura vocal intrínseca (especialmente do músculo tiroaritenoideo), diminuição da tonicidade do tecido mucoso das pregas vocais, rigidez cartilaginosa progressiva, redução da pressão subglótica por perda de elasticidade pulmonar, e alterações na coordenação pneumofonoarticulatória. O resultado acústico típico inclui elevação da F0 nos homens (por perda de massa das pregas), queda da F0 nas mulheres pós-menopausa, aumento de jitter e shimmer, e redução da extensão vocal.
-
-A distinção de disfonia patológica requer avaliação clínica estruturada e, quando indicado, videoestroboscopia. Lesões benignas das pregas vocais — nódulos, pólipos, pseudocistos — são tão prevalentes no idoso quanto em adultos jovens, e não devem ser confundidas com presbifonia. Paralisia de prega vocal, especialmente unilateral, é diagnóstico frequentemente tardio em idosos, que tendem a atribuir alterações vocais ao envelhecimento normal.
-
-O tratamento da presbifonia estabelecida inclui exercícios de resistência vocal com evidência crescente — o LSVT-Loud e adaptações — e, em casos selecionados, procedimentos de medialização (injeção intracordal com materiais biocompatíveis ou tireoplastia). A intervenção melhora de forma documentada a qualidade de vida, a participação social e a capacidade de comunicação do idoso — dimensões frequentemente negligenciadas em favor de parâmetros puramente biomédicos.`},
-    {id:'i2',ttl:'Elderspeak: Da Evidência ao Protocolo de Treinamento',diff:'d',words:380,age:'60a+',
-     meta:'Comunicação Geriátrica · Difícil',
-     body:`O elderspeak — padrão de fala adaptada "para baixo" direcionada a idosos, caracterizado por diminutivos excessivos, pronomes coletivos infantilizantes, entonação exagerada e simplificação gramatical — não é uma quirela comunicativa inócua. É um fenômeno com substrato neurológico e impacto cognitivo documentado, que a fonoaudiologia tem ferramentas únicas para identificar, mensurar e tratar.
-
-Susan Kemper (1994) demonstrou que idosos sistematicamente expostos ao elderspeak apresentavam declínio cognitivo acelerado, redução da autoestima, maior resistência ao cuidado e níveis elevados de agitação em comparação com idosos que recebiam comunicação respeitosa. O mecanismo — explicado pelo Communication Predicament of Aging de Ryan et al. (1986) — é a profecia autorrealizável: o cuidador comunica, através do padrão de fala, que o idoso é incapaz; o idoso, em resposta a esta expectativa comunicada, comporta-se de acordo com a incapacidade esperada. O estereótipo se materializa na conduta.
-
-Williams, Kemper e Hummert (2004) desenvolveram e testaram um protocolo de treinamento de quatro horas para cuidadores de ILPIs. O resultado: redução de 58% nos padrões de elderspeak identificados na comunicação, mantida em reavaliação três meses após o treinamento. Este dado — quatro horas de treinamento para mudança comunicativa mensurável e duradoura — é praticamente desconhecido na prática clínica brasileira, apesar de representar uma das intervenções com melhor custo-efetividade documentado em comunicação geriátrica.
-
-A avaliação do elderspeak exige análise de amostras de interação real entre cuidador e idoso, com identificação de: frequência de diminutivos por minuto de fala, proporção de perguntas retóricas, padrão de entonação (avaliável instrumentalmente ou por percepção treinada), uso de pronomes coletivos ("nós vamos tomar o banho"), e marcadores de infantilização direta. A plataforma PHONOBASE oferece análise automatizada destes parâmetros, tornando o rastreio viável em contextos clínicos de alta demanda como ILPIs, hospitais geriátricos e UBSs.
-
-A intervenção não se limita ao treinamento de cuidadores: inclui educação de equipes multiprofissionais, sensibilização de familiares e, quando necessário, assessoria institucional para mudança de cultura comunicativa. O fonoaudiólogo que domina esta área tem papel transformador — não apenas reabilitativo — no cuidado ao idoso.`},
-    {id:'i3',ttl:'Disfagia no Idoso: Complexidade Diagnóstica e Ética Clínica',diff:'dex',words:450,age:'60a+',
-     meta:'Deglutição · EXTREMO — Alta Complexidade',
-     body:`A disfagia orofaríngea no idoso representa convergência de múltiplos fatores fisiopatológicos que tornam a avaliação e o manejo qualitativamente diferentes daqueles aplicáveis em adultos jovens. A presbifagia — as alterações de deglutição decorrentes do envelhecimento fisiológico — coexiste frequentemente com disfagia patológica sobreposta por AVC, doença de Parkinson, demência ou neoplasia, criando perfis clínicos de alta complexidade que desafiam a precisão diagnóstica mesmo do clínico experiente.
-
-As modificações fisiológicas da deglutição no envelhecimento incluem: redução da pressão de língua (medida por manometria: -15 a -25% em média após os 70 anos), aumento do atraso de disparo faríngeo, redução da complacência da parede faríngea, diminuição do fechamento laríngeo por atrofia dos músculos aritenoideos, e redução da coordenação respiração-deglutição. Individualmente, cada alteração é compensável; combinadas em diferentes proporções e sobrepostas a patologias, produzem fenótipos clínicos de disfagia que exigem instrumentação para caracterização adequada.
-
-O diagnóstico de aspiração silenciosa — penetração de material alimentar abaixo das pregas vocais sem resposta de tosse eficiente — é particularmente problemático no idoso. A tosse voluntária está geralmente preservada, mas a tosse reflexa pode estar significativamente deprimida por redução da sensibilidade laríngea e por efeitos de medicamentos. Estudos com FEES em populações geriátricas documentam aspiração silenciosa em 30–40% dos pacientes que não demonstram qualquer sinal clínico sugestivo — o que torna a avaliação clínica à beira do leito, isoladamente, insuficiente para decisão terapêutica segura em populações de alto risco.
-
-A dimensão ética da disfagia no idoso com demência avançada constitui o território mais complexo e menos estruturado da prática fonoaudiológica. A decisão sobre introdução de nutrição enteral por sonda nasogástrica ou gastrostomia percutânea endoscópica envolve considerações sobre qualidade de vida, prognóstico da doença de base, valores e desejos do paciente (frequentemente não comunicáveis em estadios avançados de demência), diretivas antecipadas de vontade e cultura familiar. A evidência científica sobre o impacto da gastrostomia em demência avançada é, no mínimo, ambígua: não há demonstração de aumento de sobrevida ou redução de pneumonia aspirativa em ensaios clínicos randomizados nesta população.
-
-O fonoaudiólogo, neste contexto, ocupa papel de consultor técnico e facilitador de decisão compartilhada — não de tomador de decisão unilateral. O relatório fonoaudiológico que documenta a disfagia, quantifica o risco e delineia as opções de manejo — tanto as de suporte quanto as paliativas — fornece a base objetiva para a discussão multidisciplinar e familiar que a complexidade ética exige. A formação em cuidados paliativos e em comunicação de más notícias é, portanto, competência complementar indispensável ao fonoaudiólogo que atua em contextos geriátricos de alta complexidade.`}
-  ]
-};
-
-let curAge='bebe',curText=null,readTimer=null,readSec=0,readRunning=false,readFinished=false;
-function setAge(age,btn){
-  curAge=age;
-  document.querySelectorAll('.age-tab').forEach(b=>b.classList.remove('on'));
-  if(btn)btn.classList.add('on');
-  else{const b=document.querySelector('.age-tab[data-age="'+age+'"]');if(b)b.classList.add('on');}
-  renderTextList();
-  resetReading();
+function renderWords() {
+  const container = document.getElementById('tc-words');
+  const words = currentText.content.split(/\s+/);
+  wordElements = [];
+  container.innerHTML = words.map((w, i) => `<span class="word" id="w${i}" onclick="markWord(${i})">${w}</span> `).join('');
+  wordElements = words.map((w, i) => ({word: w.replace(/[^a-záéíóúâêîôûãõçàü\w]/gi,''), raw: w, idx: i}));
+  updateProgress();
 }
-function renderTextList(){
-  const list=TEXTS[curAge]||[];
-  document.getElementById('text-list').innerHTML=list.map(t=>`
-    <div class="text-item${curText?.id===t.id?' on':''}" onclick="selectText('${t.id}')">
-      <div class="ti-hd"><div class="ti-ttl">${t.ttl}</div><div class="ti-diff ${t.diff}">${t.diff==='f'?'Fácil':t.diff==='m'?'Médio':t.diff==='d'?'Difícil':'EXTREMO'}</div></div>
-      <div class="ti-info">${t.words} palavras · ${t.age} · ${t.meta}</div>
-    </div>`).join('');
+
+/* ══ MARK MODE ══ */
+function setMarkMode(mode) {
+  markMode = mode;
+  document.querySelectorAll('.mark-btn').forEach(b => b.classList.remove('active'));
+  if (mode === 'error') document.getElementById('mark-err-btn').classList.add('active');
+  if (mode === 'hesitation') document.getElementById('mark-hes-btn').classList.add('active');
 }
-function selectText(id){
-  const all=Object.values(TEXTS).flat();
-  curText=all.find(t=>t.id===id);
-  if(!curText)return;
-  resetReading();
-  renderTextList();
-  const body=document.getElementById('reading-body');
-  const words=curText.body.split(/(\s+)/);
-  body.innerHTML=`<div class="r-txt-ttl">${curText.ttl}</div>
-    <div class="r-txt-meta">${curText.words} palavras · ${curText.meta}</div>
-    <div class="r-txt-body">${words.map((w,i)=>/\s/.test(w)?w:`<span class="word" id="w${i}">${w}</span>`).join('')}</div>`;
+
+function markWord(idx) {
+  const el = document.getElementById('w' + idx);
+  if (!el) return;
+  if (markMode === 'clear') {
+    errors.delete(idx);
+    hesitations.delete(idx);
+    el.className = 'word';
+  } else if (markMode === 'error') {
+    if (errors.has(idx)) { errors.delete(idx); el.className = 'word'; }
+    else { errors.add(idx); hesitations.delete(idx); el.className = 'word error'; }
+  } else if (markMode === 'hesitation') {
+    if (hesitations.has(idx)) { hesitations.delete(idx); el.className = 'word'; }
+    else { hesitations.add(idx); errors.delete(idx); el.className = 'word hesitation'; }
+  }
+  updateMetrics();
 }
-function toggleReading(){
-  if(!curText){alert('Selecione um texto primeiro.');return;}
-  if(readRunning){pauseReading();}else{startReading();}
+
+function clearAllMarks() {
+  errors.clear();
+  hesitations.clear();
+  document.querySelectorAll('.word').forEach(el => el.className = 'word');
+  updateMetrics();
 }
-function startReading(){
-  readRunning=true;
-  document.getElementById('leit-start').textContent='Pausar';
-  document.getElementById('leit-finish').style.display='';
-  document.getElementById('leit-timer').classList.add('run');
-  readTimer=setInterval(()=>{readSec++;updateReadTimer();},1000);
+
+/* ══ TIMER ══ */
+function startTimer() {
+  if (!currentText) return;
+  timerRunning = true;
+  timerStarted = true;
+  document.getElementById('btn-start').disabled = true;
+  document.getElementById('btn-pause').disabled = false;
+  document.getElementById('btn-stop').disabled = false;
+  document.getElementById('timer-display').className = 'timer-display running';
+  timerInterval = setInterval(() => {
+    elapsedSeconds++;
+    updateTimerDisplay();
+    updateMetrics();
+  }, 1000);
 }
-function pauseReading(){
-  readRunning=false;
-  clearInterval(readTimer);
-  document.getElementById('leit-start').textContent='Continuar';
-  document.getElementById('leit-timer').classList.remove('run');
+
+function pauseTimer() {
+  if (!timerRunning) return;
+  clearInterval(timerInterval);
+  timerRunning = false;
+  document.getElementById('btn-start').disabled = false;
+  document.getElementById('btn-pause').disabled = true;
+  document.getElementById('timer-display').className = 'timer-display';
 }
-function updateReadTimer(){
-  const m=String(Math.floor(readSec/60)).padStart(2,'0'),s=String(readSec%60).padStart(2,'0');
-  document.getElementById('leit-timer').textContent=m+':'+s;
-  if(curText){
-    const pct=Math.min(100,(readSec/((curText.words/130)*60))*100);
-    document.getElementById('leit-prog').style.width=pct+'%';
-    const wpm=Math.round((curText.words/(readSec||1))*60);
-    document.getElementById('leit-wpm').textContent=wpm+' ppm';
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  document.getElementById('btn-start').disabled = true;
+  document.getElementById('btn-pause').disabled = true;
+  document.getElementById('btn-stop').disabled = true;
+  document.getElementById('timer-display').className = 'timer-display stopped';
+  if (timerStarted) document.getElementById('btn-report').disabled = false;
+  updateMetrics();
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerStarted = false;
+  elapsedSeconds = 0;
+  updateTimerDisplay();
+  document.getElementById('timer-display').className = 'timer-display';
+  document.getElementById('btn-start').disabled = !currentText;
+  document.getElementById('btn-pause').disabled = true;
+  document.getElementById('btn-stop').disabled = true;
+  document.getElementById('btn-report').disabled = true;
+  document.getElementById('m-wpm').textContent = '—';
+  document.getElementById('m-accuracy').textContent = '—';
+  document.getElementById('progress-fill').style.width = '0%';
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(elapsedSeconds / 60);
+  const s = elapsedSeconds % 60;
+  document.getElementById('timer-display').textContent = 
+    String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+}
+
+function updateMetrics() {
+  const errCount = errors.size;
+  const hesCount = hesitations.size;
+  document.getElementById('m-errors').textContent = errCount;
+  document.getElementById('m-hesit').textContent = hesCount;
+
+  if (elapsedSeconds > 0 && currentText) {
+    const totalWords = wordElements.length;
+    const correctWords = totalWords - errCount;
+    const wpm = Math.round((totalWords / elapsedSeconds) * 60);
+    const accuracy = Math.round((correctWords / totalWords) * 100);
+    document.getElementById('m-wpm').textContent = wpm;
+    document.getElementById('m-accuracy').textContent = accuracy + '%';
+    updateProgress();
   }
 }
-function finishReading(){
-  clearInterval(readTimer);readRunning=false;readFinished=true;
-  document.getElementById('leit-timer').classList.remove('run');
-  document.getElementById('leit-timer').classList.add('done');
-  document.getElementById('leit-start').style.display='none';
-  document.getElementById('leit-finish').style.display='none';
-  document.getElementById('rr-ai-btn').style.display='';
-  buildReadingReport();
-}
-function resetReading(){
-  clearInterval(readTimer);readSec=0;readRunning=false;readFinished=false;
-  document.getElementById('leit-timer').textContent='00:00';
-  document.getElementById('leit-timer').className='timer';
-  document.getElementById('leit-start').textContent='Iniciar';
-  document.getElementById('leit-start').style.display='';
-  document.getElementById('leit-finish').style.display='none';
-  document.getElementById('rr-ai-btn').style.display='none';
-  document.getElementById('leit-prog').style.width='0%';
-  document.getElementById('leit-wpm').textContent='— ppm';
-  document.getElementById('rr-summary').innerHTML='';
-  document.getElementById('rr-ai-result').innerHTML='<div class="r-empty" style="height:80px;opacity:.5"><div class="r-empty-msg">Aguardando leitura</div></div>';
-}
-function buildReadingReport(){
-  if(!curText||readSec<2)return;
-  const wpm=Math.round((curText.words/readSec)*60);
-  const mins=Math.floor(readSec/60),secs=readSec%60;
-  const expected=curText.diff==='f'?130:curText.diff==='m'?110:curText.diff==='d'?95:80;
-  const perc=Math.round((wpm/expected)*100);
-  let h='';
-  h+=rrs(wpm,'ppm','Velocidade de leitura')+rrs(mins+'m '+secs+'s','tempo','Tempo total');
-  h+=rrs(curText.words,'palavras','Palavras no texto')+rrs(perc+'%','esperado','% da norma');
-  document.getElementById('rr-summary').innerHTML=h;
-}
-function rrs(val,unit,lbl){return`<div class="rrs"><div class="rrs-n">${val}<span class="rrs-u"> ${unit}</span></div><div class="rrs-l">${lbl}</div></div>`;}
-async function reportReading(){
-  if(!gk()){openModal();return;}
-  if(!curText||readSec<2)return;
-  const wpm=Math.round((curText.words/readSec)*60);
-  const expected=curText.diff==='f'?130:curText.diff==='m'?110:curText.diff==='d'?95:80;
-  const perc=Math.round((wpm/expected)*100);
-  document.getElementById('rr-ai-result').innerHTML='<div class="r-load" style="padding:14px"><div class="spb"></div>Gerando relatório…</div>';
-  const sys=`Fonoaudióloga clínica sênior especialista em avaliação de leitura. 
-Dados: texto="${curText.ttl}", dificuldade=${curText.diff==='f'?'Fácil':curText.diff==='m'?'Médio':curText.diff==='d'?'Difícil':'Extremo'}, faixa etária=${curText.age}, ${curText.words} palavras, tempo=${readSec}s, velocidade=${wpm}ppm, norma esperada=${expected}ppm (${perc}% do esperado).
-Produza relatório de leitura cronometrada: interpretação da velocidade, hipóteses clínicas, recomendações. Máx 180 palavras. Português.`;
-  const res=await callAI(sys,'Gere o relatório de leitura.');
-  const el=document.getElementById('rr-ai-result');
-  if(!res||res.e){el.innerHTML='<div class="r-err" style="margin:12px">'+(res?.m||'Erro')+'</div>';return;}
-  el.innerHTML='<div class="rb"><div class="rblbl"><div class="rbdot" style="background:var(--cyan)"></div>Relatório IA</div><div class="rbtxt">'+res.t.replace(/\n/g,'<br>')+'</div></div>';
-}
-setAge('bebe');
 
-/* ══════════════════════════════════════════════
-   PESQUISAS
-══════════════════════════════════════════════ */
-const PP=[
-  {id:0,y:1854,cat:'voz',lost:true,title:'Observações do Aparelho Vocal Vivo',author:'Manuel García · Royal Society of London',tags:['tv','tl'],oq:'Em setembro de 1854, García — professor de canto espanhol, não médico — comprou um espelho de dentista por 6 francos e, usando reflexo de luz solar, tornou-se o primeiro ser humano a observar cordas vocais em funcionamento.',es:'García era músico, não médico. A medicina levou décadas para assimilar o que um artista havia descoberto.',ap:'Fundamento de toda laringoscopia. Cada videoestroboscopia, nasofibroscopia e videolaringoscopia tem raízes neste espelho de 6 francos.'},
-  {id:1,y:1881,cat:'voz',lost:false,title:'Lei de Semon — Paralisia Laríngea',author:'Felix Semon & Rosenbach · Archives of Laryngology, Londres',tags:['tv'],oq:'Fibras que controlam abdutores são afetadas antes das adutoras em lesões progressivas do NLR. Rouquidão precede dificuldade respiratória — prognóstico laríngeo estratificado.',es:'A hipótese Wagner-Grossman gerou controvérsia e a lei foi considerada ultrapassada por décadas.',ap:'Diagnóstico diferencial em paralisia de prega vocal após tireoidectomia, compressão tumoral de mediastino e lesão vagal.'},
-  {id:2,y:1924,cat:'voz',lost:true,title:'Método Mastigado para Disfonia Funcional',author:'Emil Froeschels · Policlínica de Viena',tags:['tv','tl'],oq:'Mastigação exagerada com vocalização simultânea produz voz sem tensão laríngea. Taxa de 78% de resolução em disfonias funcionais em 6 semanas — resultado que poucos estudos modernos superam.',es:'Froeschels fugiu da Europa nos anos 1930 durante a perseguição nazista. Sua Policlínica foi fechada. Obra jamais traduzida sistematicamente para o português.',ap:'Disfonia hiperfuncional, fadiga vocal, voz do professor. Alta eficácia documentada, custo zero, subutilizado por desconhecimento histórico.'},
-  {id:3,y:1927,cat:'fluencia',lost:true,title:'Cerebral Dominance and Stuttering',author:'Samuel Orton & Lee Travis · Universidade de Iowa',tags:['tflu','tl'],oq:'Gagueira como competição hemisférica pelo controle motor da fala — sem dominância estabelecida, os dois hemisférios competem. Hipótese considerada ousada demais para a época.',es:'Abandonada antes de a neuroimagem poder testá-la. Décadas de negligência.',ap:'fMRI publicadas entre 2019–2024 confirmaram ativação anormal do hemisfério direito em pessoas que gaguejam. Travis estava na direção certa, 97 anos antes.'},
-  {id:4,y:1947,cat:'afasia',lost:false,title:'Reorganização Funcional Cerebral após Trauma',author:'Alexander Luria · Instituto de Neurocirurgia de Moscou',tags:['tafa'],oq:'Regiões encefálicas intactas assumem funções de áreas lesadas. Demonstrado com soldados soviéticos com lesões cerebrais de guerra — base de toda neuroreabilitação.',es:'Publicado em russo. Condenado como idealismo pelo regime stalinista. Tradução inglesa só em 1963.',ap:'Fundamento da Melodic Intonation Therapy, da reabilitação pós-AVC e de toda abordagem neuroplástica contemporânea.'},
-  {id:5,y:1948,cat:'deglu',lost:true,title:'Neuromuscular Coordination in Deglutition',author:'W.T. Pommerenke · American Journal of Physiology',tags:['tde','tl'],oq:'Mapeamento das zonas de gatilho faríngeo: pilares palatinos, base de língua, parede posterior. Cada zona com limiar e latência diferentes de disparo reflexo.',es:'Publicado em fisiologia pura, fora do radar clínico por décadas. Citado mas raramente lido.',ap:'Fundamento científico da estimulação tátil-térmica. O cubo de gelo nos pilares palatinos que toda fonoaudióloga usa em beira de leito tem raízes aqui.'},
-  {id:6,y:1956,cat:'audio',lost:true,title:'Discriminação Tonal em Bebês Pré-Linguísticos',author:'S. Wolff · Zeitschrift für Phonetik, Berlim',tags:['tau','tl'],oq:'Bebês pré-linguísticos discriminam frequências tonais com precisão surpreendente — 30 anos antes do BERA neonatal existir como ferramenta clínica.',es:'Publicado em alemão, circulação limitada na Guerra Fria. Invisível ao radar anglófono por 30 anos.',ap:'Base conceitual do BERA neonatal e da triagem auditiva universal que detecta perdas auditivas no primeiro dia de vida.'},
-  {id:7,y:1964,cat:'afasia',lost:true,title:"Schuell's Stimulation Approach to Aphasia",author:'Hildred Schuell · Minneapolis VA Hospital',tags:['tafa','tl'],oq:'A linguagem em afasia funciona com eficiência reduzida, não está destruída. Estimulação auditiva intensa e repetitiva a reativa. Dose terapêutica é variável crítica.',es:'Schuell era mulher trabalhando no VA, não em universidade de prestígio. Morreu em 1959. Técnicas usadas hoje sem que se cite o nome.',ap:'Redescoberta em 2008 para afasias severas em platô. Aplicada hoje como tratamento de alta intensidade com suporte em meta-análises.'},
-  {id:8,y:1966,cat:'voz',lost:true,title:'Acoustic Properties of the Aging Voice',author:'P.H. Ptacek & E.K. Sander · J Speech Hearing Research',tags:['tv','tl'],oq:'Primeiro mapeamento sistemático de F0, jitter, shimmer e HNR em adultos saudáveis por faixa etária. Definiu normativos para o envelhecimento vocal normal.',es:'Publicado antes da era digital. Raramente citado e quase nunca lido na formação brasileira.',ap:'Base do diagnóstico de presbifonia. Sem normativos por faixa etária, o diagnóstico diferencial presbifonia vs. disfonia patológica é metodologicamente inválido.'},
-  {id:9,y:1986,cat:'infantil',lost:false,title:'Communication Predicament of Aging',author:'Ryan, Giles et al. · Language & Communication',tags:['tinf'],oq:'Fala adaptada comunica incapacidade → interlocutor comporta-se de acordo → profecia autorrealizável com consequências neurológicas documentadas.',es:'Publicado em linguística, invisível ao radar fonoaudiológico. Kemper 1994 popularizou e Ryan ficou na sombra.',ap:'Teoria que fundamenta o treinamento de cuidadores. Explica o mecanismo pelo qual o elderspeak sistemático é neurologicamente prejudicial.'},
-  {id:10,y:1994,cat:'infantil',lost:false,title:'Elderspeak: Patronizing Style with Older Adults',author:'Susan Kemper · Journal of Gerontology',tags:['tinf'],oq:'Idosos expostos sistematicamente ao elderspeak: declínio cognitivo acelerado, autoestima reduzida, resistência ao cuidado, maior agitação comportamental.',es:'Comunicação geriátrica é periférica na formação de fono no Brasil. Pouquíssimos estudos brasileiros derivados em 30 anos.',ap:'Base científica do protocolo de treinamento de cuidadores de ILPIs. Um dos achados mais práticos e subutilizados da gerontologia comunicativa.'},
-  {id:11,y:2004,cat:'infantil',lost:false,title:'Decreasing Elderspeak: A Training Program',author:'Brent Williams, Susan Kemper & Mary Hummert · The Gerontologist',tags:['tinf'],oq:'Treinamento de 4 horas → redução de 58% no elderspeak, mantida em reavaliação 3 meses depois. Resultado replicado em diferentes contextos institucionais.',es:'Publicado em gerontologia. O dado "4h → −58%" é desconhecido na prática fonoaudiológica brasileira.',ap:'Protocolo direto para ILPIs, hospitais e programas de saúde da família. Quatro horas de treinamento para mudança mensurável e duradoura.'},
-  {id:12,y:2010,cat:'audio',lost:false,title:'Universal Newborn Hearing Screening no Brasil',author:'Ministério da Saúde · Lei 12.303/2010',tags:['tau'],oq:'Obrigatoriedade da triagem auditiva neonatal em todos os hospitais brasileiros — implementação de 54 anos após Wolff (1956) demonstrar a capacidade auditiva neonatal.',es:'O intervalo de 54 anos entre a descoberta básica e a implementação política ilustra a distância entre ciência e política de saúde.',ap:'A detecção de perda auditiva antes dos 6 meses de vida e intervenção antes dos 12 meses produz resultados de linguagem indistinguíveis dos de crianças ouvintes.'},
-  {id:13,y:2019,cat:'fluencia',lost:false,title:'Neuroimagem funcional na Gagueira',author:'Chang et al. · Brain · Johns Hopkins',tags:['tflu'],oq:'fMRI confirmou hipoativação da área de Broca e ativação anormal do hemisfério direito em adultos que gaguejam durante fala fluente — Travis 1927 estava parcialmente correto.',es:'Décadas de negligência do substrato neurológico e atribuição de causas psicológicas atrasaram o avanço terapêutico.',ap:'Confirma que a gagueira tem substrato neurobiológico real. Impacto no aconselhamento familiar e na abordagem terapêutica baseada em neuroplasticidade.'},
-  {id:14,y:2023,cat:'deglu',lost:false,title:'NMES em Disfagia Orofaríngea: Meta-análise',author:'Langmore et al. · Dysphagia Journal',tags:['tde'],oq:'Estimulação elétrica neuromuscular combinada com terapia convencional supera terapia isolada em desfechos funcionais de deglutição em populações neurológicas.',es:'A evidência de NMES permanece controversa para pacientes sem diagnóstico neurológico definido.',ap:'Orienta a seleção de candidatos a NMES e a combinação com abordagens comportamentais. Intensidade e seleção de eletrodos são variáveis críticas.'},
-  {id:15,y:2024,cat:'voz',lost:false,title:'Inteligência Artificial no Diagnóstico de Disfonia',author:'Multiple · Nature Communications · 2024',tags:['tv'],oq:'Modelos de deep learning alcançaram acurácia de 89–94% na detecção de lesões benignas das pregas vocais a partir de análise acústica — comparável a especialistas.',es:'Datasets ainda predominantemente anglófonos. Normativos para o português brasileiro são urgentemente necessários.',ap:'Ferramenta de triagem de baixo custo para populações sem acesso a videoestroboscopia. Não substitui avaliação especializada, mas democratiza o rastreio.'},
-  {id:16,y:2024,cat:'afasia',lost:false,title:'AAC Baseada em IA para Afasia Não-Fluente',author:'Speechify Lab · Stroke 2024',tags:['tafa'],oq:'Sistemas de comunicação alternativa com predição linguística por LLMs reduziram tempo de formulação em 67% e aumentaram participação comunicativa em afásicos não-fluentes crônicos.',es:'Resultados obtidos majoritariamente com anglófonos. Sistemas em português ainda limitados.',ap:'Abre nova fronteira na reabilitação de afasia crônica grave. Fonoaudiólogos precisam liderar a adaptação para o contexto brasileiro.'},
-  {id:17,y:2024,cat:'fluencia',lost:false,title:'Gagueira e Identidade: Abordagem Aceitação-Comprometimento',author:'Constantino et al. · ASHA Perspectives 2024',tags:['tflu'],oq:'ACT combinada com terapia de fluência produziu melhores desfechos em qualidade de vida e participação comunicativa do que fluência isolada em RCT de 18 meses.',es:'ACT ainda subutilizada na prática fonoaudiológica brasileira por lacuna de formação.',ap:'Formaliza a abordagem integrada fluência + identidade. O foco exclusivo na supressão da gagueira, sem atenção à relação do paciente com a própria fala, é terapeuticamente insuficiente.'}
-];
-const TN={'tv':'Voz','tflu':'Fluência','tafa':'Afasia','tde':'Deglutição','tau':'Audição','tinf':'Comunicação Geriátrica','tl':'Esquecida'};
-let reF='all',reA=null;
-function buildRF(){
-  const cats=[['all','Todas'],['voz','Voz'],['fluencia','Fluência'],['afasia','Afasia'],['deglu','Deglutição'],['audio','Audição'],['infantil','Geriátrica'],['lost','Esquecidas']];
-  document.getElementById('refb').innerHTML=cats.map(([c,l])=>'<button class="rf'+(c==='all'?' on':'')+'" data-cat="'+c+'" onclick="setRF(this)">'+l+'</button>').join('');
+function updateProgress() {
+  if (!currentText) return;
+  const total = wordElements.length;
+  const marked = errors.size + hesitations.size;
+  const pct = timerStarted ? Math.min(100, Math.round((elapsedSeconds / Math.max(60, elapsedSeconds)) * 100)) : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
 }
-function setRF(btn){document.querySelectorAll('.rf').forEach(b=>b.classList.remove('on'));btn.classList.add('on');reF=btn.dataset.cat;renderRN();}
-function renderRN(){
-  const list=reF==='all'?PP:reF==='lost'?PP.filter(p=>p.lost):PP.filter(p=>p.cat===reF);
-  document.getElementById('pesq-count').textContent=list.length+' pesquisa'+(list.length!==1?'s':'');
-  document.getElementById('renav').innerHTML=list.map(p=>'<div class="rni'+(reA===p.id?' on':'')+'" onclick="showP('+p.id+')"><div class="rni-y">'+p.y+'</div><div class="rni-t">'+p.title+'</div></div>').join('');
-}
-function showP(id){
-  reA=id;renderRN();const p=PP.find(x=>x.id===id);if(!p)return;
-  document.getElementById('redet').innerHTML=
-    '<div class="red-y">'+p.y+' · '+p.tags.filter(t=>t!=='tl').map(t=>TN[t]||t).join(' · ')+'</div>'+
-    '<div class="red-ttl">'+p.title+'</div><div class="red-aut">'+p.author+'</div>'+
-    '<div class="red-tags">'+p.tags.map(t=>'<span class="rtag '+t+'">'+(TN[t]||t)+'</span>').join('')+'</div>'+
-    '<div class="red-sec"><div class="red-slbl">O que foi descoberto</div><div class="red-stxt">'+p.oq+'</div></div>'+
-    '<div class="red-sec"><div class="red-slbl">Por que foi esquecida ou subutilizada</div><div class="red-stxt">'+p.es+'</div></div>'+
-    '<div class="red-sec"><div class="red-slbl">Aplicação clínica em 2026</div><div class="red-app">'+p.ap+'</div></div>';
-}
-buildRF();renderRN();
-document.getElementById('pesq-count').textContent=PP.length+' pesquisas';
 
-/* ══════════════════════════════════════════════
-   CONSULTA IA
-══════════════════════════════════════════════ */
-let ciM='c';
-function setM(m,btn){ciM=m;document.querySelectorAll('.mc').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
-function clearCI(){document.getElementById('ciout').innerHTML='';}
-function askCI(q){document.getElementById('cita').value=q;runCI();}
-async function runCI(){
-  const q=document.getElementById('cita').value.trim();
-  if(!q)return;if(!gk()){openModal();return;}
-  const sb=document.getElementById('cisend');sb.disabled=true;document.getElementById('citxt').textContent='…';
-  const mT={
-    c:'Foco CLÍNICO: protocolo, diagnóstico diferencial, conduta. Direto, baseado em evidência, cite estudos.',
-    h:'Foco HISTÓRICO: descoberta, contexto da época, por que foi esquecida, o que foi redescoberto, o que ainda é ignorado.',
-    b:'Foco nas LACUNAS BRASILEIRAS: o que não é feito no Brasil, normas PT-BR ausentes, pesquisas necessárias, diferenças culturais.',
-    p:'Foco PEDIÁTRICO: da neurobiologia do desenvolvimento às condutas práticas. Marco etário, janelas críticas, sinais de alerta.',
-    g:'Foco GERIÁTRICO: presbifonia, presbifagia, disfagia, demência, elderspeak, institucionalização, multimorbidade e comunicação.'
-  };
-  const sys=`Você é uma fonoaudióloga clínica sênior brasileira com doutorado e 20 anos de experiência. Domina as seguintes pesquisas: García 1854 (laringoscopia), Semon 1881 (paralisia laríngea), Froeschels 1924 (método mastigado 78% disfonia funcional), Travis 1927 (dominância cerebral gagueira — confirmada fMRI 2024), Luria 1947 (reorganização cerebral), Pommerenke 1948 (zonas gatilho disfagia), Wolff 1956 (audição neonatal pré-BERA), Schuell 1964 (afasia — redescoberta 2008), Ptacek 1966 (voz senil normativos), Ryan 1986 (Communication Predicament), Kemper 1994 (elderspeak → declínio cognitivo), Williams 2004 (4h → −58% elderspeak).
-${mT[ciM]}
-Cite autores e anos. Separe certeza científica de hipótese. Máx 380 palavras. Português brasileiro.`;
-  const out=document.getElementById('ciout'),idx=Date.now();
-  out.innerHTML='<div class="co-e" id="ce'+idx+'"><div class="co-q">'+q+'</div><div class="co-a" id="ca'+idx+'"><div class="r-load"><div class="spb"></div>Consultando…</div></div></div>'+out.innerHTML;
-  const res=await callAI(sys,q);
-  sb.disabled=false;document.getElementById('citxt').textContent='Enviar';
-  const el=document.getElementById('ca'+idx);
-  if(!res||res.e){el.innerHTML='<span style="color:var(--amb);white-space:pre-wrap">'+(res?.m||'Erro.')+'</span>';return;}
-  document.getElementById('cita').value='';
-  el.textContent='';let i=0,txt=res.t;
-  (function type(){if(i<txt.length){el.innerHTML=txt.slice(0,++i).replace(/\n/g,'<br>')+'<span class="caret"></span>';setTimeout(type,i<40?0:4);}else{el.innerHTML=txt.replace(/\n/g,'<br>');}})();
+/* ══ REPORT ══ */
+function openReport() {
+  if (!currentText) return;
+  buildReport();
+  document.getElementById('report-modal').classList.add('open');
 }
+
+function closeReport() {
+  document.getElementById('report-modal').classList.remove('open');
+}
+
+function buildReport() {
+  const totalWords = wordElements.length;
+  const errCount = errors.size;
+  const hesCount = hesitations.size;
+  const correctWords = totalWords - errCount;
+  const wpm = elapsedSeconds > 0 ? Math.round((totalWords / elapsedSeconds) * 60) : 0;
+  const accuracy = Math.round((correctWords / totalWords) * 100);
+  const hesRate = Math.round((hesCount / totalWords) * 100);
+  const errRate = Math.round((errCount / totalWords) * 100);
+  const minutes = Math.floor(elapsedSeconds / 60);
+  const seconds = elapsedSeconds % 60;
+  const timeStr = String(minutes).padStart(2,'0') + ':' + String(seconds).padStart(2,'0');
+
+  const patName = document.getElementById('pat-name').value || '—';
+  const patFono = document.getElementById('pat-fono').value || '—';
+  const patDiag = document.getElementById('pat-diag').value || '—';
+  const patEscola = document.getElementById('pat-escola').value || '—';
+  const patDob = document.getElementById('pat-dob').value;
+  const notes = document.getElementById('ann-notes').value;
+
+  const today = new Date().toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric'});
+  const hour = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
+
+  // AGE CALCULATION
+  let ageStr = '—';
+  if (patDob) {
+    const dob = new Date(patDob);
+    const age = Math.floor((new Date() - dob) / 31557600000);
+    ageStr = age + ' anos';
+  }
+
+  // CLASSIFICATION
+  const lvlName = LEVEL_NAMES[currentLevel];
+  let classification = '', classColor = '', classDesc = '';
+  if (accuracy >= 97 && hesRate <= 2) {
+    classification = 'Nível Independente'; classColor = 'grn';
+    classDesc = 'O paciente lê sem auxílio externo neste nível. Taxa de precisão excelente.';
+  } else if (accuracy >= 90 && hesRate <= 10) {
+    classification = 'Nível Instrucional'; classColor = 'cyan';
+    classDesc = 'Nível adequado para instrução com suporte do fonoaudiólogo. Progressão indicada.';
+  } else if (accuracy >= 80) {
+    classification = 'Nível Frustracional'; classColor = 'amb';
+    classDesc = 'Dificuldade significativa neste nível. Recomenda-se revisão do nível de dificuldade ou maior suporte terapêutico.';
+  } else {
+    classification = 'Nível Crítico'; classColor = 'red';
+    classDesc = 'O paciente apresenta dificuldade severa. Investigação aprofundada indicada.';
+  }
+
+  // WPM BENCHMARK (by age/level)
+  let wpmBenchmark = {low:0, avg:0, high:0, label:''};
+  if (currentLevel <= 2) wpmBenchmark = {low:60,avg:90,high:120,label:'Leitura básica'};
+  else if (currentLevel === 3) wpmBenchmark = {low:100,avg:130,high:160,label:'Leitura intermediária'};
+  else if (currentLevel === 4) wpmBenchmark = {low:120,avg:150,high:180,label:'Leitura avançada'};
+  else wpmBenchmark = {low:130,avg:165,high:200,label:'Leitura especializada'};
+
+  let wpmClass = wpm >= wpmBenchmark.high ? 'good' : wpm >= wpmBenchmark.avg ? '' : wpm >= wpmBenchmark.low ? 'warn' : 'crit';
+
+  // ERROR WORDS
+  const errorWords = [...errors].map(i => wordElements[i]?.raw || '').filter(Boolean);
+  const hesWords = [...hesitations].map(i => wordElements[i]?.raw || '').filter(Boolean);
+
+  // PHONOLOGICAL ERROR ANALYSIS
+  const phonoPatterns = analyzePhonologicalPatterns(errorWords, hesWords);
+
+  // CLINICAL IMPRESSIONS
+  const impressions = generateClinicalImpressions(wpm, wpmBenchmark, accuracy, hesRate, errRate, currentLevel);
+
+  // BUILD HTML
+  const html = `
+  <div class="report-section">
+    <div class="report-sec-title">Identificação</div>
+    <div class="report-grid">
+      <div class="rstat"><div class="rstat-val">${patName}</div><div class="rstat-lbl">Paciente</div></div>
+      <div class="rstat"><div class="rstat-val">${ageStr}</div><div class="rstat-lbl">Idade</div></div>
+      <div class="rstat"><div class="rstat-val">${today} ${hour}</div><div class="rstat-lbl">Data/Hora</div></div>
+    </div>
+    <div class="report-grid">
+      <div class="rstat"><div class="rstat-val">${patFono}</div><div class="rstat-lbl">Fonoaudiólogo(a)</div></div>
+      <div class="rstat"><div class="rstat-val">${patEscola}</div><div class="rstat-lbl">Escolaridade</div></div>
+      <div class="rstat"><div class="rstat-val">${patDiag}</div><div class="rstat-lbl">Diagnóstico / Hipótese</div></div>
+    </div>
+  </div>
+
+  <div class="report-section">
+    <div class="report-sec-title">Classificação Geral</div>
+    <div class="classification-badge b${currentLevel} c${currentLevel}" style="margin-bottom:12px">
+      <span>●</span> ${classification} · Nível ${lvlName}
+    </div>
+    <div class="report-text-block ${wpmClass.includes('good') ? 'good' : wpmClass === 'warn' ? 'warn' : wpmClass === 'crit' ? 'crit' : ''}">
+      ${classDesc}
+    </div>
+  </div>
+
+  <div class="report-section">
+    <div class="report-sec-title">Indicadores Quantitativos</div>
+    <div class="report-grid">
+      <div class="rstat"><div class="rstat-val">${wpm}<span class="rstat-unit">PPM</span></div><div class="rstat-lbl">Palavras por minuto</div></div>
+      <div class="rstat"><div class="rstat-val">${accuracy}<span class="rstat-unit">%</span></div><div class="rstat-lbl">Precisão leitora</div></div>
+      <div class="rstat"><div class="rstat-val">${timeStr}</div><div class="rstat-lbl">Tempo total</div></div>
+    </div>
+    <div class="report-grid">
+      <div class="rstat"><div class="rstat-val">${errCount}</div><div class="rstat-lbl">Erros de leitura</div></div>
+      <div class="rstat"><div class="rstat-val">${hesCount}</div><div class="rstat-lbl">Hesitações</div></div>
+      <div class="rstat"><div class="rstat-val">${totalWords}</div><div class="rstat-lbl">Total de palavras</div></div>
+    </div>
+
+    <div style="margin-top:14px">
+      ${buildScoreBar('Precisão', accuracy, 100, accuracy >= 97 ? '#00e5a0' : accuracy >= 90 ? '#00d4ff' : accuracy >= 80 ? '#ffb340' : '#ff4f6b')}
+      ${buildScoreBar('Velocidade vs. Média', Math.min(100,Math.round((wpm/wpmBenchmark.avg)*100)), 100, wpm >= wpmBenchmark.avg ? '#00e5a0' : wpm >= wpmBenchmark.low ? '#ffb340' : '#ff4f6b')}
+      ${buildScoreBar('Taxa de hesitação (inversa)', Math.max(0,100-hesRate*5), 100, hesRate <= 2 ? '#00e5a0' : hesRate <= 8 ? '#ffb340' : '#ff4f6b')}
+    </div>
+
+    <div style="margin-top:12px;padding:10px;background:var(--s2);border:1px solid var(--border)">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--t3);letter-spacing:2px;margin-bottom:4px">REFERÊNCIA PPM · ${wpmBenchmark.label}</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t2)">
+        Abaixo da média: &lt;${wpmBenchmark.low} · Médio: ${wpmBenchmark.avg} · Acima: &gt;${wpmBenchmark.high} · Seu resultado: <span style="color:var(--t0);font-weight:700">${wpm} PPM</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="report-section">
+    <div class="report-sec-title">Análise de Erros e Hesitações</div>
+    ${errorWords.length > 0 ? `
+      <div style="margin-bottom:12px">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--red);margin-bottom:6px;letter-spacing:1px">ERROS DE LEITURA (${errCount})</div>
+        <div class="error-list">${errorWords.map(w=>`<span class="error-tag">${w}</span>`).join('')}</div>
+      </div>` : '<div class="report-text-block good">Nenhum erro de leitura registrado.</div>'}
+    ${hesWords.length > 0 ? `
+      <div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--amb);margin-bottom:6px;letter-spacing:1px">HESITAÇÕES (${hesCount})</div>
+        <div class="error-list">${hesWords.map(w=>`<span class="hesitation-tag">${w}</span>`).join('')}</div>
+      </div>` : '<div class="report-text-block good" style="margin-top:8px">Nenhuma hesitação registrada.</div>'}
+  </div>
+
+  <div class="report-section">
+    <div class="report-sec-title">Análise Fonológica Qualitativa</div>
+    <div class="phono-grid">
+      ${phonoPatterns.map(p => `
+        <div class="phono-item">
+          <div class="phono-val" style="color:${p.color}">${p.value}</div>
+          <div class="phono-name">${p.name}</div>
+          <div class="phono-sub">${p.sub}</div>
+        </div>
+      `).join('')}
+    </div>
+  </div>
+
+  <div class="report-section">
+    <div class="report-sec-title">Impressão Clínica</div>
+    ${impressions.map(imp => `<div class="report-text-block ${imp.type}">${imp.text}</div>`).join('')}
+  </div>
+
+  ${notes ? `
+  <div class="report-section">
+    <div class="report-sec-title">Observações do Fonoaudiólogo</div>
+    <div class="report-text-block">${notes.replace(/\n/g,'<br>')}</div>
+  </div>` : ''}
+
+  <div class="report-section">
+    <div class="report-sec-title">Recomendações</div>
+    ${generateRecommendations(accuracy, wpm, wpmBenchmark, hesRate, errRate, currentLevel).map(r=>`<div class="report-text-block ${r.type}"><strong>${r.title}:</strong> ${r.text}</div>`).join('')}
+  </div>
+
+  <div style="text-align:center;margin-top:8px;padding-top:16px;border-top:1px solid var(--border2)">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--t3);letter-spacing:2px">
+      PHONOBASE · Protocolo de Avaliação de Leitura Oral · Sessão ${sessionId} · ${today}
+    </div>
+    <button class="print-btn" onclick="window.print()">🖨 Imprimir / Salvar PDF</button>
+  </div>
+  `;
+
+  document.getElementById('report-body').innerHTML = html;
+}
+
+function buildScoreBar(label, value, max, color) {
+  const pct = Math.round((value / max) * 100);
+  return `
+  <div class="score-bar-wrap">
+    <div class="score-bar-label">
+      <span class="score-bar-name">${label}</span>
+      <span class="score-bar-val">${value}${label.includes('%') || label === 'Precisão' || label.includes('hesitação') ? '%' : ''}</span>
+    </div>
+    <div class="score-bar">
+      <div class="score-bar-fill" style="width:${pct}%;background:${color}"></div>
+    </div>
+  </div>`;
+}
+
+function analyzePhonologicalPatterns(errorWords, hesWords) {
+  const allWords = [...errorWords, ...hesWords];
+  
+  // Analyze patterns
+  const fricativas = allWords.filter(w => /[szxfvçj]/i.test(w)).length;
+  const polisilabicas = allWords.filter(w => w.replace(/[^aeiouáéíóúâêîôûãõ]/gi,'').length >= 4).length;
+  const clusters = allWords.filter(w => /[bcdfghjklmnpqrstvwxyz]{3}/i.test(w)).length;
+  const nasais = allWords.filter(w => /[ãõm̃]|[mn][^aeiou]/i.test(w)).length;
+  
+  const total = Math.max(1, allWords.length);
+  
+  return [
+    {name:'Fricativas', sub:'Alterações em /s/, /z/, /f/, /v/', value: fricativas > 0 ? fricativas : '0', color: fricativas > 2 ? 'var(--amb)' : 'var(--grn)'},
+    {name:'Polissílabas', sub:'Palavras com 4+ sílabas', value: polisilabicas > 0 ? polisilabicas : '0', color: polisilabicas > 2 ? 'var(--red)' : 'var(--grn)'},
+    {name:'Grupos consonantais', sub:'Encontros consonantais', value: clusters > 0 ? clusters : '0', color: clusters > 1 ? 'var(--amb)' : 'var(--grn)'},
+    {name:'Vogais nasais', sub:'/ã/, /õ/, /m̃/ e variantes', value: nasais > 0 ? nasais : '0', color: nasais > 1 ? 'var(--amb)' : 'var(--grn)'},
+    {name:'Comprimento médio', sub:'Média de letras por palavra erro', value: total > 1 ? Math.round(allWords.reduce((a,w)=>a+w.length,0)/total) : '—', color: 'var(--cyan)'},
+    {name:'Taxa de erro', sub:'% palavras com marcação', value: errorWords.length + hesWords.length > 0 ? Math.round(((errorWords.length+hesWords.length)/Math.max(1,wordElements.length))*100)+'%' : '0%', color: errorWords.length > 5 ? 'var(--red)' : 'var(--grn)'}
+  ];
+}
+
+function generateClinicalImpressions(wpm, bench, accuracy, hesRate, errRate, level) {
+  const imps = [];
+  
+  if (accuracy >= 97) {
+    imps.push({type:'good', text:`<strong>Precisão excelente (${accuracy}%):</strong> A taxa de erros está dentro dos parâmetros esperados para leitura independente. O paciente demonstra representações lexicais consolidadas para o vocabulário avaliado.`});
+  } else if (accuracy >= 90) {
+    imps.push({type:'', text:`<strong>Precisão adequada (${accuracy}%):</strong> Dentro do nível instrucional. Erros pontuais podem refletir lacunas lexicais específicas, processamento fonológico inconsistente ou demanda cognitiva aumentada pelo nível do texto.`});
+  } else if (accuracy >= 80) {
+    imps.push({type:'warn', text:`<strong>Precisão limítrofe (${accuracy}%):</strong> Taxa de erro indica dificuldade expressiva. Investigar processamento fonológico, decodificação grafema-fonema e memória de trabalho verbal.`});
+  } else {
+    imps.push({type:'crit', text:`<strong>Precisão crítica (${accuracy}%):</strong> Dificuldade severa que compromete a funcionalidade leitora. Avaliação multidisciplinar recomendada. Considerar hipóteses de dislexia, transtorno do processamento fonológico ou déficit de linguagem.`});
+  }
+
+  if (wpm >= bench.high) {
+    imps.push({type:'good', text:`<strong>Velocidade de leitura elevada (${wpm} PPM):</strong> Acima da média para este nível de dificuldade. Observar se velocidade elevada está associada a erros de compreensão ou precipitação leitora.`});
+  } else if (wpm >= bench.avg) {
+    imps.push({type:'', text:`<strong>Velocidade adequada (${wpm} PPM):</strong> Taxa de fala leitora compatível com o nível de dificuldade e faixa etária/escolar esperada.`});
+  } else if (wpm >= bench.low) {
+    imps.push({type:'warn', text:`<strong>Velocidade reduzida (${wpm} PPM):</strong> Abaixo da média esperada. Verificar se a lenta taxa de leitura está relacionada a dificuldades de decodificação, comprometimento atencional ou estratégias de autorregulação.`});
+  } else {
+    imps.push({type:'crit', text:`<strong>Velocidade significativamente reduzida (${wpm} PPM):</strong> Muito abaixo da referência normativa. Investigar substrato neurológico, processamento fonológico e fluência leitora. Taxa inferior a ${bench.low} PPM no nível ${LEVEL_NAMES[level]} é clinicamente relevante.`});
+  }
+
+  if (hesRate > 10) {
+    imps.push({type:'crit', text:`<strong>Alta taxa de hesitação (${hesRate}%):</strong> Hesitações frequentes sugerem dificuldade no acesso lexical, insegurança articulatória ou processamento serial comprometido. Considerar investigação de gagueira, dispraxia verbal ou disfluências neurogênicas.`});
+  } else if (hesRate > 5) {
+    imps.push({type:'warn', text:`<strong>Hesitações moderadas (${hesRate}%):</strong> Pausas e hesitações além do esperado. Avaliar se há padrão de palavras ou estruturas sintáticas específicas associadas às pausas.`});
+  }
+
+  return imps;
+}
+
+function generateRecommendations(accuracy, wpm, bench, hesRate, errRate, level) {
+  const recs = [];
+
+  if (accuracy >= 97 && wpm >= bench.avg && hesRate <= 2) {
+    recs.push({type:'good', title:'Progressão de nível', text:`Desempenho compatível com avanço para o nível ${Math.min(6,level+1)} (${LEVEL_NAMES[Math.min(6,level+1)]}). Manter registro longitudinal.`});
+  }
+  if (accuracy < 90) {
+    recs.push({type:'warn', title:'Intervenção em decodificação', text:'Investigar correspondência grafema-fonema. Aplicar protocolos de consciência fonológica e awareness fonêmico. Avaliar necessidade de encaminhamento neuropsicológico.'});
+  }
+  if (wpm < bench.low) {
+    recs.push({type:'crit', title:'Fluência leitora', text:'Implementar protocolo de leitura repetida (Repeated Reading). Monitorar PPM semanalmente. Avaliar processamento fonológico de baixo nível (segmentação, identificação fonêmica).'});
+  }
+  if (hesRate > 8) {
+    recs.push({type:'warn', title:'Avaliação de fluência', text:'Alta taxa de hesitação requer avaliação específica de fluência oral. Considerar protocolos para disfluências: SSI-4, protocolo de Iowa, análise de disfluências típicas vs. atípicas.'});
+  }
+  recs.push({type:'', title:'Próxima sessão', text:`Reavaliar em ${accuracy < 90 ? '1' : '2'} semana(s). Aplicar texto alternativo do mesmo nível para controle de variáveis. Registrar qualidade vocal, respiração e postura durante leitura.`});
+
+  return recs;
+}
+
+/* ══ MARK MODE INIT ══ */
+setMarkMode('error');
 </script>
 </body>
 </html>
