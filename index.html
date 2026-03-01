@@ -3,23 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PHONOBASE · Avaliação de Leitura Oral</title>
+<title>PHONOBASE 2.0 · Avaliação de Leitura Oral</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@300;400;500;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
   --bg:#050608;--s1:#090b10;--s2:#0e1118;--s3:#13171f;--s4:#1a1f2c;--s5:#222738;
-  --glass:rgba(255,255,255,.04);--glass2:rgba(255,255,255,.07);--border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.04);
+  --glass:rgba(255,255,255,.04);--border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.04);
   --t0:#dce8ff;--t1:#8a9dc0;--t2:#4a566e;--t3:#252d3f;
-  --cyan:#00d4ff;--cyanD:rgba(0,212,255,.1);--cyanD2:rgba(0,212,255,.06);--cyanG:rgba(0,212,255,.25);
+  --cyan:#00d4ff;--cyanD:rgba(0,212,255,.1);--cyanD2:rgba(0,212,255,.06);
   --grn:#00e5a0;--grnD:rgba(0,229,160,.1);
   --amb:#ffb340;--ambD:rgba(255,179,64,.1);
   --red:#ff4f6b;--redD:rgba(255,79,107,.1);
   --pur:#b06cff;--purD:rgba(176,108,255,.1);
   --rose:#ff6b9d;
-  --lvl1:#00e5a0;--lvl2:#00d4ff;--lvl3:#ffb340;--lvl4:#ff4f6b;--lvl5:#b06cff;
 }
-html,body{height:100%;background:var(--bg);color:var(--t0);font-family:'Syne',sans-serif;font-size:13px;overflow:hidden}
+html,body{height:100%;background:var(--bg);color:var(--t0);font-family:'Syne',sans-serif;font-size:13px}
+body{overflow:hidden}
 ::-webkit-scrollbar{width:3px;height:3px}
 ::-webkit-scrollbar-thumb{background:var(--s5)}
 ::-webkit-scrollbar-track{background:transparent}
@@ -27,85 +27,104 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
   background-size:256px;opacity:.4}
 
+/* ══ LAYOUT ══ */
 .app{display:grid;grid-template-rows:52px 1fr;height:100vh;position:relative;z-index:1}
-
-/* TOP BAR */
-.top{background:rgba(9,11,16,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);
-  display:flex;align-items:center;padding:0 20px;gap:12px;z-index:100;position:relative}
+.top{background:rgba(9,11,16,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 16px;gap:10px;z-index:200;position:relative;flex-shrink:0}
 .brand{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:11px;letter-spacing:3px;
-  color:var(--t0);padding-right:18px;margin-right:6px;border-right:1px solid var(--border);white-space:nowrap;
-  display:flex;align-items:center;gap:8px}
-.brand-icon{width:22px;height:22px;border-radius:50%;background:conic-gradient(var(--cyan),var(--pur),var(--rose),var(--cyan));
-  display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
+  color:var(--t0);padding-right:14px;border-right:1px solid var(--border);white-space:nowrap;
+  display:flex;align-items:center;gap:8px;flex-shrink:0}
+.brand-icon{width:22px;height:22px;border-radius:50%;background:conic-gradient(var(--cyan),var(--pur),var(--rose),var(--cyan));flex-shrink:0}
 .brand em{color:var(--cyan);font-style:normal}
-.top-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--t2);text-transform:uppercase}
-.top-r{display:flex;align-items:center;gap:8px;margin-left:auto}
-.top-badge{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;
-  padding:4px 10px;border:1px solid var(--border);color:var(--t2);text-transform:uppercase}
-.top-badge.active{color:var(--grn);border-color:rgba(0,229,160,.3)}
-.pulsedot{width:6px;height:6px;border-radius:50%;background:var(--grn);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.brand sup{font-size:7px;color:var(--pur);vertical-align:super;margin-left:1px}
+.top-tabs{display:flex;overflow-x:auto;gap:0;flex-shrink:0}
+.top-tabs::-webkit-scrollbar{height:0}
+.ttab{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  padding:0 14px;height:52px;display:flex;align-items:center;background:none;border:none;
+  color:var(--t3);cursor:pointer;transition:all .15s;border-bottom:2px solid transparent;white-space:nowrap;gap:5px}
+.ttab:hover{color:var(--t1)}
+.ttab.on{color:var(--cyan);border-bottom-color:var(--cyan)}
+.top-r{display:flex;align-items:center;gap:6px;margin-left:auto;flex-shrink:0}
+.rec-indicator{display:flex;align-items:center;gap:5px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--red);
+  padding:4px 8px;border:1px solid rgba(255,79,107,.3);opacity:0;transition:opacity .3s}
+.rec-indicator.on{opacity:1}
+.rec-dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
+.top-badge{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:1px;
+  padding:3px 8px;border:1px solid var(--border);color:var(--t3);text-transform:uppercase}
+.ver-badge{color:var(--cyan);border-color:rgba(0,212,255,.3)}
 
-/* LAYOUT */
-.body{display:grid;grid-template-columns:260px 1fr;overflow:hidden}
+/* ══ BODY ══ */
+.body{display:grid;grid-template-columns:240px 1fr;overflow:hidden;height:100%}
 
-/* SIDEBAR */
-.sidebar{background:var(--s1);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
-
-/* PATIENT FORM */
-.pat-form{padding:14px;border-bottom:1px solid var(--border2)}
-.sec-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--t3);margin-bottom:8px}
-.field{margin-bottom:8px}
-.field label{font-size:10px;color:var(--t2);display:block;margin-bottom:3px;font-family:'IBM Plex Mono',monospace;letter-spacing:1px}
-.field input,.field select{width:100%;background:var(--s2);border:1px solid var(--border);color:var(--t0);
-  font-family:'IBM Plex Mono',monospace;font-size:10px;padding:6px 8px;outline:none;transition:border .15s}
-.field input:focus,.field select:focus{border-color:var(--cyan)}
+/* ══ SIDEBAR ══ */
+.sidebar{background:var(--s1);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;flex-shrink:0}
+.sec-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--t3)}
+.pat-form{padding:12px;border-bottom:1px solid var(--border2)}
+.pat-form .sec-label{margin-bottom:8px}
+.field{margin-bottom:7px}
+.field label{font-size:9px;color:var(--t2);display:block;margin-bottom:2px;font-family:'IBM Plex Mono',monospace;letter-spacing:1px;text-transform:uppercase}
+.field input,.field select,.field textarea{width:100%;background:var(--s2);border:1px solid var(--border);color:var(--t0);
+  font-family:'IBM Plex Mono',monospace;font-size:10px;padding:5px 7px;outline:none;transition:border .15s;resize:none}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--cyan)}
 .field select option{background:var(--s2)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 
-/* LEVEL SELECTOR */
-.levels-sec{padding:14px;border-bottom:1px solid var(--border2)}
-.level-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
-.lvl-btn{padding:7px;background:var(--s2);border:1px solid var(--border);cursor:pointer;
-  font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;
-  color:var(--t2);transition:all .15s;text-align:center}
+/* Vocal effort scale */
+.vas-scale{display:flex;flex-direction:column;gap:4px}
+.vas-track{display:flex;align-items:center;gap:6px}
+.vas-track label{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--t2);width:52px;flex-shrink:0}
+.vas-track input[type=range]{flex:1;-webkit-appearance:none;height:3px;background:var(--s3);outline:none;border-radius:0}
+.vas-track input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;background:var(--cyan);border-radius:0;cursor:pointer}
+.vas-val{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--cyan);width:24px;text-align:right;flex-shrink:0}
+
+/* Level selector */
+.levels-sec{padding:12px;border-bottom:1px solid var(--border2)}
+.level-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-top:8px}
+.lvl-btn{padding:6px 4px;background:var(--s2);border:1px solid var(--border);cursor:pointer;
+  font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;
+  color:var(--t2);transition:all .15s;text-align:center;display:flex;align-items:center;justify-content:center;gap:4px}
 .lvl-btn:hover{border-color:var(--t2);color:var(--t1)}
-.lvl-btn.active{color:var(--bg);font-weight:700}
-.lvl-btn[data-lvl="1"].active{background:var(--lvl1);border-color:var(--lvl1)}
-.lvl-btn[data-lvl="2"].active{background:var(--lvl2);border-color:var(--lvl2)}
-.lvl-btn[data-lvl="3"].active{background:var(--lvl3);border-color:var(--lvl3)}
-.lvl-btn[data-lvl="4"].active{background:var(--lvl4);border-color:var(--lvl4)}
-.lvl-btn[data-lvl="5"].active{background:var(--lvl5);border-color:var(--lvl5)}
-.lvl-btn[data-lvl="6"].active{background:linear-gradient(135deg,var(--red),var(--pur));border-color:var(--pur)}
+.lvl-btn.active{color:#000;font-weight:700}
+.lvl-btn[data-lvl="1"].active{background:#00e5a0;border-color:#00e5a0}
+.lvl-btn[data-lvl="2"].active{background:#00d4ff;border-color:#00d4ff}
+.lvl-btn[data-lvl="3"].active{background:#ffb340;border-color:#ffb340}
+.lvl-btn[data-lvl="4"].active{background:#ff4f6b;border-color:#ff4f6b}
+.lvl-btn[data-lvl="5"].active{background:#b06cff;border-color:#b06cff}
+.lvl-btn[data-lvl="6"].active{background:linear-gradient(135deg,#ff4f6b,#b06cff);border-color:#b06cff;color:#fff}
+.lvl-btn[data-lvl="custom"].active{background:var(--amb);border-color:var(--amb)}
 
-.lvl-badge{display:inline-block;padding:2px 6px;font-size:8px;font-family:'IBM Plex Mono',monospace;margin-bottom:6px;border:1px solid;font-weight:700}
-.lvl1{color:var(--lvl1);border-color:rgba(0,229,160,.3);background:rgba(0,229,160,.05)}
-.lvl2{color:var(--lvl2);border-color:rgba(0,212,255,.3);background:rgba(0,212,255,.05)}
-.lvl3{color:var(--lvl3);border-color:rgba(255,179,64,.3);background:rgba(255,179,64,.05)}
-.lvl4{color:var(--lvl4);border-color:rgba(255,79,107,.3);background:rgba(255,79,107,.05)}
-.lvl5{color:var(--lvl5);border-color:rgba(176,108,255,.3);background:rgba(176,108,255,.05)}
-.lvl6{color:var(--rose);border-color:rgba(255,107,157,.3);background:rgba(255,107,157,.05)}
-
-/* TEXT LIST */
-.text-list{padding:14px;flex:1}
-.text-item{padding:8px;background:var(--s2);border:1px solid var(--border);margin-bottom:4px;cursor:pointer;transition:all .12s}
+/* Text list */
+.text-list{padding:12px;flex:1}
+.text-list .sec-label{margin-bottom:8px}
+.text-item{padding:7px 8px;background:var(--s2);border:1px solid var(--border);margin-bottom:3px;cursor:pointer;transition:all .12s}
 .text-item:hover{border-color:var(--t2);background:var(--s3)}
-.text-item.selected{border-left:2px solid var(--cyan);background:var(--cyanD2)}
-.text-item-name{font-size:11px;color:var(--t1);margin-bottom:2px}
+.text-item.selected{border-left:2px solid var(--cyan);background:rgba(0,212,255,.05)}
+.text-item-name{font-size:11px;color:var(--t1);margin-bottom:1px}
 .text-item-meta{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--t3);letter-spacing:1px}
 
-/* MAIN AREA */
-.main{display:flex;flex-direction:column;overflow:hidden}
+/* Custom text */
+.custom-text-form{padding:12px;border-top:1px solid var(--border2)}
+.custom-text-form .sec-label{margin-bottom:8px}
+.btn-small{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;
+  padding:5px 10px;border:1px solid var(--border);background:none;color:var(--t2);cursor:pointer;transition:all .12s;width:100%;margin-top:4px}
+.btn-small:hover{border-color:var(--cyan);color:var(--cyan)}
+.btn-small.green{border-color:rgba(0,229,160,.4);color:var(--grn)}
+.btn-small.green:hover{background:var(--grnD)}
 
-/* HEADER WITH TIMER */
-.reading-header{background:var(--s2);border-bottom:1px solid var(--border);padding:12px 20px;
-  display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.timer-display{font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:700;letter-spacing:4px;
-  color:var(--t0);min-width:90px}
-.timer-display.running{color:var(--cyan);text-shadow:0 0 20px rgba(0,212,255,.4)}
+/* ══ MAIN ══ */
+.main{display:flex;flex-direction:column;overflow:hidden;position:relative}
+
+/* Reading header */
+.reading-header{background:var(--s2);border-bottom:1px solid var(--border);padding:10px 16px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;flex-shrink:0}
+.timer-display{font-family:'IBM Plex Mono',monospace;font-size:30px;font-weight:700;letter-spacing:4px;
+  color:var(--t0);min-width:90px;flex-shrink:0;transition:color .3s}
+.timer-display.running{color:var(--cyan);text-shadow:0 0 20px rgba(0,212,255,.3)}
 .timer-display.stopped{color:var(--grn)}
-.timer-btns{display:flex;gap:6px}
-.tbtn{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
-  padding:7px 14px;border:1px solid var(--border);background:none;color:var(--t2);cursor:pointer;transition:all .15s}
+.timer-btns{display:flex;gap:4px;flex-wrap:wrap}
+.tbtn{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:6px 11px;border:1px solid var(--border);background:none;color:var(--t2);cursor:pointer;transition:all .12s;white-space:nowrap}
 .tbtn:hover{border-color:var(--t1);color:var(--t1)}
 .tbtn.start{border-color:rgba(0,229,160,.4);color:var(--grn)}
 .tbtn.start:hover{background:var(--grnD)}
@@ -113,197 +132,287 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .tbtn.stop{border-color:rgba(255,79,107,.4);color:var(--red)}
 .tbtn.report{border-color:rgba(176,108,255,.4);color:var(--pur)}
 .tbtn.report:hover{background:var(--purD)}
-.tbtn:disabled{opacity:.3;cursor:not-allowed}
+.tbtn.rec-btn{border-color:rgba(255,79,107,.3);color:var(--red)}
+.tbtn.rec-btn.recording{background:rgba(255,79,107,.15);animation:recpulse 1.5s infinite}
+@keyframes recpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,79,107,.4)}50%{box-shadow:0 0 0 6px rgba(255,79,107,0)}}
+.tbtn:disabled{opacity:.3;cursor:not-allowed;pointer-events:none}
 
-.metrics-row{display:flex;gap:10px;align-items:center;margin-left:auto;flex-wrap:wrap}
-.metric{text-align:center;padding:6px 12px;background:var(--s3);border:1px solid var(--border)}
-.metric-val{font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:700;color:var(--t0)}
+.metrics-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-left:auto}
+.metric{text-align:center;padding:5px 10px;background:var(--s3);border:1px solid var(--border);flex-shrink:0}
+.metric-val{font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:700;color:var(--t0);line-height:1}
 .metric-lbl{font-family:'IBM Plex Mono',monospace;font-size:7px;letter-spacing:2px;color:var(--t3);text-transform:uppercase;margin-top:1px}
 
-/* PROGRESS BAR */
-.progress-bar{height:3px;background:var(--s3);position:relative;overflow:hidden}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--pur));transition:width .5s;width:0%}
+/* Mark bar */
+.mark-bar{padding:6px 16px;background:rgba(9,11,16,.8);border-bottom:1px solid var(--border2);
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex-shrink:0}
+.mark-btn{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;
+  padding:4px 9px;border:1px solid;background:none;cursor:pointer;transition:all .12s}
+.mark-btn.err{color:var(--red);border-color:rgba(255,79,107,.3)}
+.mark-btn.err.active,.mark-btn.err:hover{background:rgba(255,79,107,.12)}
+.mark-btn.hes{color:var(--amb);border-color:rgba(255,179,64,.3)}
+.mark-btn.hes.active,.mark-btn.hes:hover{background:rgba(255,179,64,.12)}
+.mark-btn.sub{color:var(--pur);border-color:rgba(176,108,255,.3)}
+.mark-btn.sub.active,.mark-btn.sub:hover{background:rgba(176,108,255,.12)}
+.mark-btn.omi{color:var(--rose);border-color:rgba(255,107,157,.3)}
+.mark-btn.omi.active,.mark-btn.omi:hover{background:rgba(255,107,157,.12)}
+.mark-btn.add{color:var(--cyan);border-color:rgba(0,212,255,.3)}
+.mark-btn.add.active,.mark-btn.add:hover{background:var(--cyanD)}
+.mark-btn.clr{color:var(--t2);border-color:var(--border)}
+.mark-btn.clr:hover{border-color:var(--t1);color:var(--t1)}
+.mark-legend{font-family:'IBM Plex Mono',monospace;font-size:7px;color:var(--t3);letter-spacing:1px;margin-left:4px}
 
-/* TEXT AREA */
-.text-area{flex:1;overflow-y:auto;padding:32px 40px;display:flex;flex-direction:column;gap:16px}
-.text-container{max-width:780px;margin:0 auto;width:100%}
+/* Progress bar */
+.progress-bar{height:2px;background:var(--s3);position:relative;overflow:hidden;flex-shrink:0}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--pur));transition:width .8s;width:0%}
 
-.text-meta{margin-bottom:20px}
-.text-title{font-family:'DM Serif Display',serif;font-size:24px;color:var(--t0);margin-bottom:6px;line-height:1.3}
-.text-subtitle{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t2);letter-spacing:2px}
-
-.reading-text{font-size:17px;line-height:1.9;color:var(--t1);letter-spacing:.01em;font-weight:400;
-  font-family:'DM Serif Display',serif;user-select:none}
-.reading-text .word{cursor:pointer;transition:all .1s;border-radius:2px;padding:0 1px}
+/* Text area */
+.text-area{flex:1;overflow-y:auto;padding:28px 36px;display:flex;flex-direction:column;gap:12px}
+.text-container{max-width:800px;margin:0 auto;width:100%}
+.text-meta{margin-bottom:18px}
+.text-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--t0);margin-bottom:4px;line-height:1.3}
+.text-subtitle{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t2);letter-spacing:2px}
+.reading-text{font-size:18px;line-height:2;color:var(--t1);font-family:'DM Serif Display',serif;user-select:none}
+.reading-text .word{cursor:pointer;transition:all .1s;padding:1px 2px;border-radius:2px;display:inline}
 .reading-text .word:hover{color:var(--t0)}
-.reading-text .word.error{background:rgba(255,79,107,.25);color:var(--red);text-decoration:line-through}
-.reading-text .word.hesitation{background:rgba(255,179,64,.2);color:var(--amb)}
-.reading-text .word.correct{color:var(--t0)}
+.reading-text .word.w-error{background:rgba(255,79,107,.25);color:var(--red);text-decoration:line-through}
+.reading-text .word.w-hesit{background:rgba(255,179,64,.2);color:var(--amb)}
+.reading-text .word.w-subst{background:rgba(176,108,255,.2);color:var(--pur);text-decoration:underline dotted}
+.reading-text .word.w-omiss{background:rgba(255,107,157,.2);color:var(--rose);opacity:.6}
+.reading-text .word.w-add{background:rgba(0,212,255,.15);color:var(--cyan)}
 
-.mark-controls{display:flex;gap:6px;flex-wrap:wrap;margin-top:16px;padding-top:16px;border-top:1px solid var(--border2)}
-.mark-btn{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;
-  padding:5px 10px;border:1px solid;background:none;cursor:pointer;transition:all .12s}
-.mark-btn.err-btn{color:var(--red);border-color:rgba(255,79,107,.3)}
-.mark-btn.err-btn:hover,.mark-btn.err-btn.active{background:rgba(255,79,107,.15)}
-.mark-btn.hes-btn{color:var(--amb);border-color:rgba(255,179,64,.3)}
-.mark-btn.hes-btn:hover,.mark-btn.hes-btn.active{background:rgba(255,179,64,.15)}
-.mark-btn.clr-btn{color:var(--t2);border-color:var(--border)}
-.mark-btn.clr-btn:hover{border-color:var(--t1);color:var(--t1)}
-.mark-hint{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--t3);letter-spacing:1px;align-self:center;margin-left:6px}
+/* Comprehension */
+.compreh-section{background:var(--s2);border:1px solid var(--border);padding:14px;margin-top:16px}
+.compreh-title{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--cyan);text-transform:uppercase;margin-bottom:10px}
+.compreh-q{margin-bottom:10px}
+.compreh-q-text{font-size:12px;color:var(--t1);margin-bottom:6px;line-height:1.5}
+.compreh-opts{display:flex;flex-direction:column;gap:3px}
+.compreh-opt{display:flex;align-items:center;gap:7px;padding:5px 8px;background:var(--s3);border:1px solid var(--border);cursor:pointer;transition:all .12s;font-size:11px;color:var(--t2)}
+.compreh-opt:hover{border-color:var(--t2);color:var(--t1)}
+.compreh-opt.selected-correct{background:rgba(0,229,160,.1);border-color:rgba(0,229,160,.4);color:var(--grn)}
+.compreh-opt.selected-wrong{background:rgba(255,79,107,.1);border-color:rgba(255,79,107,.4);color:var(--red)}
+.compreh-opt.show-correct{background:rgba(0,229,160,.07);border-color:rgba(0,229,160,.25);color:var(--grn)}
+.opt-letter{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;flex-shrink:0}
+.compreh-score{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--t1);margin-top:8px;padding:6px 8px;background:var(--s3);border:1px solid var(--border)}
 
-/* ANNOTATIONS */
-.annotations{margin-top:16px;padding:12px;background:var(--s2);border:1px solid var(--border)}
-.ann-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--t3);margin-bottom:6px}
+/* Annotations */
+.annotations{background:var(--s2);border:1px solid var(--border);padding:10px;margin-top:10px}
+.ann-label{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--t3);text-transform:uppercase;margin-bottom:5px}
 .ann-textarea{width:100%;background:transparent;border:none;color:var(--t1);font-family:'Syne',sans-serif;font-size:12px;
-  resize:none;outline:none;line-height:1.6;min-height:60px}
+  resize:none;outline:none;line-height:1.6}
 
-/* EMPTY STATE */
+/* Audio player */
+.audio-player{display:none;background:var(--s3);border:1px solid var(--border);padding:8px 10px;margin-top:8px;align-items:center;gap:8px;flex-wrap:wrap}
+.audio-player.visible{display:flex}
+.audio-player audio{flex:1;min-width:200px;height:28px;filter:invert(0.8) hue-rotate(180deg)}
+
+/* Empty */
 .empty-state{text-align:center;padding:60px 20px;color:var(--t2)}
-.empty-icon{font-size:48px;margin-bottom:16px;opacity:.3}
-.empty-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--t1);margin-bottom:8px}
-.empty-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3);letter-spacing:1px}
+.empty-icon{font-size:48px;margin-bottom:14px;opacity:.3}
+.empty-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--t1);margin-bottom:6px}
+.empty-sub{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:1px}
 
-/* MODAL - REPORT */
-.modal-overlay{position:fixed;inset:0;background:rgba(5,6,8,.92);backdrop-filter:blur(10px);
-  z-index:999;display:none;align-items:center;justify-content:center;padding:20px}
+/* ══ HISTORY PANEL ══ */
+.history-panel{height:100%;overflow-y:auto;padding:20px;display:none;flex-direction:column;gap:12px}
+.history-panel.on{display:flex}
+.hist-empty{text-align:center;padding:40px;color:var(--t3);font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:1px}
+.hist-card{background:var(--s2);border:1px solid var(--border);padding:14px;transition:border .15s;cursor:pointer}
+.hist-card:hover{border-color:var(--t2)}
+.hist-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:8px}
+.hist-card-name{font-size:13px;color:var(--t0);font-family:'DM Serif Display',serif}
+.hist-card-date{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--t3);letter-spacing:1px;white-space:nowrap}
+.hist-card-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.hist-chip{font-family:'IBM Plex Mono',monospace;font-size:8px;padding:2px 6px;border:1px solid var(--border);color:var(--t2);letter-spacing:1px}
+.hist-chip.good{color:var(--grn);border-color:rgba(0,229,160,.3)}
+.hist-chip.warn{color:var(--amb);border-color:rgba(255,179,64,.3)}
+.hist-chip.bad{color:var(--red);border-color:rgba(255,79,107,.3)}
+.hist-bars{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px}
+.hist-bar-item{background:var(--s3);padding:5px 7px}
+.hist-bar-val{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;color:var(--t0)}
+.hist-bar-lbl{font-family:'IBM Plex Mono',monospace;font-size:7px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-top:1px}
+.hist-actions{display:flex;gap:4px;margin-top:8px}
+.hist-del{font-family:'IBM Plex Mono',monospace;font-size:7px;letter-spacing:1px;padding:3px 7px;border:1px solid rgba(255,79,107,.25);background:none;color:rgba(255,79,107,.5);cursor:pointer;text-transform:uppercase}
+.hist-del:hover{color:var(--red);border-color:var(--red)}
+.hist-view{font-family:'IBM Plex Mono',monospace;font-size:7px;letter-spacing:1px;padding:3px 7px;border:1px solid var(--border);background:none;color:var(--t2);cursor:pointer;text-transform:uppercase}
+.hist-view:hover{border-color:var(--cyan);color:var(--cyan)}
+
+/* Evolution chart area */
+.evo-section{padding:20px;display:none;flex-direction:column;gap:16px;overflow-y:auto}
+.evo-section.on{display:flex}
+.evo-header{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--t0);text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:8px}
+canvas.evo-chart{background:var(--s2);border:1px solid var(--border);border-radius:0;max-height:220px}
+.evo-legend{display:flex;gap:12px;flex-wrap:wrap}
+.evo-leg-item{display:flex;align-items:center;gap:5px;font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--t2);letter-spacing:1px}
+.evo-leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.evo-no-data{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t3);letter-spacing:1px;padding:40px;text-align:center}
+
+/* ══ FULLSCREEN MODE ══ */
+.fullscreen-overlay{position:fixed;inset:0;background:#030405;z-index:500;display:none;
+  flex-direction:column;align-items:center;justify-content:center;padding:60px 80px}
+.fullscreen-overlay.on{display:flex}
+.fs-exit{position:absolute;top:20px;right:20px;font-family:'IBM Plex Mono',monospace;font-size:9px;
+  letter-spacing:2px;padding:7px 14px;border:1px solid var(--border);background:none;color:var(--t2);cursor:pointer;text-transform:uppercase}
+.fs-exit:hover{border-color:var(--red);color:var(--red)}
+.fs-timer{font-family:'IBM Plex Mono',monospace;font-size:18px;color:var(--t2);letter-spacing:3px;margin-bottom:30px;position:absolute;top:20px;left:50%;transform:translateX(-50%)}
+.fs-timer.running{color:var(--cyan)}
+.fs-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--t2);margin-bottom:24px;text-align:center;letter-spacing:.5px}
+.fs-text{font-family:'DM Serif Display',serif;font-size:26px;line-height:2.1;color:var(--t0);text-align:center;max-width:900px;user-select:none}
+.fs-controls{position:absolute;bottom:24px;display:flex;gap:8px}
+.fs-btn{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;padding:8px 18px;
+  border:1px solid var(--border);background:none;color:var(--t2);cursor:pointer;text-transform:uppercase}
+.fs-btn.go{border-color:rgba(0,229,160,.4);color:var(--grn)}
+.fs-btn.go:hover{background:var(--grnD)}
+.fs-btn:hover{border-color:var(--t1);color:var(--t1)}
+.fs-font-ctrl{position:absolute;bottom:24px;right:20px;display:flex;gap:4px}
+.fs-font-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;width:28px;height:28px;
+  border:1px solid var(--border);background:none;color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.fs-font-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+
+/* ══ MODAL ══ */
+.modal-overlay{position:fixed;inset:0;background:rgba(3,4,5,.94);backdrop-filter:blur(12px);
+  z-index:999;display:none;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
 .modal-overlay.open{display:flex}
-.modal{background:var(--s1);border:1px solid var(--border);max-width:760px;width:100%;max-height:90vh;
-  overflow-y:auto;position:relative}
-.modal-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.modal-title{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;letter-spacing:2px;color:var(--t0);text-transform:uppercase}
-.modal-close{background:none;border:1px solid var(--border);color:var(--t2);width:28px;height:28px;cursor:pointer;
-  font-size:14px;transition:all .15s}
+.modal{background:var(--s1);border:1px solid var(--border);max-width:820px;width:100%;position:relative;margin:auto}
+.modal-header{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--s1);z-index:10}
+.modal-title{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;letter-spacing:2px;color:var(--t0);text-transform:uppercase}
+.modal-close{background:none;border:1px solid var(--border);color:var(--t2);width:26px;height:26px;cursor:pointer;font-size:12px;transition:all .15s}
 .modal-close:hover{border-color:var(--red);color:var(--red)}
+.report-body{padding:22px}
 
-/* REPORT CONTENT */
-.report-body{padding:24px}
-.report-section{margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--border2)}
-.report-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
-.report-sec-title{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;
-  color:var(--cyan);margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.report-sec-title::after{content:'';flex:1;height:1px;background:var(--border)}
+/* Report components */
+.r-section{margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--border2)}
+.r-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.r-sec-title{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--cyan);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.r-sec-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.r-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.r-grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
+.rstat{padding:10px;background:var(--s2);border:1px solid var(--border)}
+.rstat-val{font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:700;color:var(--t0);line-height:1}
+.rstat-unit{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t2);margin-left:2px}
+.rstat-lbl{font-family:'IBM Plex Mono',monospace;font-size:7px;letter-spacing:2px;color:var(--t3);text-transform:uppercase;margin-top:3px}
+.sbar-wrap{margin:8px 0}
+.sbar-label{display:flex;justify-content:space-between;margin-bottom:3px}
+.sbar-name{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--t1)}
+.sbar-val{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--t0)}
+.sbar{height:3px;background:var(--s3)}
+.sbar-fill{height:100%;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.rblock{background:var(--s2);border-left:3px solid var(--cyan);padding:10px 14px;margin:6px 0;font-size:12px;line-height:1.7;color:var(--t1)}
+.rblock strong{color:var(--t0)}
+.rblock.warn{border-left-color:var(--amb)}
+.rblock.crit{border-left-color:var(--red)}
+.rblock.good{border-left-color:var(--grn)}
+.rblock.info{border-left-color:var(--pur)}
+.classif-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid;
+  font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.etag{font-family:'IBM Plex Mono',monospace;font-size:8px;padding:2px 6px;display:inline-block;margin:2px}
+.etag.err{background:rgba(255,79,107,.15);border:1px solid rgba(255,79,107,.3);color:var(--red)}
+.etag.hes{background:rgba(255,179,64,.15);border:1px solid rgba(255,179,64,.3);color:var(--amb)}
+.etag.sub{background:rgba(176,108,255,.15);border:1px solid rgba(176,108,255,.3);color:var(--pur)}
+.etag.omi{background:rgba(255,107,157,.15);border:1px solid rgba(255,107,157,.3);color:var(--rose)}
+.etag.add{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);color:var(--cyan)}
+.phono-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.phono-item{padding:7px 9px;background:var(--s2);border:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.phono-left .phono-name{font-size:10px;color:var(--t1)}
+.phono-left .phono-sub{font-family:'IBM Plex Mono',monospace;font-size:7px;color:var(--t3)}
+.phono-right{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700}
+.norma-table{width:100%;border-collapse:collapse;font-family:'IBM Plex Mono',monospace;font-size:9px}
+.norma-table th{background:var(--s3);color:var(--t2);padding:5px 8px;text-align:left;letter-spacing:1px;border-bottom:1px solid var(--border)}
+.norma-table td{padding:5px 8px;border-bottom:1px solid var(--border2);color:var(--t1)}
+.norma-table tr.highlight td{background:rgba(0,212,255,.06);color:var(--t0)}
+.norma-table .you{color:var(--cyan);font-weight:700}
+.print-actions{display:flex;gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border2);justify-content:flex-end}
+.print-btn{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:7px 14px;border:1px solid;background:none;cursor:pointer;transition:all .15s}
+.print-btn.green{color:var(--grn);border-color:rgba(0,229,160,.3)}
+.print-btn.green:hover{background:var(--grnD)}
+.print-btn.blue{color:var(--cyan);border-color:rgba(0,212,255,.3)}
+.print-btn.blue:hover{background:var(--cyanD)}
+.watermark{font-family:'IBM Plex Mono',monospace;font-size:7px;color:var(--t3);letter-spacing:2px;text-align:center;margin-top:12px;text-transform:uppercase}
 
-.report-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.report-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.rstat{padding:12px;background:var(--s2);border:1px solid var(--border)}
-.rstat-val{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700;color:var(--t0);line-height:1}
-.rstat-unit{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--t2);margin-left:3px}
-.rstat-lbl{font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:1.5px;color:var(--t3);text-transform:uppercase;margin-top:4px}
+/* Comprehension score in report */
+.compreh-report{background:var(--s2);border:1px solid var(--border);padding:10px}
+.compreh-report-score{display:flex;align-items:baseline;gap:6px;margin-bottom:6px}
+.compreh-report-val{font-family:'IBM Plex Mono',monospace;font-size:24px;font-weight:700;color:var(--t0)}
+.compreh-report-lbl{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--t3);letter-spacing:1px}
 
-.score-bar-wrap{margin:12px 0}
-.score-bar-label{display:flex;justify-content:space-between;margin-bottom:4px}
-.score-bar-name{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t1);letter-spacing:1px}
-.score-bar-val{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--t0)}
-.score-bar{height:4px;background:var(--s3);border-radius:0}
-.score-bar-fill{height:100%;transition:width 1s ease;border-radius:0}
+/* Norm comparison */
+.norm-indicator{display:inline-flex;align-items:center;gap:4px;font-family:'IBM Plex Mono',monospace;font-size:9px;padding:3px 7px;border:1px solid}
 
-.report-text-block{background:var(--s2);border-left:3px solid var(--cyan);padding:12px 16px;margin:8px 0;
-  font-size:12px;line-height:1.7;color:var(--t1)}
-.report-text-block strong{color:var(--t0)}
-.report-text-block.warn{border-left-color:var(--amb)}
-.report-text-block.crit{border-left-color:var(--red)}
-.report-text-block.good{border-left-color:var(--grn)}
-
-.classification-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border:1px solid;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
-
-.print-btn{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
-  padding:8px 16px;border:1px solid rgba(0,229,160,.3);background:none;color:var(--grn);cursor:pointer;transition:all .15s;margin-top:16px}
-.print-btn:hover{background:var(--grnD)}
-
-/* ERRORS LIST */
-.error-list{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
-.error-tag{font-family:'IBM Plex Mono',monospace;font-size:9px;padding:2px 7px;background:rgba(255,79,107,.15);
-  border:1px solid rgba(255,79,107,.3);color:var(--red)}
-.hesitation-tag{font-family:'IBM Plex Mono',monospace;font-size:9px;padding:2px 7px;background:rgba(255,179,64,.15);
-  border:1px solid rgba(255,179,64,.3);color:var(--amb)}
-
-/* PHONOLOGICAL ANALYSIS */
-.phono-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.phono-item{padding:8px 10px;background:var(--s2);border:1px solid var(--border)}
-.phono-name{font-size:10px;color:var(--t1);margin-bottom:2px}
-.phono-sub{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--t3);letter-spacing:1px}
-.phono-val{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;float:right;margin-top:-16px}
-
-/* LEVEL COLOR HELPERS */
-.c1{color:var(--lvl1)}.c2{color:var(--lvl2)}.c3{color:var(--lvl3)}.c4{color:var(--lvl4)}.c5{color:var(--lvl5)}.c6{color:var(--rose)}
-.b1{background:rgba(0,229,160,.1);border-color:rgba(0,229,160,.3)}
-.b2{background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.3)}
-.b3{background:rgba(255,179,64,.1);border-color:rgba(255,179,64,.3)}
-.b4{background:rgba(255,79,107,.1);border-color:rgba(255,79,107,.3)}
-.b5{background:rgba(176,108,255,.1);border-color:rgba(176,108,255,.3)}
-.b6{background:rgba(255,107,157,.1);border-color:rgba(255,107,157,.3)}
-
-/* Responsive tweaks */
-@media(max-width:700px){
-  .body{grid-template-columns:1fr}
-  .sidebar{display:none}
-}
-
-/* PRINT STYLES */
 @media print{
-  .modal-overlay{position:relative;display:flex!important}
-  .modal{max-height:none;border:none}
-  .modal-close,.print-btn{display:none}
-  body::before,.top,.app{display:block}
+  body,html{overflow:visible!important;height:auto!important;background:#fff!important;color:#000!important}
+  .modal-overlay{position:relative!important;display:block!important;padding:0!important;background:none!important;backdrop-filter:none!important}
+  .modal{max-height:none!important;border:none!important}
+  .modal-header,.print-actions,.modal-close,.top,.body{display:none!important}
+  .report-body{padding:0!important}
+  .rblock,.rstat,.phono-item,.hist-card{background:#f5f5f5!important;color:#000!important;border-color:#ddd!important}
+  .rstat-val,.rstat-lbl,.rstat-unit,.phono-left .phono-name,.phono-left .phono-sub,.phono-right{color:#000!important}
 }
 </style>
 </head>
 <body>
 <div class="app">
+
+  <!-- TOP BAR -->
   <div class="top">
     <div class="brand">
-      <div class="brand-icon">🎙</div>
-      PHONO<em>BASE</em>
+      <div class="brand-icon"></div>
+      PHONO<em>BASE</em><sup>2.0</sup>
     </div>
-    <div class="top-title">Avaliação de Leitura Oral · Protocolo Fonoaudiológico</div>
+    <div class="top-tabs">
+      <button class="ttab on" onclick="showPanel('avaliacao',this)">📖 Avaliação</button>
+      <button class="ttab" onclick="showPanel('historico',this)">📋 Histórico</button>
+      <button class="ttab" onclick="showPanel('evolucao',this)">📈 Evolução</button>
+    </div>
     <div class="top-r">
-      <div class="pulsedot"></div>
-      <div class="top-badge active">Fono</div>
-      <div class="top-badge" id="session-badge">Sessão —</div>
+      <div class="rec-indicator" id="rec-ind"><div class="rec-dot"></div>REC</div>
+      <div class="top-badge ver-badge">v2.0</div>
+      <div class="top-badge" id="sess-badge">—</div>
     </div>
   </div>
 
   <div class="body">
     <!-- SIDEBAR -->
     <div class="sidebar">
-      <!-- PACIENTE -->
+      <!-- PATIENT -->
       <div class="pat-form">
         <div class="sec-label">Dados do Paciente</div>
-        <div class="field">
-          <label>Nome completo</label>
-          <input type="text" id="pat-name" placeholder="Nome do paciente">
+        <div class="field"><label>Nome</label><input type="text" id="pat-name" placeholder="Nome completo"></div>
+        <div class="field-row">
+          <div class="field"><label>Nasc.</label><input type="date" id="pat-dob"></div>
+          <div class="field"><label>Escola</label>
+            <select id="pat-escola">
+              <option value="">—</option>
+              <option>Pré-escola</option><option>1º EF</option><option>2º EF</option>
+              <option>3º EF</option><option>4–5º EF</option><option>6–9º EF</option>
+              <option>Ens. Médio</option><option>Superior</option><option>Adulto</option>
+            </select>
+          </div>
         </div>
-        <div class="field">
-          <label>Data de nascimento</label>
-          <input type="date" id="pat-dob">
-        </div>
-        <div class="field">
-          <label>Fonoaudiólogo(a)</label>
-          <input type="text" id="pat-fono" placeholder="Nome do profissional">
-        </div>
-        <div class="field">
-          <label>Diagnóstico / Hipótese</label>
-          <input type="text" id="pat-diag" placeholder="Ex: Dislexia, gagueira...">
-        </div>
-        <div class="field">
-          <label>Escolaridade</label>
-          <select id="pat-escola">
-            <option value="">Selecionar</option>
-            <option>Pré-escola</option>
-            <option>1º ano EF</option>
-            <option>2º ano EF</option>
-            <option>3º ano EF</option>
-            <option>4º–5º ano EF</option>
-            <option>6º–9º ano EF</option>
-            <option>Ensino Médio</option>
-            <option>Ensino Superior</option>
-            <option>Adulto (sem EF completo)</option>
-          </select>
+        <div class="field"><label>Fonoaudiólogo(a)</label><input type="text" id="pat-fono" placeholder="Nome do profissional"></div>
+        <div class="field"><label>Diagnóstico / Hipótese</label><input type="text" id="pat-diag" placeholder="Ex: Dislexia, gagueira..."></div>
+        <!-- VOCAL EFFORT SCALE -->
+        <div class="sec-label" style="margin-top:8px;margin-bottom:6px">Escala de Esforço Vocal (VAS)</div>
+        <div class="vas-scale">
+          <div class="vas-track">
+            <label>Pré-leitura</label>
+            <input type="range" id="vas-pre" min="0" max="10" value="0" oninput="document.getElementById('vas-pre-val').textContent=this.value">
+            <span class="vas-val" id="vas-pre-val">0</span>
+          </div>
+          <div class="vas-track">
+            <label>Pós-leitura</label>
+            <input type="range" id="vas-post" min="0" max="10" value="0" oninput="document.getElementById('vas-post-val').textContent=this.value">
+            <span class="vas-val" id="vas-post-val">0</span>
+          </div>
+          <div class="vas-track">
+            <label>Fadiga vocal</label>
+            <input type="range" id="vas-fat" min="0" max="10" value="0" oninput="document.getElementById('vas-fat-val').textContent=this.value">
+            <span class="vas-val" id="vas-fat-val">0</span>
+          </div>
         </div>
       </div>
 
-      <!-- NÍVEL -->
-      <div class="levels-sec">
+      <!-- LEVEL -->
+      <div class="levels-sec" style="padding:10px 12px;border-bottom:1px solid var(--border2)">
         <div class="sec-label">Nível de dificuldade</div>
         <div class="level-grid">
           <button class="lvl-btn active" data-lvl="1" onclick="selectLevel(1,this)">🟢 Fácil</button>
@@ -312,60 +421,63 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
           <button class="lvl-btn" data-lvl="4" onclick="selectLevel(4,this)">🔴 Avançado</button>
           <button class="lvl-btn" data-lvl="5" onclick="selectLevel(5,this)">🟣 Expert</button>
           <button class="lvl-btn" data-lvl="6" onclick="selectLevel(6,this)">💀 Extremo</button>
+          <button class="lvl-btn" data-lvl="custom" onclick="selectLevel('custom',this)" style="grid-column:1/-1">✏️ Texto Personalizado</button>
         </div>
       </div>
 
-      <!-- TEXTOS -->
-      <div class="text-list">
+      <!-- TEXT LIST -->
+      <div class="text-list" id="text-list-section">
         <div class="sec-label">Textos disponíveis</div>
-        <div id="text-list-container"></div>
+        <div id="text-list-container" style="margin-top:8px"></div>
+      </div>
+
+      <!-- CUSTOM TEXT FORM -->
+      <div class="custom-text-form" id="custom-form" style="display:none">
+        <div class="sec-label">Texto Personalizado</div>
+        <div class="field" style="margin-top:8px"><label>Título</label><input type="text" id="custom-title" placeholder="Nome do texto"></div>
+        <div class="field"><label>Texto</label><textarea id="custom-body" rows="5" placeholder="Cole ou digite o texto aqui..."></textarea></div>
+        <button class="btn-small green" onclick="loadCustomText()">✓ Carregar Texto</button>
+        <button class="btn-small" onclick="saveCustomText()">💾 Salvar na Biblioteca</button>
       </div>
     </div>
 
-    <!-- MAIN -->
-    <div class="main">
-      <!-- READING HEADER / TIMER -->
+    <!-- MAIN PANEL: ASSESSMENT -->
+    <div class="main" id="panel-avaliacao">
+
+      <!-- TIMER HEADER -->
       <div class="reading-header">
         <div id="timer-display" class="timer-display">00:00</div>
         <div class="timer-btns">
-          <button class="tbtn start" id="btn-start" onclick="startTimer()">▶ Iniciar</button>
+          <button class="tbtn start" id="btn-start" onclick="startTimer()" disabled>▶ Iniciar</button>
           <button class="tbtn pause" id="btn-pause" onclick="pauseTimer()" disabled>⏸ Pausar</button>
           <button class="tbtn stop" id="btn-stop" onclick="stopTimer()" disabled>⏹ Parar</button>
-          <button class="tbtn" id="btn-reset" onclick="resetTimer()">↺ Reset</button>
+          <button class="tbtn" onclick="resetTimer()">↺ Reset</button>
+          <button class="tbtn rec-btn" id="btn-rec" onclick="toggleRecording()">⏺ Gravar</button>
+          <button class="tbtn" onclick="openFullscreen()" id="btn-fs" disabled>⛶ Tela Cheia</button>
         </div>
         <div class="metrics-row">
-          <div class="metric">
-            <div class="metric-val" id="m-wpm">—</div>
-            <div class="metric-lbl">PPM</div>
-          </div>
-          <div class="metric">
-            <div class="metric-val" id="m-errors">0</div>
-            <div class="metric-lbl">Erros</div>
-          </div>
-          <div class="metric">
-            <div class="metric-val" id="m-hesit">0</div>
-            <div class="metric-lbl">Hesit.</div>
-          </div>
-          <div class="metric">
-            <div class="metric-val" id="m-accuracy">—</div>
-            <div class="metric-lbl">Precisão</div>
-          </div>
+          <div class="metric"><div class="metric-val" id="m-wpm">—</div><div class="metric-lbl">PPM</div></div>
+          <div class="metric"><div class="metric-val" id="m-errors">0</div><div class="metric-lbl">Erros</div></div>
+          <div class="metric"><div class="metric-val" id="m-hesit">0</div><div class="metric-lbl">Hesit.</div></div>
+          <div class="metric"><div class="metric-val" id="m-accuracy">—</div><div class="metric-lbl">Precisão</div></div>
           <button class="tbtn report" id="btn-report" onclick="openReport()" disabled>📊 Relatório</button>
         </div>
       </div>
 
-      <!-- PROGRESS -->
-      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-
-      <!-- MARK CONTROLS -->
-      <div style="padding:8px 20px;background:var(--s2);border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--t3);letter-spacing:1px;text-transform:uppercase">Marcar:</span>
-        <button class="mark-btn err-btn" id="mark-err-btn" onclick="setMarkMode('error')">✗ Erro</button>
-        <button class="mark-btn hes-btn" id="mark-hes-btn" onclick="setMarkMode('hesitation')">⏤ Hesitação</button>
-        <button class="mark-btn clr-btn" onclick="setMarkMode('clear')">○ Limpar</button>
-        <span class="mark-hint">Clique nas palavras para marcar</span>
-        <button class="mark-btn clr-btn" style="margin-left:auto" onclick="clearAllMarks()">Limpar tudo</button>
+      <!-- MARK BAR -->
+      <div class="mark-bar">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:7px;color:var(--t3);letter-spacing:1px;text-transform:uppercase">Marcar:</span>
+        <button class="mark-btn err active" id="mb-err" onclick="setMark('error')">✗ Erro</button>
+        <button class="mark-btn hes" id="mb-hes" onclick="setMark('hesit')">⏤ Hesitação</button>
+        <button class="mark-btn sub" id="mb-sub" onclick="setMark('subst')">↔ Substituição</button>
+        <button class="mark-btn omi" id="mb-omi" onclick="setMark('omiss')">○ Omissão</button>
+        <button class="mark-btn add" id="mb-add" onclick="setMark('add')">+ Adição</button>
+        <button class="mark-btn clr" onclick="setMark('clear')">◌ Limpar</button>
+        <span class="mark-legend">Clique nas palavras</span>
+        <button class="mark-btn clr" style="margin-left:auto" onclick="clearAll()">Limpar tudo</button>
       </div>
+
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
 
       <!-- TEXT AREA -->
       <div class="text-area" id="text-area">
@@ -373,7 +485,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
           <div class="empty-state" id="empty-state">
             <div class="empty-icon">📖</div>
             <div class="empty-title">Selecione um texto</div>
-            <div class="empty-sub">Escolha o nível e o texto na barra lateral</div>
+            <div class="empty-sub">Escolha o nível e o texto na barra lateral<br>ou crie um texto personalizado</div>
           </div>
           <div id="text-content" style="display:none">
             <div class="text-meta">
@@ -381,14 +493,58 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
               <div class="text-subtitle" id="tc-sub"></div>
             </div>
             <div class="reading-text" id="tc-words"></div>
-            <div class="annotations">
-              <div class="ann-label">Observações do fonoaudiólogo</div>
-              <textarea class="ann-textarea" id="ann-notes" placeholder="Anotações clínicas: qualidade de voz, postura, respiração, pausas, prosódia..." rows="3"></textarea>
+            <div class="audio-player" id="audio-player">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--t2);letter-spacing:1px">GRAVAÇÃO</span>
+              <audio id="audio-elem" controls></audio>
+              <button class="mark-btn clr" onclick="deleteRecording()">✕</button>
+            </div>
+            <div id="compreh-section"></div>
+            <div class="annotations" style="margin-top:10px">
+              <div class="ann-label">Observações clínicas — qualidade vocal, postura, respiração, prosódia</div>
+              <textarea class="ann-textarea" id="ann-notes" rows="3" placeholder="Anotações do fonoaudiólogo..."></textarea>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- PANEL: HISTORY -->
+    <div class="history-panel" id="panel-historico">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--t0);text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:10px;display:flex;justify-content:space-between;align-items:center">
+        Histórico de Sessões
+        <button class="mark-btn clr" onclick="clearHistory()" style="font-size:7px">Limpar tudo</button>
+      </div>
+      <div id="history-list"></div>
+    </div>
+
+    <!-- PANEL: EVOLUTION -->
+    <div class="evo-section" id="panel-evolucao">
+      <div class="evo-header">Evolução do Paciente</div>
+      <div class="evo-legend">
+        <div class="evo-leg-item"><div class="evo-leg-dot" style="background:var(--cyan)"></div>PPM</div>
+        <div class="evo-leg-item"><div class="evo-leg-dot" style="background:var(--grn)"></div>Precisão %</div>
+        <div class="evo-leg-item"><div class="evo-leg-dot" style="background:var(--red)"></div>Erros</div>
+      </div>
+      <canvas id="evo-chart" class="evo-chart" height="200"></canvas>
+      <canvas id="evo-chart2" class="evo-chart" height="180"></canvas>
+      <div id="evo-no-data" class="evo-no-data" style="display:none">Nenhuma sessão registrada ainda.<br>Complete uma avaliação e salve o relatório.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FULLSCREEN READING MODE -->
+<div class="fullscreen-overlay" id="fs-overlay">
+  <div class="fs-timer" id="fs-timer">00:00</div>
+  <button class="fs-exit" onclick="closeFullscreen()">✕ Sair</button>
+  <div class="fs-title" id="fs-title"></div>
+  <div class="fs-text" id="fs-text"></div>
+  <div class="fs-controls">
+    <button class="fs-btn go" id="fs-start-btn" onclick="fsToggleTimer()">▶ Iniciar Leitura</button>
+    <button class="fs-btn" onclick="closeFullscreen()">⏹ Encerrar</button>
+  </div>
+  <div class="fs-font-ctrl">
+    <button class="fs-font-btn" onclick="fsFontSize(-2)">A-</button>
+    <button class="fs-font-btn" onclick="fsFontSize(2)">A+</button>
   </div>
 </div>
 
@@ -404,251 +560,375 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 </div>
 
 <script>
-/* ══════════════════════════════════════════
-   TEXTS DATABASE
-══════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════ */
 const TEXTS = {
-1: [
-  {
-    id:'1a', name:'O Gato e o Sol', words: 80,
-    title:'O Gato e o Sol',
-    subtitle:'Nível 1 · Vocabulário básico · Sílabas simples',
-    content:'O gato dorme ao sol. Ele é preto e tem quatro patas. O gato gosta de leite e de peixe. Ele mia quando quer comer. De manhã, o gato pula na cama e acorda a mamãe. À tarde, ele brinca com uma bola. À noite, o gato dorme no sofá. O gato é um animal muito carinhoso. Ele gosta de colo e de carinhos. Toda a família ama o gato da casa.'
-  },
-  {
-    id:'1b', name:'A Escola da Ana', words: 90,
-    title:'A Escola da Ana',
-    subtitle:'Nível 1 · Frases curtas · Alta frequência',
-    content:'Ana vai para a escola todo dia. Ela acorda cedo e toma café. A mochila dela é azul. Na escola, Ana aprende a ler e a escrever. A professora dela se chama Maria. Ana gosta muito de pintar e de cantar. Na hora do recreio, ela brinca com os amigos. Eles jogam bola e pulam corda. À tarde, Ana volta para casa. Ela faz o dever de casa e depois assiste televisão. Ana adora a escola.'
-  }
+1:[
+  {id:'1a',name:'O Gato e o Sol',words:80,
+   title:'O Gato e o Sol',subtitle:'Nível 1 · Fácil · Vocabulário básico · Alta frequência',
+   content:'O gato dorme ao sol. Ele é preto e tem quatro patas. O gato gosta de leite e de peixe. Ele mia quando quer comer. De manhã, o gato pula na cama e acorda a mamãe. À tarde, ele brinca com uma bola de lã. À noite, o gato dorme no sofá quentinho. O gato é um animal muito carinhoso e dócil. Ele gosta de colo e de carinhos suaves. Toda a família ama o gato da casa.',
+   questions:[
+     {q:'Onde o gato dorme à noite?',opts:['Na cama','No sofá','No chão','Na cadeira'],correct:1},
+     {q:'O que o gato faz de manhã?',opts:['Pula na cama','Come peixe','Brinca com bola','Mia'],correct:0},
+     {q:'Como é o gato descrito no texto?',opts:['Bravo','Carinhoso','Selvagem','Preguiçoso'],correct:1}
+   ]},
+  {id:'1b',name:'A Escola da Ana',words:92,
+   title:'A Escola da Ana',subtitle:'Nível 1 · Fácil · Frases simples · Rotina',
+   content:'Ana vai para a escola todo dia de semana. Ela acorda cedo e toma café com leite. A mochila dela é azul com estrelas. Na escola, Ana aprende a ler, a escrever e a fazer contas. A professora dela se chama Dona Maria e é muito boa. Ana gosta muito de pintar, de cantar e de contar histórias. Na hora do recreio, ela brinca com os amigos no pátio. Eles jogam bola e pulam corda juntos. À tarde, Ana volta para casa de mãos dadas com a mãe. Ela faz o dever e depois assiste a um desenho animado.',
+   questions:[
+     {q:'Como é a mochila da Ana?',opts:['Vermelha','Verde','Azul com estrelas','Rosa'],correct:2},
+     {q:'Qual o nome da professora?',opts:['Dona Lúcia','Dona Maria','Dona Ana','Dona Rosa'],correct:1},
+     {q:'O que Ana faz depois do dever?',opts:['Dorme','Assiste desenho','Brinca','Lê'],correct:1}
+   ]}
 ],
-2: [
-  {
-    id:'2a', name:'A Amazônia', words: 110,
-    title:'A Floresta Amazônica',
-    subtitle:'Nível 2 · Vocabulário intermediário · Frases compostas',
-    content:'A floresta amazônica é a maior floresta tropical do mundo. Ela cobre grande parte do Brasil e de outros países da América do Sul. Na Amazônia, vivem milhares de espécies de animais e plantas. O rio Amazonas atravessa a floresta e deságua no oceano Atlântico. Muitas comunidades indígenas vivem na floresta e conhecem seus segredos. A Amazônia produz oxigênio para todo o planeta e regula o clima global. Por isso, é muito importante preservar essa floresta tão especial. O desmatamento é uma ameaça grave que precisa ser combatida por todos.'
-  },
-  {
-    id:'2b', name:'Os Planetas', words: 105,
-    title:'O Sistema Solar',
-    subtitle:'Nível 2 · Ciências · Vocabulário específico',
-    content:'O sistema solar é formado pelo Sol e por oito planetas. Os planetas giram ao redor do Sol em órbitas diferentes. Mercúrio é o planeta mais próximo do Sol e o mais quente. Vênus tem uma atmosfera densa e temperaturas altíssimas. A Terra é o único planeta onde existe vida conhecida. Marte é vermelho por causa do óxido de ferro em sua superfície. Júpiter é o maior planeta e tem uma grande tempestade chamada Mancha Vermelha. Saturno tem anéis formados de gelo e rocha. Urano e Netuno são os planetas mais distantes e mais frios.'
-  }
+2:[
+  {id:'2a',name:'A Floresta Amazônica',words:112,
+   title:'A Floresta Amazônica',subtitle:'Nível 2 · Médio · Vocabulário intermediário · Frases compostas',
+   content:'A floresta amazônica é a maior floresta tropical do mundo. Ela cobre grande parte do Brasil e de outros países da América do Sul. Na Amazônia, vivem milhares de espécies de animais e plantas ainda desconhecidas pela ciência. O rio Amazonas atravessa toda a floresta e deságua no oceano Atlântico. Muitas comunidades indígenas vivem na floresta e conhecem seus segredos há séculos. A Amazônia produz oxigênio essencial para todo o planeta e regula o clima global de forma decisiva. Por isso, preservar essa floresta tão especial é uma responsabilidade de todos. O desmatamento acelerado representa uma ameaça grave que precisa ser combatida urgentemente.',
+   questions:[
+     {q:'O que o rio Amazonas faz?',opts:['Nasce no Atlântico','Atravessa a floresta e deságua no Atlântico','Divide o Brasil ao meio','Nasce no Peru'],correct:1},
+     {q:'O que a Amazônia produz para o planeta?',opts:['Chuva','Energia solar','Oxigênio','Petróleo'],correct:2},
+     {q:'Quem vive na floresta há séculos?',opts:['Agricultores','Comunidades indígenas','Cientistas','Turistas'],correct:1}
+   ]},
+  {id:'2b',name:'O Sistema Solar',words:108,
+   title:'O Sistema Solar',subtitle:'Nível 2 · Médio · Ciências · Vocabulário específico',
+   content:'O sistema solar é formado pelo Sol e por oito planetas que giram ao seu redor. Cada planeta percorre sua própria órbita em velocidades diferentes. Mercúrio é o planeta mais próximo do Sol e tem temperaturas extremas. Vênus tem uma atmosfera densa de dióxido de carbono. A Terra é o único planeta onde existe vida conhecida no universo. Marte é vermelho por causa do óxido de ferro em sua superfície rochosa. Júpiter é o maior planeta e tem uma grande tempestade chamada de Mancha Vermelha. Saturno tem anéis formados de gelo e rocha. Urano e Netuno são os planetas mais distantes e mais gelados do sistema.',
+   questions:[
+     {q:'Quantos planetas tem o sistema solar?',opts:['7','8','9','10'],correct:1},
+     {q:'Por que Marte é vermelho?',opts:['Lava vulcânica','Óxido de ferro','Luz do sol','Poeira azul'],correct:1},
+     {q:'Qual o maior planeta?',opts:['Saturno','Terra','Júpiter','Netuno'],correct:2}
+   ]}
 ],
-3: [
-  {
-    id:'3a', name:'Revolução Industrial', words: 130,
-    title:'A Revolução Industrial',
-    subtitle:'Nível 3 · Texto histórico · Vocabulário técnico',
-    content:'A Revolução Industrial transformou profundamente a sociedade europeia a partir do século XVIII. Iniciada na Inglaterra, essa transformação marcou a transição da produção artesanal para a produção mecanizada. A invenção da máquina a vapor por James Watt foi fundamental para esse processo, permitindo a criação de locomotivas, navios e fábricas. Trabalhadores abandonaram o campo e migraram para as cidades em busca de emprego nas indústrias. As condições de trabalho eram precárias: jornadas de doze a dezesseis horas, salários baixos e ausência de direitos trabalhistas. Esse contexto gerou os primeiros movimentos operários e sindicatos, que lutaram por melhores condições. A Revolução Industrial também intensificou o colonialismo, pois as potências europeias precisavam de matéria-prima e mercados consumidores.'
-  },
-  {
-    id:'3b', name:'Neurociência e Memória', words: 125,
-    title:'Como o Cérebro Forma Memórias',
-    subtitle:'Nível 3 · Ciências da saúde · Termos técnicos',
-    content:'A formação de memórias é um processo complexo que envolve diversas estruturas cerebrais. O hipocampo desempenha papel central na consolidação da memória episódica, aquela relacionada a eventos e experiências pessoais. Durante o sono, o cérebro reprocessa as informações adquiridas durante o dia, transferindo-as da memória de curto prazo para a de longo prazo. A plasticidade sináptica, especialmente o fenômeno conhecido como potenciação de longa duração, é o mecanismo celular subjacente ao aprendizado. Neurotransmissores como glutamato e dopamina modulam a intensidade com que as memórias são gravadas. Situações emocionalmente intensas produzem memórias mais vívidas porque a amígdala, estrutura relacionada às emoções, potencializa a atividade do hipocampo durante a codificação.'
-  }
+3:[
+  {id:'3a',name:'Revolução Industrial',words:133,
+   title:'A Revolução Industrial',subtitle:'Nível 3 · Difícil · Texto histórico · Vocabulário técnico',
+   content:'A Revolução Industrial transformou profundamente a sociedade europeia a partir do século dezoito. Iniciada na Inglaterra, essa transformação radical marcou a transição da produção artesanal para a produção mecanizada em larga escala. A invenção da máquina a vapor por James Watt foi fundamental para esse processo, permitindo a criação de locomotivas, navios a vapor e fábricas modernas. Trabalhadores abandonaram o campo em massa e migraram para as cidades industriais em busca de emprego. As condições de trabalho eram precárias: jornadas de doze a dezesseis horas, salários baixíssimos e ausência total de direitos trabalhistas. Esse contexto desumano gerou os primeiros movimentos operários e sindicatos, que lutaram corajosamente por melhores condições de vida. A Revolução Industrial também intensificou o colonialismo europeu, pois as potências precisavam de matéria-prima barata e mercados consumidores para seus produtos.',
+   questions:[
+     {q:'Onde começou a Revolução Industrial?',opts:['França','Estados Unidos','Inglaterra','Alemanha'],correct:2},
+     {q:'Qual inventor criou a máquina a vapor?',opts:['Newton','James Watt','Darwin','Edison'],correct:1},
+     {q:'Qual foi uma consequência social da industrialização?',opts:['Melhoria imediata nas condições de trabalho','Surgimento de movimentos operários','Redução das horas de trabalho','Aumento dos salários'],correct:1}
+   ]},
+  {id:'3b',name:'Memória e Cérebro',words:128,
+   title:'Como o Cérebro Forma Memórias',subtitle:'Nível 3 · Difícil · Ciências da saúde · Termos técnicos',
+   content:'A formação de memórias é um processo complexo que envolve diversas estruturas cerebrais interconectadas. O hipocampo desempenha papel central na consolidação da memória episódica, aquela relacionada a eventos e experiências pessoais vividas. Durante o sono, o cérebro reprocessa as informações adquiridas durante o dia, transferindo-as da memória de curto prazo para a memória de longo prazo de forma eficiente. A plasticidade sináptica, especialmente o fenômeno denominado potenciação de longa duração, é o mecanismo celular subjacente ao aprendizado humano. Neurotransmissores como glutamato e dopamina modulam a intensidade com que as memórias são gravadas no córtex cerebral. Situações emocionalmente intensas produzem memórias mais vívidas e duradouras porque a amígdala, estrutura relacionada às emoções, potencializa a atividade hipocampal durante a codificação e a consolidação da memória.',
+   questions:[
+     {q:'Qual estrutura é central na memória episódica?',opts:['Amígdala','Córtex pré-frontal','Hipocampo','Cerebelo'],correct:2},
+     {q:'Quando o cérebro consolida memórias?',opts:['Durante exercícios','Durante o sono','Durante refeições','Durante leituras'],correct:1},
+     {q:'Por que memórias emocionais são mais vívidas?',opts:['Pelo hipocampo maior','Pela amígdala potencializando o hipocampo','Por mais dopamina','Por mais glutamato'],correct:1}
+   ]}
 ],
-4: [
-  {
-    id:'4a', name:'Disfagia Orofaríngea', words: 145,
-    title:'Fisiopatologia da Disfagia Orofaríngea',
-    subtitle:'Nível 4 · Texto científico · Terminologia fonoaudiológica',
-    content:'A disfagia orofaríngea caracteriza-se por dificuldade na deglutição decorrente de alterações nas fases oral, faríngea ou na transição faringoesofágica. As causas mais frequentes incluem acidente vascular encefálico, doença de Parkinson, esclerose lateral amiotrófica e neoplasias de cabeça e pescoço. Do ponto de vista neurofisiológico, a deglutição normal exige a coordenação precisa de mais de trinta músculos, regulados pelo tronco encefálico e por estruturas supratentoriais. A penetração laríngea e a aspiração traqueobrônquica representam as complicações mais graves, podendo resultar em pneumonia aspirativa com significativa morbimortalidade. A avaliação clínica fonoaudiológica, complementada pela videofluoroscopia da deglutição e pela videoendoscopia da deglutição com fibra óptica, constitui o padrão ouro diagnóstico. O manejo terapêutico inclui estratégias posturais, manobras de deglutição e modificação de consistências alimentares conforme a International Dysphagia Diet Standardisation Initiative.'
-  },
-  {
-    id:'4b', name:'Análise Acústica da Voz', words: 140,
-    title:'Parâmetros Acústicos na Avaliação Vocal',
-    subtitle:'Nível 4 · Fonoaudiologia clínica · Terminologia especializada',
-    content:'A avaliação acústica da voz constitui instrumento fundamental na prática fonoaudiológica contemporânea. Parâmetros como frequência fundamental, jitter, shimmer e proporção harmônico-ruído permitem quantificar objetivamente as características vibratórias das pregas vocais. A frequência fundamental média varia entre cento e vinte e duzentos e cinquenta hertz em homens adultos e entre cento e noventa e duzentos e noventa hertz em mulheres. Perturbações de frequência, mensuradas pelo jitter, acima de um por cento indicam irregularidade vibratória significativa. O shimmer, perturbação de amplitude, quando superior a três decibéis, sugere alteração na coaptação glótica. A proporção harmônico-ruído abaixo de quinze decibéis indica excesso de ruído no sinal vocal. Tais medidas, obtidas por softwares especializados como o Praat e o Multi-Dimensional Voice Program, devem ser interpretadas sempre em conjunto com a avaliação perceptivo-auditiva e laringoscópica, evitando conclusões reducionistas baseadas exclusivamente em dados acústicos isolados.'
-  }
+4:[
+  {id:'4a',name:'Disfagia Orofaríngea',words:148,
+   title:'Fisiopatologia da Disfagia Orofaríngea',subtitle:'Nível 4 · Avançado · Terminologia fonoaudiológica clínica',
+   content:'A disfagia orofaríngea caracteriza-se por dificuldade na deglutição decorrente de alterações nas fases oral, faríngea ou na transição faringoesofágica do processo deglutitório. As causas mais frequentes incluem acidente vascular encefálico, doença de Parkinson, esclerose lateral amiotrófica e neoplasias de cabeça e pescoço tratadas com cirurgia ou radioterapia. Do ponto de vista neurofisiológico, a deglutição normal exige coordenação precisa de mais de trinta músculos, regulados pelo tronco encefálico e por estruturas supratentoriais bilaterais. A penetração laríngea e a aspiração traqueobrônquica representam as complicações mais graves da disfagia, podendo resultar em pneumonia aspirativa com significativa morbimortalidade hospitalar. A avaliação clínica fonoaudiológica, complementada pela videofluoroscopia da deglutição e pela videoendoscopia com fibra óptica, constitui o padrão-ouro diagnóstico contemporâneo. O manejo terapêutico inclui estratégias posturais, manobras de deglutição e modificação de consistências alimentares conforme a International Dysphagia Diet Standardisation Initiative.',
+   questions:[
+     {q:'Quantos músculos envolvem a deglutição normal?',opts:['Mais de 10','Mais de 20','Mais de 30','Mais de 50'],correct:2},
+     {q:'Qual o padrão-ouro diagnóstico para disfagia?',opts:['Tomografia','Ressonância','Videofluoroscopia + videoendoscopia','Ultrassonografia'],correct:2},
+     {q:'O que é aspiração traqueobrônquica?',opts:['Tosse produtiva','Entrada de material nas vias aéreas','Dificuldade de mastigação','Refluxo esofágico'],correct:1}
+   ]},
+  {id:'4b',name:'Análise Acústica Vocal',words:143,
+   title:'Parâmetros Acústicos na Avaliação Vocal',subtitle:'Nível 4 · Avançado · Fonoaudiologia · Terminologia especializada',
+   content:'A avaliação acústica da voz constitui instrumento fundamental na prática fonoaudiológica contemporânea baseada em evidências. Parâmetros como frequência fundamental, jitter, shimmer e proporção harmônico-ruído permitem quantificar objetivamente as características vibratórias das pregas vocais. A frequência fundamental média varia entre cento e vinte e duzentos e cinquenta hertz em homens adultos e entre cento e noventa e duzentos e noventa hertz em mulheres adultas jovens. Perturbações de frequência, mensuradas pelo jitter, acima de um por cento indicam irregularidade vibratória clinicamente significativa. O shimmer, perturbação de amplitude ciclo a ciclo, quando superior a três decibéis, sugere alteração na coaptação glótica. A proporção harmônico-ruído abaixo de quinze decibéis indica excesso de ruído aperiódico no sinal vocal. Tais medidas, obtidas por softwares especializados como o Praat e o Multi-Dimensional Voice Program, devem ser interpretadas sempre em conjunto com a avaliação perceptivo-auditiva padronizada e com o exame laringoscópico direto.',
+   questions:[
+     {q:'O que mede o jitter?',opts:['Perturbação de amplitude','Perturbação de frequência','Ruído aperiódico','Frequência fundamental'],correct:1},
+     {q:'Qual software é citado para análise acústica?',opts:['Audacity','Praat','GarageBand','MATLAB'],correct:1},
+     {q:'HNR abaixo de 15 dB indica o quê?',opts:['Voz normal','Frequência alta','Excesso de ruído aperiódico','Boa coaptação glótica'],correct:2}
+   ]}
 ],
-5: [
-  {
-    id:'5a', name:'Epigenética e Linguagem', words: 165,
-    title:'Epigenética, Plasticidade Cerebral e Aquisição de Linguagem',
-    subtitle:'Nível 5 · Alta complexidade · Artigo científico',
-    content:'A intersecção entre epigenética e neurociência da linguagem tem revelado mecanismos surpreendentes pelos quais a experiência ambiental modula a expressão gênica em circuitos neuronais subjacentes à comunicação humana. Processos epigenéticos como metilação do DNA, modificações de histonas e regulação por RNA não codificante modulam a transcrição de genes relacionados à sinaptogênese e à mielinização em regiões como o giro frontal inferior, o plano temporal e o fascículo arqueado. Estudos longitudinais demonstram que a riqueza do input linguístico nos primeiros trinta e seis meses de vida produz modificações epigenéticas duradouras que influenciam trajetórias de desenvolvimento fonológico, morfossintático e lexical. O fenômeno conhecido como período crítico, durante o qual a plasticidade sináptica está maximizada, é parcialmente regulado pela expressão de fatores de transcrição como o FOXP2, cujas variantes têm sido associadas a transtornos específicos da linguagem. As implicações clínicas desse campo emergente para a intervenção fonoaudiológica precoce são profundas: sugerem que o timing e a qualidade da estimulação comunicativa na primeira infância transcendem o nível comportamental, operando em substratos moleculares com efeitos potencialmente transgeracionais.'
-  },
-  {
-    id:'5b', name:'Gagueira Neurogênica', words: 160,
-    title:'Neurobiologia da Gagueira: Da Disfunção à Intervenção Baseada em Evidência',
-    subtitle:'Nível 5 · Fonoaudiologia avançada · Literatura especializada',
-    content:'A gagueira desenvolvimental persistente tem substrato neurobiológico bem estabelecido, evidenciado por décadas de estudos de neuroimagem funcional e estrutural. Metanálises de exames por ressonância magnética funcional demonstram consistentemente hipoativação do giro frontal inferior esquerdo, especialmente a área de Broca, e hiperativação homóloga direita durante a fala, sugerindo atipicidade na lateralização hemisférica do processamento motor da fala. Anormalidades na substância branca do fascículo arqueado, do fascículo frontal orbital e das vias corticoespinhais foram identificadas por estudos de tensor de difusão, indicando comprometimento na transmissão de sinal entre regiões de planejamento e execução motora. A dopamina desempenha papel modulatório relevante, explicando a eficácia parcial de agentes antidopaminérgicos em subgrupos específicos. A abordagem terapêutica contemporânea, fundamentada nas terapias de regulação da fluência e nas abordagens de aceitação e comprometimento, reconhece que os desfechos em qualidade de vida e participação comunicativa são clinicamente superiores ao critério exclusivo de supressão de disfluências, demandando do fonoaudiólogo competências que integrem a neurocognição do controle motor da fala com a psicologia do autoconceito e da identidade do falante.'
-  }
+5:[
+  {id:'5a',name:'Epigenética e Linguagem',words:162,
+   title:'Epigenética, Plasticidade Cerebral e Aquisição de Linguagem',subtitle:'Nível 5 · Expert · Alta complexidade científica',
+   content:'A intersecção entre epigenética e neurociência da linguagem tem revelado mecanismos surpreendentes pelos quais a experiência ambiental modula a expressão gênica em circuitos neuronais subjacentes à comunicação humana. Processos epigenéticos como metilação do DNA, modificações de histonas e regulação por RNA não codificante modulam a transcrição de genes relacionados à sinaptogênese e à mielinização em regiões como o giro frontal inferior, o plano temporal e o fascículo arqueado. Estudos longitudinais demonstram que a riqueza do input linguístico nos primeiros trinta e seis meses de vida produz modificações epigenéticas duradouras que influenciam trajetórias de desenvolvimento fonológico, morfossintático e lexical ao longo da escolarização. O fenômeno conhecido como período crítico, durante o qual a plasticidade sináptica está maximizada, é parcialmente regulado pela expressão de fatores de transcrição como o FOXP2, cujas variantes alélicas têm sido associadas a transtornos específicos da linguagem e da apraxia verbal. As implicações clínicas desse campo emergente para a intervenção fonoaudiológica precoce são profundas: sugerem que o timing e a qualidade da estimulação comunicativa na primeira infância transcendem o nível comportamental, operando em substratos moleculares com efeitos potencialmente transgeracionais documentados em modelos animais.',
+   questions:[
+     {q:'O gene FOXP2 está associado a quê?',opts:['Audição','Transtornos específicos de linguagem','Disfagia','Voz'],correct:1},
+     {q:'Qual período é crítico para a linguagem?',opts:['Dos 5 aos 10 anos','Primeiros 36 meses','Adolescência','Vida adulta'],correct:1},
+     {q:'O que é o fascículo arqueado?',opts:['Músculo laríngeo','Região de conexão cerebral para linguagem','Estrutura do ouvido médio','Glândula salivar'],correct:1}
+   ]},
+  {id:'5b',name:'Neurobiologia da Gagueira',words:158,
+   title:'Neurobiologia da Gagueira: Da Disfunção à Intervenção',subtitle:'Nível 5 · Expert · Fonoaudiologia avançada · Literatura internacional',
+   content:'A gagueira desenvolvimental persistente tem substrato neurobiológico bem estabelecido, evidenciado por décadas de estudos de neuroimagem funcional e estrutural convergentes. Metanálises de exames por ressonância magnética funcional demonstram consistentemente hipoativação do giro frontal inferior esquerdo, especialmente da área de Broca, e hiperativação homóloga direita durante a fala espontânea, sugerindo atipicidade na lateralização hemisférica do processamento motor da fala. Anormalidades na substância branca do fascículo arqueado, do fascículo frontal orbital e das vias corticoespinhais foram identificadas por estudos de tensor de difusão, indicando comprometimento na transmissão de sinal entre regiões de planejamento e execução motora da fala. A dopamina desempenha papel modulatório relevante nessa fisiopatologia, explicando a eficácia parcial de agentes antidopaminérgicos em subgrupos específicos de pessoas que gaguejam. A abordagem terapêutica contemporânea, fundamentada nas terapias de regulação da fluência combinadas com as abordagens de aceitação e comprometimento, reconhece que os desfechos em qualidade de vida e participação comunicativa são superiores ao critério histórico de supressão exclusiva de disfluências, demandando competências integradas em neurocognição e psicologia da identidade.',
+   questions:[
+     {q:'O que demonstram as metanálises de fMRI na gagueira?',opts:['Hiperativação bilateral','Hipoativação do giro frontal esquerdo','Alteração no cerebelo','Aumento do hipocampo'],correct:1},
+     {q:'Qual neurotransmissor é modulatório na gagueira?',opts:['Serotonina','Glutamato','Dopamina','GABA'],correct:2},
+     {q:'O que a abordagem ACT prioriza na gagueira?',opts:['Supressão de disfluências','Qualidade de vida e participação comunicativa','Medicação antidopaminérgica','Análise acústica'],correct:1}
+   ]}
 ],
-6: [
-  {
-    id:'6a', name:'Trocas Fonológicas Extremas', words: 140,
-    title:'Processamento Fonológico em Transtornos Complexos da Comunicação',
-    subtitle:'Nível 6 · EXTREMO · Fonologia · Trava-línguas clínicos · Máxima dificuldade articulatória',
-    content:'O fonoaudiólogo, avaliando a fonoarticulação do paciente, perguntou: "Pode pronunciar pseudopalavras polisilábicas? Tente: frangipânzila, xifopágio, estrelitzia, psicotronismo, zaraguatão, esternocleidomastoideo, feocromocitoma, hepatoesplenomegalia." O processamento fonológico suprassegmental pressupõe representações lexicais especificadas com traços distintivos de sonoridade, vozeamento, ponto e modo de articulação. Fricativas sibilantes interdentais, africadas palatoalveolares, consoantes nasais velares: cada fonema demanda coordenação neuromuscular precisa entre laringe, véu palatino, língua e lábios. Transtornos fonológicos inconsistentes caracterizam-se por variabilidade imprevisível nos padrões de erro, distinguindo-se da dispraxia verbal desenvolvimental pela preservação relativa da praxis não-verbal. A estimulabilidade para sons-alvo ausentes do inventário fonológico prediz prognóstico terapêutico. Avalie: "O peito-azul-grande piou para o pica-pau-anão que protegia seus pintinhos no pé do ipê-de-jardim." Respire, controle o fluxo expiratório, coordene a fonação com a articulação.'
-  },
-  {
-    id:'6b', name:'Texto Extremo Multissistêmico', words: 155,
-    title:'Avaliação Multidimensional dos Subsistemas da Fala',
-    subtitle:'Nível 6 · EXTREMO · Prosódia · Articulação · Fluência · Voz · Cognição',
-    content:'Subsistemas da fala — respiração, fonação, ressonância, articulação, prosódia — operam em sinergia neuromuscular que pressupõe integridade dos nervos cranianos V, VII, IX, X, XI e XII, do nervo frênico e dos intercostais. Leia em voz alta, mantendo qualidade vocal, taxa de fala adequada e prosódia expressiva: "Pseudopseudohipoparatiroidismo, esternocleidomastoideo, hepatoesplenomegalia, feocromocitoma, pneumonoultramicroscopicosilicovolcanoconiose." Agora com ênfase expressiva: "O xenofóbico xerife extraordinariamente excêntrico exigiu que expulsassem extemporaneamente os exploradores estrangeiros." Com ritmo regular: "Três pratos de trigo para três tigres tristes." Mais complexo: "O rato roeu a roupa do rei de Roma; a rainha com raiva rasgou o resto." Avalie sua própria prosódia: variou o tom? Manteve a velocidade? Controlou pausas? A leitura oral de textos tecnicamente densos exige integração entre processamento fonológico, morfossintático, semântico e pragmático, além de suporte respiratório adequado, controle laríngeo e coordenação velofaríngea — todo o sistema de fala em operação simultânea.'
-  }
+6:[
+  {id:'6a',name:'Fonologia Extrema',words:143,
+   title:'Processamento Fonológico em Transtornos Complexos da Comunicação',subtitle:'Nível 6 · EXTREMO · Articulação máxima · Trava-línguas clínicos',
+   content:'O fonoaudiólogo, avaliando a fonoarticulação do paciente, solicitou: "Pronuncie pseudopalavras polisilábicas: frangipânzila, xifopágio, estrelitzia, psicotronismo, zaraguatão, esternocleidomastoideo, feocromocitoma, hepatoesplenomegalia." O processamento fonológico suprassegmental pressupõe representações lexicais especificadas com traços distintivos de sonoridade, vozeamento, ponto e modo de articulação precisa. Fricativas sibilantes interdentais, africadas palatoalveolares, consoantes nasais velares: cada fonema demanda coordenação neuromuscular entre laringe, véu palatino, língua ápice e dorso, e lábios. Transtornos fonológicos inconsistentes caracterizam-se por variabilidade imprevisível nos padrões de erro, distinguindo-se da dispraxia verbal desenvolvimental pela preservação relativa da praxis não-verbal orofacial. A estimulabilidade para sons-alvo ausentes do inventário fonológico prediz o prognóstico terapêutico com razoável precisão. Avalie: "O peito-azul-grande piou para o pica-pau-anão que protegia seus pintinhos no pé do ipê-de-jardim purpúreo." Respire, controle o fluxo expiratório subglótico, coordene a fonação com a articulação supraglótica.',
+   questions:[
+     {q:'O que distingue o transtorno fonológico inconsistente da dispraxia?',opts:['Maior número de erros','Preservação relativa da praxis não-verbal','Alteração na voz','Comprometimento auditivo'],correct:1},
+     {q:'O que é estimulabilidade?',opts:['Capacidade de imitar sons com modelo','Força muscular da língua','Discriminação auditiva','Velocidade de fala'],correct:0},
+     {q:'Quais traços distintivos são citados no texto?',opts:['Tom e ritmo','Sonoridade, vozeamento, ponto e modo','Frequência e amplitude','Jitter e shimmer'],correct:1}
+   ]},
+  {id:'6b',name:'Texto Multissistêmico Extremo',words:158,
+   title:'Avaliação Multidimensional dos Subsistemas da Fala',subtitle:'Nível 6 · EXTREMO · Prosódia · Articulação · Fluência · Voz · Cognição',
+   content:'Subsistemas da fala — respiração, fonação, ressonância, articulação, prosódia — operam em sinergia neuromuscular que pressupõe integridade dos nervos cranianos cinco, sete, nove, dez, onze e doze, do nervo frênico e dos nervos intercostais. Leia em voz alta mantendo qualidade vocal, taxa de fala adequada e prosódia expressiva variada: pseudopseudohipoparatiroidismo, esternocleidomastoideo, hepatoesplenomegalia, feocromocitoma, pneumonoultramicroscopicosilicovolcanoconiose. Agora com ênfase expressiva e entoação ascendente-descendente: "O xenofóbico xerife extraordinariamente excêntrico exigiu que expulsassem extemporaneamente os exploradores estrangeiros experientes." Com ritmo metricamente regular: "Três pratos de trigo para três tigres tristes e magros." Mais complexo ainda: "O rato roeu a roupa do rei de Roma enquanto a rainha com raiva rasgava o restante." Avalie agora sua própria prosódia: variou adequadamente o tom? Manteve a velocidade regular? Controlou pausas sintáticas? A leitura oral de textos tecnicamente densos exige integração simultânea entre processamento fonológico, morfossintático, semântico e pragmático.',
+   questions:[
+     {q:'Quantos subsistemas da fala são citados?',opts:['3','4','5','6'],correct:2},
+     {q:'Quais nervos cranianos são mencionados?',opts:['1,2,3,4,5','5,7,9,10,11,12','3,4,5,6,7,8','7,8,9,10,11,12'],correct:1},
+     {q:'O que a leitura de textos densos exige?',opts:['Apenas memória','Integração de múltiplos processamentos simultâneos','Velocidade máxima','Apenas articulação'],correct:1}
+   ]}
 ]
 };
 
-const LEVEL_NAMES = {1:'Fácil',2:'Médio',3:'Difícil',4:'Avançado',5:'Expert',6:'Extremo'};
-const LEVEL_COLORS = {1:'c1',2:'c2',3:'c3',4:'c4',5:'c5',6:'c6'};
-const LEVEL_BADGES = {1:'lvl1',2:'lvl2',3:'lvl3',4:'lvl4',5:'lvl5',6:'lvl6'};
+const LVLNAMES = {1:'Fácil',2:'Médio',3:'Difícil',4:'Avançado',5:'Expert',6:'Extremo',custom:'Personalizado'};
+const NORMAS_PPM = {
+  1:{label:'Nível 1 – Fácil',p25:55,p50:85,p75:115,refBR:'Capovilla et al., 2011 – normas brasileiras'},
+  2:{label:'Nível 2 – Médio',p25:75,p50:105,p75:135,refBR:'Alves & Capovilla, 2014'},
+  3:{label:'Nível 3 – Difícil',p25:90,p50:120,p75:150,refBR:'Cunha & Capellini, 2016'},
+  4:{label:'Nível 4 – Avançado',p25:105,p50:135,p75:165,refBR:'Seabra & Navas, 2012'},
+  5:{label:'Nível 5 – Expert',p25:115,p50:145,p75:180,refBR:'Stivanin & Scheuer, 2008'},
+  6:{label:'Nível 6 – Extremo',p25:120,p50:150,p75:185,refBR:'Adaptado de normas internacionais'},
+  custom:{label:'Personalizado',p25:90,p50:120,p75:150,refBR:'Sem norma de referência'}
+};
 
-/* ══ STATE ══ */
+/* ═══════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════ */
 let currentLevel = 1;
 let currentText = null;
 let timerInterval = null;
-let elapsedSeconds = 0;
+let elapsedSec = 0;
 let timerRunning = false;
 let timerStarted = false;
 let markMode = 'error';
 let wordElements = [];
-let errors = new Set();
-let hesitations = new Set();
-let sessionId = 'SES-' + Date.now().toString(36).toUpperCase();
+let marks = {}; // idx -> type
+let mediaRecorder = null;
+let audioChunks = [];
+let audioBlob = null;
+let isRecording = false;
+let fsFontSize_ = 26;
+let comprehAnswers = {};
+let sessionId = 'SES-' + Date.now().toString(36).toUpperCase().slice(0,8);
+let customTexts = JSON.parse(localStorage.getItem('pb_custom') || '[]');
 
-/* ══ INIT ══ */
-document.getElementById('session-badge').textContent = sessionId.slice(0,12);
-selectLevel(1, document.querySelector('.lvl-btn[data-lvl="1"]'));
+document.getElementById('sess-badge').textContent = sessionId;
 
-/* ══ LEVEL SELECT ══ */
+/* ═══════════════════════════════════════════
+   PANEL NAVIGATION
+═══════════════════════════════════════════ */
+function showPanel(id, btn) {
+  document.querySelectorAll('.ttab').forEach(t => t.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('panel-avaliacao').style.display = id === 'avaliacao' ? 'flex' : 'none';
+  document.getElementById('panel-historico').style.display = 'none';
+  document.getElementById('panel-evolucao').style.display = 'none';
+  if (id === 'historico') { document.getElementById('panel-historico').style.display = 'flex'; renderHistory(); }
+  if (id === 'evolucao') { document.getElementById('panel-evolucao').style.display = 'flex'; renderEvolution(); }
+}
+
+/* ═══════════════════════════════════════════
+   LEVEL + TEXT
+═══════════════════════════════════════════ */
 function selectLevel(lvl, btn) {
   currentLevel = lvl;
   document.querySelectorAll('.lvl-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  renderTextList();
+  document.getElementById('text-list-section').style.display = lvl === 'custom' ? 'none' : 'block';
+  document.getElementById('custom-form').style.display = lvl === 'custom' ? 'block' : 'none';
+  if (lvl !== 'custom') renderTextList();
   selectText(null);
 }
 
 function renderTextList() {
-  const container = document.getElementById('text-list-container');
   const texts = TEXTS[currentLevel] || [];
-  container.innerHTML = texts.map(t => `
-    <div class="text-item" id="ti-${t.id}" onclick="selectText('${t.id}')">
+  document.getElementById('text-list-container').innerHTML = texts.map(t =>
+    `<div class="text-item" id="ti-${t.id}" onclick="selectText('${t.id}')">
       <div class="text-item-name">${t.name}</div>
       <div class="text-item-meta">${t.words} palavras · Nível ${currentLevel}</div>
-    </div>
-  `).join('');
+    </div>`
+  ).join('');
 }
 
-/* ══ TEXT SELECT ══ */
 function selectText(id) {
+  resetTimer(); clearAll(); marks = {}; comprehAnswers = {};
   if (!id) {
     currentText = null;
     document.getElementById('empty-state').style.display = 'block';
     document.getElementById('text-content').style.display = 'none';
+    document.getElementById('btn-start').disabled = true;
+    document.getElementById('btn-fs').disabled = true;
     return;
   }
-  
-  resetTimer();
-  errors.clear();
-  hesitations.clear();
-  updateMetrics();
-
-  const texts = TEXTS[currentLevel];
-  currentText = texts.find(t => t.id === id);
-  
+  const arr = TEXTS[currentLevel] || [];
+  currentText = arr.find(t => t.id === id) || currentText;
   document.querySelectorAll('.text-item').forEach(el => el.classList.remove('selected'));
   const el = document.getElementById('ti-' + id);
   if (el) el.classList.add('selected');
-
   document.getElementById('empty-state').style.display = 'none';
   document.getElementById('text-content').style.display = 'block';
   document.getElementById('tc-title').textContent = currentText.title;
   document.getElementById('tc-sub').textContent = currentText.subtitle;
   document.getElementById('ann-notes').value = '';
-
+  document.getElementById('audio-player').classList.remove('visible');
+  audioBlob = null;
   renderWords();
+  renderComprehension();
   document.getElementById('btn-start').disabled = false;
+  document.getElementById('btn-fs').disabled = false;
   document.getElementById('btn-report').disabled = true;
 }
 
 function renderWords() {
   const container = document.getElementById('tc-words');
-  const words = currentText.content.split(/\s+/);
-  wordElements = [];
-  container.innerHTML = words.map((w, i) => `<span class="word" id="w${i}" onclick="markWord(${i})">${w}</span> `).join('');
-  wordElements = words.map((w, i) => ({word: w.replace(/[^a-záéíóúâêîôûãõçàü\w]/gi,''), raw: w, idx: i}));
-  updateProgress();
+  wordElements = currentText.content.split(/\s+/);
+  container.innerHTML = wordElements.map((w, i) =>
+    `<span class="word" id="w${i}" onclick="markWord(${i})">${w}</span> `
+  ).join('');
 }
 
-/* ══ MARK MODE ══ */
-function setMarkMode(mode) {
+/* ═══════════════════════════════════════════
+   CUSTOM TEXT
+═══════════════════════════════════════════ */
+function loadCustomText() {
+  const title = document.getElementById('custom-title').value.trim() || 'Texto Personalizado';
+  const body = document.getElementById('custom-body').value.trim();
+  if (!body) return;
+  currentText = {id:'custom_tmp',name:title,title,subtitle:'Nível Personalizado',content:body,
+    words:body.split(/\s+/).length,questions:[]};
+  document.getElementById('empty-state').style.display = 'none';
+  document.getElementById('text-content').style.display = 'block';
+  document.getElementById('tc-title').textContent = title;
+  document.getElementById('tc-sub').textContent = 'Texto personalizado · ' + body.split(/\s+/).length + ' palavras';
+  document.getElementById('compreh-section').innerHTML = '';
+  marks = {}; comprehAnswers = {};
+  resetTimer(); clearAll();
+  renderWords();
+  document.getElementById('btn-start').disabled = false;
+  document.getElementById('btn-fs').disabled = false;
+  document.getElementById('btn-report').disabled = true;
+}
+
+function saveCustomText() {
+  const title = document.getElementById('custom-title').value.trim() || 'Texto Personalizado';
+  const body = document.getElementById('custom-body').value.trim();
+  if (!body) return;
+  customTexts.push({id:'c'+Date.now(),name:title,title,subtitle:'Personalizado',content:body,words:body.split(/\s+/).length,questions:[]});
+  localStorage.setItem('pb_custom', JSON.stringify(customTexts));
+  alert('Texto salvo na biblioteca!');
+}
+
+/* ═══════════════════════════════════════════
+   COMPREHENSION
+═══════════════════════════════════════════ */
+function renderComprehension() {
+  const qs = currentText.questions || [];
+  if (!qs.length) { document.getElementById('compreh-section').innerHTML = ''; return; }
+  document.getElementById('compreh-section').innerHTML = `
+    <div class="compreh-section">
+      <div class="compreh-title">Compreensão Leitora — Responda após a leitura</div>
+      ${qs.map((q, qi) => `
+        <div class="compreh-q">
+          <div class="compreh-q-text"><strong>${qi+1}.</strong> ${q.q}</div>
+          <div class="compreh-opts">
+            ${q.opts.map((opt, oi) => `
+              <div class="compreh-opt" id="opt-${qi}-${oi}" onclick="answerQ(${qi},${oi})">
+                <span class="opt-letter">${['A','B','C','D'][oi]}</span> ${opt}
+              </div>`).join('')}
+          </div>
+        </div>`).join('')}
+      <div class="compreh-score" id="compreh-score" style="display:none"></div>
+    </div>`;
+}
+
+function answerQ(qi, oi) {
+  const q = currentText.questions[qi];
+  comprehAnswers[qi] = oi;
+  // Show feedback
+  document.querySelectorAll(`[id^="opt-${qi}-"]`).forEach((el, idx) => {
+    el.className = 'compreh-opt';
+    if (idx === q.correct) el.classList.add('show-correct');
+    if (idx === oi && oi !== q.correct) el.classList.add('selected-wrong');
+    if (idx === oi && oi === q.correct) el.classList.add('selected-correct');
+  });
+  // Score
+  const answered = Object.keys(comprehAnswers).length;
+  const total = currentText.questions.length;
+  if (answered === total) {
+    const correct = Object.entries(comprehAnswers).filter(([qi, oi]) => oi === currentText.questions[qi].correct).length;
+    const pct = Math.round((correct/total)*100);
+    const el = document.getElementById('compreh-score');
+    el.style.display = 'block';
+    el.innerHTML = `Compreensão: <strong style="color:${pct>=80?'var(--grn)':pct>=60?'var(--amb)':'var(--red)'}">${correct}/${total} (${pct}%)</strong>`;
+  }
+}
+
+function getComprehenionScore() {
+  if (!currentText || !currentText.questions || !currentText.questions.length) return null;
+  const total = currentText.questions.length;
+  const answered = Object.keys(comprehAnswers).length;
+  if (!answered) return null;
+  const correct = Object.entries(comprehAnswers).filter(([qi, oi]) => Number(oi) === currentText.questions[Number(qi)].correct).length;
+  return {correct, total, pct: Math.round((correct/total)*100)};
+}
+
+/* ═══════════════════════════════════════════
+   MARKS
+═══════════════════════════════════════════ */
+function setMark(mode) {
   markMode = mode;
   document.querySelectorAll('.mark-btn').forEach(b => b.classList.remove('active'));
-  if (mode === 'error') document.getElementById('mark-err-btn').classList.add('active');
-  if (mode === 'hesitation') document.getElementById('mark-hes-btn').classList.add('active');
+  const map = {error:'mb-err',hesit:'mb-hes',subst:'mb-sub',omiss:'mb-omi',add:'mb-add'};
+  if (map[mode]) document.getElementById(map[mode]).classList.add('active');
+  if (mode === 'clear') document.querySelectorAll('.mark-btn.clr').forEach(b => b.classList.add('active'));
 }
 
 function markWord(idx) {
   const el = document.getElementById('w' + idx);
   if (!el) return;
+  const typeClass = {error:'w-error',hesit:'w-hesit',subst:'w-subst',omiss:'w-omiss',add:'w-add'};
   if (markMode === 'clear') {
-    errors.delete(idx);
-    hesitations.delete(idx);
+    delete marks[idx];
     el.className = 'word';
-  } else if (markMode === 'error') {
-    if (errors.has(idx)) { errors.delete(idx); el.className = 'word'; }
-    else { errors.add(idx); hesitations.delete(idx); el.className = 'word error'; }
-  } else if (markMode === 'hesitation') {
-    if (hesitations.has(idx)) { hesitations.delete(idx); el.className = 'word'; }
-    else { hesitations.add(idx); errors.delete(idx); el.className = 'word hesitation'; }
+  } else {
+    if (marks[idx] === markMode) { delete marks[idx]; el.className = 'word'; }
+    else { marks[idx] = markMode; el.className = 'word ' + (typeClass[markMode] || ''); }
   }
   updateMetrics();
 }
 
-function clearAllMarks() {
-  errors.clear();
-  hesitations.clear();
+function clearAll() {
+  marks = {};
   document.querySelectorAll('.word').forEach(el => el.className = 'word');
   updateMetrics();
 }
 
-/* ══ TIMER ══ */
+/* ═══════════════════════════════════════════
+   TIMER
+═══════════════════════════════════════════ */
 function startTimer() {
   if (!currentText) return;
-  timerRunning = true;
-  timerStarted = true;
+  timerRunning = timerStarted = true;
   document.getElementById('btn-start').disabled = true;
   document.getElementById('btn-pause').disabled = false;
   document.getElementById('btn-stop').disabled = false;
   document.getElementById('timer-display').className = 'timer-display running';
-  timerInterval = setInterval(() => {
-    elapsedSeconds++;
-    updateTimerDisplay();
-    updateMetrics();
-  }, 1000);
+  timerInterval = setInterval(() => { elapsedSec++; updateTimerDisplay(); updateMetrics(); }, 1000);
 }
-
 function pauseTimer() {
   if (!timerRunning) return;
-  clearInterval(timerInterval);
-  timerRunning = false;
+  clearInterval(timerInterval); timerRunning = false;
   document.getElementById('btn-start').disabled = false;
   document.getElementById('btn-pause').disabled = true;
   document.getElementById('timer-display').className = 'timer-display';
 }
-
 function stopTimer() {
-  clearInterval(timerInterval);
-  timerRunning = false;
+  clearInterval(timerInterval); timerRunning = false;
   document.getElementById('btn-start').disabled = true;
   document.getElementById('btn-pause').disabled = true;
   document.getElementById('btn-stop').disabled = true;
   document.getElementById('timer-display').className = 'timer-display stopped';
   if (timerStarted) document.getElementById('btn-report').disabled = false;
+  // Stop recording too
+  if (isRecording) toggleRecording();
   updateMetrics();
 }
-
 function resetTimer() {
-  clearInterval(timerInterval);
-  timerRunning = false;
-  timerStarted = false;
-  elapsedSeconds = 0;
+  clearInterval(timerInterval); timerRunning = timerStarted = false; elapsedSec = 0;
   updateTimerDisplay();
   document.getElementById('timer-display').className = 'timer-display';
   document.getElementById('btn-start').disabled = !currentText;
@@ -659,62 +939,117 @@ function resetTimer() {
   document.getElementById('m-accuracy').textContent = '—';
   document.getElementById('progress-fill').style.width = '0%';
 }
-
 function updateTimerDisplay() {
-  const m = Math.floor(elapsedSeconds / 60);
-  const s = elapsedSeconds % 60;
-  document.getElementById('timer-display').textContent = 
-    String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  const m = Math.floor(elapsedSec/60), s = elapsedSec%60;
+  const str = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  document.getElementById('timer-display').textContent = str;
+  document.getElementById('fs-timer').textContent = str;
 }
-
 function updateMetrics() {
-  const errCount = errors.size;
-  const hesCount = hesitations.size;
-  document.getElementById('m-errors').textContent = errCount;
-  document.getElementById('m-hesit').textContent = hesCount;
-
-  if (elapsedSeconds > 0 && currentText) {
-    const totalWords = wordElements.length;
-    const correctWords = totalWords - errCount;
-    const wpm = Math.round((totalWords / elapsedSeconds) * 60);
-    const accuracy = Math.round((correctWords / totalWords) * 100);
+  const errCnt = Object.values(marks).filter(v => v === 'error').length;
+  const hesCnt = Object.values(marks).filter(v => v === 'hesit').length;
+  document.getElementById('m-errors').textContent = errCnt;
+  document.getElementById('m-hesit').textContent = hesCnt;
+  if (elapsedSec > 0 && currentText) {
+    const total = wordElements.length;
+    const wpm = Math.round((total / elapsedSec) * 60);
+    const acc = Math.round(((total - errCnt) / total) * 100);
     document.getElementById('m-wpm').textContent = wpm;
-    document.getElementById('m-accuracy').textContent = accuracy + '%';
-    updateProgress();
+    document.getElementById('m-accuracy').textContent = acc + '%';
+    const prog = Math.min(100, Math.round((elapsedSec / Math.max(30, elapsedSec)) * 100));
+    document.getElementById('progress-fill').style.width = prog + '%';
   }
 }
 
-function updateProgress() {
-  if (!currentText) return;
-  const total = wordElements.length;
-  const marked = errors.size + hesitations.size;
-  const pct = timerStarted ? Math.min(100, Math.round((elapsedSeconds / Math.max(60, elapsedSeconds)) * 100)) : 0;
-  document.getElementById('progress-fill').style.width = pct + '%';
+/* ═══════════════════════════════════════════
+   AUDIO RECORDING
+═══════════════════════════════════════════ */
+async function toggleRecording() {
+  const btn = document.getElementById('btn-rec');
+  const ind = document.getElementById('rec-ind');
+  if (!isRecording) {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+      mediaRecorder = new MediaRecorder(stream);
+      audioChunks = [];
+      mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+      mediaRecorder.onstop = () => {
+        audioBlob = new Blob(audioChunks, {type:'audio/webm'});
+        const url = URL.createObjectURL(audioBlob);
+        document.getElementById('audio-elem').src = url;
+        document.getElementById('audio-player').classList.add('visible');
+        stream.getTracks().forEach(t => t.stop());
+      };
+      mediaRecorder.start();
+      isRecording = true;
+      btn.classList.add('recording');
+      btn.textContent = '⏹ Parar Grav.';
+      ind.classList.add('on');
+    } catch(e) {
+      alert('Microfone não disponível. Verifique as permissões do navegador.');
+    }
+  } else {
+    mediaRecorder.stop();
+    isRecording = false;
+    btn.classList.remove('recording');
+    btn.textContent = '⏺ Gravar';
+    ind.classList.remove('on');
+  }
+}
+function deleteRecording() {
+  audioBlob = null;
+  document.getElementById('audio-elem').src = '';
+  document.getElementById('audio-player').classList.remove('visible');
 }
 
-/* ══ REPORT ══ */
+/* ═══════════════════════════════════════════
+   FULLSCREEN
+═══════════════════════════════════════════ */
+function openFullscreen() {
+  if (!currentText) return;
+  document.getElementById('fs-title').textContent = currentText.title;
+  document.getElementById('fs-text').textContent = currentText.content;
+  document.getElementById('fs-text').style.fontSize = fsFontSize_ + 'px';
+  document.getElementById('fs-overlay').classList.add('on');
+  document.getElementById('fs-start-btn').textContent = timerRunning ? '⏸ Pausar' : '▶ Iniciar';
+}
+function closeFullscreen() {
+  document.getElementById('fs-overlay').classList.remove('on');
+}
+function fsToggleTimer() {
+  if (timerRunning) { pauseTimer(); document.getElementById('fs-start-btn').textContent = '▶ Retomar'; }
+  else { startTimer(); document.getElementById('fs-start-btn').textContent = '⏸ Pausar'; }
+}
+function fsFontSize(delta) {
+  fsFontSize_ = Math.max(16, Math.min(48, fsFontSize_ + delta));
+  document.getElementById('fs-text').style.fontSize = fsFontSize_ + 'px';
+}
+
+/* ═══════════════════════════════════════════
+   REPORT
+═══════════════════════════════════════════ */
 function openReport() {
   if (!currentText) return;
   buildReport();
   document.getElementById('report-modal').classList.add('open');
 }
-
 function closeReport() {
   document.getElementById('report-modal').classList.remove('open');
 }
 
 function buildReport() {
-  const totalWords = wordElements.length;
-  const errCount = errors.size;
-  const hesCount = hesitations.size;
-  const correctWords = totalWords - errCount;
-  const wpm = elapsedSeconds > 0 ? Math.round((totalWords / elapsedSeconds) * 60) : 0;
-  const accuracy = Math.round((correctWords / totalWords) * 100);
-  const hesRate = Math.round((hesCount / totalWords) * 100);
-  const errRate = Math.round((errCount / totalWords) * 100);
-  const minutes = Math.floor(elapsedSeconds / 60);
-  const seconds = elapsedSeconds % 60;
-  const timeStr = String(minutes).padStart(2,'0') + ':' + String(seconds).padStart(2,'0');
+  const total = wordElements.length;
+  const errCnt = Object.values(marks).filter(v=>'error'===v).length;
+  const hesCnt = Object.values(marks).filter(v=>'hesit'===v).length;
+  const subCnt = Object.values(marks).filter(v=>'subst'===v).length;
+  const omiCnt = Object.values(marks).filter(v=>'omiss'===v).length;
+  const addCnt = Object.values(marks).filter(v=>'add'===v).length;
+  const totalErrors = errCnt + subCnt + omiCnt + addCnt;
+  const wpm = elapsedSec > 0 ? Math.round((total/elapsedSec)*60) : 0;
+  const accuracy = Math.round(((total-totalErrors)/total)*100);
+  const hesRate = Math.round((hesCnt/total)*100);
+  const errRate = Math.round((totalErrors/total)*100);
+  const timeStr = String(Math.floor(elapsedSec/60)).padStart(2,'0') + ':' + String(elapsedSec%60).padStart(2,'0');
 
   const patName = document.getElementById('pat-name').value || '—';
   const patFono = document.getElementById('pat-fono').value || '—';
@@ -722,250 +1057,397 @@ function buildReport() {
   const patEscola = document.getElementById('pat-escola').value || '—';
   const patDob = document.getElementById('pat-dob').value;
   const notes = document.getElementById('ann-notes').value;
+  const vasPre = document.getElementById('vas-pre').value;
+  const vasPost = document.getElementById('vas-post').value;
+  const vasFat = document.getElementById('vas-fat').value;
+  const compreh = getComprehenionScore();
 
-  const today = new Date().toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric'});
-  const hour = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
-
-  // AGE CALCULATION
   let ageStr = '—';
-  if (patDob) {
-    const dob = new Date(patDob);
-    const age = Math.floor((new Date() - dob) / 31557600000);
-    ageStr = age + ' anos';
-  }
+  if (patDob) { const age = Math.floor((new Date()-new Date(patDob))/31557600000); ageStr = age + ' anos'; }
+  const today = new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
+  const hour = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
 
-  // CLASSIFICATION
-  const lvlName = LEVEL_NAMES[currentLevel];
-  let classification = '', classColor = '', classDesc = '';
-  if (accuracy >= 97 && hesRate <= 2) {
-    classification = 'Nível Independente'; classColor = 'grn';
-    classDesc = 'O paciente lê sem auxílio externo neste nível. Taxa de precisão excelente.';
-  } else if (accuracy >= 90 && hesRate <= 10) {
-    classification = 'Nível Instrucional'; classColor = 'cyan';
-    classDesc = 'Nível adequado para instrução com suporte do fonoaudiólogo. Progressão indicada.';
-  } else if (accuracy >= 80) {
-    classification = 'Nível Frustracional'; classColor = 'amb';
-    classDesc = 'Dificuldade significativa neste nível. Recomenda-se revisão do nível de dificuldade ou maior suporte terapêutico.';
-  } else {
-    classification = 'Nível Crítico'; classColor = 'red';
-    classDesc = 'O paciente apresenta dificuldade severa. Investigação aprofundada indicada.';
-  }
+  // Classification
+  const norm = NORMAS_PPM[currentLevel] || NORMAS_PPM[1];
+  let classif, classifType, classifDesc;
+  if (accuracy >= 97 && hesRate <= 2) { classif='Nível Independente'; classifType='good'; classifDesc='Precisão excelente. O paciente lê com autonomia neste nível.'; }
+  else if (accuracy >= 90) { classif='Nível Instrucional'; classifType=''; classifDesc='Adequado para instrução com suporte fonoaudiológico. Progressão indicada com monitoramento.'; }
+  else if (accuracy >= 80) { classif='Nível Frustracional'; classifType='warn'; classifDesc='Dificuldade significativa. Considerar redução do nível ou maior suporte terapêutico.'; }
+  else { classif='Nível Crítico'; classifType='crit'; classifDesc='Dificuldade severa. Investigação aprofundada indicada. Considerar avaliação multidisciplinar.'; }
 
-  // WPM BENCHMARK (by age/level)
-  let wpmBenchmark = {low:0, avg:0, high:0, label:''};
-  if (currentLevel <= 2) wpmBenchmark = {low:60,avg:90,high:120,label:'Leitura básica'};
-  else if (currentLevel === 3) wpmBenchmark = {low:100,avg:130,high:160,label:'Leitura intermediária'};
-  else if (currentLevel === 4) wpmBenchmark = {low:120,avg:150,high:180,label:'Leitura avançada'};
-  else wpmBenchmark = {low:130,avg:165,high:200,label:'Leitura especializada'};
+  // WPM classification vs norms
+  let wpmClass;
+  if (wpm >= norm.p75) wpmClass = 'Acima do P75 (fluente)';
+  else if (wpm >= norm.p50) wpmClass = 'P50–P75 (adequado)';
+  else if (wpm >= norm.p25) wpmClass = 'P25–P50 (abaixo da média)';
+  else wpmClass = 'Abaixo do P25 (lento)';
 
-  let wpmClass = wpm >= wpmBenchmark.high ? 'good' : wpm >= wpmBenchmark.avg ? '' : wpm >= wpmBenchmark.low ? 'warn' : 'crit';
+  // Intelligibility estimate
+  const intelligibility = Math.max(0, Math.min(100, accuracy - (hesCnt * 0.5)));
 
-  // ERROR WORDS
-  const errorWords = [...errors].map(i => wordElements[i]?.raw || '').filter(Boolean);
-  const hesWords = [...hesitations].map(i => wordElements[i]?.raw || '').filter(Boolean);
+  // Error words by type
+  const errWords = Object.entries(marks).filter(([,v])=>v==='error').map(([i])=>wordElements[i]).filter(Boolean);
+  const hesWords = Object.entries(marks).filter(([,v])=>v==='hesit').map(([i])=>wordElements[i]).filter(Boolean);
+  const subWords = Object.entries(marks).filter(([,v])=>v==='subst').map(([i])=>wordElements[i]).filter(Boolean);
+  const omiWords = Object.entries(marks).filter(([,v])=>v==='omiss').map(([i])=>wordElements[i]).filter(Boolean);
+  const addWords = Object.entries(marks).filter(([,v])=>v==='add').map(([i])=>wordElements[i]).filter(Boolean);
 
-  // PHONOLOGICAL ERROR ANALYSIS
-  const phonoPatterns = analyzePhonologicalPatterns(errorWords, hesWords);
+  // Phonological analysis
+  const allErrWords = [...errWords, ...subWords, ...omiWords];
+  const fricCount = allErrWords.filter(w=>/[szxfvç]/i.test(w)).length;
+  const polissil = allErrWords.filter(w=>w.replace(/[^aeiouáéíóúâêîôûãõ]/gi,'').length>=4).length;
+  const clusters = allErrWords.filter(w=>/[bcdfghjklmnpqrstvwxyz]{3}/i.test(w)).length;
+  const nasais = allErrWords.filter(w=>/[ãõ]|[mn][aeiou]/i.test(w)).length;
 
-  // CLINICAL IMPRESSIONS
-  const impressions = generateClinicalImpressions(wpm, wpmBenchmark, accuracy, hesRate, errRate, currentLevel);
+  // Clinical impressions
+  const impressions = [];
+  if (accuracy >= 97) impressions.push({type:'good',t:`<strong>Precisão excelente (${accuracy}%):</strong> Taxa de erros compatível com leitura independente. Representações fonológicas e lexicais consolidadas para este nível.`});
+  else if (accuracy >= 90) impressions.push({type:'',t:`<strong>Precisão adequada (${accuracy}%):</strong> Nível instrucional. Erros pontuais podem refletir lacunas lexicais específicas ou demanda cognitiva aumentada.`});
+  else if (accuracy >= 80) impressions.push({type:'warn',t:`<strong>Precisão limítrofe (${accuracy}%):</strong> Investigar processamento fonológico, decodificação grafema-fonema e memória de trabalho verbal. Considerar rastreio de dislexia.`});
+  else impressions.push({type:'crit',t:`<strong>Precisão crítica (${accuracy}%):</strong> Comprometimento funcional severo. Avaliação multidisciplinar recomendada. Hipóteses: dislexia, transtorno fonológico, déficit de linguagem.`});
+  if (wpm >= norm.p75) impressions.push({type:'good',t:`<strong>Velocidade elevada (${wpm} PPM ≥ P75):</strong> Acima da mediana normativa. Avaliar compreensão leitora — velocidade elevada pode coexistir com déficit de compreensão.`});
+  else if (wpm >= norm.p50) impressions.push({type:'',t:`<strong>Velocidade adequada (${wpm} PPM, P50–P75):</strong> Taxa de leitura oral dentro do esperado para o nível.`});
+  else if (wpm >= norm.p25) impressions.push({type:'warn',t:`<strong>Velocidade reduzida (${wpm} PPM, P25–P50):</strong> Abaixo da mediana. Verificar se há dificuldade de decodificação, atenção ou estratégias de autorregulação excessiva.`});
+  else impressions.push({type:'crit',t:`<strong>Velocidade muito reduzida (${wpm} PPM < P25):</strong> Clinicamente relevante. Investigar substrato neurológico e processamento fonológico de baixo nível.`});
+  if (hesCnt > 0) impressions.push({type: hesRate > 10 ? 'crit' : 'warn', t:`<strong>Hesitações (${hesCnt} ocorrências, ${hesRate}%):</strong> ${hesRate > 10 ? 'Alta taxa. Considerar investigação de gagueira, dispraxia verbal ou disfluências neurogênicas.' : 'Taxa moderada. Avaliar se há padrão consistente de palavras ou estruturas associadas às pausas.'}`});
+  if (subCnt > 0) impressions.push({type:'warn',t:`<strong>Substituições (${subCnt}):</strong> Trocas de palavras podem indicar estratégia de compensação lexical, paralexia semântica ou processamento fonológico inconsistente.`});
+  if (omiCnt > 0) impressions.push({type:'warn',t:`<strong>Omissões (${omiCnt}):</strong> Omissão de palavras pode refletir leitura preditiva com saltos, processamento sintático insuficiente ou déficit atencional.`});
 
-  // BUILD HTML
-  const html = `
-  <div class="report-section">
-    <div class="report-sec-title">Identificação</div>
-    <div class="report-grid">
+  const vasDiff = parseInt(vasPost) - parseInt(vasPre);
+
+  // Save to history
+  saveSession({patName, patFono, patDiag, textTitle: currentText.title, level: currentLevel, wpm, accuracy, errCnt: totalErrors, hesCnt, wpmClass, classif, compreh, timeStr, vasPre, vasPost, vasFat, date: today, hour});
+
+  document.getElementById('report-body').innerHTML = `
+  <div class="r-section">
+    <div class="r-sec-title">Identificação</div>
+    <div class="r-grid3">
       <div class="rstat"><div class="rstat-val">${patName}</div><div class="rstat-lbl">Paciente</div></div>
       <div class="rstat"><div class="rstat-val">${ageStr}</div><div class="rstat-lbl">Idade</div></div>
-      <div class="rstat"><div class="rstat-val">${today} ${hour}</div><div class="rstat-lbl">Data/Hora</div></div>
+      <div class="rstat"><div class="rstat-val">${today} · ${hour}</div><div class="rstat-lbl">Data / Hora</div></div>
     </div>
-    <div class="report-grid">
+    <div class="r-grid3">
       <div class="rstat"><div class="rstat-val">${patFono}</div><div class="rstat-lbl">Fonoaudiólogo(a)</div></div>
       <div class="rstat"><div class="rstat-val">${patEscola}</div><div class="rstat-lbl">Escolaridade</div></div>
-      <div class="rstat"><div class="rstat-val">${patDiag}</div><div class="rstat-lbl">Diagnóstico / Hipótese</div></div>
+      <div class="rstat"><div class="rstat-val">${patDiag || '—'}</div><div class="rstat-lbl">Diagnóstico / Hipótese</div></div>
+    </div>
+    <div class="rstat" style="margin-top:7px">
+      <div class="rstat-val" style="font-size:14px">${currentText.title}</div>
+      <div class="rstat-lbl">Texto avaliado · Nível ${LVLNAMES[currentLevel]}</div>
     </div>
   </div>
 
-  <div class="report-section">
-    <div class="report-sec-title">Classificação Geral</div>
-    <div class="classification-badge b${currentLevel} c${currentLevel}" style="margin-bottom:12px">
-      <span>●</span> ${classification} · Nível ${lvlName}
+  <div class="r-section">
+    <div class="r-sec-title">Classificação Geral</div>
+    <div class="classif-badge" style="color:${classifType==='good'?'var(--grn)':classifType==='warn'?'var(--amb)':classifType==='crit'?'var(--red)':'var(--cyan)'};border-color:${classifType==='good'?'rgba(0,229,160,.3)':classifType==='warn'?'rgba(255,179,64,.3)':classifType==='crit'?'rgba(255,79,107,.3)':'rgba(0,212,255,.3)'}">
+      ● ${classif} · Nível ${LVLNAMES[currentLevel]}
     </div>
-    <div class="report-text-block ${wpmClass.includes('good') ? 'good' : wpmClass === 'warn' ? 'warn' : wpmClass === 'crit' ? 'crit' : ''}">
-      ${classDesc}
-    </div>
+    <div class="rblock ${classifType}">${classifDesc}</div>
   </div>
 
-  <div class="report-section">
-    <div class="report-sec-title">Indicadores Quantitativos</div>
-    <div class="report-grid">
+  <div class="r-section">
+    <div class="r-sec-title">Indicadores Quantitativos</div>
+    <div class="r-grid3">
       <div class="rstat"><div class="rstat-val">${wpm}<span class="rstat-unit">PPM</span></div><div class="rstat-lbl">Palavras por minuto</div></div>
       <div class="rstat"><div class="rstat-val">${accuracy}<span class="rstat-unit">%</span></div><div class="rstat-lbl">Precisão leitora</div></div>
       <div class="rstat"><div class="rstat-val">${timeStr}</div><div class="rstat-lbl">Tempo total</div></div>
     </div>
-    <div class="report-grid">
-      <div class="rstat"><div class="rstat-val">${errCount}</div><div class="rstat-lbl">Erros de leitura</div></div>
-      <div class="rstat"><div class="rstat-val">${hesCount}</div><div class="rstat-lbl">Hesitações</div></div>
-      <div class="rstat"><div class="rstat-val">${totalWords}</div><div class="rstat-lbl">Total de palavras</div></div>
+    <div class="r-grid3">
+      <div class="rstat"><div class="rstat-val">${totalErrors}</div><div class="rstat-lbl">Total de erros</div></div>
+      <div class="rstat"><div class="rstat-val">${hesCnt}</div><div class="rstat-lbl">Hesitações</div></div>
+      <div class="rstat"><div class="rstat-val">${Math.round(intelligibility)}<span class="rstat-unit">%</span></div><div class="rstat-lbl">Inteligibilidade est.</div></div>
     </div>
+    ${buildBar('Precisão leitora', accuracy, 100, accuracy>=97?'var(--grn)':accuracy>=90?'var(--cyan)':accuracy>=80?'var(--amb)':'var(--red)', accuracy+'%')}
+    ${buildBar('Velocidade vs. P50', Math.min(100,Math.round((wpm/(norm.p50||120))*100)), 100, wpm>=norm.p50?'var(--grn)':wpm>=norm.p25?'var(--amb)':'var(--red)', wpm+' PPM')}
+    ${buildBar('Fluência (inv. hesitação)', Math.max(0,100-(hesRate*5)), 100, hesRate<=2?'var(--grn)':hesRate<=8?'var(--amb)':'var(--red)', hesRate+'% hes.')}
+    ${buildBar('Inteligibilidade estimada', Math.round(intelligibility), 100, intelligibility>=90?'var(--grn)':intelligibility>=75?'var(--amb)':'var(--red)', Math.round(intelligibility)+'%')}
+  </div>
 
-    <div style="margin-top:14px">
-      ${buildScoreBar('Precisão', accuracy, 100, accuracy >= 97 ? '#00e5a0' : accuracy >= 90 ? '#00d4ff' : accuracy >= 80 ? '#ffb340' : '#ff4f6b')}
-      ${buildScoreBar('Velocidade vs. Média', Math.min(100,Math.round((wpm/wpmBenchmark.avg)*100)), 100, wpm >= wpmBenchmark.avg ? '#00e5a0' : wpm >= wpmBenchmark.low ? '#ffb340' : '#ff4f6b')}
-      ${buildScoreBar('Taxa de hesitação (inversa)', Math.max(0,100-hesRate*5), 100, hesRate <= 2 ? '#00e5a0' : hesRate <= 8 ? '#ffb340' : '#ff4f6b')}
+  <div class="r-section">
+    <div class="r-sec-title">Comparação com Normas Brasileiras</div>
+    <table class="norma-table">
+      <tr><th>Referência</th><th>P25</th><th>P50 (mediana)</th><th>P75</th><th>Paciente</th></tr>
+      <tr class="highlight">
+        <td>${norm.label}</td>
+        <td>${norm.p25} PPM</td>
+        <td>${norm.p50} PPM</td>
+        <td>${norm.p75} PPM</td>
+        <td class="you">${wpm} PPM · ${wpmClass}</td>
+      </tr>
+    </table>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:7px;color:var(--t3);margin-top:5px;letter-spacing:1px">Ref: ${norm.refBR}</div>
+  </div>
+
+  <div class="r-section">
+    <div class="r-sec-title">Análise por Tipo de Erro</div>
+    <div class="r-grid3">
+      <div class="rstat"><div class="rstat-val" style="color:var(--red)">${errCnt}</div><div class="rstat-lbl">Erros (geral)</div></div>
+      <div class="rstat"><div class="rstat-val" style="color:var(--pur)">${subCnt}</div><div class="rstat-lbl">Substituições</div></div>
+      <div class="rstat"><div class="rstat-val" style="color:var(--rose)">${omiCnt}</div><div class="rstat-lbl">Omissões</div></div>
     </div>
+    <div class="r-grid2">
+      <div class="rstat"><div class="rstat-val" style="color:var(--amb)">${hesCnt}</div><div class="rstat-lbl">Hesitações</div></div>
+      <div class="rstat"><div class="rstat-val" style="color:var(--cyan)">${addCnt}</div><div class="rstat-lbl">Adições</div></div>
+    </div>
+    ${errWords.length ? `<div style="margin-top:8px"><div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--red);margin-bottom:4px">ERROS</div><div>${errWords.map(w=>`<span class="etag err">${w}</span>`).join('')}</div></div>` : ''}
+    ${hesWords.length ? `<div style="margin-top:6px"><div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--amb);margin-bottom:4px">HESITAÇÕES</div><div>${hesWords.map(w=>`<span class="etag hes">${w}</span>`).join('')}</div></div>` : ''}
+    ${subWords.length ? `<div style="margin-top:6px"><div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--pur);margin-bottom:4px">SUBSTITUIÇÕES</div><div>${subWords.map(w=>`<span class="etag sub">${w}</span>`).join('')}</div></div>` : ''}
+    ${omiWords.length ? `<div style="margin-top:6px"><div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--rose);margin-bottom:4px">OMISSÕES</div><div>${omiWords.map(w=>`<span class="etag omi">${w}</span>`).join('')}</div></div>` : ''}
+    ${addWords.length ? `<div style="margin-top:6px"><div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--cyan);margin-bottom:4px">ADIÇÕES</div><div>${addWords.map(w=>`<span class="etag add">${w}</span>`).join('')}</div></div>` : ''}
+    ${!totalErrors && !hesCnt ? '<div class="rblock good">Nenhum erro ou hesitação registrado nesta sessão.</div>' : ''}
+  </div>
 
-    <div style="margin-top:12px;padding:10px;background:var(--s2);border:1px solid var(--border)">
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--t3);letter-spacing:2px;margin-bottom:4px">REFERÊNCIA PPM · ${wpmBenchmark.label}</div>
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--t2)">
-        Abaixo da média: &lt;${wpmBenchmark.low} · Médio: ${wpmBenchmark.avg} · Acima: &gt;${wpmBenchmark.high} · Seu resultado: <span style="color:var(--t0);font-weight:700">${wpm} PPM</span>
+  <div class="r-section">
+    <div class="r-sec-title">Análise Fonológica Qualitativa</div>
+    <div class="phono-grid">
+      <div class="phono-item"><div class="phono-left"><div class="phono-name">Fricativas</div><div class="phono-sub">/s/, /z/, /f/, /v/, /ʃ/, /ʒ/</div></div><div class="phono-right" style="color:${fricCount>2?'var(--amb)':'var(--grn)'}">${fricCount}</div></div>
+      <div class="phono-item"><div class="phono-left"><div class="phono-name">Polissílabas</div><div class="phono-sub">4+ sílabas</div></div><div class="phono-right" style="color:${polissil>2?'var(--red)':'var(--grn)'}">${polissil}</div></div>
+      <div class="phono-item"><div class="phono-left"><div class="phono-name">Grupos consonantais</div><div class="phono-sub">Encontros complexos</div></div><div class="phono-right" style="color:${clusters>1?'var(--amb)':'var(--grn)'}">${clusters}</div></div>
+      <div class="phono-item"><div class="phono-left"><div class="phono-name">Vogais nasais</div><div class="phono-sub">/ã/, /õ/ e variantes</div></div><div class="phono-right" style="color:${nasais>1?'var(--amb)':'var(--grn)'}">${nasais}</div></div>
+    </div>
+  </div>
+
+  ${compreh ? `
+  <div class="r-section">
+    <div class="r-sec-title">Compreensão Leitora</div>
+    <div class="compreh-report">
+      <div class="compreh-report-score">
+        <div class="compreh-report-val" style="color:${compreh.pct>=80?'var(--grn)':compreh.pct>=60?'var(--amb)':'var(--red)'}">${compreh.pct}%</div>
+        <div class="compreh-report-lbl">${compreh.correct}/${compreh.total} questões corretas</div>
+      </div>
+      <div class="rblock ${compreh.pct>=80?'good':compreh.pct>=60?'warn':'crit'}">
+        ${compreh.pct>=80 ? 'Compreensão preservada. Leitura com decodificação e compreensão adequadas.' : compreh.pct>=60 ? 'Compreensão parcial. Pode indicar leitura decodificativa sem compreensão plena do texto.' : 'Compreensão comprometida. Investigar estratégias de compreensão, vocabulário e memória de trabalho verbal.'}
       </div>
     </div>
-  </div>
+  </div>` : ''}
 
-  <div class="report-section">
-    <div class="report-sec-title">Análise de Erros e Hesitações</div>
-    ${errorWords.length > 0 ? `
-      <div style="margin-bottom:12px">
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--red);margin-bottom:6px;letter-spacing:1px">ERROS DE LEITURA (${errCount})</div>
-        <div class="error-list">${errorWords.map(w=>`<span class="error-tag">${w}</span>`).join('')}</div>
-      </div>` : '<div class="report-text-block good">Nenhum erro de leitura registrado.</div>'}
-    ${hesWords.length > 0 ? `
-      <div>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--amb);margin-bottom:6px;letter-spacing:1px">HESITAÇÕES (${hesCount})</div>
-        <div class="error-list">${hesWords.map(w=>`<span class="hesitation-tag">${w}</span>`).join('')}</div>
-      </div>` : '<div class="report-text-block good" style="margin-top:8px">Nenhuma hesitação registrada.</div>'}
-  </div>
-
-  <div class="report-section">
-    <div class="report-sec-title">Análise Fonológica Qualitativa</div>
-    <div class="phono-grid">
-      ${phonoPatterns.map(p => `
-        <div class="phono-item">
-          <div class="phono-val" style="color:${p.color}">${p.value}</div>
-          <div class="phono-name">${p.name}</div>
-          <div class="phono-sub">${p.sub}</div>
-        </div>
-      `).join('')}
+  <div class="r-section">
+    <div class="r-sec-title">Escala de Esforço Vocal (VAS 0–10)</div>
+    <div class="r-grid3">
+      <div class="rstat"><div class="rstat-val">${vasPre}<span class="rstat-unit">/10</span></div><div class="rstat-lbl">Esforço pré-leitura</div></div>
+      <div class="rstat"><div class="rstat-val">${vasPost}<span class="rstat-unit">/10</span></div><div class="rstat-lbl">Esforço pós-leitura</div></div>
+      <div class="rstat"><div class="rstat-val" style="color:${vasDiff>3?'var(--red)':vasDiff>1?'var(--amb)':'var(--grn)'}">${vasDiff>0?'+':''}${vasDiff}</div><div class="rstat-lbl">Variação esforço</div></div>
     </div>
+    <div class="rstat" style="margin-top:7px"><div class="rstat-val">${vasFat}<span class="rstat-unit">/10</span></div><div class="rstat-lbl">Fadiga vocal autorrelatada</div></div>
+    ${vasDiff > 3 ? '<div class="rblock crit" style="margin-top:8px"><strong>Aumento significativo de esforço vocal:</strong> Delta ≥4 sugere tensão laríngea, uso vocal inadequado ou patologia subjacente. Indicado exame laringoscópico.</div>' : vasDiff > 1 ? '<div class="rblock warn" style="margin-top:8px"><strong>Aumento moderado de esforço:</strong> Monitorar fadiga vocal em sessões prolongadas. Orientar higiene vocal.</div>' : '<div class="rblock good" style="margin-top:8px">Esforço vocal estável. Sem sinais de fadiga vocal significativa nesta sessão.</div>'}
   </div>
 
-  <div class="report-section">
-    <div class="report-sec-title">Impressão Clínica</div>
-    ${impressions.map(imp => `<div class="report-text-block ${imp.type}">${imp.text}</div>`).join('')}
+  <div class="r-section">
+    <div class="r-sec-title">Impressão Clínica</div>
+    ${impressions.map(i => `<div class="rblock ${i.type}">${i.t}</div>`).join('')}
   </div>
 
   ${notes ? `
-  <div class="report-section">
-    <div class="report-sec-title">Observações do Fonoaudiólogo</div>
-    <div class="report-text-block">${notes.replace(/\n/g,'<br>')}</div>
+  <div class="r-section">
+    <div class="r-sec-title">Observações do Fonoaudiólogo</div>
+    <div class="rblock info">${notes.replace(/\n/g,'<br>')}</div>
   </div>` : ''}
 
-  <div class="report-section">
-    <div class="report-sec-title">Recomendações</div>
-    ${generateRecommendations(accuracy, wpm, wpmBenchmark, hesRate, errRate, currentLevel).map(r=>`<div class="report-text-block ${r.type}"><strong>${r.title}:</strong> ${r.text}</div>`).join('')}
+  <div class="r-section">
+    <div class="r-sec-title">Recomendações Terapêuticas</div>
+    ${genRecs(accuracy, wpm, norm, hesRate, errRate, currentLevel, compreh).map(r=>`<div class="rblock ${r.type}"><strong>${r.title}:</strong> ${r.text}</div>`).join('')}
   </div>
 
-  <div style="text-align:center;margin-top:8px;padding-top:16px;border-top:1px solid var(--border2)">
-    <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--t3);letter-spacing:2px">
-      PHONOBASE · Protocolo de Avaliação de Leitura Oral · Sessão ${sessionId} · ${today}
-    </div>
-    <button class="print-btn" onclick="window.print()">🖨 Imprimir / Salvar PDF</button>
+  <div class="print-actions">
+    <button class="print-btn blue" onclick="window.print()">🖨 Imprimir / PDF</button>
+    <button class="print-btn green" onclick="exportTXT()">⬇ Exportar TXT</button>
   </div>
+  <div class="watermark">PHONOBASE 2.0 · Protocolo de Avaliação de Leitura Oral · Sessão ${sessionId} · ${today} ${hour}</div>
   `;
-
-  document.getElementById('report-body').innerHTML = html;
 }
 
-function buildScoreBar(label, value, max, color) {
-  const pct = Math.round((value / max) * 100);
-  return `
-  <div class="score-bar-wrap">
-    <div class="score-bar-label">
-      <span class="score-bar-name">${label}</span>
-      <span class="score-bar-val">${value}${label.includes('%') || label === 'Precisão' || label.includes('hesitação') ? '%' : ''}</span>
-    </div>
-    <div class="score-bar">
-      <div class="score-bar-fill" style="width:${pct}%;background:${color}"></div>
-    </div>
+function buildBar(label, value, max, color, display) {
+  const pct = Math.min(100, Math.max(0, Math.round((value/max)*100)));
+  return `<div class="sbar-wrap">
+    <div class="sbar-label"><span class="sbar-name">${label}</span><span class="sbar-val">${display}</span></div>
+    <div class="sbar"><div class="sbar-fill" style="width:${pct}%;background:${color}"></div></div>
   </div>`;
 }
 
-function analyzePhonologicalPatterns(errorWords, hesWords) {
-  const allWords = [...errorWords, ...hesWords];
-  
-  // Analyze patterns
-  const fricativas = allWords.filter(w => /[szxfvçj]/i.test(w)).length;
-  const polisilabicas = allWords.filter(w => w.replace(/[^aeiouáéíóúâêîôûãõ]/gi,'').length >= 4).length;
-  const clusters = allWords.filter(w => /[bcdfghjklmnpqrstvwxyz]{3}/i.test(w)).length;
-  const nasais = allWords.filter(w => /[ãõm̃]|[mn][^aeiou]/i.test(w)).length;
-  
-  const total = Math.max(1, allWords.length);
-  
-  return [
-    {name:'Fricativas', sub:'Alterações em /s/, /z/, /f/, /v/', value: fricativas > 0 ? fricativas : '0', color: fricativas > 2 ? 'var(--amb)' : 'var(--grn)'},
-    {name:'Polissílabas', sub:'Palavras com 4+ sílabas', value: polisilabicas > 0 ? polisilabicas : '0', color: polisilabicas > 2 ? 'var(--red)' : 'var(--grn)'},
-    {name:'Grupos consonantais', sub:'Encontros consonantais', value: clusters > 0 ? clusters : '0', color: clusters > 1 ? 'var(--amb)' : 'var(--grn)'},
-    {name:'Vogais nasais', sub:'/ã/, /õ/, /m̃/ e variantes', value: nasais > 0 ? nasais : '0', color: nasais > 1 ? 'var(--amb)' : 'var(--grn)'},
-    {name:'Comprimento médio', sub:'Média de letras por palavra erro', value: total > 1 ? Math.round(allWords.reduce((a,w)=>a+w.length,0)/total) : '—', color: 'var(--cyan)'},
-    {name:'Taxa de erro', sub:'% palavras com marcação', value: errorWords.length + hesWords.length > 0 ? Math.round(((errorWords.length+hesWords.length)/Math.max(1,wordElements.length))*100)+'%' : '0%', color: errorWords.length > 5 ? 'var(--red)' : 'var(--grn)'}
-  ];
+function genRecs(accuracy, wpm, norm, hesRate, errRate, level, compreh) {
+  const r = [];
+  if (accuracy >= 97 && wpm >= norm.p50 && hesRate <= 2) r.push({type:'good',title:'Progressão',text:`Desempenho compatível com avanço para Nível ${Math.min(6,parseInt(level)+1)} (${LVLNAMES[Math.min(6,parseInt(level)+1)]}). Manter monitoramento longitudinal mensal.`});
+  if (accuracy < 90) r.push({type:'warn',title:'Decodificação fonológica',text:'Aplicar protocolo de consciência fonológica. Investigar correspondência grafema-fonema. Considerar avaliação neuropsicológica e rastreio de dislexia com testes padronizados (TCLPP, PROLEC-R adaptado).'});
+  if (wpm < norm.p25) r.push({type:'crit',title:'Fluência leitora',text:'Implementar Leitura Repetida Cronometrada (3x por semana). Registrar PPM semanalmente. Grafique a curva de progresso. Investigar processamento fonológico de baixo nível.'});
+  if (hesRate > 8) r.push({type:'warn',title:'Avaliação de fluência',text:'Alta taxa de hesitação. Aplicar SSI-4 (Stuttering Severity Instrument). Diferenciar disfluências típicas de atípicas. Investigar gagueira desenvolvimental ou neurogênica.'});
+  if (compreh && compreh.pct < 70) r.push({type:'warn',title:'Compreensão leitora',text:'Trabalhar estratégias metacognitivas de compreensão: ativação de conhecimento prévio, inferência e monitoramento da compreensão. Aplicar Prova de Compreensão Leitora (PCL) padronizada.'});
+  r.push({type:'',title:'Reavaliação',text:`Reavaliar em ${accuracy<90?'1':'2'} semana(s) com texto alternativo do mesmo nível. Registrar PPM, precisão e hesitações para construção do gráfico de evolução. Comparar com normas brasileiras por faixa etária e escolaridade.`});
+  return r;
 }
 
-function generateClinicalImpressions(wpm, bench, accuracy, hesRate, errRate, level) {
-  const imps = [];
-  
-  if (accuracy >= 97) {
-    imps.push({type:'good', text:`<strong>Precisão excelente (${accuracy}%):</strong> A taxa de erros está dentro dos parâmetros esperados para leitura independente. O paciente demonstra representações lexicais consolidadas para o vocabulário avaliado.`});
-  } else if (accuracy >= 90) {
-    imps.push({type:'', text:`<strong>Precisão adequada (${accuracy}%):</strong> Dentro do nível instrucional. Erros pontuais podem refletir lacunas lexicais específicas, processamento fonológico inconsistente ou demanda cognitiva aumentada pelo nível do texto.`});
-  } else if (accuracy >= 80) {
-    imps.push({type:'warn', text:`<strong>Precisão limítrofe (${accuracy}%):</strong> Taxa de erro indica dificuldade expressiva. Investigar processamento fonológico, decodificação grafema-fonema e memória de trabalho verbal.`});
-  } else {
-    imps.push({type:'crit', text:`<strong>Precisão crítica (${accuracy}%):</strong> Dificuldade severa que compromete a funcionalidade leitora. Avaliação multidisciplinar recomendada. Considerar hipóteses de dislexia, transtorno do processamento fonológico ou déficit de linguagem.`});
-  }
-
-  if (wpm >= bench.high) {
-    imps.push({type:'good', text:`<strong>Velocidade de leitura elevada (${wpm} PPM):</strong> Acima da média para este nível de dificuldade. Observar se velocidade elevada está associada a erros de compreensão ou precipitação leitora.`});
-  } else if (wpm >= bench.avg) {
-    imps.push({type:'', text:`<strong>Velocidade adequada (${wpm} PPM):</strong> Taxa de fala leitora compatível com o nível de dificuldade e faixa etária/escolar esperada.`});
-  } else if (wpm >= bench.low) {
-    imps.push({type:'warn', text:`<strong>Velocidade reduzida (${wpm} PPM):</strong> Abaixo da média esperada. Verificar se a lenta taxa de leitura está relacionada a dificuldades de decodificação, comprometimento atencional ou estratégias de autorregulação.`});
-  } else {
-    imps.push({type:'crit', text:`<strong>Velocidade significativamente reduzida (${wpm} PPM):</strong> Muito abaixo da referência normativa. Investigar substrato neurológico, processamento fonológico e fluência leitora. Taxa inferior a ${bench.low} PPM no nível ${LEVEL_NAMES[level]} é clinicamente relevante.`});
-  }
-
-  if (hesRate > 10) {
-    imps.push({type:'crit', text:`<strong>Alta taxa de hesitação (${hesRate}%):</strong> Hesitações frequentes sugerem dificuldade no acesso lexical, insegurança articulatória ou processamento serial comprometido. Considerar investigação de gagueira, dispraxia verbal ou disfluências neurogênicas.`});
-  } else if (hesRate > 5) {
-    imps.push({type:'warn', text:`<strong>Hesitações moderadas (${hesRate}%):</strong> Pausas e hesitações além do esperado. Avaliar se há padrão de palavras ou estruturas sintáticas específicas associadas às pausas.`});
-  }
-
-  return imps;
+/* ═══════════════════════════════════════════
+   HISTORY
+═══════════════════════════════════════════ */
+function saveSession(data) {
+  const sessions = JSON.parse(localStorage.getItem('pb_sessions') || '[]');
+  sessions.unshift({...data, id: Date.now()});
+  if (sessions.length > 50) sessions.splice(50);
+  localStorage.setItem('pb_sessions', JSON.stringify(sessions));
 }
 
-function generateRecommendations(accuracy, wpm, bench, hesRate, errRate, level) {
-  const recs = [];
-
-  if (accuracy >= 97 && wpm >= bench.avg && hesRate <= 2) {
-    recs.push({type:'good', title:'Progressão de nível', text:`Desempenho compatível com avanço para o nível ${Math.min(6,level+1)} (${LEVEL_NAMES[Math.min(6,level+1)]}). Manter registro longitudinal.`});
-  }
-  if (accuracy < 90) {
-    recs.push({type:'warn', title:'Intervenção em decodificação', text:'Investigar correspondência grafema-fonema. Aplicar protocolos de consciência fonológica e awareness fonêmico. Avaliar necessidade de encaminhamento neuropsicológico.'});
-  }
-  if (wpm < bench.low) {
-    recs.push({type:'crit', title:'Fluência leitora', text:'Implementar protocolo de leitura repetida (Repeated Reading). Monitorar PPM semanalmente. Avaliar processamento fonológico de baixo nível (segmentação, identificação fonêmica).'});
-  }
-  if (hesRate > 8) {
-    recs.push({type:'warn', title:'Avaliação de fluência', text:'Alta taxa de hesitação requer avaliação específica de fluência oral. Considerar protocolos para disfluências: SSI-4, protocolo de Iowa, análise de disfluências típicas vs. atípicas.'});
-  }
-  recs.push({type:'', title:'Próxima sessão', text:`Reavaliar em ${accuracy < 90 ? '1' : '2'} semana(s). Aplicar texto alternativo do mesmo nível para controle de variáveis. Registrar qualidade vocal, respiração e postura durante leitura.`});
-
-  return recs;
+function renderHistory() {
+  const sessions = JSON.parse(localStorage.getItem('pb_sessions') || '[]');
+  const container = document.getElementById('history-list');
+  if (!sessions.length) { container.innerHTML = '<div class="hist-empty">Nenhuma sessão salva ainda.<br>Complete uma avaliação e abra o Relatório.</div>'; return; }
+  container.innerHTML = sessions.map(s => `
+    <div class="hist-card" id="hc-${s.id}">
+      <div class="hist-card-header">
+        <div class="hist-card-name">${s.patName || 'Paciente não identificado'}</div>
+        <div class="hist-card-date">${s.date} · ${s.hour}</div>
+      </div>
+      <div class="hist-card-meta">
+        <span class="hist-chip">${s.textTitle || '—'}</span>
+        <span class="hist-chip">Nível ${LVLNAMES[s.level] || s.level}</span>
+        <span class="hist-chip ${s.classif==='Nível Independente'?'good':s.classif==='Nível Instrucional'?'':s.classif==='Nível Frustracional'?'warn':'bad'}">${s.classif}</span>
+      </div>
+      <div class="hist-bars">
+        <div class="hist-bar-item"><div class="hist-bar-val">${s.wpm}</div><div class="hist-bar-lbl">PPM</div></div>
+        <div class="hist-bar-item"><div class="hist-bar-val">${s.accuracy}%</div><div class="hist-bar-lbl">Precisão</div></div>
+        <div class="hist-bar-item"><div class="hist-bar-val">${s.errCnt}</div><div class="hist-bar-lbl">Erros</div></div>
+      </div>
+      <div class="hist-actions">
+        <button class="hist-del" onclick="delSession(${s.id})">✕ Excluir</button>
+      </div>
+    </div>`).join('');
 }
 
-/* ══ MARK MODE INIT ══ */
-setMarkMode('error');
+function delSession(id) {
+  let sessions = JSON.parse(localStorage.getItem('pb_sessions') || '[]');
+  sessions = sessions.filter(s => s.id !== id);
+  localStorage.setItem('pb_sessions', JSON.stringify(sessions));
+  renderHistory();
+  renderEvolution();
+}
+function clearHistory() {
+  if (confirm('Excluir todo o histórico?')) { localStorage.removeItem('pb_sessions'); renderHistory(); renderEvolution(); }
+}
+
+/* ═══════════════════════════════════════════
+   EVOLUTION CHARTS
+═══════════════════════════════════════════ */
+function renderEvolution() {
+  const sessions = JSON.parse(localStorage.getItem('pb_sessions') || '[]').reverse();
+  const noData = document.getElementById('evo-no-data');
+  if (!sessions.length) { noData.style.display = 'block'; return; }
+  noData.style.display = 'none';
+
+  const labels = sessions.map((s,i) => s.date ? s.date.slice(0,5) : 'S'+(i+1));
+  const wpms = sessions.map(s => s.wpm);
+  const accs = sessions.map(s => s.accuracy);
+  const errs = sessions.map(s => s.errCnt);
+
+  drawChart('evo-chart', labels, [
+    {label:'PPM', data:wpms, color:'rgba(0,212,255,1)', fill:'rgba(0,212,255,0.1)'},
+    {label:'Precisão %', data:accs, color:'rgba(0,229,160,1)', fill:'rgba(0,229,160,0.08)'}
+  ], 'PPM e Precisão (%)');
+
+  drawChart('evo-chart2', labels, [
+    {label:'Erros', data:errs, color:'rgba(255,79,107,1)', fill:'rgba(255,79,107,0.1)'}
+  ], 'Erros por Sessão');
+}
+
+function drawChart(canvasId, labels, datasets, title) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth || 600;
+  const H = canvas.offsetHeight || 200;
+  canvas.width = W; canvas.height = H;
+
+  const pad = {top:32,right:20,bottom:36,left:44};
+  const cW = W - pad.left - pad.right;
+  const cH = H - pad.top - pad.bottom;
+
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = '#0e1118';
+  ctx.fillRect(0,0,W,H);
+
+  // Title
+  ctx.fillStyle = '#4a566e';
+  ctx.font = '10px IBM Plex Mono, monospace';
+  ctx.fillText(title, pad.left, 18);
+
+  if (!labels.length) return;
+
+  // All values for scale
+  const allVals = datasets.flatMap(d => d.data);
+  const maxV = Math.max(...allVals, 10);
+  const minV = 0;
+
+  // Grid
+  const steps = 4;
+  for (let i = 0; i <= steps; i++) {
+    const y = pad.top + cH - (i/steps)*cH;
+    ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(pad.left+cW, y); ctx.stroke();
+    ctx.fillStyle = '#252d3f';
+    ctx.font = '9px IBM Plex Mono, monospace';
+    ctx.fillText(Math.round(minV + (i/steps)*(maxV-minV)), 2, y+3);
+  }
+
+  // X labels
+  labels.forEach((l, i) => {
+    const x = pad.left + (i/(labels.length-1||1))*cW;
+    ctx.fillStyle = '#252d3f';
+    ctx.font = '8px IBM Plex Mono, monospace';
+    ctx.fillText(l, x - 12, H - 8);
+  });
+
+  // Lines
+  datasets.forEach(ds => {
+    const pts = ds.data.map((v, i) => ({
+      x: pad.left + (i/(labels.length-1||1))*cW,
+      y: pad.top + cH - ((v-minV)/(maxV-minV))*cH
+    }));
+
+    // Fill
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pad.top+cH);
+    pts.forEach(p => ctx.lineTo(p.x, p.y));
+    ctx.lineTo(pts[pts.length-1].x, pad.top+cH);
+    ctx.closePath();
+    ctx.fillStyle = ds.fill;
+    ctx.fill();
+
+    // Line
+    ctx.beginPath();
+    pts.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
+    ctx.strokeStyle = ds.color;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Dots
+    pts.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 3, 0, Math.PI*2);
+      ctx.fillStyle = ds.color;
+      ctx.fill();
+    });
+  });
+}
+
+/* ═══════════════════════════════════════════
+   EXPORT TXT
+═══════════════════════════════════════════ */
+function exportTXT() {
+  const body = document.getElementById('report-body');
+  const text = body ? body.innerText : '';
+  const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'phonobase-relatorio-' + Date.now() + '.txt';
+  a.click();
+}
+
+/* ═══════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════ */
+selectLevel(1, document.querySelector('.lvl-btn[data-lvl="1"]'));
+setMark('error');
+document.getElementById('panel-avaliacao').style.display = 'flex';
+document.getElementById('panel-historico').style.display = 'none';
+document.getElementById('panel-evolucao').style.display = 'none';
 </script>
 </body>
 </html>
