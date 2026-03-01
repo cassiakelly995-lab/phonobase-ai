@@ -268,6 +268,36 @@ body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;min-
         <div class="stat-item"><span class="stat-num" id="statSessions">0</span><span class="stat-label">Sessões</span></div>
         <div class="stat-item"><span class="stat-num" id="statAvgWPM">—</span><span class="stat-label">Méd. PPM</span></div>
         <div class="stat-item"><span class="stat-num" id="statBestWPM">—</span><span class="stat-label">Melhor PPM</span></div>
+        <div class="stat-item"><span class="stat-num" id="statStreak">0🔥</span><span class="stat-label">Dias seguidos</span></div>
+      </div>
+
+      <!-- CURVA DE EVOLUÇÃO -->
+      <div id="progressDashboard" style="display:none;margin-top:24px">
+        <div style="background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+            <div style="font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700">📈 Evolução das últimas sessões</div>
+            <div style="font-size:.68rem;color:var(--ink3);font-family:'DM Mono',monospace" id="trendLabel"></div>
+          </div>
+          <canvas id="progressChart" height="80" style="width:100%;display:block"></canvas>
+        </div>
+
+        <!-- META SEMANAL -->
+        <div style="background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <div style="font-size:.85rem;font-weight:600">🎯 Meta semanal</div>
+            <div style="font-size:.75rem;color:var(--ink3);font-family:'DM Mono',monospace" id="weeklyGoalLabel">—</div>
+          </div>
+          <div style="height:10px;background:var(--line);border-radius:5px;overflow:hidden">
+            <div id="weeklyGoalBar" style="height:100%;background:var(--accent);border-radius:5px;transition:width .8s cubic-bezier(.34,1.56,.64,1);width:0%"></div>
+          </div>
+          <div style="font-size:.7rem;color:var(--ink3);margin-top:6px" id="weeklyGoalSub"></div>
+        </div>
+
+        <!-- RECORDES PESSOAIS -->
+        <div style="background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px 20px">
+          <div style="font-size:.85rem;font-weight:600;margin-bottom:10px">🏅 Recordes pessoais</div>
+          <div id="personalRecords" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
+        </div>
       </div>
     </div>
 
@@ -876,12 +906,149 @@ function init() {
   checkSpeechSupport();
 }
 
+function drawProgressChart(canvas, recent, avg) {
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.parentElement.offsetWidth || 560;
+  const H = 80;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0,0,W,H);
+
+  const vals = recent.map(h => h.wpm);
+  if(!vals.length) return;
+  const minV = Math.min(...vals) * 0.85;
+  const maxV = Math.max(...vals, avg * 1.05) * 1.08;
+  const toY = v => H - 8 - ((v - minV) / (maxV - minV || 1)) * (H - 18);
+  const toX = i => 10 + (i / (vals.length - 1 || 1)) * (W - 20);
+
+  // Avg grid line
+  ctx.strokeStyle = 'rgba(0,0,0,.07)'; ctx.lineWidth = 1; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(0, toY(avg)); ctx.lineTo(W, toY(avg)); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // PPM labels on Y axis (min, avg, max)
+  ctx.fillStyle = 'rgba(0,0,0,.3)'; ctx.font = `${9 * dpr / dpr}px DM Mono, monospace`;
+  ctx.fillText(Math.round(Math.max(...vals)), 2, toY(Math.max(...vals)) - 2);
+  ctx.fillText('média', 2, toY(avg) - 2);
+
+  if(vals.length > 1) {
+    // Gradient fill
+    const grad = ctx.createLinearGradient(0,0,0,H);
+    grad.addColorStop(0,'rgba(232,93,4,.2)');
+    grad.addColorStop(1,'rgba(232,93,4,0)');
+    ctx.beginPath();
+    ctx.moveTo(toX(0), H);
+    vals.forEach((v,i) => ctx.lineTo(toX(i), toY(v)));
+    ctx.lineTo(toX(vals.length-1), H);
+    ctx.closePath();
+    ctx.fillStyle = grad; ctx.fill();
+
+    // Line
+    ctx.beginPath();
+    ctx.strokeStyle = '#e85d04'; ctx.lineWidth = 2; ctx.lineJoin = 'round';
+    vals.forEach((v,i) => i===0 ? ctx.moveTo(toX(0),toY(v)) : ctx.lineTo(toX(i),toY(v)));
+    ctx.stroke();
+  }
+
+  // Dots
+  vals.forEach((v,i) => {
+    ctx.beginPath();
+    ctx.arc(toX(i), toY(v), i===vals.length-1 ? 5 : 3, 0, Math.PI*2);
+    ctx.fillStyle = i===vals.length-1 ? '#e85d04' : 'rgba(232,93,4,.45)';
+    ctx.fill();
+    if(i===vals.length-1){
+      ctx.fillStyle='#e85d04'; ctx.font=`bold ${10}px DM Mono,monospace`;
+      ctx.fillText(v+' PPM', toX(i)+8, toY(v)+4);
+    }
+  });
+
+  // Trend label
+  if(vals.length >= 3) {
+    const first3 = vals.slice(0,3).reduce((a,b)=>a+b,0)/3;
+    const last3  = vals.slice(-3).reduce((a,b)=>a+b,0)/3;
+    const diff = Math.round(last3 - first3);
+    const tl = document.getElementById('trendLabel');
+    if(diff > 5)       { tl.textContent=`↑ +${diff} PPM nas últimas sessões`; tl.style.color='var(--easy)'; }
+    else if(diff < -5) { tl.textContent=`↓ ${diff} PPM — precisa focar mais`; tl.style.color='var(--dificil)'; }
+    else               { tl.textContent='Estável — tente se desafiar mais'; tl.style.color='var(--ink3)'; }
+  }
+}
+
 function updateStats() {
   document.getElementById('statSessions').textContent = history.length;
   if (!history.length) return;
+
   const wpms = history.map(h => h.wpm);
-  document.getElementById('statAvgWPM').textContent = Math.round(wpms.reduce((a,b)=>a+b,0)/wpms.length);
-  document.getElementById('statBestWPM').textContent = Math.max(...wpms);
+  const avg = Math.round(wpms.reduce((a,b)=>a+b,0)/wpms.length);
+  const best = Math.max(...wpms);
+  document.getElementById('statAvgWPM').textContent = avg;
+  document.getElementById('statBestWPM').textContent = best;
+
+  // ── STREAK ──────────────────────────────────────────
+  const todayStr = new Date().toLocaleDateString('pt-BR');
+  const dates = [...new Set(history.map(h => h.date))];
+  let streak = 0;
+  let checkDate = new Date();
+  for(let i = 0; i < 365; i++) {
+    const ds = checkDate.toLocaleDateString('pt-BR');
+    if(dates.includes(ds)) { streak++; checkDate.setDate(checkDate.getDate()-1); }
+    else if(i === 0) { checkDate.setDate(checkDate.getDate()-1); } // allow today not yet done
+    else break;
+  }
+  document.getElementById('statStreak').textContent = streak + (streak >= 3 ? '🔥' : '');
+
+  // ── SHOW DASHBOARD ───────────────────────────────────
+  document.getElementById('progressDashboard').style.display = '';
+
+  // ── EVOLUTION CHART ──────────────────────────────────
+  const recent = history.slice(0, 15).reverse();
+  const canvas = document.getElementById('progressChart');
+  // Ensure canvas width is correct after display:'' 
+  requestAnimationFrame(() => drawProgressChart(canvas, recent, avg));
+
+  // ── META SEMANAL ─────────────────────────────────────
+  // Meta = melhor PPM da semana passada + 10%, mínimo 200
+  const oneWeekAgo = new Date(); oneWeekAgo.setDate(oneWeekAgo.getDate()-7);
+  const thisWeek = history.filter(h => {
+    const parts = h.date.split('/');
+    if(parts.length < 3) return false;
+    const d = new Date(+parts[2], +parts[1]-1, +parts[0]);
+    return d >= oneWeekAgo;
+  });
+  const weekBest = thisWeek.length ? Math.max(...thisWeek.map(h=>h.wpm)) : 0;
+  const weekSessions = thisWeek.length;
+  const prevWeekBest = history.length > thisWeek.length
+    ? Math.max(...history.slice(thisWeek.length).map(h=>h.wpm).slice(0,20))
+    : avg;
+  const weekGoal = Math.max(200, Math.round(prevWeekBest * 1.1));
+  const weekPct = Math.min(100, Math.round((weekBest / weekGoal) * 100));
+
+  document.getElementById('weeklyGoalLabel').textContent = `${weekBest || '—'} / ${weekGoal} PPM`;
+  document.getElementById('weeklyGoalBar').style.width = weekPct + '%';
+  document.getElementById('weeklyGoalBar').style.background = weekPct >= 100 ? 'var(--easy)' : weekPct >= 70 ? 'var(--medio)' : 'var(--accent)';
+  document.getElementById('weeklyGoalSub').textContent = weekPct >= 100
+    ? `✅ Meta batida! ${weekSessions} sessão(ões) esta semana.`
+    : `${weekSessions} sessão(ões) esta semana · faltam ${weekGoal - weekBest} PPM para a meta`;
+
+  // ── RECORDES PESSOAIS ─────────────────────────────────
+  const records = [
+    { label: 'Melhor sessão', val: best + ' PPM', ok: best >= 300 },
+    { label: 'Sessão mais longa', val: (() => { const t = history.reduce((a,h)=>{ const p=h.time?.split(':'); return p ? Math.max(a,+p[0]*60+ +p[1]) : a; },0); return t ? Math.floor(t/60)+'m '+( t%60)+'s' : '—'; })(), ok: true },
+    { label: 'Sequência máx.', val: streak + ' dia(s)', ok: streak >= 3 },
+    { label: 'Nível mais alto', val: (() => { const lvls={easy:0,medio:1,dificil:2,avancado:3,extremo:4}; const names=['Fácil','Médio','Difícil','Avançado','Extremo']; const top=history.reduce((a,h)=>Math.max(a,lvls[h.level]||0),0); return names[top]; })(), ok: true }
+  ];
+
+  const box = document.getElementById('personalRecords');
+  box.innerHTML = records.map(r => `
+    <div style="background:var(--bg);border-radius:10px;padding:10px 12px">
+      <div style="font-size:.68rem;color:var(--ink3);margin-bottom:3px">${r.label}</div>
+      <div style="font-size:.95rem;font-weight:700;color:${r.ok?'var(--ink)':'var(--ink3)'}">${r.val}</div>
+    </div>
+  `).join('');
 }
 
 function renderTextList() {
@@ -1103,27 +1270,31 @@ let quizAnswers = [];      // respostas escolhidas pelo usuário
 let quizCorrect = 0;       // quantas acertou
 let pendingResultData = null; // guarda dados enquanto faz o quiz
 
-function generateQuiz(textId, body) {
-  // Embaralha as opções mas mantém controle do gabarito
+// Hash simples para ofuscar gabarito no objeto — não é criptografia, mas dificulta inspeção casual
+function _h(s){ let h=0; for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0;} return h.toString(36); }
+
+function generateQuiz(textId) {
   const raw = QUIZ_DATA[textId];
-  if (!raw) return null; // texto custom — sem quiz
+  if (!raw) return null;
 
   return raw.map(item => {
-    // Cria array com [resposta_certa, ...erradas] e embaralha
     const opts = [...item.a];
-    const correct = opts[item.c]; // índice 0 é sempre a certa no source
+    const correctStr = opts[item.c];
     // Fisher-Yates shuffle
-    for(let i = opts.length-1; i>0; i--){
-      const j = Math.floor(Math.random()*(i+1));
-      [opts[i], opts[j]] = [opts[j], opts[i]];
-    }
-    return { q: item.q, opts, correctAnswer: correct };
+    for(let i=opts.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[opts[i],opts[j]]=[opts[j],opts[i]];}
+    // Store hash of correct answer + a salt from textId — string no longer directly readable
+    const correctHash = _h(correctStr + textId);
+    return { q: item.q, opts, _ch: correctHash, _tid: textId };
   });
+}
+
+function _checkAnswer(question, answer) {
+  return _h(answer + question._tid) === question._ch;
 }
 
 function showQuiz(resultData) {
   pendingResultData = resultData;
-  const questions = generateQuiz(currentText.id, currentText.body);
+  const questions = generateQuiz(currentText.id);
 
   if (!questions) {
     // Texto customizado — sem quiz, vai direto ao resultado
@@ -1191,10 +1362,10 @@ function submitQuiz() {
     return;
   }
 
-  // Grade
+  // Grade using hash check — correct string not exposed
   quizCorrect = 0;
   questions.forEach((q, i) => {
-    if (quizAnswers[i] === q.correctAnswer) quizCorrect++;
+    if (quizAnswers[i] !== null && _checkAnswer(q, quizAnswers[i])) quizCorrect++;
   });
 
   // Show answer feedback briefly before result
@@ -1202,7 +1373,7 @@ function submitQuiz() {
     const opts = document.getElementById(`opts-${qi}`).querySelectorAll('label');
     opts.forEach((lbl, oi) => {
       const val = q.opts[oi];
-      const isCorrect = val === q.correctAnswer;
+      const isCorrect = _checkAnswer(q, val);
       const isSelected = quizAnswers[qi] === val;
       if (isCorrect) {
         lbl.style.borderColor = 'var(--easy)';
