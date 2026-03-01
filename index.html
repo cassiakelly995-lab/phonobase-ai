@@ -396,13 +396,22 @@ body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;min-
 <div class="screen" id="screen-reading">
   <div class="topbar">
     <div class="brand">Leitura<em>PRO</em></div>
-    <div class="topbar-right"><button class="btn btn-ghost" onclick="goHome()">← Voltar</button></div>
+    <div class="topbar-right">
+      <div id="timerModeToggle" style="display:flex;align-items:center;gap:6px;margin-right:12px;font-size:.75rem;color:var(--ink3);font-family:'DM Mono',monospace;cursor:pointer" onclick="toggleTimerMode()">
+        <div id="timerModeIcon" style="width:32px;height:18px;background:var(--line);border-radius:9px;position:relative;transition:background .2s">
+          <div id="timerModeKnob" style="width:14px;height:14px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)"></div>
+        </div>
+        <span id="timerModeLabel">Cronômetro</span>
+      </div>
+      <button class="btn btn-ghost" onclick="goHome()">← Voltar</button>
+    </div>
   </div>
   <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
   <div class="reading-wrap">
     <div class="reading-header">
       <div class="reading-info">
-        <div class="timer-display" id="timerDisplay">00:00</div>
+        <!-- TIMER DISPLAY -->
+        <div id="timerDisplay" class="timer-display">00:00</div>
         <div class="reading-meta-box">
           <span class="reading-meta" id="wpmLive">— PPM</span>
           <span class="reading-meta" id="wordCount">0 palavras</span>
@@ -414,6 +423,19 @@ body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;min-
         <button class="ctrl ctrl-stop" onclick="stopTimer()">■ Finalizar</button>
       </div>
     </div>
+
+    <!-- COUNTDOWN BAR (only in countdown mode) -->
+    <div id="countdownBar" style="display:none;margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span style="font-size:.72rem;font-family:'DM Mono',monospace;color:var(--ink3)" id="countdownLabel">⏳ Tempo restante</span>
+        <span style="font-size:.72rem;font-family:'DM Mono',monospace;color:var(--accent);font-weight:600" id="countdownPct">100%</span>
+      </div>
+      <div style="height:8px;background:var(--line);border-radius:4px;overflow:hidden">
+        <div id="countdownFill" style="height:100%;background:var(--easy);border-radius:4px;transition:width .5s,background .5s;width:100%"></div>
+      </div>
+      <div style="font-size:.68rem;color:var(--ink3);margin-top:5px;font-family:'DM Mono',monospace" id="countdownHint">💡 Termine antes do tempo acabar — quanto mais rápido, melhor sua nota!</div>
+    </div>
+
     <div id="readingLevelBadge" class="reading-level-badge"></div>
     <div class="text-title-display" id="readingTitle"></div>
     <div class="text-body" id="readingBody"></div>
@@ -904,6 +926,61 @@ function updateCharCount() {
   document.getElementById('charCount').textContent = words + ' palavras';
 }
 
+// ===== TIMER MODE (countdown toggle) =====
+let countdownMode = false;
+let countdownTotal = 0;
+let countdownRemaining = 0;
+
+function toggleTimerMode() {
+  countdownMode = !countdownMode;
+  const knob = document.getElementById('timerModeKnob');
+  const icon = document.getElementById('timerModeIcon');
+  const label = document.getElementById('timerModeLabel');
+  if(countdownMode){
+    knob.style.left = '16px';
+    icon.style.background = 'var(--accent)';
+    label.textContent = '⏳ Desafio';
+    label.style.color = 'var(--accent)';
+    label.style.fontWeight = '700';
+  } else {
+    knob.style.left = '2px';
+    icon.style.background = 'var(--line)';
+    label.textContent = 'Cronômetro';
+    label.style.color = 'var(--ink3)';
+    label.style.fontWeight = '400';
+  }
+  resetTimerDisplay();
+}
+
+function getTargetSeconds(words, level) {
+  const targets = {easy:220, medio:200, dificil:170, avancado:150, extremo:130};
+  const targetWPM = targets[level] || 200;
+  return Math.ceil((words / targetWPM) * 60);
+}
+
+function resetTimerDisplay(){
+  if(!currentText) return;
+  if(countdownMode){
+    const words = currentText.body.trim().split(/\s+/).length;
+    countdownTotal = getTargetSeconds(words, currentText.level);
+    countdownRemaining = countdownTotal;
+    const m = Math.floor(countdownTotal/60), s = countdownTotal%60;
+    document.getElementById('timerDisplay').textContent = pad(m)+':'+pad(s);
+    document.getElementById('timerDisplay').className = 'timer-display';
+    document.getElementById('timerDisplay').style.color = '';
+    document.getElementById('countdownBar').style.display = '';
+    document.getElementById('countdownFill').style.width = '100%';
+    document.getElementById('countdownFill').style.background = 'var(--easy)';
+    document.getElementById('countdownPct').textContent = '100%';
+    document.getElementById('countdownLabel').textContent = '⏳ Tempo restante';
+  } else {
+    document.getElementById('timerDisplay').textContent = '00:00';
+    document.getElementById('timerDisplay').className = 'timer-display';
+    document.getElementById('timerDisplay').style.color = '';
+    document.getElementById('countdownBar').style.display = 'none';
+  }
+}
+
 // ===== START READING =====
 function startReading() {
   if (isCustom) {
@@ -941,14 +1018,13 @@ function startReading() {
   timerStarted = false;
   timerPaused = false;
   clearInterval(timerInterval);
-  document.getElementById('timerDisplay').textContent = '00:00';
-  document.getElementById('timerDisplay').className = 'timer-display';
   document.getElementById('wpmLive').textContent = '— PPM';
   document.getElementById('progressBar').style.width = '0%';
   document.getElementById('btnStart').style.display = '';
   document.getElementById('btnStart').textContent = '▶ Iniciar';
   document.getElementById('btnPause').style.display = 'none';
 
+  resetTimerDisplay();
   showScreen('reading');
   window.scrollTo(0,0);
 }
@@ -963,7 +1039,25 @@ function startTimer() {
   document.getElementById('btnStart').style.display = 'none';
   document.getElementById('btnPause').style.display = '';
   clearInterval(timerInterval);
-  timerInterval = setInterval(() => { timerSeconds++; updateTimerDisplay(); }, 1000);
+
+  if(countdownMode){
+    const words = currentText.body.trim().split(/\s+/).length;
+    countdownTotal = getTargetSeconds(words, currentText.level);
+    countdownRemaining = countdownTotal;
+    timerInterval = setInterval(() => {
+      timerSeconds++;
+      countdownRemaining = Math.max(0, countdownTotal - timerSeconds);
+      updateTimerDisplay();
+      if(countdownRemaining <= 0){
+        clearInterval(timerInterval);
+        timerRunning = false;
+        showToast('⏰ Tempo esgotado!');
+        setTimeout(()=>showResult(), 600);
+      }
+    }, 1000);
+  } else {
+    timerInterval = setInterval(() => { timerSeconds++; updateTimerDisplay(); }, 1000);
+  }
 }
 
 function pauseTimer() {
@@ -985,85 +1079,59 @@ function stopTimer() {
 }
 
 function updateTimerDisplay() {
-  const m = Math.floor(timerSeconds/60);
-  const s = timerSeconds%60;
-  document.getElementById('timerDisplay').textContent = pad(m)+':'+pad(s);
-  if (timerSeconds > 5) {
+  if(countdownMode){
+    const rem = Math.max(0, countdownRemaining);
+    const m = Math.floor(rem/60), s = rem%60;
+    document.getElementById('timerDisplay').textContent = pad(m)+':'+pad(s);
+    const pct = countdownTotal > 0 ? rem/countdownTotal : 0;
+    const pctRound = Math.round(pct*100);
+    document.getElementById('countdownFill').style.width = pctRound+'%';
+    document.getElementById('countdownPct').textContent = pctRound+'%';
+    let barColor='var(--easy)', labelText='⏳ Tempo restante';
+    if(pct < 0.15){ barColor='var(--dificil)'; labelText='🔥 APRESSE-SE!'; }
+    else if(pct < 0.35){ barColor='var(--medio)'; labelText='⚡ Acelere!'; }
+    else if(pct < 0.6){ barColor='#e9c46a'; }
+    document.getElementById('countdownFill').style.background = barColor;
+    document.getElementById('countdownLabel').textContent = labelText;
+    document.getElementById('timerDisplay').style.color = pct < 0.2 ? 'var(--dificil)' : pct < 0.4 ? 'var(--medio)' : 'var(--accent)';
+  } else {
+    const m = Math.floor(timerSeconds/60), s = timerSeconds%60;
+    document.getElementById('timerDisplay').textContent = pad(m)+':'+pad(s);
+  }
+  if(timerSeconds > 5 && currentText){
     const wc = currentText.body.trim().split(/\s+/).length;
     document.getElementById('wpmLive').textContent = Math.round((wc/timerSeconds)*60)+' PPM';
   }
-  const wc = currentText.body.trim().split(/\s+/).length;
-  const exp = (wc/200)*60;
-  document.getElementById('progressBar').style.width = Math.min(100,(timerSeconds/exp)*100)+'%';
+  if(currentText){
+    const wc = currentText.body.trim().split(/\s+/).length;
+    const exp = (wc/200)*60;
+    document.getElementById('progressBar').style.width = Math.min(100,(timerSeconds/exp)*100)+'%';
+  }
 }
 function pad(n){ return String(n).padStart(2,'0'); }
+function fmtTime(secs){ const m=Math.floor(secs/60),s=secs%60; return pad(m)+':'+pad(s); }
 
 // ===== RESULT =====
 function showResult() {
   const words = currentText.body.trim().split(/\s+/).length;
   const wpm = timerSeconds > 0 ? Math.round((words/timerSeconds)*60) : 0;
-  const m = Math.floor(timerSeconds/60), s = timerSeconds%60;
-  const timeStr = pad(m)+':'+pad(s);
-
-  const lvlBonus = {easy:0,medio:20,dificil:50,avancado:80,extremo:120};
-  const adj = wpm + (lvlBonus[currentText.level]||0);
-  let grade, label, color;
-  if(adj>=350){grade='S';label='Leitura excepcional!';color='#c8a000';}
-  else if(adj>=280){grade='A';label='Excelente desempenho!';color='#2d7a3a';}
-  else if(adj>=220){grade='B';label='Bom desempenho!';color='#4caf50';}
-  else if(adj>=160){grade='C';label='Desempenho médio';color='#b06a00';}
-  else if(adj>=100){grade='D';label='Continue praticando!';color:'#c0392b';}
-  else{grade='F';label='Pratique mais!';color='#888';}
-
-  document.getElementById('resultGrade').textContent = grade;
-  document.getElementById('resultGrade').style.color = color;
-  document.getElementById('resultLabel').textContent = label;
-  document.getElementById('res-wpm').textContent = wpm;
-  document.getElementById('res-time').textContent = timeStr;
-  document.getElementById('res-words').textContent = words;
-  const lvlNames={easy:'Fácil',medio:'Médio',dificil:'Difícil',avancado:'Avançado',extremo:'Extremo'};
-  document.getElementById('res-level').textContent = lvlNames[currentText.level]||'—';
-
-  const pct = Math.min(98,Math.max(2,(wpm/500)*100));
-  setTimeout(()=>{
-    document.getElementById('gaugeMarker').style.left = pct+'%';
-    document.getElementById('gaugeVal').textContent = wpm+' PPM';
-  },300);
-
-  const items = [];
-  const box = document.getElementById('analysisItems');
-  box.innerHTML = '';
-
-  history.unshift({wpm,time:timeStr,words,level:currentText.level,title:currentText.title,grade,date:new Date().toLocaleDateString('pt-BR')});
-  if(history.length>50) history.pop();
-  try { localStorage.setItem('leitura_history',JSON.stringify(history)); } catch(e){}
-
-  showScreen('result');
-  window.scrollTo(0,0);
-}
-
-// ===== RESULT =====
-function showResult() {
-  const words = currentText.body.trim().split(/\s+/).length;
-  const wpm = timerSeconds > 0 ? Math.round((words/timerSeconds)*60) : 0;
-  const m = Math.floor(timerSeconds/60), s = timerSeconds%60;
-  const timeStr = pad(m)+':'+pad(s);
+  const timeStr = fmtTime(timerSeconds);
   const mins = timerSeconds / 60;
 
   const lvlBonus = {easy:0,medio:20,dificil:50,avancado:80,extremo:120};
   const adj = wpm + (lvlBonus[currentText.level]||0);
   let grade, label, color;
-  if(adj>=350){grade='S';label='Leitura excepcional!';color='#c8a000';}
-  else if(adj>=280){grade='A';label='Excelente desempenho!';color='#2d7a3a';}
-  else if(adj>=220){grade='B';label='Bom desempenho!';color='#4caf50';}
-  else if(adj>=160){grade='C';label='Desempenho médio';color='#b06a00';}
-  else if(adj>=100){grade='D';label='Continue praticando!';color='#c0392b';}
-  else{grade='F';label='Pratique mais!';color='#888';}
+  if(adj>=350){grade='S';label='Leitura excepcional';color='#c8a000';}
+  else if(adj>=280){grade='A';label='Acima da média';color='#2d7a3a';}
+  else if(adj>=220){grade='B';label='Dentro da média';color='#4caf50';}
+  else if(adj>=160){grade='C';label='Abaixo do esperado';color='#b06a00';}
+  else if(adj>=100){grade='D';label='Desempenho fraco';color='#c0392b';}
+  else{grade='F';label='Precisa começar do zero';color='#888';}
 
   document.getElementById('resultGrade').textContent = grade;
   document.getElementById('resultGrade').style.color = color;
   document.getElementById('resultLabel').textContent = label;
-  document.getElementById('resultSubLabel').textContent = `Texto: "${currentText.title}" · Nível ${({easy:'Fácil',medio:'Médio',dificil:'Difícil',avancado:'Avançado',extremo:'Extremo'})[currentText.level]}`;
+  document.getElementById('resultSubLabel').textContent = `"${currentText.title}" · ${({easy:'Fácil',medio:'Médio',dificil:'Difícil',avancado:'Avançado',extremo:'Extremo'})[currentText.level]} · ${timeStr}${countdownMode?' · Modo Desafio ⏳':''}`;
 
   document.getElementById('res-wpm').textContent = wpm;
   document.getElementById('res-time').textContent = timeStr;
@@ -1072,12 +1140,8 @@ function showResult() {
   document.getElementById('res-level').textContent = lvlNames[currentText.level]||'—';
 
   const pct = Math.min(98,Math.max(2,(wpm/500)*100));
-  setTimeout(()=>{
-    document.getElementById('gaugeMarker').style.left = pct+'%';
-    document.getElementById('gaugeVal').textContent = wpm+' PPM';
-  },300);
+  setTimeout(()=>{ document.getElementById('gaugeMarker').style.left=pct+'%'; document.getElementById('gaugeVal').textContent=wpm+' PPM'; },300);
 
-  // Gerar relatório completo
   buildFullReport(wpm, timerSeconds, words, currentText.level, grade);
 
   history.unshift({wpm,time:timeStr,words,level:currentText.level,title:currentText.title,grade,date:new Date().toLocaleDateString('pt-BR')});
@@ -1088,86 +1152,102 @@ function showResult() {
   window.scrollTo(0,0);
 }
 
+// ===== RELATÓRIO BRUTAL E HONESTO =====
 function buildFullReport(wpm, secs, words, level, grade) {
   const mins = secs / 60;
   const lvlNames={easy:'Fácil',medio:'Médio',dificil:'Difícil',avancado:'Avançado',extremo:'Extremo'};
 
-  // ── ANÁLISE GERAL ──────────────────────────────────────
+  // ── ANÁLISE GERAL ───────────────────────────────────────
   const mainItems = [];
 
-  // 1. Velocidade com classificação detalhada
-  let velClass, velDesc, velDica;
+  // 1. Veredicto brutal de velocidade
+  let velIcon, velTitulo, velTexto;
   if(wpm < 80){
-    velClass='🔴'; velDesc='Muito lenta (abaixo de 80 PPM)';
-    velDica='Leitura silábica ou subvocalização excessiva. Você provavelmente lê cada palavra individualmente em voz interior. Treino: use um lápis como guia, acelerando o ritmo a cada página.';
-  } else if(wpm < 150){
-    velClass='🟠'; velDesc='Lenta (80–150 PPM)';
-    velDica='Leitura palavra por palavra com pausas frequentes. Tente capturar grupos de 2–3 palavras por fixação. Leia textos fáceis cronometrado para ganhar fluência.';
-  } else if(wpm < 200){
-    velClass='🟡'; velDesc='Moderada (150–200 PPM)';
-    velDica='Ritmo próximo à média. Para avançar, reduza a subvocalização e amplie seu campo de visão periférica durante a leitura.';
-  } else if(wpm < 300){
-    velClass='🟢'; velDesc='Média adulta (200–300 PPM)';
-    velDica='Velocidade saudável e produtiva. Foque em manter a compreensão enquanto aumenta gradualmente o ritmo com textos variados.';
-  } else if(wpm < 400){
-    velClass='🔵'; velDesc='Acima da média (300–400 PPM)';
-    velDica='Ótima velocidade! Você está na faixa de leitores ávidos. Continue desafiando-se com textos complexos para consolidar esse nível.';
-  } else if(wpm < 600){
-    velClass='⭐'; velDesc='Rápida (400–600 PPM)';
-    velDica='Leitura de alto desempenho. Certifique-se que a compreensão acompanha — teste-se resumindo o que leu sem reler.';
+    velIcon='🔴'; velTitulo=`${wpm} PPM — Leitura extremamente lenta`;
+    velTexto=`Você leu ${wpm} palavras por minuto. Isso é menos do que uma criança de 9 anos lê em média. A causa mais comum é subvocalização total: você "ouve" mentalmente cada sílaba antes de avançar. Enquanto isso não mudar, você vai continuar nesse nível.`;
+  } else if(wpm < 130){
+    velIcon='🟠'; velTitulo=`${wpm} PPM — Leitura lenta`;
+    velTexto=`${wpm} PPM está abaixo da média de adultos com ensino médio completo (150–200 PPM). Você processa palavras individualmente, sem capturar grupos. É corrigível, mas exige disciplina diária — boa vontade não é suficiente.`;
+  } else if(wpm < 180){
+    velIcon='🟡'; velTitulo=`${wpm} PPM — Abaixo da média`;
+    velTexto=`${wpm} PPM é a faixa de adultos que raramente leem. Você decodifica bem, mas ainda não ampliou o campo visual. Ler mais livros por lazer não vai te tornar mais rápido — você precisa treinar ativamente a aceleração.`;
+  } else if(wpm < 250){
+    velIcon='🟢'; velTitulo=`${wpm} PPM — Velocidade adequada`;
+    velTexto=`${wpm} PPM é a faixa da média adulta. É funcional, mas não impressiona. Está longe de ser eficiente. Com treino focado de 2–3 semanas, 300+ PPM é alcançável — a questão é se você vai fazer o esforço.`;
+  } else if(wpm < 350){
+    velIcon='🔵'; velTitulo=`${wpm} PPM — Acima da média`;
+    velTexto=`${wpm} PPM é genuinamente bom — acima de 70% dos adultos. O próximo patamar real (350–450 PPM) é onde a leitura vira vantagem competitiva. Você está perto.`;
+  } else if(wpm < 500){
+    velIcon='⭐'; velTitulo=`${wpm} PPM — Alto desempenho`;
+    velTexto=`${wpm} PPM é a faixa de leitores que usam leitura como ferramenta de trabalho. A partir daqui, o único risco é velocidade sem compreensão. Teste-se: resuma o texto sem reler.`;
   } else {
-    velClass='🚀'; velDesc='Excepcional (600+ PPM)';
-    velDica='Velocidade de leitura de elite. Monitore sempre a compreensão; nessa velocidade o risco é "passar os olhos" sem absorver.';
+    velIcon='🚀'; velTitulo=`${wpm} PPM — Velocidade de elite`;
+    velTexto=`${wpm} PPM é excepcional. Menos de 5% chegam aqui. Mas atenção: se não consegue resumir o que leu em 2 minutos, sua velocidade é ilusória — só olhos passando por texto.`;
   }
-  mainItems.push({icon:velClass, text:`<strong>Velocidade:</strong> ${wpm} PPM — ${velDesc}`});
+  mainItems.push({icon:velIcon, text:`<strong>${velTitulo}</strong><br><span style="color:var(--ink2)">${velTexto}</span>`});
 
-  // 2. Tempo e produtividade
+  // 2. Avaliação do tempo — sem eufemismos
   if(mins < 1){
-    mainItems.push({icon:'⏱️', text:`<strong>Duração:</strong> ${Math.round(secs)}s — sessão muito curta. Sessões de 10–20 minutos produzem resultados menores, mas são um bom começo.`});
-  } else if(mins < 5){
-    mainItems.push({icon:'⏱️', text:`<strong>Duração:</strong> ${Math.round(mins)} min — sessão curta. Tente aumentar para 10–15 minutos por prática para ganhos consistentes.`});
-  } else if(mins < 15){
-    mainItems.push({icon:'⏱️', text:`<strong>Duração:</strong> ${Math.round(mins)} min — sessão produtiva. Boa janela de concentração. Experimente sessões de 20 min com pausa de 5 min (Pomodoro).`});
+    mainItems.push({icon:'⏱️', text:`<strong>Tempo: ${Math.round(secs)}s — Medição inválida.</strong><br><span style="color:var(--ink2)">Menos de 1 minuto não mede nada. O PPM calculado aqui pode estar distorcido. Isso não é treino — é apertar o botão. Faça uma sessão com o texto completo.</span>`});
+  } else if(mins < 3){
+    mainItems.push({icon:'⏱️', text:`<strong>Tempo: ${Math.round(mins)}min — Sessão muito curta.</strong><br><span style="color:var(--ink2)">Em menos de 3 minutos você não desenvolveu ritmo sustentado. Os dados são pouco confiáveis. Mínimo aceitável: 5 minutos de leitura contínua.</span>`});
   } else {
-    mainItems.push({icon:'⏱️', text:`<strong>Duração:</strong> ${Math.round(mins)} min — sessão longa! Excelente resistência de foco. Se sentir cansaço, adote pausas curtas a cada 25 min.`});
+    mainItems.push({icon:'⏱️', text:`<strong>Tempo: ${fmtTime(secs)} — Sessão válida.</strong><br><span style="color:var(--ink2)">${Math.round(mins)} minutos é suficiente para uma medição real. Com ${words} palavras, o PPM calculado reflete seu desempenho atual.</span>`});
   }
 
-  // 3. Contexto do nível
-  const levelInsight = {
-    easy: `Textos fáceis são ideais para medir sua <strong>velocidade base pura</strong>, sem carga cognitiva extra. Seu PPM aqui é sua referência de partida.`,
-    medio: `Nível médio equilibra desafio e fluidez. É o mais recomendado para <strong>treino regular</strong> de velocidade + compreensão.`,
-    dificil: `Textos difíceis naturalmente reduzem o PPM — isso é normal e esperado. O ganho real aqui é <strong>vocabulário e resistência cognitiva</strong>.`,
-    avancado: `Nível avançado é para leitores experientes. A queda no PPM é saudável; priorize a <strong>compreensão profunda</strong> sobre a velocidade.`,
-    extremo: `Nível extremo representa o máximo desafio. PPM reduzido é inevitável. O benefício é o treino de <strong>raciocínio analítico e concentração</strong>.`
-  };
-  mainItems.push({icon:'📊', text:levelInsight[level]});
+  // 3. Modo Desafio — resultado honesto
+  if(countdownMode && countdownTotal > 0){
+    const usedPct = Math.round((secs / countdownTotal) * 100);
+    const targetWpm = Math.round((words/countdownTotal)*60);
+    const finishedInTime = secs < countdownTotal;
+    if(!finishedInTime){
+      mainItems.push({icon:'❌', text:`<strong>Modo Desafio: FALHOU.</strong><br><span style="color:var(--ink2)">O tempo esgotou antes de você terminar. A meta era ${targetWpm} PPM — você ficou em ${wpm} PPM. O desafio foi calibrado para ser alcançável com esforço real. Se não chegou, significa que sua velocidade atual ainda não é suficiente para esse nível.</span>`});
+    } else if(usedPct <= 70){
+      mainItems.push({icon:'🏆', text:`<strong>Modo Desafio: PASSOU com folga (${usedPct}% do tempo usado).</strong><br><span style="color:var(--ink2)">Meta era ${targetWpm} PPM, você fez ${wpm} PPM. Bom resultado. Agora suba o nível — ficar confortável no desafio é sinal de que ele não é mais desafiador.</span>`});
+    } else if(usedPct <= 90){
+      mainItems.push({icon:'⚡', text:`<strong>Modo Desafio: PASSOU (${usedPct}% do tempo usado).</strong><br><span style="color:var(--ink2)">Você chegou lá — mas sem folga. Isso indica que ${wpm} PPM ainda é seu teto, não sua velocidade confortável. Repita até conseguir 75% do tempo de forma consistente.</span>`});
+    } else {
+      mainItems.push({icon:'⚠️', text:`<strong>Modo Desafio: PASSOU raspando (${usedPct}% do tempo).</strong><br><span style="color:var(--ink2)">Tecnicamente dentro do tempo, mas com apenas ${100-usedPct}% sobrando. Isso não é domínio — é sobrevivência. Treine mais antes de considerar que superou esse nível.</span>`});
+    }
+  }
 
-  // 4. Comparativo com médias
-  mainItems.push({icon:'📈', text:`<strong>Comparativo:</strong> Crianças 8–10 anos: ~100–150 PPM | Adultos casuais: 150–250 PPM | Leitores frequentes: 300–400 PPM | Speed readers: 600–1000 PPM. <em>Você está em ${wpm} PPM.</em>`});
-
-  // 5. Estimativa de livro
-  const pagesPerHour = Math.round((wpm * 60) / 250); // ~250 palavras por página
-  mainItems.push({icon:'📖', text:`<strong>Estimativa de leitura:</strong> No seu ritmo atual, você leria aproximadamente <strong>${pagesPerHour} páginas por hora</strong> (livro padrão de ~250 palavras/página). Um romance de 300 páginas levaria cerca de <strong>${Math.round(300/pagesPerHour)} horas</strong>.`});
+  // 4. Comparativo sem romantismo
+  const pagesPerHour = Math.max(1, Math.round((wpm * 60) / 250));
+  const hoursFor300 = Math.ceil(300/pagesPerHour);
+  const fastReader300 = Math.ceil(300/Math.round((300*60)/250));
+  mainItems.push({icon:'📊', text:`<strong>O que ${wpm} PPM significa na prática:</strong><br><span style="color:var(--ink2)">~${pagesPerHour} páginas/hora. Um romance de 300 páginas levaria ~${hoursFor300}h. Um leitor de 300 PPM faria o mesmo em ~${fastReader300}h. ${wpm < 200 ? `A diferença acumulada em 1 ano é de dezenas de livros que você não vai ler.` : wpm < 350 ? 'Você está em nível funcional.' : 'Você está em nível competitivo real.'}</span>`});
 
   renderItems('analysisItems', mainItems);
 
-  // ── PROBLEMAS IDENTIFICADOS ────────────────────────────
+  // ── ERROS E PROBLEMAS ESPECÍFICOS ──────────────────────
   const problems = [];
 
   if(wpm < 100){
-    problems.push({icon:'🐢', text:`<strong>Velocidade muito baixa (${wpm} PPM):</strong> Provável causa: subvocalização intensa (ouvir cada palavra mentalmente) ou leitura palavra por palavra. <em>Correção:</em> Treine com textos simples cronometrados, forçando-se a avançar antes de terminar a vocalização interna.`});
+    problems.push({icon:'🚨', text:`<strong>CRÍTICO: Subvocalização severa.</strong><br><span style="color:var(--ink2)">Em ${wpm} PPM você certamente lê em voz interior palavra por palavra. Isso não é ritmo — é decodificação manual. Correção: use um guia físico (dedo, caneta) forçando o olho a andar mais rápido que a voz interna. 15 min/dia por 14 dias sem exceção.</span>`});
+  } else if(wpm < 150){
+    problems.push({icon:'⚠️', text:`<strong>PROBLEMA: Leitura palavra por palavra.</strong><br><span style="color:var(--ink2)">Você não agrupa palavras visualmente. Cada palavra é processada isolada, o que limita estruturalmente seu teto. Correção: treine fixar o olhar no centro das frases e deixar a visão periférica capturar os extremos. Exercício: cada linha em apenas 3 fixações oculares.</span>`});
+  } else if(wpm < 220){
+    problems.push({icon:'🔶', text:`<strong>PROBLEMA: Regressão ocular provável.</strong><br><span style="color:var(--ink2)">Na faixa de 150–220 PPM, o gargalo mais comum é regredir — voltar os olhos por insegurança. Isso desperdiça 20–40% do tempo. Correção: cubra o texto já lido com uma régua. Força o cérebro a confiar na primeira passada.</span>`});
   }
-  if(wpm > 500){
-    problems.push({icon:'⚡', text:`<strong>Velocidade muito alta (${wpm} PPM):</strong> Em velocidades acima de 500 PPM há risco de perda de compreensão. <em>Correção:</em> Após cada página, pare e resuma mentalmente o que leu. Se não conseguir, reduza o ritmo.`});
+
+  if(level === 'easy' && wpm < 200){
+    problems.push({icon:'🔴', text:`<strong>PPM baixo em texto fácil — diagnóstico preocupante.</strong><br><span style="color:var(--ink2)">Texto fácil tem vocabulário simples e frases curtas. Seu PPM deveria ser alto aqui. ${wpm} PPM nesse nível indica que o problema não é o conteúdo — é sua mecânica de leitura. Trabalhe a base antes de subir de nível.</span>`});
   }
-  if(mins < 2 && secs > 0){
-    problems.push({icon:'⏰', text:`<strong>Tempo muito curto (${Math.round(secs)}s):</strong> Sessões abaixo de 2 minutos não são suficientes para medir velocidade real ou desenvolver resistência de leitura. <em>Correção:</em> Faça sessões de pelo menos 5 minutos por texto.`});
+
+  if(level === 'easy' && wpm > 450){
+    problems.push({icon:'🧠', text:`<strong>ATENÇÃO: Velocidade suspeita em nível Fácil.</strong><br><span style="color:var(--ink2)">${wpm} PPM pode ser real — ou pode indicar que você passou os olhos sem ler de fato. Teste: sem reler, escreva agora os 3 eventos principais do texto. Se não conseguir em 1 minuto, você não leu — você folheou.</span>`});
   }
-  if(level==='easy' && wpm < 150){
-    problems.push({icon:'📚', text:`<strong>PPM baixo em texto fácil:</strong> Em textos fáceis o esperado é PPM mais alto, pois há pouca carga cognitiva. Velocidade de ${wpm} PPM aqui indica dificuldade de fluência básica. <em>Correção:</em> Leia em voz alta diariamente por 10 minutos, depois evolua para leitura silenciosa acelerada.`});
+
+  if((level === 'avancado' || level === 'extremo') && wpm > 300){
+    problems.push({icon:'🧠', text:`<strong>Velocidade alta em nível ${lvlNames[level]} — verifique compreensão.</strong><br><span style="color:var(--ink2)">${wpm} PPM aqui é incomum. Textos densos normalmente reduzem o PPM porque exigem processamento cognitivo real. Se você não consegue explicar o texto com suas próprias palavras, sua velocidade aqui é superficial.</span>`});
   }
-  if(level==='avancado' && wpm > 350){
-    problems.push({icon:'🧠', text:`<strong>Velocidade alta em nível avançado:</strong> ${wpm} PPM em texto avançado pode indicar leitura superficial — os olhos passam mas o cérebro não processa totalmente. <em>Correção:</em> Teste sua compreensão escrevendo 3 ideias principais do texto sem reler.`});
+
+  if(wpm > 500 && mins < 3){
+    problems.push({icon:'📐', text:`<strong>Resultado estatisticamente duvidoso.</strong><br><span style="color:var(--ink2)">${wpm} PPM em apenas ${Math.round(secs)}s. Em sessões muito curtas, qualquer variação de 5 segundos muda drasticamente o PPM calculado. Esse número não é confiável para diagnóstico. Faça uma sessão de 5+ minutos para dados reais.</span>`});
+  }
+
+  if(mins < 2 && secs > 10){
+    problems.push({icon:'⏰', text:`<strong>Sessão inadequada para treino.</strong><br><span style="color:var(--ink2)">${Math.round(secs)} segundos. Isso não desenvolve resistência de leitura, não cria hábito, e os dados são imprecisos. Sessão mínima de treino: 5 minutos contínuos.</span>`});
   }
 
   if(problems.length > 0){
@@ -1177,20 +1257,23 @@ function buildFullReport(wpm, secs, words, level, grade) {
     document.getElementById('diagBox').style.display = 'none';
   }
 
-  // ── PONTOS FORTES ──────────────────────────────────────
+  // ── PONTOS FORTES — só quando genuinamente merecer ─────
   const strengths = [];
 
-  if(wpm >= 200 && wpm < 500){
-    strengths.push({icon:'✅', text:`<strong>Velocidade dentro da faixa saudável (${wpm} PPM):</strong> Você lê na faixa ideal para combinar velocidade e compreensão. Isso demonstra hábito de leitura consistente.`});
+  if(wpm >= 280){
+    strengths.push({icon:'✅', text:`<strong>Velocidade genuinamente acima da média (${wpm} PPM).</strong><br><span style="color:var(--ink2)">Isso não se finge — vem de hábito real de leitura. Você está acima de 70–80% dos adultos.</span>`});
   }
-  if(mins >= 5){
-    strengths.push({icon:'🧘', text:`<strong>Boa resistência de foco:</strong> Você manteve atenção por ${Math.round(mins)} minutos contínuos. Isso é uma habilidade cognitiva cada vez mais rara no mundo digital.`});
+
+  if(mins >= 8){
+    strengths.push({icon:'🎯', text:`<strong>Resistência de foco real (${Math.round(mins)} minutos).</strong><br><span style="color:var(--ink2)">Manter atenção concentrada por ${Math.round(mins)} minutos é uma habilidade cada vez mais rara. A maioria das pessoas não consegue isso sem checar o celular.</span>`});
   }
-  if(level === 'dificil' || level === 'avancado' || level === 'extremo'){
-    strengths.push({icon:'💪', text:`<strong>Coragem no desafio:</strong> Você escolheu o nível <strong>${lvlNames[level]}</strong> — isso demonstra disposição para sair da zona de conforto, o que é o principal motor do desenvolvimento.`});
+
+  if((level === 'dificil' || level === 'avancado' || level === 'extremo') && wpm >= 150){
+    strengths.push({icon:'💪', text:`<strong>Escolha honesta de dificuldade (${lvlNames[level]}).</strong><br><span style="color:var(--ink2)">Ir direto ao nível confortável seria mais fácil. Você não fez isso. Isso é o que separa quem melhora de quem fica estagnado.</span>`});
   }
-  if(wpm >= 150){
-    strengths.push({icon:'👁️', text:`<strong>Fluência de leitura:</strong> Sua velocidade sugere que você não solethra palavras individualmente, indicando boa automatização da decodificação — base fundamental da leitura eficiente.`});
+
+  if(countdownMode && countdownTotal > 0 && secs < countdownTotal * 0.85){
+    strengths.push({icon:'🏅', text:`<strong>Desempenho sólido no Modo Desafio.</strong><br><span style="color:var(--ink2)">Terminar com folga no cronômetro regressivo mostra que você tem margem — não está no limite. Isso é um indicador real de progresso.</span>`});
   }
 
   if(strengths.length > 0){
@@ -1200,37 +1283,22 @@ function buildFullReport(wpm, secs, words, level, grade) {
     document.getElementById('strongBox').style.display = 'none';
   }
 
-  // ── PLANO DE MELHORIA PERSONALIZADO ───────────────────
+  // ── PLANO ESPECÍFICO E EXIGENTE ────────────────────────
   const plan = [];
 
-  // Prioridade 1: velocidade
   if(wpm < 150){
-    plan.push({icon:'1️⃣', text:`<strong>PRIORIDADE 1 — Fluência básica:</strong> Leia 10 min/dia em voz alta, textos fáceis. Depois repita o mesmo trecho silenciosamente tentando ser mais rápido. Esse ciclo dissolve a subvocalização.`});
+    plan.push({icon:'1️⃣', text:`<strong>SEMANAS 1–2: Destruir a subvocalização.</strong><br><span style="color:var(--ink2)">Coloque o dedo na linha e mova mais rápido do que consegue "ouvir" internamente. Seu cérebro vai protestar. Ignore. 15 min/dia sem exceção. No final de 2 semanas você vai notar que não precisa mais "ouvir" cada palavra.</span>`});
+    plan.push({icon:'2️⃣', text:`<strong>SEMANAS 3–4: Grupos de palavras.</strong><br><span style="color:var(--ink2)">Treine enxergar 2–3 palavras por fixação em vez de uma. Prática: cubra o que já leu e avance antes de terminar a linha. Força o salto visual e quebra o hábito de leitura lenta.</span>`});
   } else if(wpm < 250){
-    plan.push({icon:'1️⃣', text:`<strong>PRIORIDADE 1 — Ampliar campo visual:</strong> Treine focar no centro da linha e capturar as palavras laterais com visão periférica. Evite regredir (reler palavras já lidas) — uma passada só pelo parágrafo.`});
+    plan.push({icon:'1️⃣', text:`<strong>AGORA: Eliminar regressão ocular.</strong><br><span style="color:var(--ink2)">Use uma régua abaixo da linha atual. Não volte os olhos — nunca. Se não entendeu, continue. O contexto vai completar. Regressão é o maior ladrão de velocidade na sua faixa.</span>`});
+    plan.push({icon:'2️⃣', text:`<strong>TREINO DIÁRIO: Meta crescente obrigatória.</strong><br><span style="color:var(--ink2)">Cada sessão com meta 10% acima da última. Use o Modo Desafio — sem pressão externa você lê no ritmo de conforto, que é o ritmo que te mantém estagnado.</span>`});
   } else {
-    plan.push({icon:'1️⃣', text:`<strong>PRIORIDADE 1 — Manter e consolidar:</strong> Você está em boa velocidade. Agora varie os gêneros: técnicos, literários, científicos. Cada tipo treina um aspecto diferente da cognição.`});
+    plan.push({icon:'1️⃣', text:`<strong>FOCO: Compreensão proporcional à velocidade.</strong><br><span style="color:var(--ink2)">Você tem velocidade. A pergunta agora: você absorve o que lê em ${wpm} PPM? Depois de cada texto, escreva 5 pontos principais em 2 minutos sem reler. Se não conseguir, reduza 20 PPM até conseguir consistentemente.</span>`});
+    plan.push({icon:'2️⃣', text:`<strong>DESAFIO AVANÇADO: Textos fora da zona de conforto.</strong><br><span style="color:var(--ink2)">Seu próximo passo é ler textos densos (científicos, filosóficos, técnicos) no Modo Desafio. Isso força aceleração em condições difíceis — e faz os textos fáceis parecerem triviais.</span>`});
   }
 
-  // Prioridade 2: tempo de prática
-  if(mins < 5){
-    plan.push({icon:'2️⃣', text:`<strong>PRIORIDADE 2 — Aumentar duração:</strong> Estabeleça meta de 10 minutos de leitura contínua diariamente. Use o método Pomodoro: 25 min leitura + 5 min pausa. A consistência supera a intensidade.`});
-  } else {
-    plan.push({icon:'2️⃣', text:`<strong>PRIORIDADE 2 — Compreensão ativa:</strong> Após cada texto, escreva (ou diga em voz alta) 3 ideias que reteve. Isso treina a memória ativa e revela se a velocidade está superando a absorção.`});
-  }
-
-  // Prioridade 3: progressão de nível
-  if(level === 'easy' && wpm >= 200){
-    plan.push({icon:'3️⃣', text:`<strong>PRIORIDADE 3 — Avançar de nível:</strong> Você está pronto para textos médios! Suba um nível na próxima sessão. A resistência a textos mais densos expande seu vocabulário e velocidade nos textos fáceis.`});
-  } else if(level === 'medio' && wpm >= 250){
-    plan.push({icon:'3️⃣', text:`<strong>PRIORIDADE 3 — Experimentar nível Difícil:</strong> Seu desempenho no nível médio indica que você pode aguentar textos mais densos. Experimente 1 sessão difícil por semana.`});
-  } else {
-    plan.push({icon:'3️⃣', text:`<strong>PRIORIDADE 3 — Manter o nível atual:</strong> Foque em estabilizar seu PPM no nível <strong>${lvlNames[level]}</strong> antes de subir. Repita o mesmo texto em dias diferentes e observe a evolução.`});
-  }
-
-  // Meta semanal
-  const meta = Math.round(wpm * 1.12);
-  plan.push({icon:'🎯', text:`<strong>Meta para a próxima semana:</strong> Alcançar <strong>${meta} PPM</strong> no mesmo nível (${lvlNames[level]}). Um aumento de 10–15% por semana é realista e sustentável com prática diária de 10–15 minutos.`});
+  const meta = Math.round(wpm * 1.15);
+  plan.push({icon:'🎯', text:`<strong>META PRÓXIMA SESSÃO: ${meta} PPM no nível ${lvlNames[level]}.</strong><br><span style="color:var(--ink2)">+15% sobre hoje. É desconfortável? Ótimo. Conforto é estagnação. Use o Modo Desafio — deixe o cronômetro te forçar, porque sua vontade vai ceder quando ficar difícil.</span>`});
 
   renderItems('planItems', plan);
 }
@@ -1241,13 +1309,12 @@ function renderItems(containerId, items){
   items.forEach(item => {
     const d = document.createElement('div');
     d.className = 'analysis-item';
-    d.innerHTML = `<span class="analysis-icon" style="font-size:1.1rem">${item.icon}</span><div style="font-size:.9rem;line-height:1.65">${item.text}</div>`;
+    d.innerHTML = `<span class="analysis-icon" style="font-size:1.1rem;margin-top:3px">${item.icon}</span><div style="font-size:.88rem;line-height:1.7">${item.text}</div>`;
     box.appendChild(d);
   });
 }
 
-// Mantido para compatibilidade
-function buildAnalysis(wpm,secs,words,level){ return []; }
+function buildAnalysis(){ return []; }
 
 function tryAgain(){ startReading(); }
 function nextText(){
