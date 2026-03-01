@@ -3,1050 +3,533 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PHONOBASE CLINICAL — Estação de Trabalho Fonoaudiológica 2026</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Serif:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<title>PHONOBASE CLINICAL 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Fraunces:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-html,body{height:100%;overflow:hidden;}
-
+*{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:        #0b0e13;
-  --panel:     #111318;
-  --panel2:    #161a21;
-  --panel3:    #1c2029;
-  --border:    #252a35;
-  --border2:   #2e3445;
-  --text:      #c8cdd8;
-  --text2:     #7a8099;
-  --text3:     #454d63;
-  --accent:    #4a9eff;
-  --accent-d:  rgba(74,158,255,.1);
-  --accent-d2: rgba(74,158,255,.05);
-  --green:     #3ecf6a;
-  --green-d:   rgba(62,207,106,.08);
-  --amber:     #f0a500;
-  --amber-d:   rgba(240,165,0,.1);
-  --red:       #e05252;
-  --red-d:     rgba(224,82,82,.1);
-  --purple:    #9b72cf;
-  --purple-d:  rgba(155,114,207,.08);
-  --teal:      #2ec4b6;
-  --teal-d:    rgba(46,196,182,.08);
+  --bg:#07090e;--s1:#0c0f16;--s2:#11151f;--s3:#161c29;--s4:#1d2535;
+  --b1:rgba(255,255,255,.06);--b2:rgba(255,255,255,.03);
+  --t0:#e6ecf8;--t1:#8e9ab8;--t2:#454e6e;--t3:#272e48;
+  --blu:#4c8ef5;--blu2:rgba(76,142,245,.14);--blu3:rgba(76,142,245,.06);
+  --grn:#35c97c;--grn2:rgba(53,201,124,.12);
+  --amb:#e8a020;--amb2:rgba(232,160,32,.12);
+  --red:#e05050;--red2:rgba(224,80,80,.12);
+  --pur:#9b6ef5;
 }
+html,body{height:100%;background:var(--bg);color:var(--t0);font-family:'Space Grotesk',sans-serif;font-size:13px;overflow:hidden}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-thumb{background:var(--s4)}
 
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:'IBM Plex Sans',sans-serif;
-  font-size:13px;
-  line-height:1.5;
-}
+.app{display:grid;grid-template-rows:46px 1fr;height:100vh}
 
-/* ═══ LAYOUT SHELL ═══ */
-.shell{
-  display:grid;
-  grid-template-rows:40px 1fr;
-  height:100vh;
-}
+.top{background:var(--s1);border-bottom:1px solid var(--b1);display:flex;align-items:center;padding:0 18px;gap:0;z-index:50;position:relative}
+.brand{font-family:'Space Mono',monospace;font-weight:700;font-size:12px;letter-spacing:2px;color:var(--t0);padding-right:16px;margin-right:4px;border-right:1px solid var(--b1);white-space:nowrap}
+.brand em{color:var(--blu);font-style:normal}
+.tabs{display:flex;overflow-x:auto;flex:1}
+.tabs::-webkit-scrollbar{height:0}
+.tab{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:0 14px;height:46px;display:flex;align-items:center;background:none;border:none;color:var(--t3);cursor:pointer;transition:color .15s;border-bottom:2px solid transparent;white-space:nowrap;flex-shrink:0}
+.tab:hover{color:var(--t1)}
+.tab.on{color:var(--blu);border-bottom-color:var(--blu)}
+.top-r{display:flex;align-items:center;gap:8px;margin-left:auto;padding-left:14px}
+.kbtn{display:flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 11px;border:1px solid var(--b1);background:none;color:var(--t2);cursor:pointer;transition:all .15s}
+.kbtn:hover{border-color:var(--blu);color:var(--blu)}
+.kbtn.on{color:var(--grn);border-color:rgba(53,201,124,.4)}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dot-off{background:var(--amb);animation:bl 2s infinite}
+.dot-on{background:var(--grn)}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.2}}
 
-/* ═══ TOPBAR ═══ */
-.topbar{
-  background:var(--panel);
-  border-bottom:1px solid var(--border);
-  display:flex;align-items:center;
-  padding:0 16px;gap:0;
-  position:relative;z-index:100;
-}
-.tb-logo{
-  font-family:'IBM Plex Mono',monospace;
-  font-size:11px;font-weight:600;letter-spacing:3px;
-  text-transform:uppercase;color:var(--text);
-  margin-right:24px;padding-right:24px;
-  border-right:1px solid var(--border);
-  white-space:nowrap;
-}
-.tb-logo em{color:var(--accent);font-style:normal;}
-.tb-tabs{display:flex;gap:0;flex:1;}
-.tb-tab{
-  font-family:'IBM Plex Mono',monospace;font-size:10px;
-  font-weight:400;letter-spacing:1px;text-transform:uppercase;
-  padding:0 16px;height:40px;display:flex;align-items:center;
-  background:none;border:none;color:var(--text3);
-  cursor:pointer;transition:all .15s;border-bottom:2px solid transparent;
-  white-space:nowrap;
-}
-.tb-tab:hover{color:var(--text2);}
-.tb-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.body{display:grid;grid-template-columns:190px 1fr;overflow:hidden}
+.nav{background:var(--s1);border-right:1px solid var(--b1);overflow-y:auto;display:flex;flex-direction:column}
+.nsec{border-bottom:1px solid var(--b2)}
+.nsl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--t3);padding:11px 13px 5px}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 13px;cursor:pointer;transition:all .12s;font-size:11px;color:var(--t2);border-left:2px solid transparent;white-space:nowrap}
+.ni:hover{background:var(--s2);color:var(--t1)}
+.ni.on{background:var(--blu3);color:var(--blu);border-left-color:var(--blu)}
+.nav-foot{margin-top:auto;padding:12px 13px;border-top:1px solid var(--b2);font-size:10px;color:var(--t3);line-height:1.65}
 
-.tb-right{
-  display:flex;align-items:center;gap:12px;margin-left:auto;
-}
-.key-indicator{
-  display:flex;align-items:center;gap:6px;
-  font-family:'IBM Plex Mono',monospace;font-size:9px;
-  letter-spacing:1px;text-transform:uppercase;
-  padding:4px 10px;border:1px solid var(--border2);
-  cursor:pointer;transition:all .2s;
-}
-.key-indicator.on{color:var(--green);border-color:rgba(62,207,106,.3);}
-.key-indicator.off{color:var(--amber);}
-.key-indicator:hover{border-color:var(--accent);}
-.kdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
-.kdot-on{background:var(--green);}
-.kdot-off{background:var(--amber);animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
-.tb-time{
-  font-family:'IBM Plex Mono',monospace;font-size:10px;
-  color:var(--text3);letter-spacing:1px;
-}
+.main{overflow:hidden;display:flex;flex-direction:column}
+.panel{display:none;flex:1;overflow:hidden;flex-direction:column}
+.panel.on{display:flex}
 
-/* ═══ WORKSPACE ═══ */
-.workspace{
-  display:grid;
-  grid-template-columns:220px 1fr 280px;
-  overflow:hidden;
-}
+.ph{padding:12px 18px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--s1);gap:12px}
+.ph-ttl{font-size:14px;font-weight:600;color:var(--t0);margin-bottom:2px}
+.ph-sub{font-family:'Space Mono',monospace;font-size:9px;color:var(--t3)}
+.ph-r{display:flex;gap:5px;flex-shrink:0}
+.btn{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 13px;border:1px solid var(--b1);background:none;color:var(--t2);cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--t1);color:var(--t0)}
+.btn.pri{background:var(--blu);color:#fff;border-color:var(--blu)}
+.btn.pri:hover{background:#70a8ff}
+.btn.danger{background:var(--red);color:#fff;border-color:var(--red)}
+.btn.success{background:var(--grn);color:#000;border-color:var(--grn)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
 
-/* ═══ LEFT SIDEBAR ═══ */
-.sidebar-l{
-  background:var(--panel);
-  border-right:1px solid var(--border);
-  overflow-y:auto;display:flex;flex-direction:column;
-}
-.sidebar-l::-webkit-scrollbar{width:2px;}
-.sidebar-l::-webkit-scrollbar-thumb{background:var(--border2);}
+/* ANALISADOR */
+.az{flex:1;overflow:hidden;display:grid;grid-template-columns:1fr 1fr}
+.az-l{border-right:1px solid var(--b1);display:flex;flex-direction:column;overflow:hidden}
+.az-r{display:flex;flex-direction:column;overflow:hidden}
+.ctabs{display:flex;overflow-x:auto;border-bottom:1px solid var(--b1);flex-shrink:0;background:var(--s1)}
+.ctabs::-webkit-scrollbar{height:0}
+.ct{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:9px 12px;background:none;border:none;color:var(--t3);cursor:pointer;transition:all .15s;border-bottom:2px solid transparent;flex-shrink:0;white-space:nowrap}
+.ct:hover{color:var(--t1)}
+.ct.on{color:var(--blu);border-bottom-color:var(--blu);background:var(--blu3)}
+.az-inp{flex:1;display:flex;flex-direction:column;padding:12px;gap:8px;overflow:hidden}
+.inplbl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--t3)}
+.ta{flex:1;background:var(--s2);border:1px solid var(--b1);color:var(--t0);font-family:'Fraunces',serif;font-size:15px;line-height:1.78;padding:13px;outline:none;resize:none;transition:border-color .18s}
+.ta:focus{border-color:var(--blu)}
+.ta::placeholder{color:var(--t3);font-style:italic;font-size:13px}
+.az-foot{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap;flex-shrink:0}
+.exlbl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:4px}
+.exs{display:flex;flex-wrap:wrap;gap:3px}
+.ex{font-family:'Space Mono',monospace;font-size:9px;padding:3px 8px;border:1px solid var(--b1);background:none;color:var(--t3);cursor:pointer;transition:all .15s}
+.ex:hover{border-color:var(--blu);color:var(--blu)}
+.runbtn{font-size:11px;font-weight:600;padding:10px 20px;background:var(--blu);color:#fff;border:none;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.runbtn:hover{background:#70a8ff}
+.runbtn:disabled{opacity:.35;cursor:not-allowed}
+.sp{width:13px;height:13px;border-radius:50%;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;animation:spin .65s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.az-warn{padding:8px 12px;border-top:1px solid var(--b2);font-family:'Space Mono',monospace;font-size:9px;color:var(--t3);line-height:1.5;flex-shrink:0;display:flex;gap:6px;background:var(--s1)}
+.az-rhd{padding:9px 13px;border-bottom:1px solid var(--b1);font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);flex-shrink:0;background:var(--s1)}
+.res{flex:1;overflow-y:auto}
+.r-empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.r-empty-ico{font-size:26px;opacity:.12}
+.r-empty-msg{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--t3)}
+.r-load{display:flex;align-items:center;gap:10px;padding:18px;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--t3)}
+.spb{width:13px;height:13px;border-radius:50%;border:2px solid var(--s4);border-top-color:var(--blu);animation:spin .65s linear infinite;flex-shrink:0}
+.r-score{display:grid;grid-template-columns:85px 1fr;border-bottom:1px solid var(--b1)}
+.r-sn{padding:14px;border-right:1px solid var(--b1);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.snum{font-family:'Space Mono',monospace;font-weight:700;font-size:46px;line-height:1}
+.slbl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1px;color:var(--t3);margin-top:2px}
+.r-verd{padding:14px}
+.vl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:5px}
+.vv{font-size:16px;font-weight:600;line-height:1.2}
+.hi{color:var(--red)}.md{color:var(--amb)}.lo{color:var(--grn)}.nn{color:var(--t1)}
+.r-blocks{display:flex;flex-direction:column}
+.rb{padding:11px 12px;border-bottom:1px solid var(--b2)}
+.rblbl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.rbdot{width:4px;height:4px;border-radius:50%;flex-shrink:0}
+.rbtxt{font-size:12px;color:var(--t1);line-height:1.72;white-space:pre-wrap}
+.ri{display:flex;align-items:flex-start;gap:7px;padding:5px 8px;background:var(--s2);border-left:2px solid var(--blu);margin-bottom:3px;font-size:11px;color:var(--t1);line-height:1.5}
+.ri::before{content:'↗';color:var(--blu);font-family:'Space Mono',monospace;font-size:10px;flex-shrink:0;margin-top:1px}
+.ri.w{border-left-color:var(--amb)}.ri.w::before{color:var(--amb);content:'!'}
+.ri.d{border-left-color:var(--red)}.ri.d::before{color:var(--red);content:'⚠'}
+.r-alt{background:var(--grn2);border-left:2px solid var(--grn);padding:10px 12px;margin-bottom:3px;font-family:'Fraunces',serif;font-size:14px;font-style:italic;color:#80f0b0;line-height:1.55}
+.r-err{margin:12px;padding:14px;font-family:'Space Mono',monospace;font-size:11px;color:var(--amb);line-height:1.75;white-space:pre-wrap;background:var(--amb2);border-left:2px solid var(--amb)}
+.hipo{padding:7px 9px;background:var(--s2);margin-bottom:3px;border-left:2px solid var(--amb)}
+.hipo-n{font-size:12px;color:var(--t0);font-weight:500;margin-bottom:2px}
+.hipo-p{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;padding:1px 6px;border:1px solid;display:inline-block;margin-bottom:3px}
+.pa{color:var(--red);border-color:var(--red)}.pm{color:var(--amb);border-color:var(--amb)}.pb{color:var(--t2);border-color:var(--t2)}
+.hipo-j{font-size:11px;color:var(--t2);line-height:1.5}
+.badge{display:inline-block;padding:4px 10px;font-family:'Space Mono',monospace;font-weight:700;font-size:12px}
+.ba{background:var(--red2);color:var(--red)}.bm{background:var(--amb2);color:var(--amb)}.bb{background:var(--grn2);color:var(--grn)}
 
-.sl-section{border-bottom:1px solid var(--border);}
-.sl-header{
-  font-family:'IBM Plex Mono',monospace;font-size:9px;
-  letter-spacing:3px;text-transform:uppercase;color:var(--text3);
-  padding:10px 14px 6px;
-}
-.sl-item{
-  display:flex;align-items:center;gap:10px;
-  padding:7px 14px;cursor:pointer;transition:all .15s;
-  font-size:12px;color:var(--text2);border-left:2px solid transparent;
-}
-.sl-item:hover{background:var(--panel2);color:var(--text);}
-.sl-item.active{background:var(--accent-d2);color:var(--accent);border-left-color:var(--accent);}
-.sl-icon{width:14px;height:14px;flex-shrink:0;opacity:.6;font-size:12px;line-height:14px;text-align:center;}
-.sl-item.active .sl-icon{opacity:1;}
-.sl-badge{
-  margin-left:auto;font-family:'IBM Plex Mono',monospace;
-  font-size:8px;padding:1px 5px;border-radius:2px;
-}
-.badge-new{background:var(--accent-d);color:var(--accent);}
-.badge-warn{background:var(--amber-d);color:var(--amber);}
+/* GRAVAÇÃO */
+.grav-wrap{flex:1;overflow:hidden;display:grid;grid-template-columns:1fr 1fr}
+.grav-l{border-right:1px solid var(--b1);display:flex;flex-direction:column;overflow:hidden}
+.grav-r{display:flex;flex-direction:column;overflow:hidden}
+.ctx-chips{display:flex;gap:3px;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid var(--b1);background:var(--s1);flex-shrink:0}
+.ctx-chip{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border:1px solid var(--b1);background:none;color:var(--t3);cursor:pointer;transition:all .15s}
+.ctx-chip:hover{border-color:var(--blu);color:var(--blu)}
+.ctx-chip.on{background:var(--blu2);color:var(--blu);border-color:rgba(76,142,245,.4)}
+.mic-area{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;gap:16px;flex-shrink:0}
+.wave-box{display:flex;align-items:center;justify-content:center;gap:3px;height:36px}
+.wb{width:3px;background:var(--s4);border-radius:2px;height:4px;transition:height .1s}
+.wb.act{animation:wave .8s ease-in-out infinite}
+.wb:nth-child(1){animation-delay:0s}.wb:nth-child(2){animation-delay:.08s}.wb:nth-child(3){animation-delay:.16s}
+.wb:nth-child(4){animation-delay:.24s}.wb:nth-child(5){animation-delay:.32s}.wb:nth-child(6){animation-delay:.24s}
+.wb:nth-child(7){animation-delay:.16s}.wb:nth-child(8){animation-delay:.08s}
+@keyframes wave{0%,100%{height:4px}50%{height:28px}}
+.mic-btn{width:80px;height:80px;border-radius:50%;border:2px solid var(--b1);background:var(--s2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:30px;transition:all .2s}
+.mic-btn:hover{border-color:var(--blu);background:var(--blu3)}
+.mic-btn.rec{border-color:var(--red);background:var(--red2);animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(224,80,80,.4)}50%{box-shadow:0 0 0 14px rgba(224,80,80,0)}}
+.mic-timer{font-family:'Space Mono',monospace;font-size:28px;font-weight:700;color:var(--t0);letter-spacing:4px}
+.mic-timer.rec{color:var(--red)}
+.mic-status{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);text-align:center}
+.mic-status.rec{color:var(--red)}
+.grav-transcript{flex:1;overflow:hidden;display:flex;flex-direction:column;border-top:1px solid var(--b1)}
+.gt-hd{padding:8px 12px;border-bottom:1px solid var(--b2);font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:var(--s1)}
+.gt-body{flex:1;overflow-y:auto;padding:12px}
+.tt{font-family:'Fraunces',serif;font-size:15px;line-height:1.8;color:var(--t0);min-height:60px;word-wrap:break-word}
+.tt-interim{color:var(--t2);font-style:italic}
+.grav-footer{padding:10px 12px;border-top:1px solid var(--b2);display:flex;gap:5px;flex-shrink:0;background:var(--s1);flex-wrap:wrap}
 
-/* ═══ MAIN CONTENT ═══ */
-.main{
-  overflow:hidden;display:flex;flex-direction:column;
-}
-.panel-content{
-  display:none;flex:1;overflow:hidden;
-  flex-direction:column;
-}
-.panel-content.active{display:flex;}
+/* LEITURA */
+.leit-wrap{flex:1;overflow:hidden;display:grid;grid-template-columns:300px 1fr}
+.leit-l{border-right:1px solid var(--b1);display:flex;flex-direction:column;overflow-y:auto}
+.leit-r{display:flex;flex-direction:column;overflow:hidden}
+.text-list{padding:8px;display:flex;flex-direction:column;gap:5px}
+.text-item{padding:10px 12px;border:1px solid var(--b1);background:var(--s2);cursor:pointer;transition:all .15s}
+.text-item:hover{border-color:rgba(76,142,245,.3);background:var(--s3)}
+.text-item.on{border-color:var(--blu);background:var(--blu3)}
+.ti-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;gap:8px}
+.ti-ttl{font-size:12px;font-weight:500;color:var(--t0);line-height:1.3}
+.ti-diff{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border:1px solid;flex-shrink:0}
+.df{color:var(--grn);border-color:rgba(53,201,124,.4)}
+.dm{color:var(--amb);border-color:rgba(232,160,32,.4)}
+.dd{color:var(--red);border-color:rgba(224,80,80,.4)}
+.ti-info{font-family:'Space Mono',monospace;font-size:9px;color:var(--t3)}
+.reading-ctrl{padding:12px 16px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:10px;flex-shrink:0;background:var(--s1);flex-wrap:wrap}
+.timer{font-family:'Space Mono',monospace;font-size:28px;font-weight:700;color:var(--t0);letter-spacing:3px;min-width:80px}
+.timer.run{color:var(--blu)}
+.timer.done{color:var(--grn)}
+.prog{flex:1;height:4px;background:var(--s3);min-width:60px}
+.prog-fill{height:100%;background:var(--blu);transition:width .3s;width:0%}
+.reading-body{flex:1;overflow-y:auto;padding:28px 32px}
+.reading-txt{font-family:'Fraunces',serif;font-size:20px;line-height:2.1;color:var(--t0);max-width:640px}
+.reading-txt .w{transition:all .15s;padding:1px 2px;border-radius:2px}
+.reading-txt .w.said{background:var(--grn2);color:var(--grn)}
+.reading-txt .w.cur{background:var(--blu2);color:var(--blu)}
+.reading-txt .w.err{background:var(--red2);color:var(--red);text-decoration:underline wavy var(--red)}
+.reading-result{padding:14px 16px;border-top:1px solid var(--b1);flex-shrink:0;background:var(--s1)}
+.rr-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+.rr-stat{background:var(--s2);padding:10px;text-align:center}
+.rr-val{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;color:var(--t0)}
+.rr-lbl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--t3);margin-top:3px}
 
-/* ─ PANEL HEADER ─ */
-.panel-header{
-  padding:12px 20px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-  flex-shrink:0;background:var(--panel);
-}
-.ph-title{
-  font-family:'IBM Plex Mono',monospace;font-size:11px;
-  font-weight:600;letter-spacing:2px;text-transform:uppercase;
-  color:var(--text);
-}
-.ph-sub{font-size:11px;color:var(--text3);margin-top:1px;}
-.ph-actions{display:flex;gap:6px;}
-.ph-btn{
-  font-family:'IBM Plex Mono',monospace;font-size:9px;
-  letter-spacing:2px;text-transform:uppercase;
-  padding:5px 12px;border:1px solid var(--border2);
-  background:none;color:var(--text2);cursor:pointer;transition:all .15s;
-}
-.ph-btn:hover{border-color:var(--accent);color:var(--accent);}
-.ph-btn.primary{background:var(--accent);color:#000;border-color:var(--accent);font-weight:500;}
-.ph-btn.primary:hover{background:#6ab5ff;transform:none;}
+/* PESQUISAS */
+.re-wrap{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.refb{display:flex;flex-wrap:wrap;gap:3px;padding:9px 12px;border-bottom:1px solid var(--b1);background:var(--s1);flex-shrink:0}
+.rf{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:4px 10px;border:1px solid var(--b1);background:none;color:var(--t3);cursor:pointer;transition:all .15s}
+.rf:hover{border-color:var(--t2);color:var(--t1)}
+.rf.on{background:var(--s3);color:var(--t0);border-color:var(--s4)}
+.re-inner{flex:1;overflow:hidden;display:grid;grid-template-columns:200px 1fr}
+.renav{border-right:1px solid var(--b1);background:var(--s1);overflow-y:auto}
+.rni{padding:10px 12px;cursor:pointer;transition:all .12s;border-bottom:1px solid var(--b2);border-left:2px solid transparent}
+.rni:hover{background:var(--s2)}
+.rni.on{background:var(--blu3);border-left-color:var(--blu)}
+.rni-y{font-family:'Space Mono',monospace;font-size:9px;color:var(--amb);letter-spacing:1px;margin-bottom:2px}
+.rni-t{font-size:11px;color:var(--t1);line-height:1.3}
+.rni.on .rni-t{color:var(--blu)}
+.redet{overflow-y:auto;padding:26px 30px}
+.re-emp{height:100%;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--t3)}
+.red-y{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--amb);margin-bottom:7px}
+.red-ttl{font-size:22px;font-weight:700;color:var(--t0);margin-bottom:4px;line-height:1.2}
+.red-aut{font-family:'Space Mono',monospace;font-size:9px;color:var(--t3);margin-bottom:14px}
+.red-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:18px}
+.rtag{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:2px 8px;border:1px solid}
+.tv{color:var(--blu);border-color:rgba(76,142,245,.4)}.tflu{color:var(--pur);border-color:rgba(155,110,245,.4)}.tafa{color:var(--grn);border-color:rgba(53,201,124,.4)}.tde{color:var(--amb);border-color:rgba(232,160,32,.4)}.tau{color:var(--t1);border-color:var(--b1)}.tinf{color:#f09060;border-color:rgba(240,144,96,.4)}.tl{color:var(--red);border-color:rgba(224,80,80,.4)}
+.red-sec{margin-bottom:16px}
+.red-slbl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--b2)}
+.red-stxt{font-family:'Fraunces',serif;font-size:14px;color:var(--t1);line-height:1.85}
+.red-app{background:var(--blu3);border-left:2px solid var(--blu);padding:12px 15px;font-family:'Fraunces',serif;font-size:14px;color:#90bbff;line-height:1.75}
 
-/* ═══ ANALISADOR DE FALA ═══ */
-.analyzer-layout{
-  display:grid;grid-template-columns:1fr 1fr;
-  flex:1;overflow:hidden;
-}
-.analyzer-left{
-  border-right:1px solid var(--border);
-  display:flex;flex-direction:column;overflow:hidden;
-}
-.analyzer-right{
-  display:flex;flex-direction:column;overflow:hidden;
-}
+/* CONSULTA */
+.ci{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.ci-top{padding:10px 16px;border-bottom:1px solid var(--b1);background:var(--s1);flex-shrink:0}
+.ci-row{display:flex;gap:7px;align-items:flex-end}
+.cita{flex:1;background:var(--s2);border:1px solid var(--b1);color:var(--t0);font-family:'Fraunces',serif;font-size:14px;padding:9px 12px;outline:none;resize:none;min-height:38px;max-height:90px;transition:border-color .18s;line-height:1.5}
+.cita:focus{border-color:var(--blu)}
+.cita::placeholder{color:var(--t3);font-style:italic;font-size:12px}
+.ci-send{font-size:11px;font-weight:600;padding:9px 16px;background:var(--blu);color:#fff;border:none;cursor:pointer;transition:all .2s;flex-shrink:0}
+.ci-send:hover{background:#70a8ff}
+.ci-send:disabled{opacity:.35;cursor:not-allowed}
+.modes{display:flex;gap:3px;margin-top:7px}
+.mc{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:4px 10px;border:1px solid var(--b1);background:none;color:var(--t3);cursor:pointer;transition:all .15s}
+.mc:hover{border-color:var(--t2);color:var(--t1)}
+.mc.on{background:var(--s3);color:var(--t0);border-color:var(--s4)}
+.chips{display:flex;gap:3px;flex-wrap:wrap;margin-top:7px}
+.chip{font-family:'Space Mono',monospace;font-size:9px;padding:3px 8px;border:1px solid var(--b1);background:none;color:var(--t3);cursor:pointer;transition:all .15s}
+.chip:hover{border-color:var(--blu);color:var(--blu)}
+.ci-out{flex:1;overflow-y:auto;padding:18px 20px}
+.co-ph{color:var(--t3);padding-top:18px}
+.co-ph-t{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase}
+.co-ph-s{font-size:11px;margin-top:3px}
+.co-e{margin-bottom:22px}
+.co-q{font-family:'Space Mono',monospace;font-size:10px;color:var(--t3);padding:7px 10px;background:var(--s2);border-left:2px solid var(--blu);margin-bottom:9px}
+.co-a{font-family:'Fraunces',serif;font-size:14px;color:var(--t1);line-height:1.88;white-space:pre-wrap}
+.caret{display:inline-block;width:2px;height:.85em;background:var(--blu);animation:bl .8s infinite;vertical-align:middle}
 
-/* context bar */
-.ctx-bar{
-  display:flex;gap:0;border-bottom:1px solid var(--border);
-  flex-shrink:0;overflow-x:auto;background:var(--panel);
-}
-.ctx-bar::-webkit-scrollbar{height:2px;}
-.ctx-tab{
-  font-family:'IBM Plex Mono',monospace;font-size:9px;
-  letter-spacing:1px;text-transform:uppercase;
-  padding:8px 14px;background:none;border:none;
-  color:var(--text3);cursor:pointer;transition:all .15s;
-  white-space:nowrap;border-bottom:2px solid transparent;flex-shrink:0;
-}
-.ctx-tab:hover{color:var(--text2);}
-.ctx-tab.active{color:var(--accent);border-bottom-color:var(--accent);background:var(--accent-d2);}
+/* MÓDULOS */
+.mod-grid{flex:1;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1px;background:var(--b1);align-content:start}
+.mc-card{background:var(--s1);padding:18px;cursor:pointer;transition:background .2s}
+.mc-card:hover{background:var(--s2)}
+.mc-tag{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:8px}
+.mc-ico{font-size:20px;margin-bottom:8px}
+.mc-ttl{font-size:13px;font-weight:600;color:var(--t0);margin-bottom:4px;line-height:1.2}
+.mc-desc{font-size:11px;color:var(--t3);line-height:1.6}
+.mc-bdg{display:inline-block;margin-top:8px;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border:1px solid rgba(76,142,245,.4);color:var(--blu)}
 
-/* input zone */
-.input-zone{
-  flex:1;display:flex;flex-direction:column;
-  padding:16px;gap:10px;overflow:hidden;
-}
-.iz-label{
-  font-family:'IBM Plex Mono',monospace;font-size:9px;
-  letter-spacing:3px;text-transform:uppercase;color:var(--text3);
-}
-.speech-ta{
-  flex:1;background:var(--panel2);
-  border:1px solid var(--border);
-  color:var(--text);font-family:'IBM Plex Serif',serif;
-  font-size:15px;line-height:1.75;
-  padding:16px;outline:none;resize:none;
-  transition:border-color .2s;
-}
-.speech-ta:focus{border-color:var(--accent);}
-.speech-ta::placeholder{color:var(--text3);font-style:italic;font-size:13px;}
+/* MODAL */
+.ov{position:fixed;inset:0;background:rgba(7,9,14,.9);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(14px)}
+.modal{background:var(--s1);border:1px solid var(--b1);width:100%;max-width:450px;padding:28px;animation:up .2s ease}
+@keyframes up{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+.m-ttl{font-size:18px;font-weight:700;color:var(--t0);margin-bottom:3px}
+.m-sub{font-family:'Space Mono',monospace;font-size:10px;color:var(--t3);margin-bottom:18px;line-height:1.6}
+.m-steps{background:var(--s2);border-left:2px solid var(--blu);padding:11px 13px;margin-bottom:14px;font-family:'Space Mono',monospace;font-size:10px;color:var(--t1);line-height:2.2}
+.m-steps a{color:var(--blu)}.m-steps strong{color:var(--t0)}
+.kirow{display:flex;margin-bottom:10px}
+.ki{flex:1;background:var(--s2);border:1px solid var(--b1);border-right:none;color:var(--t0);font-family:'Space Mono',monospace;font-size:12px;padding:9px 12px;outline:none}
+.ki:focus{border-color:var(--blu)}
+.eye{background:var(--s2);border:1px solid var(--b1);padding:9px 12px;cursor:pointer;color:var(--t2);font-size:14px}
+.m-note{font-family:'Space Mono',monospace;font-size:9px;color:var(--t3);line-height:2.1;margin-bottom:16px}
+.m-note strong{color:var(--t2)}
+.m-btns{display:flex;gap:7px}
+.m-ok{flex:1;font-size:11px;font-weight:600;padding:11px;background:var(--blu);color:#fff;border:none;cursor:pointer;transition:background .2s}
+.m-ok:hover{background:#70a8ff}
+.m-cancel{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1px;padding:11px 14px;background:none;color:var(--t3);border:1px solid var(--b1);cursor:pointer;transition:all .2s}
+.m-cancel:hover{border-color:var(--t2);color:var(--t1)}
+.notif{position:fixed;bottom:20px;right:20px;background:var(--s2);border:1px solid var(--b1);padding:10px 16px;font-family:'Space Mono',monospace;font-size:10px;color:var(--t1);z-index:300;animation:up .2s ease;max-width:300px}
 
-.action-row{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:12px;flex-wrap:wrap;flex-shrink:0;
-}
-.examples-row{display:flex;flex-wrap:wrap;gap:4px;}
-.ex-chip{
-  font-size:11px;padding:3px 9px;
-  border:1px solid var(--border2);background:none;
-  color:var(--text3);cursor:pointer;transition:all .15s;
-}
-.ex-chip:hover{border-color:var(--accent);color:var(--accent);}
-
-.run-btn{
-  font-family:'IBM Plex Mono',monospace;font-size:10px;
-  font-weight:500;letter-spacing:2px;text-transform:uppercase;
-  padding:9px 20px;background:var(--accent);color:#000;
-  border:none;cursor:pointer;transition:all .2s;
-  display:flex;align-items:center;gap:8px;flex-shrink:0;
-}
-.run-btn:hover{background:#6ab5ff;}
-.run-btn:disabled{opacity:.4;cursor:not-allowed;}
-
-/* result zone */
-.result-zone{
-  flex:1;overflow-y:auto;
-}
-.result-zone::-webkit-scrollbar{width:3px;}
-.result-zone::-webkit-scrollbar-thumb{background:var(--border2);}
-
-.result-empty{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  height:100%;gap:8px;
-}
-.re-icon{font-size:32px;opacity:.2;}
-.re-msg{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);}
-
-/* loading */
-.result-loading{
-  display:flex;align-items:center;gap:12px;padding:20px;
-  font-family:'IBM Plex Mono',monospace;font-size:10px;
-  letter-spacing:2px;text-transform:uppercase;color:var(--text3);
-}
-.spin{
-  width:14px;height:14px;border:2px solid var(--border2);
-  border-top-color:var(--accent);border-radius:50%;
-  animation:sp .6s linear infinite;flex-shrink:0;
-}
-@keyframes sp{to{transform:rotate(360deg);}}
-
-/* result blocks */
-.r-score-row{
-  display:grid;grid-template-columns:100px 1fr;
-  border-bottom:1px solid var(--border);
-}
-.r-score-block{
-  padding:16px;border-right:1px solid var(--border);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-}
-.score-n{
-  font-family:'IBM Plex Mono',monospace;font-size:48px;
-  font-weight:600;line-height:1;
-}
-.score-lbl{
-  font-family:'IBM Plex Mono',monospace;font-size:8px;
-  letter-spacing:2px;text-transform:uppercase;color:var(--text3);
-  margin-top:3px;text-align:center;
-}
-.s-high{color:var(--red);}
-.s-mid{color:var(--amber);}
-.s-low{color:var(--green);}
-.s-none{color:var(--text2);}
-
-.r-verdict{padding:16px;}
-.rv-lbl{
-  font-family:'IBM Plex Mono',monospace;font-size:8px;
-  letter-spacing:3px;text-transform:uppercase;color:var(--text3);
-  margin-bottom:6px;
-}
-.rv-txt{
-  font-family:'IBM Plex Mono',monospace;font-size:16px;
-  font-weight:600;line-height:1.2;
-}
-.v-high{color:var(--red);}
-.v-mid{color:var(--amber);}
-.v-low{color:var(--green);}
-.v-none{color:var(--text2);}
-
-.r-blocks{display:flex;flex-direction:column;gap:0;}
-.r-block{
-  border-bottom:1px solid var(--border);padding:14px 16px;
-}
-.rb-label{
-  font-family:'IBM Plex Mono',monospace;font-size:8px;
-  letter-spacing:3px;text-transform:uppercase;color:var(--text3);
-  margin-bottom:8px;display:flex;align-items:center;gap:6px;
-}
-.rb-dot{width:4px;height:4px;border-radius:50%;flex-shrink:0;}
-.rb-content{font-size:12px;color:var(--text2);line-height:1.75;white-space:pre-wrap;}
-.rb-content strong{color:var(--text);}
-
-.markers-list{display:flex;flex-direction:column;gap:4px;}
-.marker{
-  display:flex;align-items:flex-start;gap:8px;
-  font-size:12px;color:var(--text2);line-height:1.5;
-  padding:5px 8px;background:var(--panel2);border-left:2px solid var(--accent);
-}
-.marker::before{content:'↗';color:var(--accent);flex-shrink:0;font-size:10px;margin-top:2px;font-family:'IBM Plex Mono',monospace;}
-
-.alt-block{
-  background:var(--green-d);border-left:2px solid var(--green);
-  padding:10px 12px;
-  font-family:'IBM Plex Serif',serif;font-size:14px;font-style:italic;
-  color:#a0f0b8;line-height:1.5;margin-bottom:8px;
-}
-
-/* honesty bar */
-.honesty-bar{
-  background:var(--panel2);border-top:1px solid var(--border);
-  padding:10px 16px;flex-shrink:0;
-  font-family:'IBM Plex Mono',monospace;font-size:9px;
-  letter-spacing:1px;color:var(--text3);
-  display:flex;align-items:center;gap:8px;
-}
-.hb-dot{width:5px;height:5px;border-radius:50%;background:var(--amber);flex-shrink:0;}
-
-/* ═══ PESQUISAS ═══ */
-.research-layout{
-  flex:1;overflow:hidden;
-  display:grid;grid-template-columns:200px 1fr;
-}
-.research-nav{
-  border-right:1px solid var(--border);
-  background:var(--panel);
-  overflow-y:auto;
-}
-.rn-item{
-  padding:10px 14px;cursor:pointer;transition:all .15s;
-  font-size:11px;color:var(--text2);
-  border-bottom:1px solid var(--border);
-  border-left:2px solid transparent;
-}
-.rn-item:hover{background:var(--panel2);color:var(--text);}
-.rn-item.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-d2);}
-.rn-year{
-  font-family:'IBM Plex Mono',monospace;font-size:9px;
-  color:var(--text3);margin-bottom:2px;
-}
-.rn-title{font-size:11px;line-height:1.35;}
-
-.research-detail{
-  overflow-y:auto;padding:24px 28px;
-}
-.research-detail::-webkit-scrollbar{width:3px;}
-.research-detail::-webkit-scrollbar-thumb{background:var(--border2);}
-.rd-empty{
-  height:100%;display:flex;align-items:center;justify-content:center;
-  font-family:'IBM Plex Mono',monospace;font-size:10px;
-  letter-spacing:2px;text-transform:uppercase;color:var(--text3);
-}
-.rd-year{
-  font-family:'IBM Plex Mono',monospace;font-size:10px;
-  letter-spacing:3px;color:var(--amber);text-transform:uppercase;
-  margin-bottom:8px;display:flex;align-items:center;gap:8px;
-}
-.rd-title{
-  font-family:'IBM Plex Serif',serif;font-size:28px;font-weight:400;
-  line-height:1.2;margin-bottom:6px;color:var(--text);
-}
-.rd-author{
-  font-family:'IBM Plex Mono',monospace;font-size:10px;
-  letter-spacing:1px;color:var(--text3);margin-bottom:20px;
-}
-.rd-section{margin-bottom:16px;}
-.rd-section-lbl{
-  font-family:'IBM Plex Mono',monospace;font-size:8px;
-  letter-spacing:3px;text-transform:uppercase;color:var(--text3);
-  margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--border);
-}
-.rd-section-txt{
-  font-size:13px;color:var(--text2);line-height:1.8;
-}
-.rd-section-txt strong{color:var(--text);}
-.rd-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
-.rd-badge{
-  font-family:'IBM Plex Mono',monospace;font-size:8px;
-  letter-spacing:2px;text-transform:uppercase;
-  padding:3px 8px;border:1px solid;
-}
-.b-lost{color:var(--red);border-color:var(--red);background:var(--red-d);}
-.b-voice{color:var(--teal);border-color:var(--teal);background:var(--teal-d);}
-.b-fluency{color:var(--purple);border-color:var(--purple);background:var(--purple-d);}
-.b-aphasia{color:var(--green);border-color:var(--green);background:var(--green-d);}
-.b-swallow{color:var(--amber);border-color:var(--amber);background:var(--amber-d);}
-.b-hearing{color:var(--text2);border-color:var(--border2);background:var(--panel2);}
-.b-infant{color:#cf9b50;border-color:#cf9b50;background:rgba(207,155,80,.08);}
-.b-lang{color:#72a8cf;border-color:#72a8cf;background:rgba(114,168,207,.08);}
-
-/* ═══ CONSULTA IA ═══ */
-.consult-layout{
-  flex:1;overflow:hidden;
-  display:flex;flex-direction:column;
-}
-.consult-input{
-  border-bottom:1px solid var(--border);
-  padding:12px 16px;background:var(--panel);
-  flex-shrink:0;
-}
-.ci-row{display:flex;gap:8px;align-items:flex-start;}
-.ci-context{
-  font-family:'IBM Plex Mono',monospace;font-size:10px;
-  letter-spacing:1px;text-transform:uppercase;
-  padding:8px 12px;border:1px solid var(--border2);
-  background:var(--panel2);color:var(--text2);cursor:pointer;
-  transition:all .15s;flex-shrink:0;align-self:stretch;
-}
-.ci-context.sel{border-color:var(--accent);color:var(--accent);background:var(--accent-d);}
-.ci-ta{
-  flex:1;background:var(--panel2);border:1px solid var(--border);
-  color:var(--text);font-family:'IBM Plex Serif',serif;font-size:14px;
-  padding:9px 12px;outline:none;resize:none;min-height:38px;
-  transition:border-color .2s;line-height:1.5;
-}
-.ci-ta:focus{border-color:var(--accent);}
-.ci-ta::placeholder{color:var(--text3);font-style:italic;font-size:12px;}
-.ci-send{
-  font-family:'IBM Plex Mono',monospace;font-size:9px;
-  letter-spacing:2px;text-transform:uppercase;
-  padding:9px 16px;background:var(--accent);color:#000;
-  border:none;cursor:pointer;font-weight:500;flex-shrink:0;
-  align-self:flex-end;transition:all .2s;
-}
-.ci-send:hover{background:#6ab5ff;}
-.ci-send:disabled{opacity:.4;cursor:not-allowed;}
-
-.chips-row{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px;}
-.chip{
-  font-size:10px;padding:3px 8px;
-  border:1px solid var(--border2);background:none;
-  color:var(--text3);cursor:pointer;transition:all .15s;
-  font-family:'IBM Plex Mono',monospace;letter-spacing:.5px;
-}
-.chip:hover{border-color:var(--accent);color:var(--accent);}
-
-.consult-output{
-  flex:1;overflow-y:auto;padding:20px 24px;
-}
-.consult-output::-webkit-scrollbar{width:3px;}
-.consult-output::-webkit-scrollbar-thumb{background:var(--border2);}
-
-.co-entry{
-  border-bottom:1px solid var(--border);
-  padding-bottom:20px;margin-bottom:20px;
-}
-.co-q{
-  font-family:'IBM Plex Mono',monospace;font-size:10px;
-  letter-spacing:1px;color:var(--text3);
-  margin-bottom:8px;padding:8px 10px;
-  background:var(--panel2);border-left:2px solid var(--accent);
-}
-.co-a{
-  font-size:13px;color:var(--text2);line-height:1.85;
-  white-space:pre-wrap;
-}
-.co-a strong{color:var(--text);}
-.caret{
-  display:inline-block;width:2px;height:.85em;
-  background:var(--accent);animation:pulse .8s infinite;
-  vertical-align:middle;margin-left:1px;
-}
-.co-placeholder{
-  display:flex;flex-direction:column;gap:6px;
-  padding:24px 0;
-}
-.cop-msg{
-  font-family:'IBM Plex Mono',monospace;font-size:10px;
-  letter-spacing:2px;text-transform:uppercase;color:var(--text3);
-}
-
-/* ═══ MODULES ═══ */
-.modules-grid{
-  flex:1;overflow-y:auto;padding:16px;
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-  gap:8px;align-content:start;
-}
-.modules-grid::-webkit-scrollbar{width:3px;}
-.modules-grid::-webkit-scrollbar-thumb{background:var(--border2);}
-.mod-card{
-  background:var(--panel);border:1px solid var(--border);
-  padding:16px;cursor:pointer;transition:all .2s;
-  position:relative;overflow:hidden;
-}
-.mod-card:hover{border-color:var(--border2);background:var(--panel2);}
-.mod-card.active-mod{border-color:var(--accent);background:var(--accent-d2);}
-.mc-tag{
-  font-family:'IBM Plex Mono',monospace;font-size:8px;
-  letter-spacing:2px;text-transform:uppercase;color:var(--text3);
-  margin-bottom:8px;
-}
-.mc-icon{font-size:20px;margin-bottom:8px;}
-.mc-title{
-  font-size:13px;font-weight:500;color:var(--text);
-  margin-bottom:4px;line-height:1.3;
-}
-.mc-desc{font-size:11px;color:var(--text3);line-height:1.5;}
-.mc-status{
-  position:absolute;top:10px;right:10px;
-  font-family:'IBM Plex Mono',monospace;font-size:7px;
-  letter-spacing:2px;text-transform:uppercase;
-  padding:2px 6px;border:1px solid;
-}
-.ms-live{color:var(--green);border-color:rgba(62,207,106,.3);}
-.ms-ai{color:var(--accent);border-color:var(--accent-d);}
-.ms-beta{color:var(--amber);border-color:var(--amber-d);}
-
-/* ═══ RIGHT SIDEBAR ═══ */
-.sidebar-r{
-  background:var(--panel);
-  border-left:1px solid var(--border);
-  display:flex;flex-direction:column;overflow:hidden;
-}
-.sr-tab-row{
-  display:flex;gap:0;border-bottom:1px solid var(--border);flex-shrink:0;
-}
-.sr-tab{
-  flex:1;font-family:'IBM Plex Mono',monospace;font-size:9px;
-  letter-spacing:1px;text-transform:uppercase;
-  padding:9px 6px;background:none;border:none;
-  color:var(--text3);cursor:pointer;transition:all .15s;
-  border-bottom:2px solid transparent;
-}
-.sr-tab:hover{color:var(--text2);}
-.sr-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
-
-.sr-content{flex:1;overflow-y:auto;padding:14px;}
-.sr-content::-webkit-scrollbar{width:2px;}
-.sr-content::-webkit-scrollbar-thumb{background:var(--border2);}
-
-/* info widgets */
-.info-block{
-  background:var(--panel2);border:1px solid var(--border);
-  margin-bottom:8px;overflow:hidden;
-}
-.ib-header{
-  padding:8px 12px;border-bottom:1px solid var(--border);
-  display:flex;justify-content:space-between;align-items:center;
-}
-.ib-title{
-  font-family:'IBM Plex Mono',monospace;font-size:8px;
-  letter-spacing:2px;text-transform:uppercase;color:var(--text3);
-}
-.ib-badge{
-  font-family:'IBM Plex Mono',monospace;font-size:7px;
-  letter-spacing:1px;padding:1px 5px;
-}
-.ib-body{padding:10px 12px;}
-
-.stat-row{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:4px 0;border-bottom:1px solid var(--border);
-}
-.stat-row:last-child{border-bottom:none;}
-.sr-lbl{font-size:11px;color:var(--text3);}
-.sr-val{
-  font-family:'IBM Plex Mono',monospace;font-size:11px;
-  color:var(--text);font-weight:500;
-}
-.sr-val.hi{color:var(--amber);}
-.sr-val.ok{color:var(--green);}
-.sr-val.crit{color:var(--red);}
-
-.ref-item{
-  padding:8px 0;border-bottom:1px solid var(--border);
-  cursor:pointer;transition:all .15s;
-}
-.ref-item:last-child{border-bottom:none;}
-.ref-item:hover .ref-title{color:var(--accent);}
-.ref-year{
-  font-family:'IBM Plex Mono',monospace;font-size:8px;
-  color:var(--amber);letter-spacing:1px;margin-bottom:2px;
-}
-.ref-title{font-size:11px;color:var(--text2);line-height:1.35;transition:color .15s;}
-
-/* ═══ MODAL ═══ */
-.modal-ov{
-  position:fixed;inset:0;background:rgba(11,14,19,.85);
-  z-index:1000;display:flex;align-items:center;justify-content:center;
-  backdrop-filter:blur(8px);
-}
-.modal{
-  background:var(--panel);border:1px solid var(--border2);
-  width:460px;padding:28px;
-  animation:fadein .2s ease;
-}
-@keyframes fadein{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:none;}}
-.modal-title{
-  font-family:'IBM Plex Mono',monospace;font-size:12px;
-  font-weight:600;letter-spacing:2px;text-transform:uppercase;
-  color:var(--text);margin-bottom:4px;
-}
-.modal-sub{font-size:12px;color:var(--text3);margin-bottom:20px;line-height:1.6;}
-.modal-steps{
-  border-left:2px solid var(--accent);padding:12px 16px;
-  background:var(--panel2);margin-bottom:16px;
-  font-family:'IBM Plex Mono',monospace;font-size:10px;
-  letter-spacing:.5px;color:var(--text2);line-height:2.2;
-}
-.modal-steps a{color:var(--accent);text-decoration:none;}
-.modal-steps a:hover{text-decoration:underline;}
-.modal-steps strong{color:var(--text);}
-.kinp-row{display:flex;gap:0;margin-bottom:10px;}
-.kinp{
-  flex:1;background:var(--panel2);border:1px solid var(--border2);border-right:none;
-  color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:12px;
-  padding:10px 14px;outline:none;
-}
-.kinp:focus{border-color:var(--accent);}
-.keye{
-  background:var(--panel2);border:1px solid var(--border2);
-  padding:10px 12px;cursor:pointer;color:var(--text2);font-size:14px;
-}
-.modal-note{
-  font-family:'IBM Plex Mono',monospace;font-size:9px;
-  letter-spacing:.5px;color:var(--text3);
-  line-height:2.0;margin-bottom:16px;
-}
-.modal-note strong{color:var(--text2);}
-.modal-btns{display:flex;gap:8px;}
-.mbtn-s{
-  flex:1;font-family:'IBM Plex Mono',monospace;font-size:10px;
-  letter-spacing:2px;text-transform:uppercase;
-  padding:11px;background:var(--accent);color:#000;border:none;cursor:pointer;
-  font-weight:500;transition:all .2s;
-}
-.mbtn-s:hover{background:#6ab5ff;}
-.mbtn-c{
-  font-family:'IBM Plex Mono',monospace;font-size:10px;
-  letter-spacing:2px;text-transform:uppercase;
-  padding:11px 16px;background:none;color:var(--text3);
-  border:1px solid var(--border2);cursor:pointer;transition:all .2s;
-}
-.mbtn-c:hover{border-color:var(--text2);color:var(--text2);}
-
-/* RESPONSIVE / SMALL SCREENS */
-@media(max-width:1100px){
-  .workspace{grid-template-columns:180px 1fr 240px;}
-}
 @media(max-width:860px){
-  .workspace{grid-template-columns:1fr;}
-  .sidebar-l,.sidebar-r{display:none;}
-  .analyzer-layout{grid-template-columns:1fr;}
-  .analyzer-left{border-right:none;border-bottom:1px solid var(--border);min-height:300px;}
-  html,body{overflow:auto;}
-  .shell{height:auto;}
-  .workspace,.main,.panel-content,.analyzer-layout{overflow:visible;height:auto;}
-  .speech-ta{min-height:140px;}
+  .body{grid-template-columns:1fr}.nav{display:none}
+  .az,.grav-wrap,.leit-wrap{grid-template-columns:1fr}
+  .az-l,.grav-l{border-right:none;border-bottom:1px solid var(--b1);min-height:240px}
+  .leit-l{display:none}
+  html,body{overflow:auto}.app{height:auto}
+  .body,.main,.panel,.az,.grav-wrap,.leit-wrap{overflow:visible;height:auto}
+  .ta{min-height:120px}.re-inner{grid-template-columns:1fr}.renav{display:none}
 }
 </style>
 </head>
 <body>
+<div class="app">
+<div class="top">
+  <div class="brand">PHONO<em>BASE</em></div>
+  <div class="tabs">
+    <button class="tab on" data-p="analisador" onclick="goP(this)">Analisador</button>
+    <button class="tab" data-p="gravacao" onclick="goP(this)">Gravação de Voz</button>
+    <button class="tab" data-p="leitura" onclick="goP(this)">Leitura Cronometrada</button>
+    <button class="tab" data-p="pesquisas" onclick="goP(this)">Pesquisas</button>
+    <button class="tab" data-p="consulta" onclick="goP(this)">Consulta IA</button>
+    <button class="tab" data-p="modulos" onclick="goP(this)">Módulos</button>
+  </div>
+  <div class="top-r">
+    <button class="kbtn" id="kb" onclick="openModal()">
+      <span class="dot dot-off" id="kd"></span><span id="kt">Ativar IA</span>
+    </button>
+  </div>
+</div>
+<div class="body">
+<div class="nav">
+  <div class="nsec">
+    <div class="nsl">Análise de texto</div>
+    <div class="ni on" onclick="goP2('analisador','infantil')">🗣 Fala Infantilizada</div>
+    <div class="ni" onclick="goP2('analisador','voz')">🎙 Padrão Vocal</div>
+    <div class="ni" onclick="goP2('analisador','fluencia')">💬 Fluência</div>
+    <div class="ni" onclick="goP2('analisador','linguagem')">📝 Linguagem</div>
+    <div class="ni" onclick="goP2('analisador','degluticao')">🍽 Deglutição</div>
+    <div class="ni" onclick="goP2('analisador','afasia')">🧠 Afasia / Neuro</div>
+  </div>
+  <div class="nsec">
+    <div class="nsl">Voz ao vivo</div>
+    <div class="ni" onclick="goP2('gravacao')">🎤 Gravação de Voz</div>
+    <div class="ni" onclick="goP2('leitura')">⏱ Leitura Cronometrada</div>
+  </div>
+  <div class="nsec">
+    <div class="nsl">Referência</div>
+    <div class="ni" onclick="goP2('pesquisas')">📚 Pesquisas Históricas</div>
+    <div class="ni" onclick="goP2('consulta')">🤖 Consulta IA</div>
+  </div>
+  <div class="nav-foot">Suporte de decisão clínica.<br>Não substitui avaliação presencial.</div>
+</div>
+<div class="main">
 
-<div class="shell">
-
-  <!-- ═══ TOPBAR ═══ -->
-  <div class="topbar">
-    <div class="tb-logo">PHONO<em>BASE</em>&nbsp;CLINICAL</div>
-    <div class="tb-tabs">
-      <button class="tb-tab active" onclick="showPanel('analisador')" id="tab-analisador">Analisador de Fala</button>
-      <button class="tb-tab" onclick="showPanel('pesquisas')" id="tab-pesquisas">Pesquisas Históricas</button>
-      <button class="tb-tab" onclick="showPanel('consulta')" id="tab-consulta">Consulta IA</button>
-      <button class="tb-tab" onclick="showPanel('modulos')" id="tab-modulos">Módulos</button>
-    </div>
-    <div class="tb-right">
-      <div class="key-indicator off" id="ki" onclick="openModal()">
-        <span class="kdot kdot-off" id="ki-dot"></span>
-        <span id="ki-txt">Ativar IA</span>
+<!-- ANALISADOR -->
+<div class="panel on" id="p-analisador">
+  <div class="ph">
+    <div><div class="ph-ttl">Analisador de Fala</div><div class="ph-sub" id="az-sub">Selecione o contexto e cole o texto</div></div>
+    <div class="ph-r"><button class="btn" onclick="clrAz()">Limpar</button><button class="btn pri" onclick="runAz()">Analisar</button></div>
+  </div>
+  <div class="az">
+    <div class="az-l">
+      <div class="ctabs">
+        <button class="ct on" data-c="infantil" onclick="setC(this)">Fala Infantilizada</button>
+        <button class="ct" data-c="voz" onclick="setC(this)">Padrão Vocal</button>
+        <button class="ct" data-c="fluencia" onclick="setC(this)">Fluência</button>
+        <button class="ct" data-c="linguagem" onclick="setC(this)">Linguagem</button>
+        <button class="ct" data-c="degluticao" onclick="setC(this)">Deglutição</button>
+        <button class="ct" data-c="afasia" onclick="setC(this)">Afasia</button>
       </div>
-      <div class="tb-time" id="clock">--:--</div>
+      <div class="az-inp">
+        <div class="inplbl" id="az-lbl">Transcrição ou relato:</div>
+        <textarea class="ta" id="az-ta" placeholder="Cole a transcrição da fala, relato do paciente ou texto…"></textarea>
+        <div class="az-foot">
+          <div><div class="exlbl">Exemplos</div><div class="exs" id="az-exs"></div></div>
+          <button class="runbtn" id="runbtn" onclick="runAz()">
+            <div class="sp" id="rsp" style="display:none"></div><span id="rtxt">Analisar</span>
+          </button>
+        </div>
+      </div>
+      <div class="az-warn"><span style="color:var(--amb)">⚑</span> Identifica padrões no texto — não substitui avaliação presencial.</div>
+    </div>
+    <div class="az-r">
+      <div class="az-rhd">Resultado</div>
+      <div class="res" id="res"><div class="r-empty"><div class="r-empty-ico">◈</div><div class="r-empty-msg">Aguardando análise</div></div></div>
     </div>
   </div>
+</div>
 
-  <!-- ═══ WORKSPACE ═══ -->
-  <div class="workspace">
-
-    <!-- ─ LEFT SIDEBAR ─ -->
-    <div class="sidebar-l">
-      <div class="sl-section">
-        <div class="sl-header">Análise</div>
-        <div class="sl-item active" onclick="showPanel('analisador');setSub('infantil')">
-          <span class="sl-icon">🗣</span> Fala Infantilizada
-          <span class="sl-badge badge-new">NOVO</span>
-        </div>
-        <div class="sl-item" onclick="showPanel('analisador');setSub('voz')">
-          <span class="sl-icon">🎙</span> Padrão Vocal
-        </div>
-        <div class="sl-item" onclick="showPanel('analisador');setSub('fluencia')">
-          <span class="sl-icon">💬</span> Fluência
-        </div>
-        <div class="sl-item" onclick="showPanel('analisador');setSub('linguagem')">
-          <span class="sl-icon">📝</span> Linguagem
-        </div>
-        <div class="sl-item" onclick="showPanel('analisador');setSub('deglutição')">
-          <span class="sl-icon">🍽</span> Relato de Deglutição
-        </div>
-        <div class="sl-item" onclick="showPanel('analisador');setSub('afasia')">
-          <span class="sl-icon">🧠</span> Afasia / Neuro
-        </div>
-      </div>
-      <div class="sl-section">
-        <div class="sl-header">Base Científica</div>
-        <div class="sl-item" onclick="showPanel('pesquisas')">
-          <span class="sl-icon">📚</span> Pesquisas Históricas
-        </div>
-        <div class="sl-item" onclick="showPanel('consulta')">
-          <span class="sl-icon">🤖</span> Consulta IA
-        </div>
-      </div>
-      <div class="sl-section">
-        <div class="sl-header">Ferramentas</div>
-        <div class="sl-item" onclick="showPanel('modulos')">
-          <span class="sl-icon">⚙</span> Módulos Clínicos
-        </div>
-      </div>
-      <div style="margin-top:auto;padding:14px;border-top:1px solid var(--border);">
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;">Aviso clínico</div>
-        <div style="font-size:11px;color:var(--text3);line-height:1.6;">Esta plataforma é suporte de decisão — não substitui avaliação fonoaudiológica presencial.</div>
-      </div>
+<!-- GRAVAÇÃO DE VOZ -->
+<div class="panel" id="p-gravacao">
+  <div class="ph">
+    <div><div class="ph-ttl">Gravação e Análise de Voz</div><div class="ph-sub">Grave · transcrição automática em PT-BR · análise com IA</div></div>
+    <div class="ph-r">
+      <button class="btn" onclick="clrGrav()">Limpar</button>
+      <button class="btn pri" id="grav-ai-btn" onclick="analyzeGrav()" style="display:none">Analisar com IA</button>
     </div>
-
-    <!-- ─ MAIN ─ -->
-    <div class="main">
-
-      <!-- ══ ANALISADOR ══ -->
-      <div class="panel-content active" id="panel-analisador">
-        <div class="panel-header">
-          <div>
-            <div class="ph-title">Analisador de Fala</div>
-            <div class="ph-sub" id="ph-sub-txt">Cole ou transcreva a fala do paciente para análise clínica com IA</div>
-          </div>
-          <div class="ph-actions">
-            <button class="ph-btn" onclick="clearAnalyzer()">Limpar</button>
-            <button class="ph-btn primary" onclick="runAnalysis()">Analisar</button>
-          </div>
-        </div>
-
-        <div class="analyzer-layout">
-          <!-- INPUT SIDE -->
-          <div class="analyzer-left">
-            <!-- context tabs -->
-            <div class="ctx-bar">
-              <button class="ctx-tab active" data-ctx="infantil" onclick="pickCtx(this)">Fala Infantilizada</button>
-              <button class="ctx-tab" data-ctx="voz" onclick="pickCtx(this)">Padrão Vocal</button>
-              <button class="ctx-tab" data-ctx="fluencia" onclick="pickCtx(this)">Fluência</button>
-              <button class="ctx-tab" data-ctx="linguagem" onclick="pickCtx(this)">Linguagem</button>
-              <button class="ctx-tab" data-ctx="degluticao" onclick="pickCtx(this)">Deglutição</button>
-              <button class="ctx-tab" data-ctx="afasia" onclick="pickCtx(this)">Afasia / Neuro</button>
-            </div>
-
-            <div class="input-zone">
-              <div class="iz-label" id="iz-lbl">Transcrição da fala / texto a analisar:</div>
-              <textarea class="speech-ta" id="speech-ta" rows="8"
-                placeholder="Cole aqui a transcrição da fala, relato do paciente, ou texto a ser analisado…"></textarea>
-              <div class="action-row">
-                <div>
-                  <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:5px;">Exemplos</div>
-                  <div class="examples-row" id="examples-row"></div>
-                </div>
-                <button class="run-btn" id="run-btn" onclick="runAnalysis()">
-                  <div class="spin" id="run-spin" style="display:none;"></div>
-                  <span id="run-txt">Analisar</span>
-                </button>
-              </div>
-            </div>
-
-            <div class="honesty-bar">
-              <span class="hb-dot"></span>
-              A análise identifica apenas padrões presentes no texto. Ausência de marcadores não descarta patologia. Avaliação presencial é insubstituível.
-            </div>
-          </div>
-
-          <!-- RESULT SIDE -->
-          <div class="analyzer-right">
-            <div style="padding:10px 14px;border-bottom:1px solid var(--border);background:var(--panel);flex-shrink:0;">
-              <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);">Resultado da Análise</div>
-            </div>
-            <div class="result-zone" id="result-zone">
-              <div class="result-empty" id="result-empty">
-                <div class="re-icon">◈</div>
-                <div class="re-msg">Aguardando análise</div>
-              </div>
-            </div>
-          </div>
-        </div>
+  </div>
+  <div class="grav-wrap">
+    <div class="grav-l">
+      <div class="ctx-chips">
+        <button class="ctx-chip on" data-gc="fluencia" onclick="setGC(this)">Fluência</button>
+        <button class="ctx-chip" data-gc="voz" onclick="setGC(this)">Padrão Vocal</button>
+        <button class="ctx-chip" data-gc="linguagem" onclick="setGC(this)">Linguagem</button>
+        <button class="ctx-chip" data-gc="infantil" onclick="setGC(this)">Fala Infantilizada</button>
+        <button class="ctx-chip" data-gc="afasia" onclick="setGC(this)">Afasia</button>
       </div>
-
-      <!-- ══ PESQUISAS ══ -->
-      <div class="panel-content" id="panel-pesquisas">
-        <div class="panel-header">
-          <div>
-            <div class="ph-title">Pesquisas Históricas</div>
-            <div class="ph-sub">Descobertas esquecidas com aplicação clínica real · 1854–2026</div>
-          </div>
-          <div class="ph-actions">
-            <select id="re-filter" onchange="filterResearch()" style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;background:var(--panel2);color:var(--text2);border:1px solid var(--border2);padding:5px 10px;outline:none;cursor:pointer;">
-              <option value="all">Todas as áreas</option>
-              <option value="lost">Esquecidas / Perdidas</option>
-              <option value="voice">Voz & Laringe</option>
-              <option value="fluency">Fluência</option>
-              <option value="aphasia">Afasia & Neuro</option>
-              <option value="swallow">Deglutição</option>
-              <option value="hearing">Audição</option>
-              <option value="infant">Fala Infantilizada</option>
-              <option value="lang">Linguagem</option>
-            </select>
-          </div>
+      <div class="mic-area">
+        <div class="wave-box" id="wave-box">
+          <div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div>
+          <div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div>
         </div>
-        <div class="research-layout">
-          <div class="research-nav" id="research-nav"></div>
-          <div class="research-detail" id="research-detail">
-            <div class="rd-empty">Selecione uma pesquisa ao lado</div>
-          </div>
-        </div>
+        <button class="mic-btn" id="mic-btn" onclick="toggleMic()">🎤</button>
+        <div class="mic-timer" id="mic-timer">00:00</div>
+        <div class="mic-status" id="mic-status">Clique para gravar</div>
       </div>
-
-      <!-- ══ CONSULTA ══ -->
-      <div class="panel-content" id="panel-consulta">
-        <div class="panel-header">
-          <div>
-            <div class="ph-title">Consulta IA Clínica</div>
-            <div class="ph-sub">Fonoaudiologia baseada em evidência · 170 anos de pesquisa</div>
-          </div>
-          <div class="ph-actions">
-            <button class="ph-btn" id="mode-clinica" onclick="setConsultMode('clinica',this)">Protocolo</button>
-            <button class="ph-btn" id="mode-historica" onclick="setConsultMode('historica',this)">Histórico</button>
-            <button class="ph-btn" id="mode-brasil" onclick="setConsultMode('brasil',this)">Brasil</button>
-          </div>
+      <div class="grav-transcript">
+        <div class="gt-hd">
+          <span>Transcrição em tempo real</span>
+          <button class="btn" style="padding:3px 8px;font-size:8px" onclick="copyTxt()">Copiar</button>
         </div>
-        <div class="consult-layout">
-          <div class="consult-input">
-            <div class="ci-row">
-              <textarea class="ci-ta" id="ci-ta" rows="2"
-                placeholder="Ex: Paciente 68 anos, rouquidão há 3 meses, sem dor, fumante 30 anos — hipóteses diagnósticas e conduta?"
-                onkeydown="if(event.ctrlKey&&event.key==='Enter')runConsult()"></textarea>
-              <button class="ci-send" id="ci-send" onclick="runConsult()">Enviar</button>
-            </div>
-            <div class="chips-row">
-              <button class="chip" onclick="setConsultQ('Critérios diagnósticos e conduta em presbifonia: quando indicar terapia vs. cirurgia?')">Presbifonia</button>
-              <button class="chip" onclick="setConsultQ('Como diferenciar disfonia funcional de disfonia organofuncional na anamnese?')">Disfonia</button>
-              <button class="chip" onclick="setConsultQ('Protocolo de triagem de disfagia pós-AVC: quais sinais de alerta e quando encaminhar para FEES?')">Disfagia pós-AVC</button>
-              <button class="chip" onclick="setConsultQ('Gagueira em adulto: quando indica terapia fluência-shaping vs. stuttering modification?')">Gagueira adulto</button>
-              <button class="chip" onclick="setConsultQ('Afasia de Broca vs. Wernicke: diferenças clínicas na avaliação informal à beira do leito?')">Afasia beira leito</button>
-              <button class="chip" onclick="setConsultQ('Método Mastigado de Froeschels 1924: protocolo clínico, indicações e contraindicações?')">Froeschels</button>
-              <button class="chip" onclick="setConsultQ('Quais pesquisas históricas de fonoaudiologia foram esquecidas e têm aplicação clínica hoje?')">Pesquisas esquecidas</button>
-              <button class="chip" onclick="setConsultQ('Elderspeak: como treinar uma equipe de ILPI em 4 horas segundo Williams 2004?')">Treinar ILPI</button>
-            </div>
-          </div>
-          <div class="consult-output" id="consult-output">
-            <div class="co-placeholder">
-              <div class="cop-msg">◈ &nbsp; Aguardando consulta</div>
-              <div style="font-size:11px;color:var(--text3);margin-top:4px;">Use Ctrl+Enter para enviar · Escolha o modo no cabeçalho</div>
-            </div>
-          </div>
+        <div class="gt-body">
+          <div class="tt" id="tt"><span style="color:var(--t3);font-style:italic;font-size:13px">A transcrição aparecerá aqui enquanto você fala…</span></div>
         </div>
-      </div>
-
-      <!-- ══ MÓDULOS ══ -->
-      <div class="panel-content" id="panel-modulos">
-        <div class="panel-header">
-          <div>
-            <div class="ph-title">Módulos Clínicos</div>
-            <div class="ph-sub">Ferramentas especializadas de avaliação e suporte</div>
-          </div>
-        </div>
-        <div class="modules-grid">
-          <div class="mod-card" onclick="showPanel('analisador');pickCtxByName('infantil')">
-            <div class="mc-status ms-ai">IA</div>
-            <div class="mc-tag">01 · Linguagem</div>
-            <div class="mc-icon">🗣</div>
-            <div class="mc-title">Analisador de Fala Infantilizada</div>
-            <div class="mc-desc">Detecta patronizing speech, elderspeak e infantilização em todos os contextos adultos.</div>
-          </div>
-          <div class="mod-card" onclick="showPanel('analisador');pickCtxByName('voz')">
-            <div class="mc-status ms-ai">IA</div>
-            <div class="mc-tag">02 · Voz</div>
-            <div class="mc-icon">🎙</div>
-            <div class="mc-title">Analisador de Padrão Vocal</div>
-            <div class="mc-desc">Identifica padrões de disfonia funcional, comportamentos compensatórios e sinais de alerta em transcrições.</div>
-          </div>
-          <div class="mod-card" onclick="showPanel('analisador');pickCtxByName('fluencia')">
-            <div class="mc-status ms-ai">IA</div>
-            <div class="mc-tag">03 · Fluência</div>
-            <div class="mc-icon">💬</div>
-            <div class="mc-title">Analisador de Fluência</div>
-            <div class="mc-desc">Tipifica disfluências, calcula taxa aproximada e diferencia gagueira de disfluência comum.</div>
-          </div>
-          <div class="mod-card" onclick="showPanel('analisador');pickCtxByName('linguagem')">
-            <div class="mc-status ms-ai">IA</div>
-            <div class="mc-tag">04 · Linguagem</div>
-            <div class="mc-icon">📝</div>
-            <div class="mc-title">Análise de Linguagem</div>
-            <div class="mc-desc">Avalia complexidade sintática, coerência discursiva, marcadores de alteração de linguagem.</div>
-          </div>
-          <div class="mod-card" onclick="showPanel('analisador');pickCtxByName('degluticao')">
-            <div class="mc-status ms-ai">IA</div>
-            <div class="mc-tag">05 · Deglutição</div>
-            <div class="mc-icon">🍽</div>
-            <div class="mc-title">Triagem de Disfagia por Relato</div>
-            <div class="mc-desc">Analisa relato de sintomas de deglutição e identifica sinais de risco para encaminhamento.</div>
-          </div>
-          <div class="mod-card" onclick="showPanel('analisador');pickCtxByName('afasia')">
-            <div class="mc-status ms-ai">IA</div>
-            <div class="mc-tag">06 · Neurologia</div>
-            <div class="mc-icon">🧠</div>
-            <div class="mc-title">Análise de Afasia</div>
-            <div class="mc-desc">Identifica padrões compatíveis com diferentes tipos de afasia a partir de amostras de fala.</div>
-          </div>
-          <div class="mod-card" onclick="showPanel('pesquisas')">
-            <div class="mc-status ms-live">Ativo</div>
-            <div class="mc-tag">07 · Referência</div>
-            <div class="mc-icon">📚</div>
-            <div class="mc-title">Banco de Pesquisas Históricas</div>
-            <div class="mc-desc">Descobertas esquecidas de 1854 a 2026 com aplicação clínica documentada.</div>
-          </div>
-          <div class="mod-card" onclick="showPanel('consulta')">
-            <div class="mc-status ms-ai">IA</div>
-            <div class="mc-tag">08 · IA</div>
-            <div class="mc-icon">🤖</div>
-            <div class="mc-title">Consulta IA Clínica</div>
-            <div class="mc-desc">Suporte de decisão baseado em evidência para diagnóstico diferencial e conduta.</div>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- /main -->
-
-    <!-- ─ RIGHT SIDEBAR ─ -->
-    <div class="sidebar-r">
-      <div class="sr-tab-row">
-        <button class="sr-tab active" onclick="showSrTab('info',this)">Info</button>
-        <button class="sr-tab" onclick="showSrTab('refs',this)">Refs</button>
-        <button class="sr-tab" onclick="showSrTab('stats',this)">Stats</button>
-      </div>
-
-      <div class="sr-content" id="sr-info">
-        <div class="info-block">
-          <div class="ib-header">
-            <div class="ib-title">Contexto ativo</div>
-            <div class="ib-badge ms-ai">IA</div>
-          </div>
-          <div class="ib-body">
-            <div id="sr-ctx-name" style="font-size:12px;color:var(--text);margin-bottom:4px;font-weight:500;">Fala Infantilizada</div>
-            <div id="sr-ctx-desc" style="font-size:11px;color:var(--text3);line-height:1.6;">Detecta patronizing speech, elderspeak e condescending communication em qualquer texto adulto.</div>
-          </div>
-        </div>
-        <div class="info-block">
-          <div class="ib-header"><div class="ib-title">Referência rápida</div></div>
-          <div class="ib-body">
-            <div class="stat-row"><span class="sr-lbl">Kemper 1994</span><span class="sr-val">Elderspeak</span></div>
-            <div class="stat-row"><span class="sr-lbl">Ryan 1986</span><span class="sr-val">Predicament</span></div>
-            <div class="stat-row"><span class="sr-lbl">Williams 2003</span><span class="sr-val">84% ILPI</span></div>
-            <div class="stat-row"><span class="sr-lbl">Williams 2004</span><span class="sr-val">−58% treino</span></div>
-          </div>
-        </div>
-        <div class="info-block">
-          <div class="ib-header"><div class="ib-title">Importante</div></div>
-          <div class="ib-body">
-            <div style="font-size:11px;color:var(--text3);line-height:1.7;">
-              A IA analisa apenas o que está no texto.<br>
-              <strong style="color:var(--amber);">Não inventa dados.</strong><br>
-              Se o texto for insuficiente, o resultado dirá isso.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="sr-content" id="sr-refs" style="display:none;">
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px;">Referências rápidas</div>
-        <div id="refs-list"></div>
-      </div>
-
-      <div class="sr-content" id="sr-stats" style="display:none;">
-        <div class="info-block">
-          <div class="ib-header"><div class="ib-title">Sessão atual</div></div>
-          <div class="ib-body">
-            <div class="stat-row"><span class="sr-lbl">Análises</span><span class="sr-val" id="stat-analyses">0</span></div>
-            <div class="stat-row"><span class="sr-lbl">Consultas IA</span><span class="sr-val" id="stat-consults">0</span></div>
-            <div class="stat-row"><span class="sr-lbl">Último score</span><span class="sr-val" id="stat-last-score">—</span></div>
-          </div>
-        </div>
-        <div class="info-block">
-          <div class="ib-header"><div class="ib-title">Prevalência (evidência)</div></div>
-          <div class="ib-body">
-            <div class="stat-row"><span class="sr-lbl">Elderspeak ILPI</span><span class="sr-val hi">84%</span></div>
-            <div class="stat-row"><span class="sr-lbl">Disfagia pós-AVC</span><span class="sr-val hi">65–78%</span></div>
-            <div class="stat-row"><span class="sr-lbl">Disfonia funcional</span><span class="sr-val hi">~40% disfonias</span></div>
-            <div class="stat-row"><span class="sr-lbl">Gagueira (pop.)</span><span class="sr-val ok">~1%</span></div>
-            <div class="stat-row"><span class="sr-lbl">Afasia pós-AVC</span><span class="sr-val hi">~30%</span></div>
-          </div>
+        <div class="grav-footer">
+          <button class="btn" onclick="sendToAz()">→ Enviar ao Analisador</button>
         </div>
       </div>
     </div>
+    <div class="grav-r">
+      <div class="az-rhd">Análise da fala gravada</div>
+      <div class="res" id="grav-res">
+        <div class="r-empty"><div class="r-empty-ico">🎤</div><div class="r-empty-msg">Grave e clique em "Analisar com IA"</div></div>
+      </div>
+    </div>
+  </div>
+</div>
 
-  </div><!-- /workspace -->
-</div><!-- /shell -->
+<!-- LEITURA CRONOMETRADA -->
+<div class="panel" id="p-leitura">
+  <div class="ph">
+    <div><div class="ph-ttl">Leitura Cronometrada</div><div class="ph-sub">Paciente lê em voz alta · sistema transcreve e compara · identifica erros</div></div>
+    <div class="ph-r">
+      <button class="btn" id="leit-start-btn" onclick="toggleLeit()">🎤 Iniciar</button>
+      <button class="btn" id="leit-reset-btn" onclick="resetLeit()" style="display:none">↺ Reiniciar</button>
+    </div>
+  </div>
+  <div class="leit-wrap">
+    <div class="leit-l">
+      <div style="padding:10px 10px 6px;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--t3)">Selecione o texto</div>
+      <div class="text-list" id="text-list"></div>
+    </div>
+    <div class="leit-r">
+      <div class="reading-ctrl">
+        <div class="timer" id="leit-timer">00:00</div>
+        <div class="prog"><div class="prog-fill" id="leit-prog"></div></div>
+        <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--t3)" id="leit-wpm">— PPM</div>
+        <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--t2)" id="leit-status">Selecione um texto para começar</div>
+      </div>
+      <div class="reading-body">
+        <div class="reading-txt" id="reading-txt">
+          <span style="color:var(--t3);font-family:'Space Mono',monospace;font-size:12px">← Selecione um texto ao lado para começar</span>
+        </div>
+      </div>
+      <div class="reading-result" id="reading-result" style="display:none">
+        <div class="rr-grid" id="rr-grid"></div>
+        <button class="btn pri" onclick="analyzeReading()">Analisar com IA</button>
+        <div id="rr-ai-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
 
-<!-- MODAL -->
-<div class="modal-ov" id="modal" style="display:none" onclick="if(event.target===this)closeModal()">
+<!-- PESQUISAS -->
+<div class="panel" id="p-pesquisas">
+  <div class="ph"><div><div class="ph-ttl">Pesquisas Históricas</div><div class="ph-sub">Descobertas esquecidas com aplicação clínica real · 1854–2026</div></div></div>
+  <div class="re-wrap">
+    <div class="refb" id="refb"></div>
+    <div class="re-inner">
+      <div class="renav" id="renav"></div>
+      <div class="redet" id="redet"><div class="re-emp">Selecione uma pesquisa ao lado</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CONSULTA IA -->
+<div class="panel" id="p-consulta">
+  <div class="ph"><div><div class="ph-ttl">Consulta IA Clínica</div><div class="ph-sub">170 anos de pesquisa fonoaudiológica · PT-BR · Gemini</div></div></div>
+  <div class="ci">
+    <div class="ci-top">
+      <div class="ci-row">
+        <textarea class="cita" id="cita" rows="2" placeholder="Ex: Paciente 68 anos, rouquidão há 3 meses, fumante — hipóteses e conduta?" onkeydown="if(event.ctrlKey&&event.key==='Enter')runCI()"></textarea>
+        <button class="ci-send" id="cisend" onclick="runCI()">Enviar</button>
+      </div>
+      <div class="modes">
+        <button class="mc on" id="mc-c" onclick="setM('c',this)">Protocolo clínico</button>
+        <button class="mc" id="mc-h" onclick="setM('h',this)">Histórico / pesquisa</button>
+        <button class="mc" id="mc-b" onclick="setM('b',this)">Lacunas no Brasil</button>
+      </div>
+      <div class="chips">
+        <button class="chip" onclick="askCI('Presbifonia — critérios, conduta, terapia vs. cirurgia?')">Presbifonia</button>
+        <button class="chip" onclick="askCI('Diferenciar disfonia funcional de organofuncional na anamnese?')">Disfonia funcional</button>
+        <button class="chip" onclick="askCI('Triagem de disfagia pós-AVC — alertas e indicação de FEES?')">Disfagia pós-AVC</button>
+        <button class="chip" onclick="askCI('Gagueira adulto: fluency shaping vs. stuttering modification?')">Gagueira adulto</button>
+        <button class="chip" onclick="askCI('Afasia de Broca vs. Wernicke à beira do leito?')">Afasia beira leito</button>
+        <button class="chip" onclick="askCI('Método Mastigado de Froeschels 1924 — protocolo e indicações?')">Froeschels 1924</button>
+        <button class="chip" onclick="askCI('Schuell 1964 para afasias severas em platô — como aplicar hoje?')">Schuell 1964</button>
+        <button class="chip" onclick="askCI('Treinar equipe de ILPI para reduzir elderspeak — Williams 2004?')">Treino ILPI</button>
+        <button class="chip" onclick="askCI('Quais pesquisas históricas de fono foram esquecidas e têm aplicação hoje?')">Pesquisas esquecidas</button>
+        <button class="chip" onclick="askCI('Lacunas de pesquisa em fonoaudiologia no Brasil em 2026?')">Lacunas Brasil</button>
+      </div>
+    </div>
+    <div class="ci-out" id="ciout"><div class="co-ph"><div class="co-ph-t">◈ Aguardando consulta</div><div class="co-ph-s">Ctrl+Enter para enviar · Escolha o modo acima</div></div></div>
+  </div>
+</div>
+
+<!-- MÓDULOS -->
+<div class="panel" id="p-modulos">
+  <div class="ph"><div><div class="ph-ttl">Módulos Clínicos</div><div class="ph-sub">Todas as ferramentas disponíveis</div></div></div>
+  <div class="mod-grid">
+    <div class="mc-card" onclick="goP2('analisador','infantil')"><div class="mc-tag">01 · Texto</div><div class="mc-ico">🗣</div><div class="mc-ttl">Fala Infantilizada</div><div class="mc-desc">Detecta patronizing speech e elderspeak. Score 0–100 com reformulação sugerida.</div><span class="mc-bdg">Kemper 1994 · Ryan 1986</span></div>
+    <div class="mc-card" onclick="goP2('analisador','voz')"><div class="mc-tag">02 · Texto</div><div class="mc-ico">🎙</div><div class="mc-ttl">Padrão Vocal</div><div class="mc-desc">Hipóteses diagnósticas vocais com probabilidade e conduta a partir de relato.</div><span class="mc-bdg">GRBAS · Froeschels 1924</span></div>
+    <div class="mc-card" onclick="goP2('analisador','fluencia')"><div class="mc-tag">03 · Texto</div><div class="mc-ico">💬</div><div class="mc-ttl">Fluência</div><div class="mc-desc">Tipifica e conta disfluências gagas vs. comuns em transcrição marcada.</div><span class="mc-bdg">Van Riper · Guitar 2006</span></div>
+    <div class="mc-card" onclick="goP2('analisador','linguagem')"><div class="mc-tag">04 · Texto</div><div class="mc-ico">📝</div><div class="mc-ttl">Linguagem</div><div class="mc-desc">Complexidade sintática, coerência e padrões como agramatismo e perseveração.</div><span class="mc-bdg">Luria 1947</span></div>
+    <div class="mc-card" onclick="goP2('analisador','degluticao')"><div class="mc-tag">05 · Texto</div><div class="mc-ico">🍽</div><div class="mc-ttl">Triagem de Disfagia</div><div class="mc-desc">Estratifica risco de aspiração e urgência de encaminhamento por relato.</div><span class="mc-bdg">Logemann · Pommerenke 1948</span></div>
+    <div class="mc-card" onclick="goP2('analisador','afasia')"><div class="mc-tag">06 · Texto</div><div class="mc-ico">🧠</div><div class="mc-ttl">Afasia / Neuro</div><div class="mc-desc">Hipóteses de tipo de afasia em amostras de fala. Indica BDAE/WAB.</div><span class="mc-bdg">Schuell 1964 · Luria 1947</span></div>
+    <div class="mc-card" onclick="goP2('gravacao')"><div class="mc-tag">07 · Voz ao vivo</div><div class="mc-ico">🎤</div><div class="mc-ttl">Gravação de Voz</div><div class="mc-desc">Grava a fala do paciente com transcrição em tempo real e análise com IA.</div><span class="mc-bdg">Web Speech API · PT-BR</span></div>
+    <div class="mc-card" onclick="goP2('leitura')"><div class="mc-tag">08 · Voz ao vivo</div><div class="mc-ico">⏱</div><div class="mc-ttl">Leitura Cronometrada</div><div class="mc-desc">6 textos com cronômetro — grava, transcreve, marca erros de leitura e calcula PPM.</div><span class="mc-bdg">Web Speech API · PPM · IA</span></div>
+    <div class="mc-card" onclick="goP2('pesquisas')"><div class="mc-tag">09 · Referência</div><div class="mc-ico">📚</div><div class="mc-ttl">Banco Histórico</div><div class="mc-desc">12 pesquisas esquecidas de 1854 a 2026 com aplicação clínica documentada.</div><span class="mc-bdg">12 pesquisas · todas as áreas</span></div>
+    <div class="mc-card" onclick="goP2('consulta')"><div class="mc-tag">10 · IA</div><div class="mc-ico">🤖</div><div class="mc-ttl">Consulta IA Clínica</div><div class="mc-desc">Suporte de decisão com 170 anos de pesquisa. 3 modos: clínico, histórico, Brasil.</div><span class="mc-bdg">Gemini · PT-BR</span></div>
+  </div>
+</div>
+
+</div></div></div>
+
+<!-- MODAL CHAVE -->
+<div class="ov" id="modal" style="display:none" onclick="if(event.target===this)closeModal()">
   <div class="modal">
-    <div class="modal-title">Configurar Chave Gemini AI</div>
-    <div class="modal-sub">Necessário para todas as funções de IA. Chave gratuita do Google AI Studio.</div>
-    <div class="modal-steps">
-      1 → <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a><br>
+    <div class="m-ttl">Chave Gemini AI</div>
+    <div class="m-sub">Gratuita · 1.500 consultas/dia · Necessária para análise com IA</div>
+    <div class="m-steps">
+      1 → Acesse <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a><br>
       2 → Login com conta Google<br>
       3 → Clique em <strong>"Create API Key"</strong><br>
-      4 → Cole a chave abaixo (começa com <strong>AIza…</strong>)
+      4 → Cole abaixo (começa com <strong>AIza…</strong>)
     </div>
-    <div class="kinp-row">
-      <input type="password" class="kinp" id="kinp" placeholder="AIzaSy…" autocomplete="off">
-      <button class="keye" onclick="document.getElementById('kinp').type=document.getElementById('kinp').type==='password'?'text':'password'">👁</button>
+    <div class="kirow">
+      <input type="password" class="ki" id="ki" placeholder="AIzaSy…" autocomplete="off">
+      <button class="eye" onclick="document.getElementById('ki').type=document.getElementById('ki').type==='password'?'text':'password'">👁</button>
     </div>
-    <div class="modal-note">
-      🔒 <strong>Salva só no navegador</strong> — não é enviada a terceiros<br>
-      🆓 <strong>Gratuita</strong> — 1.500 consultas/dia<br>
-      🗑 Para apagar: localStorage.removeItem no console do navegador
+    <div class="m-note">
+      🔒 <strong>Salva só no navegador</strong> — não enviada a terceiros<br>
+      🆓 <strong>Gratuita</strong> — 15 req/min, 1.500/dia<br>
+      🗑 Apagar: F12 → Console → <code>localStorage.clear()</code>
     </div>
-    <div class="modal-btns">
-      <button class="mbtn-s" onclick="saveKey()">Salvar e Ativar</button>
-      <button class="mbtn-c" onclick="closeModal()">Cancelar</button>
+    <div class="m-btns">
+      <button class="m-ok" onclick="saveKey()">Salvar e ativar</button>
+      <button class="m-cancel" onclick="closeModal()">Cancelar</button>
     </div>
   </div>
 </div>
@@ -1054,123 +537,550 @@ body{
 <script>
 'use strict';
 
-/* ─── CLOCK ─── */
-function tick(){
-  const n=new Date();
-  document.getElementById('clock').textContent=
-    String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
+/* ── NAV ── */
+function goP(tab){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  tab.classList.add('on');
+  document.getElementById('p-'+tab.dataset.p).classList.add('on');
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
 }
-tick();setInterval(tick,1000);
-
-/* ─── SESSION STATS ─── */
-let sessionStats={analyses:0,consults:0,lastScore:'—'};
-function updateStats(){
-  document.getElementById('stat-analyses').textContent=sessionStats.analyses;
-  document.getElementById('stat-consults').textContent=sessionStats.consults;
-  document.getElementById('stat-last-score').textContent=sessionStats.lastScore;
+function goP2(p,c){
+  const t=document.querySelector('.tab[data-p="'+p+'"]');
+  if(t)goP(t);
+  if(c){const ct=document.querySelector('.ct[data-c="'+c+'"]');if(ct)setC(ct);}
 }
 
-/* ─── NAVIGATION ─── */
-function showPanel(name){
-  document.querySelectorAll('.panel-content').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tb-tab').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.sl-item').forEach(b=>b.classList.remove('active'));
-  const p=document.getElementById('panel-'+name);
-  const t=document.getElementById('tab-'+name);
-  if(p)p.classList.add('active');
-  if(t)t.classList.add('active');
-}
-function setSub(name){
-  // also switch ctx tab
-  const tab=document.querySelector(`.ctx-tab[data-ctx="${name}"]`);
-  if(tab)tab.click();
-}
-function showSrTab(name,btn){
-  document.querySelectorAll('.sr-content').forEach(c=>c.style.display='none');
-  document.querySelectorAll('.sr-tab').forEach(b=>b.classList.remove('active'));
-  document.getElementById('sr-'+name).style.display='block';
-  btn.classList.add('active');
-}
-
-/* ─── API KEY ─── */
-const KS='phonobase_cli_2026';
-const getKey=()=>localStorage.getItem(KS)||'';
-function openModal(){
-  document.getElementById('kinp').value=getKey();
-  document.getElementById('kinp').type='password';
-  document.getElementById('modal').style.display='flex';
-  setTimeout(()=>document.getElementById('kinp').focus(),80);
-}
+/* ── KEY ── */
+const KID='phono26';
+const gk=()=>localStorage.getItem(KID)||'';
+function openModal(){document.getElementById('ki').value=gk();document.getElementById('ki').type='password';document.getElementById('modal').style.display='flex';setTimeout(()=>document.getElementById('ki').focus(),60);}
 function closeModal(){document.getElementById('modal').style.display='none';}
-document.getElementById('kinp').addEventListener('keydown',e=>{if(e.key==='Enter')saveKey();});
+document.getElementById('ki').addEventListener('keydown',e=>{if(e.key==='Enter')saveKey();});
 function saveKey(){
-  const k=document.getElementById('kinp').value.trim();
-  if(!k){alert('Insira a chave.');return;}
+  const k=document.getElementById('ki').value.trim();
+  if(!k){alert('Cole a chave.');return;}
   if(!k.startsWith('AIza')){alert('Chave inválida — deve começar com AIza');return;}
-  localStorage.setItem(KS,k);updateKeyUI();closeModal();
+  localStorage.setItem(KID,k);updK();closeModal();
 }
-function updateKeyUI(){
-  const k=getKey();
-  const ki=document.getElementById('ki');
-  const kd=document.getElementById('ki-dot');
-  const kt=document.getElementById('ki-txt');
-  if(k){
-    ki.className='key-indicator on';
-    kd.className='kdot kdot-on';
-    kt.textContent='IA · '+k.slice(0,8)+'…';
-  } else {
-    ki.className='key-indicator off';
-    kd.className='kdot kdot-off';
-    kt.textContent='Ativar IA';
-  }
+function updK(){
+  const k=gk(),kb=document.getElementById('kb'),kd=document.getElementById('kd'),kt=document.getElementById('kt');
+  if(k){kb.className='kbtn on';kd.className='dot dot-on';kt.textContent='IA: '+k.slice(0,8)+'…';}
+  else{kb.className='kbtn';kd.className='dot dot-off';kt.textContent='Ativar IA';}
 }
-updateKeyUI();
-
+updK();
 
 /* ── GEMINI ── */
-async function callGemini(prompt){
-  const key=getKey();
+async function callAI(prompt){
+  const key=gk();
   if(!key){openModal();return null;}
-  const MODELS=['gemini-1.5-flash','gemini-2.0-flash'];
-  for(const model of MODELS){
-    let resp,body;
+  for(const model of['gemini-1.5-flash','gemini-2.0-flash']){
+    let r,b;
     try{
-      resp=await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
-        {method:'POST',headers:{'Content-Type':'application/json'},
-         body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:750,temperature:0.25}})}
-      );
-      body=await resp.json().catch(()=>({}));
+      r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+key,{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:700,temperature:0.2}})
+      });
+      b=await r.json().catch(()=>({}));
     }catch(e){continue;}
-    if(!resp.ok){
-      const code=resp.status;
-      const msg=(body?.error?.message||'').slice(0,200);
-      if(code===400)return{err:true,msg:`Chave inválida (400): ${msg}\n\nGere uma nova em aistudio.google.com/apikey`};
-      if(code===403){continue;}
-      if(code===429){
-        if(model===MODELS[MODELS.length-1])
-          return{err:true,msg:`Cota esgotada (429): ${msg||'Aguarde ~1 minuto. Limite gratuito: 15 req/min.'}`};
-        continue;
-      }
-      if(code>=500){continue;}
-      return{err:true,msg:`Erro ${code}: ${msg}`};
+    if(!r.ok){
+      const s=r.status,m=(b?.error?.message||'').slice(0,200);
+      if(s===400)return{e:true,m:'Chave inválida (400)\n'+m+'\n\nGere nova em aistudio.google.com/apikey'};
+      if(s===403){continue;}
+      if(s===429){if(model==='gemini-2.0-flash')return{e:true,m:'Cota esgotada (429)\n'+(m||'Aguarde ~1 min. Limite gratuito: 15 req/min.')};continue;}
+      if(s>=500){continue;}
+      return{e:true,m:'Erro '+s+': '+m};
     }
-    const fin=body?.candidates?.[0]?.finishReason;
-    if(fin==='SAFETY')return{err:true,msg:'Conteúdo bloqueado pelos filtros do Google.'};
-    if(fin==='MAX_TOKENS')return{err:true,msg:'Resposta cortada — use um texto menor.'};
-    const text=body?.candidates?.[0]?.content?.parts?.[0]?.text||'';
-    if(text)return{err:false,text};
+    const fin=b?.candidates?.[0]?.finishReason;
+    if(fin==='SAFETY')return{e:true,m:'Conteúdo bloqueado pelo Google.'};
+    if(fin==='MAX_TOKENS')return{e:true,m:'Resposta cortada — use texto menor.'};
+    const txt=b?.candidates?.[0]?.content?.parts?.[0]?.text||'';
+    if(txt)return{e:false,t:txt};
   }
-  return{err:true,msg:'Sem resposta. Verifique conexão e tente novamente.'};
+  return{e:true,m:'Sem resposta. Verifique conexão.'};
 }
-function parseJSON(raw){
+function pJSON(raw){
   const c=raw.replace(/^```(?:json)?\s*/,'').replace(/\s*```\s*$/,'').trim();
-  try{return{ok:true,data:JSON.parse(c)};}catch(e){return{ok:false,raw};}
+  try{return{ok:true,d:JSON.parse(c)};}catch(_){return{ok:false,raw};}
+}
+function notify(msg){
+  const n=document.createElement('div');n.className='notif';n.textContent=msg;
+  document.body.appendChild(n);setTimeout(()=>n.remove(),3000);
 }
 
-/* INIT */
-showPanel('analisador');
-document.getElementById('mode-clinica').classList.add('primary');
+/* ── RENDER HELPERS ── */
+function rB(lbl,col,inner){return'<div class="rb"><div class="rblbl"><span class="rbdot" style="background:'+col+'"></span>'+lbl+'</div>'+inner+'</div>';}
+function rL(arr,cls){
+  if(!arr||!arr.length)return'<span style="color:var(--grn);font-size:11px;">Nenhum identificado</span>';
+  return arr.map(i=>'<div class="ri '+(cls||'')+'">'+(typeof i==='object'?JSON.stringify(i):String(i))+'</div>').join('');
+}
+function rT(v){return'<div class="rbtxt">'+String(v||'—')+'</div>';}
+
+function renderRes(data,ctx,elId){
+  const el=document.getElementById(elId||'res');
+  if(!data){el.innerHTML='<div class="r-err">Sem dados.</div>';return;}
+  let h='';
+  if(ctx==='infantil'){
+    const sc=parseInt(data.score)||0;
+    const cc=sc>=70?'hi':sc>=35?'md':sc<=10?'nn':'lo';
+    h='<div class="r-score"><div class="r-sn"><div class="snum '+cc+'">'+sc+'</div><div class="slbl">/ 100</div></div><div class="r-verd"><div class="vl">Diagnóstico linguístico</div><div class="vv '+cc+'">'+(data.verdict||'—')+'</div></div></div>';
+    h+='<div class="r-blocks">';
+    if(data.certezas)h+=rB('✓ Confirmados','var(--blu)',rL(data.certezas,''));
+    if(data.suspeitas)h+=rB('? Suspeitas','var(--amb)',rL(data.suspeitas,'w'));
+    if(data.impacto)h+=rB('Impacto clínico','var(--t3)',rT(data.impacto));
+    if(data.alternativa)h+=rB('✎ Reformulação','var(--grn)','<div class="r-alt">"'+data.alternativa+'"</div>');
+    if(data.limitacao)h+=rB('⚑ Limitação','var(--t3)',rT(data.limitacao));
+    h+='</div>';
+  }else if(ctx==='voz'){
+    h='<div class="r-blocks">';
+    if(data.dados?.length)h+=rB('✓ Dados no relato','var(--blu)',rL(data.dados,''));
+    if(data.hipoteses?.length){const hh=data.hipoteses.map(hp=>'<div class="hipo"><div class="hipo-n">'+(hp.nome||String(hp))+'</div><span class="hipo-p p'+(hp.prob?hp.prob[0].toLowerCase():'b')+'">'+(hp.prob||'')+'</span><div class="hipo-j">'+(hp.just||'')+'</div></div>').join('');h+=rB('Hipóteses','var(--amb)',hh);}
+    if(data.alertas?.length)h+=rB('🚨 Alertas','var(--red)',rL(data.alertas,'d'));
+    if(data.ausentes?.length)h+=rB('⚠ Dados ausentes','var(--t2)',rL(data.ausentes,'w'));
+    if(data.conduta)h+=rB('Conduta','var(--t3)',rT(data.conduta));
+    if(data.limitacao)h+=rB('⚑ Limitação','var(--t3)',rT(data.limitacao));
+    h+='</div>';
+  }else if(ctx==='fluencia'){
+    h='<div class="r-blocks">';
+    const all=[...(data.gagas||[]),...(data.comuns||[])];
+    if(all.length)h+=rB('Disfluências','var(--blu)',all.map(d=>'<div class="ri">'+(d.tipo||String(d))+' ('+(d.n||0)+'×)'+(d.ex?.length?' — '+d.ex.join(', '):'')+'</div>').join(''));
+    if(data.total_g!==undefined)h+=rB('Contagem','var(--t3)','<div class="rbtxt">Gagas: <strong>'+data.total_g+'</strong> · Comuns: <strong>'+data.total_c+'</strong></div>');
+    if(data.suspeita)h+=rB('Suspeita','var(--amb)',rT(data.suspeita+(data.just?' — '+data.just:'')));
+    if(data.limitacao)h+=rB('⚑ Limitação','var(--t3)',rT(data.limitacao));
+    h+='</div>';
+  }else if(ctx==='linguagem'){
+    h='<div class="r-blocks">';
+    if(data.sint)h+=rB('Complexidade sintática','var(--t3)',rT(data.sint));
+    if(data.coesao)h+=rB('Coesão','var(--t3)',rT(data.coesao));
+    if(data.coerencia)h+=rB('Coerência','var(--t3)',rT(data.coerencia));
+    if(data.lexical)h+=rB('Diversidade lexical','var(--t3)',rT(data.lexical));
+    if(data.alterados?.length)h+=rB('Padrões alterados','var(--red)',rL(data.alterados,'d'));
+    if(data.nivel)h+=rB('Nível','var(--t3)',rT(data.nivel));
+    if(data.hipoteses?.length)h+=rB('Hipóteses','var(--amb)',rL(data.hipoteses,'w'));
+    if(data.amostra)h+=rB('Amostra','var(--t3)',rT(data.amostra));
+    if(data.limitacao)h+=rB('⚑ Limitação','var(--t3)',rT(data.limitacao));
+    h+='</div>';
+  }else if(ctx==='degluticao'){
+    h='<div class="r-blocks">';
+    if(data.sinais?.length)h+=rB('✓ Sinais','var(--blu)',rL(data.sinais,''));
+    if(data.alertas?.length)h+=rB('🚨 Alertas','var(--red)',rL(data.alertas,'d'));
+    if(data.fase?.length)h+=rB('Fase suspeita','var(--amb)',rL(data.fase,'w'));
+    if(data.risco){const rc=data.risco.includes('Alto')?'a':data.risco.includes('od')?'m':'b';h+=rB('Risco','var(--t3)','<span class="badge b'+rc+'">'+data.risco+'</span>');}
+    if(data.urgencia){const uc=data.urgencia.includes('Urgente')?'a':data.urgencia.includes('Prior')?'m':'b';h+=rB('Urgência','var(--t3)','<span class="badge b'+uc+'">'+data.urgencia+'</span>');}
+    if(data.avaliacao)h+=rB('Avaliação','var(--t3)',rT(data.avaliacao));
+    if(data.ausentes?.length)h+=rB('Dados ausentes','var(--t2)',rL(data.ausentes,''));
+    if(data.limitacao)h+=rB('⚑ Limitação','var(--t3)',rT(data.limitacao));
+    h+='</div>';
+  }else if(ctx==='afasia'){
+    h='<div class="r-blocks">';
+    if(data.fluencia)h+=rB('Fluência aparente','var(--t3)',rT(data.fluencia));
+    const pf=[...(data.par_fon||[]),...(data.par_sem||[]),...(data.neolog||[])];
+    h+=rB('Parafasias','var(--amb)',pf.length?rL(pf,'w'):'<span style="color:var(--grn);font-size:11px;">Nenhuma identificada</span>');
+    if(data.agramatismo)h+=rB('Agramatismo','var(--t3)',rT(data.agramatismo));
+    if(data.anomia)h+=rB('Anomia','var(--t3)',rT(data.anomia));
+    if(data.hipoteses?.length){const hh=data.hipoteses.map(hp=>'<div class="hipo"><div class="hipo-n">'+(hp.tipo||String(hp))+'</div><span class="hipo-p p'+(hp.compat?hp.compat[0].toLowerCase():'b')+'">'+(hp.compat||'')+'</span><div class="hipo-j">'+(hp.just||'')+'</div></div>').join('');h+=rB('Hipóteses de afasia','var(--amb)',hh);}
+    if(data.avaliacao)h+=rB('Avaliação formal','var(--t3)',rT(data.avaliacao));
+    if(data.amostra)h+=rB('Adequação da amostra','var(--t3)',rT(data.amostra));
+    if(data.limitacao)h+=rB('⚑ Limitação','var(--t3)',rT(data.limitacao));
+    h+='</div>';
+  }else{
+    h='<div class="r-blocks">'+rB('Resultado','var(--blu)','<div class="rbtxt" style="white-space:pre-wrap">'+JSON.stringify(data,null,2)+'</div>')+'</div>';
+  }
+  el.innerHTML=h||'<div class="r-err">Nenhum campo reconhecido.</div>';
+}
+
+/* ── ANALISADOR ── */
+const CTX={
+  infantil:{sub:'Fala Infantilizada — detecta patronizing speech e elderspeak',ph:'Cole a transcrição da fala do cuidador, colega ou familiar dirigida a um adulto…',ex:['Vovozinha, a gente vai tomar o remedinho agora, tá bem?','Deixa eu te explicar devagarzinho, fica tranquilo.','Que bonitinho! Você conseguiu! Que orgulho do papai!'],p:t=>'Analise o texto quanto a fala infantilizada dirigida a adultos.\nMarcadores: diminutivos excessivos, superendereçamento afetivo não solicitado, negação de agência, elogio para ações básicas, simplificação desnecessária.\nUSE SOMENTE o texto. Score baixo (0-15) se não houver marcadores claros.\nTexto: "'+t+'"\nJSON sem markdown:\n{"score":0,"verdict":"Sem marcadores|Traços leves|Moderado|Severo","certezas":[],"suspeitas":[],"impacto":"","alternativa":"","limitacao":""}'},
+  voz:{sub:'Padrão Vocal — hipóteses a partir de relato de sintomas',ph:'Cole o relato do paciente sobre sintomas vocais ou transcrição de anamnese…',ex:['Minha voz cansa no fim do dia, fico rouco depois de dar aula.','Tenho voz esganiçada que não consigo abaixar, há 2 anos.','Desde a tireoidectomia minha voz mudou, fica falhando.'],p:t=>'Analise este relato de sintomas vocais. USE SOMENTE o que está descrito. Levante hipóteses, não diagnóstico.\nConsidere: disfonia hiperfuncional, DTM, nódulos, pólipo, paralisia de prega vocal, edema de Reinke, presbifonia, refluxo laringofaríngeo.\nRelato: "'+t+'"\nJSON sem markdown:\n{"dados":[],"hipoteses":[{"nome":"","prob":"alta|moderada|baixa","just":""}],"alertas":[],"ausentes":[],"conduta":"","limitacao":""}'},
+  fluencia:{sub:'Análise de Fluência — tipifica disfluências em transcrição',ph:'Cole transcrição marcada. Ex: Eu- eu- eu quero f-f-falar [bloqueio 2s] com você…',ex:['Eu- eu quero f-f-falar com você sobre o tr-trabalho.','Então eu... [pausa longa] estava dizendo que ele ele foi embora.','A- a- a minha mãe disse p-para eu... [bloqueio] ir lá.'],p:t=>'Tipifique as disfluências. GAGAS: repetição de som/sílaba, prolongamento, bloqueio, revisão por tensão. COMUNS: hesitação, repetição de palavra inteira, revisão por formulação.\nTranscrição: "'+t+'"\nJSON sem markdown:\n{"gagas":[{"tipo":"","n":0,"ex":[]}],"comuns":[{"tipo":"","n":0,"ex":[]}],"total_g":0,"total_c":0,"suspeita":"Gagueira|Disfluência comum|Inconclusivo","just":"","limitacao":""}'},
+  linguagem:{sub:'Análise de Linguagem — complexidade sintática, coerência e padrões alterados',ph:'Cole amostra de fala espontânea, redação ou narração do paciente…',ex:['O homem foi na casa dele e depois ele foi lá e depois voltou.','Hoje fui ao médico. O médico é bom. Eu gosto do médico.','Então tipo... a gente foi lá né... e aí aconteceu aquilo sabe?'],p:t=>'Analise padrões linguísticos. USE SOMENTE o texto fornecido.\nAvalie: complexidade sintática, coesão, coerência, diversidade lexical, padrões alterados (perseveração, agramatismo, neologismo, tangencialidade).\nTexto: "'+t+'"\nJSON sem markdown:\n{"sint":"","coesao":"","coerencia":"","lexical":"","alterados":[],"nivel":"","hipoteses":[],"amostra":"adequada|insuficiente","limitacao":""}'},
+  degluticao:{sub:'Triagem de Disfagia — estratifica risco por relato',ph:'Cole o relato do paciente sobre sintomas de deglutição e alimentação…',ex:['Tenho engasgado com líquidos, fica passando para a garganta errado.','A comida fica parada no meio do caminho, preciso de água.','Depois do derrame parei de engolir direito, emagreci 4kg.'],p:t=>'Triagem de risco de disfagia. NÃO confirma disfagia — estratifica risco.\nAlertas: tosse durante/após deglutição, engasgo com líquidos, pneumonia de repetição, perda de peso, mudança após AVC.\nRelato: "'+t+'"\nJSON sem markdown:\n{"sinais":[],"alertas":[],"fase":[],"risco":"Baixo|Moderado|Alto","urgencia":"Rotina|Prioritário|Urgente","avaliacao":"","ausentes":[],"limitacao":""}'},
+  afasia:{sub:'Afasia / Neurologia — hipóteses de tipo em amostras de fala',ph:'Cole amostra de fala espontânea do paciente neurológico…\nEx: O homem... água... não... cozinha.',ex:['O homem está... a água... não sei falar... mulher.','Eu fui ao... ao lugar das compras... o lugar que tem coisas.','Os paciente são muito bem cuidado pelos enfermeira.'],p:t=>'Hipóteses de afasia. NÃO diagnostica. Se amostra curta, diga.\nTipos: Broca (não fluente, agramatismo), Wernicke (fluente, parafasias), Global, Anomia, Condução, Apraxia.\nAmostra: "'+t+'"\nJSON sem markdown:\n{"fluencia":"Fluente|Não fluente|Inconclusivo","par_fon":[],"par_sem":[],"neolog":[],"agramatismo":"","anomia":"","hipoteses":[{"tipo":"","compat":"alta|moderada","just":""}],"avaliacao":"","amostra":"","limitacao":""}'}
+};
+let curC='infantil';
+function setC(btn){document.querySelectorAll('.ct').forEach(b=>b.classList.remove('on'));btn.classList.add('on');curC=btn.dataset.c;applyC(curC);clrRes();}
+function applyC(n){
+  const c=CTX[n];if(!c)return;
+  document.getElementById('az-ta').placeholder=c.ph;
+  document.getElementById('az-sub').textContent=c.sub;
+  document.getElementById('az-exs').innerHTML=c.ex.map((e,i)=>'<button class="ex" onclick="document.getElementById(\'az-ta\').value=this.dataset.v" data-v="'+e.replace(/"/g,'&quot;').replace(/\n/g,' ')+'">Ex.'+(i+1)+'</button>').join('');
+}
+applyC('infantil');
+function clrRes(){document.getElementById('res').innerHTML='<div class="r-empty"><div class="r-empty-ico">◈</div><div class="r-empty-msg">Aguardando análise</div></div>';}
+function clrAz(){document.getElementById('az-ta').value='';clrRes();}
+async function runAz(){
+  const txt=document.getElementById('az-ta').value.trim();
+  if(!txt){alert('Insira o texto.');return;}
+  if(!gk()){openModal();return;}
+  const rb=document.getElementById('runbtn'),rs=document.getElementById('rsp');
+  rb.disabled=true;rs.style.display='block';document.getElementById('rtxt').textContent='Analisando…';
+  document.getElementById('res').innerHTML='<div class="r-load"><div class="spb"></div>Processando…</div>';
+  const res=await callAI(CTX[curC].p(txt));
+  rb.disabled=false;rs.style.display='none';document.getElementById('rtxt').textContent='Analisar';
+  if(!res||res.e){document.getElementById('res').innerHTML='<div class="r-err">'+(res?.m||'Sem resposta.')+'</div>';return;}
+  const p=pJSON(res.t);
+  if(!p.ok){document.getElementById('res').innerHTML='<div class="r-blocks">'+rB('Resposta texto','var(--amb)','<div class="rbtxt" style="white-space:pre-wrap">'+res.t+'</div>')+'</div>';return;}
+  renderRes(p.d,curC,'res');
+}
+
+/* ── GRAVAÇÃO DE VOZ ── */
+let recog=null,isRec=false,recTimer=null,recSecs=0;
+let finalTxt='',interimTxt='',gravCtx='fluencia';
+
+function setGC(btn){document.querySelectorAll('.ctx-chip').forEach(b=>b.classList.remove('on'));btn.classList.add('on');gravCtx=btn.dataset.gc;}
+
+function makeRecog(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR)return null;
+  const r=new SR();
+  r.lang='pt-BR';r.continuous=true;r.interimResults=true;r.maxAlternatives=1;
+  r.onresult=e=>{
+    interimTxt='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal)finalTxt+=e.results[i][0].transcript+' ';
+      else interimTxt+=e.results[i][0].transcript;
+    }
+    updTT();
+    if(finalTxt.trim())document.getElementById('grav-ai-btn').style.display='';
+  };
+  r.onerror=e=>{
+    if(e.error==='not-allowed'){alert('Permissão de microfone negada. Autorize nas configurações do navegador.');stopRec();}
+    if(e.error==='no-speech')return;
+    console.warn('Speech error:',e.error);
+  };
+  r.onend=()=>{if(isRec){try{r.start();}catch(_){}}};
+  return r;
+}
+
+function updTT(){
+  const el=document.getElementById('tt');
+  el.innerHTML=finalTxt.replace(/\n/g,'<br>')+'<span class="tt-interim">'+interimTxt+'</span>';
+  el.scrollTop=el.scrollHeight;
+}
+
+function toggleMic(){if(isRec)stopRec();else startRec();}
+
+function startRec(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){alert('Use Chrome ou Edge para reconhecimento de voz.');return;}
+  recog=makeRecog();
+  if(!recog)return;
+  try{recog.start();}catch(e){alert('Erro ao iniciar microfone: '+e.message);return;}
+  isRec=true;
+  document.getElementById('mic-btn').classList.add('rec');
+  document.getElementById('mic-btn').textContent='⏹';
+  document.getElementById('mic-status').className='mic-status rec';
+  document.getElementById('mic-status').textContent='Gravando…';
+  document.getElementById('mic-timer').className='mic-timer rec';
+  document.querySelectorAll('.wb').forEach(b=>b.classList.add('act'));
+  recSecs=0;
+  recTimer=setInterval(()=>{
+    recSecs++;
+    document.getElementById('mic-timer').textContent=
+      String(Math.floor(recSecs/60)).padStart(2,'0')+':'+String(recSecs%60).padStart(2,'0');
+  },1000);
+}
+
+function stopRec(){
+  if(recog){try{recog.stop();}catch(_){}}
+  recog=null;isRec=false;clearInterval(recTimer);
+  document.getElementById('mic-btn').classList.remove('rec');
+  document.getElementById('mic-btn').textContent='🎤';
+  document.getElementById('mic-status').className='mic-status';
+  document.getElementById('mic-status').textContent='Gravação concluída';
+  document.getElementById('mic-timer').className='mic-timer';
+  document.querySelectorAll('.wb').forEach(b=>b.classList.remove('act'));
+}
+
+function clrGrav(){
+  stopRec();finalTxt='';interimTxt='';
+  document.getElementById('tt').innerHTML='<span style="color:var(--t3);font-style:italic;font-size:13px">A transcrição aparecerá aqui enquanto você fala…</span>';
+  document.getElementById('grav-res').innerHTML='<div class="r-empty"><div class="r-empty-ico">🎤</div><div class="r-empty-msg">Grave e clique em "Analisar com IA"</div></div>';
+  document.getElementById('grav-ai-btn').style.display='none';
+  recSecs=0;document.getElementById('mic-timer').textContent='00:00';
+  document.getElementById('mic-status').textContent='Clique para gravar';
+}
+
+function copyTxt(){
+  if(!finalTxt.trim()){notify('Nada para copiar.');return;}
+  navigator.clipboard.writeText(finalTxt.trim()).then(()=>notify('Transcrição copiada!'));
+}
+
+function sendToAz(){
+  if(!finalTxt.trim()){notify('Grave algo primeiro.');return;}
+  document.getElementById('az-ta').value=finalTxt.trim();
+  const ct=document.querySelector('.ct[data-c="'+gravCtx+'"]');
+  if(ct)setC(ct);
+  goP2('analisador',gravCtx);
+  notify('Enviado ao Analisador!');
+}
+
+async function analyzeGrav(){
+  const txt=finalTxt.trim();
+  if(!txt){notify('Nada para analisar.');return;}
+  if(!gk()){openModal();return;}
+  const btn=document.getElementById('grav-ai-btn');
+  btn.disabled=true;
+  document.getElementById('grav-res').innerHTML='<div class="r-load"><div class="spb"></div>Analisando…</div>';
+  const res=await callAI(CTX[gravCtx].p(txt));
+  btn.disabled=false;
+  if(!res||res.e){document.getElementById('grav-res').innerHTML='<div class="r-err">'+(res?.m||'Sem resposta.')+'</div>';return;}
+  const p=pJSON(res.t);
+  if(!p.ok){document.getElementById('grav-res').innerHTML='<div class="r-blocks">'+rB('Resultado','var(--amb)','<div class="rbtxt" style="white-space:pre-wrap">'+res.t+'</div>')+'</div>';return;}
+  renderRes(p.d,gravCtx,'grav-res');
+}
+
+/* ── LEITURA CRONOMETRADA ── */
+const TEXTOS=[
+  {id:0,title:'O Parque',diff:'f',n:60,alvo:45,ref:'Fluência básica',texto:'O menino correu pelo parque e viu um cachorro brincando com uma bola vermelha. Ele parou e olhou para o animal. O cachorro latiu e abanou o rabo. O menino sorriu e jogou a bola para o cachorro. Os dois brincaram até o sol começar a se pôr no horizonte azul.'},
+  {id:1,title:'A Cidade e o Rio',diff:'f',n:72,alvo:52,ref:'Narrativa simples',texto:'A cidade cresceu ao lado do rio. As pessoas pescavam e lavavam roupas nas suas margens. Com o tempo, fábricas foram construídas e a água ficou escura. Os peixes sumiram e as crianças pararam de nadar. Hoje, um projeto tenta devolver a vida ao rio que um dia foi o coração da cidade.'},
+  {id:2,title:'Fonoaudiologia',diff:'m',n:65,alvo:50,ref:'Vocabulário técnico',texto:'A fonoaudiologia estuda a comunicação humana e seus distúrbios. O profissional avalia, diagnostica e trata alterações da voz, da fala, da linguagem, da audição e da deglutição. A atuação ocorre em hospitais, escolas, clínicas e centros de reabilitação, atendendo pessoas de todas as idades.'},
+  {id:3,title:'O Velho Pescador',diff:'m',n:85,alvo:65,ref:'Prosodia e ritmo',texto:'Era uma vez um velho pescador que saía ao mar todas as manhãs. Certo dia, ao lançar suas redes, sentiu algo pesado preso nas malhas. Com esforço, puxou a rede e encontrou uma garrafa de vidro verde com um papel dentro. A mensagem dizia apenas: continue. O pescador não entendeu o que aquilo significava, mas guardou o papel no bolso. Naquele dia, pescou mais do que nunca.'},
+  {id:4,title:'Texto Científico',diff:'d',n:72,alvo:58,ref:'Terminologia especializada',texto:'A neuroplasticidade é a capacidade do sistema nervoso central de se reorganizar funcionalmente após lesões ou experiências. Alexander Luria demonstrou que regiões encefálicas intactas podem assumir funções de áreas lesadas. Este princípio fundamenta toda a reabilitação neuropsicológica contemporânea e explica como a terapia fonoaudiológica intensiva produz resultados mensuráveis.'},
+  {id:5,title:'Encontros Consonantais',diff:'d',n:78,alvo:68,ref:'Precisão articulatória',texto:'A transição primaveril transformou a planície. Borboletas esvoaçavam entre as flores desabrochadas enquanto o vento fresco trazia o cheiro de terra molhada. As crianças, despreparadas para o frio repentino, correram em busca de agasalhos. A tempestade aproximou-se rapidamente, trazendo trovões e relâmpagos que iluminaram o céu escurecido.'},
+];
+
+let lSel=null,lRecog=null,lIsRec=false,lTimer=null,lSecs=0;
+let lWords=[],lIdx=0,lTranscript='',lStartTime=null;
+
+function buildTextList(){
+  const dlbl={f:'Fácil',m:'Médio',d:'Difícil'};
+  const dcls={f:'df',m:'dm',d:'dd'};
+  document.getElementById('text-list').innerHTML=TEXTOS.map(t=>
+    '<div class="text-item" id="ti'+t.id+'" onclick="selText('+t.id+')">'+
+    '<div class="ti-hd"><div class="ti-ttl">'+t.title+'</div><span class="ti-diff '+dcls[t.diff]+'">'+dlbl[t.diff]+'</span></div>'+
+    '<div class="ti-info">'+t.n+' palavras · ~'+t.alvo+'s · '+t.ref+'</div></div>'
+  ).join('');
+}
+buildTextList();
+
+function selText(id){
+  if(lIsRec)return;
+  document.querySelectorAll('.text-item').forEach(t=>t.classList.remove('on'));
+  document.getElementById('ti'+id).classList.add('on');
+  lSel=TEXTOS.find(t=>t.id===id);
+  resetLeit();
+  renderRdgTxt();
+  document.getElementById('leit-status').textContent='Pronto — clique em "Iniciar"';
+  document.getElementById('leit-start-btn').style.display='';
+  document.getElementById('leit-reset-btn').style.display='none';
+  document.getElementById('reading-result').style.display='none';
+}
+
+function renderRdgTxt(){
+  if(!lSel)return;
+  lWords=lSel.texto.split(/\s+/);
+  document.getElementById('reading-txt').innerHTML=lWords.map((w,i)=>'<span class="w" id="lw'+i+'">'+w+'</span> ').join('');
+}
+
+function toggleLeit(){if(!lSel){notify('Selecione um texto primeiro.');return;}if(lIsRec)stopLeit();else startLeit();}
+
+function startLeit(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){alert('Use Chrome ou Edge para reconhecimento de voz.');return;}
+  lRecog=new SR();
+  lRecog.lang='pt-BR';lRecog.continuous=true;lRecog.interimResults=true;
+  lRecog.onresult=e=>{
+    let interim='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal){lTranscript+=e.results[i][0].transcript+' ';matchWords();}
+      else interim+=e.results[i][0].transcript;
+    }
+    document.getElementById('leit-status').textContent='Ouvindo: "'+interim.slice(-40)+'"';
+    updWPM();
+  };
+  lRecog.onerror=e=>{if(e.error==='not-allowed')alert('Permissão de microfone negada.');if(e.error!=='no-speech')stopLeit();};
+  lRecog.onend=()=>{if(lIsRec)try{lRecog.start();}catch(_){}};
+  try{lRecog.start();}catch(e){alert('Erro ao iniciar microfone.');return;}
+  lIsRec=true;lTranscript='';lIdx=0;lStartTime=Date.now();
+  document.getElementById('leit-start-btn').textContent='⏹ Parar';
+  document.getElementById('leit-start-btn').className='btn danger';
+  document.getElementById('leit-reset-btn').style.display='';
+  document.getElementById('leit-timer').className='timer run';
+  lSecs=0;
+  lTimer=setInterval(()=>{
+    lSecs++;
+    document.getElementById('leit-timer').textContent=
+      String(Math.floor(lSecs/60)).padStart(2,'0')+':'+String(lSecs%60).padStart(2,'0');
+    updProg();
+  },1000);
+}
+
+function stopLeit(){
+  if(lRecog){try{lRecog.stop();}catch(_){}}
+  lRecog=null;lIsRec=false;clearInterval(lTimer);
+  document.getElementById('leit-start-btn').textContent='🎤 Iniciar';
+  document.getElementById('leit-start-btn').className='btn';
+  document.getElementById('leit-timer').className='timer done';
+  document.getElementById('leit-status').textContent='Concluído';
+  showLeitRes();
+}
+
+function norm(s){return s.toLowerCase().replace(/[^a-záàâãéèêíïóôõöúüç]/g,'').trim();}
+
+function levenshtein(a,b){
+  const m=a.length,n=b.length;
+  if(!m)return n;if(!n)return m;
+  const d=[];
+  for(let i=0;i<=m;i++){d[i]=[i];for(let j=1;j<=n;j++)d[i][j]=i===0?j:0;}
+  for(let j=1;j<=n;j++)d[0][j]=j;
+  for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)
+    d[i][j]=a[i-1]===b[j-1]?d[i-1][j-1]:1+Math.min(d[i-1][j],d[i][j-1],d[i-1][j-1]);
+  return d[m][n];
+}
+
+function matchWords(){
+  const spoken=norm(lTranscript).split(/\s+/).filter(w=>w.length>0);
+  // reset classes
+  lWords.forEach((_,i)=>{const el=document.getElementById('lw'+i);if(el)el.className='w';});
+  let si=0;
+  for(let wi=0;wi<lWords.length&&si<spoken.length;wi++){
+    const exp=norm(lWords[wi]);
+    const said=spoken[si]||'';
+    const el=document.getElementById('lw'+wi);
+    if(exp===said||levenshtein(exp,said)<=1){
+      if(el)el.className='w said';si++;lIdx=wi+1;
+    }else if(si<spoken.length-2){
+      if(el)el.className='w err';si++;
+    }
+  }
+  const cur=document.getElementById('lw'+lIdx);
+  if(cur&&cur.className==='w'){cur.className='w cur';try{cur.scrollIntoView({behavior:'smooth',block:'center'});}catch(_){}}
+  updProg();
+  if(lIdx>=lWords.length-1)setTimeout(stopLeit,800);
+}
+
+function updProg(){
+  if(!lSel)return;
+  document.getElementById('leit-prog').style.width=Math.min(100,(lIdx/lWords.length)*100)+'%';
+}
+function updWPM(){
+  if(!lStartTime||!lIdx)return;
+  const m=(Date.now()-lStartTime)/60000;
+  document.getElementById('leit-wpm').textContent=Math.round(lIdx/m)+' PPM';
+}
+
+function showLeitRes(){
+  if(!lSel)return;
+  const said=document.querySelectorAll('.w.said').length;
+  const errs=document.querySelectorAll('.w.err').length;
+  const mins=lSecs/60;
+  const wpm=mins>0?Math.round(said/mins):0;
+  const acc=said+errs>0?Math.round(said/(said+errs)*100):100;
+  const dif=lSecs-lSel.alvo;
+  const wRef=lSel.diff==='f'?[100,150]:lSel.diff==='m'?[80,130]:[60,110];
+  const wC=wpm<wRef[0]?'hi':wpm>wRef[1]?'md':'ok';
+  const aC=acc<85?'hi':acc<95?'md':'ok';
+  document.getElementById('rr-grid').innerHTML=
+    '<div class="rr-stat"><div class="rr-val '+wC+'">'+wpm+'</div><div class="rr-lbl">PPM</div></div>'+
+    '<div class="rr-stat"><div class="rr-val '+aC+'">'+acc+'%</div><div class="rr-lbl">Precisão</div></div>'+
+    '<div class="rr-stat"><div class="rr-val '+(errs>5?'hi':errs>2?'md':'ok')+'">'+errs+'</div><div class="rr-lbl">Erros</div></div>'+
+    '<div class="rr-stat"><div class="rr-val '+(Math.abs(dif)>15?'md':'ok')+'">'+(dif>=0?'+':'')+dif+'s</div><div class="rr-lbl">vs. meta</div></div>';
+  document.getElementById('rr-ai-result').innerHTML='';
+  document.getElementById('reading-result').style.display='';
+}
+
+function resetLeit(){
+  stopLeit();lTranscript='';lIdx=0;lSecs=0;
+  document.getElementById('leit-timer').textContent='00:00';
+  document.getElementById('leit-timer').className='timer';
+  document.getElementById('leit-wpm').textContent='— PPM';
+  document.getElementById('leit-prog').style.width='0%';
+  document.getElementById('reading-result').style.display='none';
+  document.getElementById('leit-reset-btn').style.display='none';
+  document.getElementById('leit-start-btn').textContent='🎤 Iniciar';
+  document.getElementById('leit-start-btn').className='btn';
+  if(lSel)renderRdgTxt();
+}
+
+async function analyzeReading(){
+  if(!lSel||!lTranscript.trim()){notify('Faça a leitura primeiro.');return;}
+  if(!gk()){openModal();return;}
+  const said=document.querySelectorAll('.w.said').length;
+  const errs=document.querySelectorAll('.w.err').length;
+  const errWords=[];lWords.forEach((w,i)=>{const el=document.getElementById('lw'+i);if(el&&el.classList.contains('err'))errWords.push(w);});
+  const mins=lSecs/60;const wpm=mins>0?Math.round(said/mins):0;
+  const acc=said+errs>0?Math.round(said/(said+errs)*100):100;
+  const prompt='Analise esta sessão de leitura cronometrada como fonoaudióloga especialista.\n\nTexto original ('+lSel.n+' palavras, dificuldade '+lSel.diff+', referência: '+lSel.ref+'):\n"'+lSel.texto+'"\n\nTranscrição do paciente:\n"'+lTranscript.trim()+'"\n\nMétricas: velocidade='+wpm+' PPM, precisão='+acc+'%, erros='+errs+', tempo='+lSecs+'s, meta='+lSel.alvo+'s\nPalavras com erro: '+errWords.join(', ')+'\n\nAnalise: padrão de erros (omissão, substituição, adição, inversão, hesitação), velocidade vs. esperada, fluência de leitura, hipóteses clínicas se houver padrões relevantes, recomendações.\n\nJSON sem markdown:\n{"velocidade":"","precisao":"","tipo_erros":[],"padroes":[],"hipoteses":[],"observacoes":"","recomendacoes":""}';
+  const btn=document.querySelector('#reading-result .btn.pri');
+  if(btn)btn.disabled=true;
+  document.getElementById('rr-ai-result').innerHTML='<div class="r-load"><div class="spb"></div>Analisando…</div>';
+  const res=await callAI(prompt);
+  if(btn)btn.disabled=false;
+  if(!res||res.e){document.getElementById('rr-ai-result').innerHTML='<div class="r-err">'+(res?.m||'Sem resposta.')+'</div>';return;}
+  const p=pJSON(res.t);
+  const data=p.ok?p.d:null;
+  if(!data){document.getElementById('rr-ai-result').innerHTML='<div class="r-blocks">'+rB('Resultado','var(--amb)','<div class="rbtxt" style="white-space:pre-wrap">'+res.t+'</div>')+'</div>';return;}
+  let h='<div class="r-blocks" style="margin-top:8px">';
+  if(data.velocidade)h+=rB('Velocidade de leitura','var(--t3)',rT(data.velocidade));
+  if(data.precisao)h+=rB('Precisão','var(--t3)',rT(data.precisao));
+  if(data.tipo_erros?.length)h+=rB('Tipo de erros','var(--red)',rL(data.tipo_erros,'d'));
+  if(data.padroes?.length)h+=rB('Padrões identificados','var(--amb)',rL(data.padroes,'w'));
+  if(data.hipoteses?.length)h+=rB('Hipóteses clínicas','var(--pur)',rL(data.hipoteses,'w'));
+  if(data.observacoes)h+=rB('Observações','var(--t3)',rT(data.observacoes));
+  if(data.recomendacoes)h+=rB('Recomendações','var(--grn)',rT(data.recomendacoes));
+  h+='</div>';
+  document.getElementById('rr-ai-result').innerHTML=h;
+}
+
+/* ── PESQUISAS ── */
+const PP=[
+  {id:0,y:1854,cat:'voz',lost:true,title:'Observações do Aparelho Vocal Vivo',author:'Manuel García · Royal Society of London',tags:['tv','tl'],oq:'Em setembro de 1854, García — professor de canto espanhol, não médico — comprou um espelho de dentista por 6 francos e, usando reflexo de luz solar entre dois espelhos, tornou-se o primeiro ser humano a observar cordas vocais em funcionamento.',es:'García era músico, não médico. Publicou em sociedade de ciências naturais. A medicina levou anos para assimilar.',ap:'Fundamento de toda laringoscopia. Cada videoestroboscopia, nasofibroscopia e videolaringoscopia tem raízes neste espelho de €6.'},
+  {id:1,y:1881,cat:'voz',lost:false,title:'Lei de Semon — Paralisia Laríngea',author:'Felix Semon & Rosenbach · Archives of Laryngology, Londres',tags:['tv'],oq:'Fibras que controlam abdutores são afetadas antes das adutoras em lesões progressivas do NLR. Rouquidão precede dificuldade respiratória.',es:'A hipótese Wagner-Grossman gerou controvérsia e a lei foi considerada ultrapassada por décadas.',ap:'Diagnóstico diferencial em paralisia de prega vocal após tireoidectomia, compressão tumoral de mediastino e lesão vagal.'},
+  {id:2,y:1924,cat:'voz',lost:true,title:'Método Mastigado para Disfonia Funcional',author:'Emil Froeschels · Policlínica de Viena',tags:['tv','tl'],oq:'Mastigação exagerada com vocalização simultânea produz voz sem tensão laríngea. Taxa de 78% de resolução em disfonias funcionais em 6 semanas.',es:'Froeschels fugiu da Europa nos anos 30. Sua Policlínica de Viena foi fechada. Obra jamais traduzida sistematicamente para o português.',ap:'Disfonia hiperfuncional, fadiga vocal, voz do professor. Alta eficácia documentada e custo zero. Subutilizado no Brasil por desconhecimento histórico.'},
+  {id:3,y:1927,cat:'fluencia',lost:true,title:'Cerebral Dominance and Stuttering',author:'Samuel Orton & Lee Travis · Universidade de Iowa',tags:['tflu','tl'],oq:'Gagueira como competição hemisférica pelo controle motor da fala — sem dominância estabelecida, os dois hemisférios competem pela musculatura fonoarticulatória.',es:'Abandonada antes de a neuroimagem poder testá-la adequadamente.',ap:'fMRI de 2024 confirmou ativação anormal do hemisfério direito em pessoas que gaguejam. Travis estava na direção certa, 97 anos antes.'},
+  {id:4,y:1947,cat:'afasia',lost:false,title:'Reorganização Funcional Cerebral após Trauma',author:'Alexander Luria · Instituto de Neurocirurgia de Moscou',tags:['tafa'],oq:'Regiões encefálicas intactas podem assumir funções de áreas lesadas. Demonstrado com soldados soviéticos com lesões cerebrais de guerra.',es:'Publicado em russo em 1947. Stalin condenou como idealista. Tradução inglesa só em 1963.',ap:'Fundamento de toda neuroreabilitação. Melodic Intonation Therapy deriva diretamente destes princípios.'},
+  {id:5,y:1948,cat:'deglu',lost:true,title:'Neuromuscular Coordination in Deglutition',author:'W.T. Pommerenke · American Journal of Physiology',tags:['tde','tl'],oq:'Mapeamento das zonas de gatilho faríngeo que deflagram o reflexo de deglutição — pilares palatinos, base de língua, parede posterior.',es:'Publicado em fisiologia, fora do radar clínico por décadas.',ap:'Fundamento da estimulação tátil-térmica em disfagia. O cubo de gelo nos pilares se apoia neste mapa de 1948.'},
+  {id:6,y:1956,cat:'audio',lost:true,title:'Discriminação Tonal em Bebês Pré-Linguísticos',author:'S. Wolff · Zeitschrift für Phonetik, Berlim',tags:['tau','tl'],oq:'Bebês pré-linguísticos discriminam frequências tonais com precisão — 30 anos antes do BERA neonatal.',es:'Publicado em alemão, circulação limitada, durante a Guerra Fria. Invisível por 30 anos.',ap:'Base conceitual do BERA neonatal e da triagem auditiva universal que detecta perdas auditivas no primeiro dia de vida.'},
+  {id:7,y:1964,cat:'afasia',lost:true,title:"Schuell's Stimulation Approach to Aphasia",author:'Hildred Schuell · Minneapolis VA Hospital',tags:['tafa','tl'],oq:'A linguagem em afasia funciona com eficiência reduzida — não é destruída. Estimulação auditiva intensa e repetitiva a reativa. Intensidade é variável crítica.',es:'Schuell era mulher no VA, não em universidade de prestígio. Morreu em 1959. Técnicas usadas hoje sem que se cite o nome.',ap:'Redescoberta em 2008 para afasias severas em platô. Dose terapêutica importa tanto quanto técnica.'},
+  {id:8,y:1966,cat:'voz',lost:true,title:'Acoustic Properties of the Aging Voice',author:'P.H. Ptacek & E.K. Sander · J Speech Hearing Research',tags:['tv','tl'],oq:'Primeiro mapeamento de F0, jitter, shimmer e HNR em adultos saudáveis por faixa etária. Define o que é normal no envelhecimento vocal.',es:'Publicado antes da era digital. Ignorado na formação fonoaudiológica brasileira.',ap:'Diagnóstico diferencial de presbifonia vs. disfonia patológica acima de 60 anos. Sem normativos por idade, a comparação é inválida.'},
+  {id:9,y:1986,cat:'infantil',lost:false,title:'Communication Predicament of Aging',author:'Ryan, Giles et al. · Language & Communication',tags:['tinf'],oq:'Fala adaptada "para baixo" comunica incapacidade → o interlocutor pode se comportar de acordo — profecia autorrealizável com consequências neurológicas.',es:'Publicado em linguística, fora do radar de fonoaudiólogos. Kemper 1994 popularizou e deixou Ryan na sombra.',ap:'Base teórica para treinamento de cuidadores. Explica por que fala infantilizada é neurologicamente prejudicial quando sistemática.'},
+  {id:10,y:1994,cat:'infantil',lost:false,title:'Elderspeak: Patronizing Style with Older Adults',author:'Susan Kemper · Journal of Gerontology',tags:['tinf'],oq:'Idosos expostos ao elderspeak: declínio cognitivo acelerado, autoestima reduzida, resistência ao cuidado, maior agitação.',es:'Comunicação geriátrica é periférica na formação de fono no Brasil. Zero estudos brasileiros derivados em 32 anos.',ap:'Protocolo de treinamento de cuidadores e equipes de saúde geriátrica. Base científica do módulo de análise desta plataforma.'},
+  {id:11,y:2004,cat:'infantil',lost:false,title:'Decreasing Elderspeak: A Training Program',author:'Brent Williams, Susan Kemper & Mary Hummert · The Gerontologist',tags:['tinf'],oq:'Treinamento de 4 horas → redução de 58% no elderspeak, mantida em reavaliação 3 meses depois.',es:'Publicado em gerontologia, fora do radar clínico. O dado "4h → −58%" é praticamente desconhecido no Brasil.',ap:'Protocolo concreto para ILPI e hospitais. Quatro horas de treinamento são suficientes para mudança mensurável e duradoura.'},
+];
+const TN={'tv':'Voz','tflu':'Fluência','tafa':'Afasia','tde':'Deglutição','tau':'Audição','tinf':'Fala Infant.','tl':'Esquecida'};
+let reF='all',reA=null;
+function buildRF(){
+  const cats=[['all','Todas'],['voz','Voz'],['fluencia','Fluência'],['afasia','Afasia'],['deglu','Deglutição'],['audio','Audição'],['infantil','Fala Infant.'],['lost','Esquecidas']];
+  document.getElementById('refb').innerHTML=cats.map(([c,l])=>'<button class="rf'+(c==='all'?' on':'')+'" data-cat="'+c+'" onclick="setRF(this)">'+l+'</button>').join('');
+}
+function setRF(btn){document.querySelectorAll('.rf').forEach(b=>b.classList.remove('on'));btn.classList.add('on');reF=btn.dataset.cat;renderRN();}
+function renderRN(){
+  const list=reF==='all'?PP:reF==='lost'?PP.filter(p=>p.lost):PP.filter(p=>p.cat===reF);
+  document.getElementById('renav').innerHTML=list.map(p=>'<div class="rni'+(reA===p.id?' on':'')+'" onclick="showP('+p.id+')"><div class="rni-y">'+p.y+'</div><div class="rni-t">'+p.title+'</div></div>').join('');
+}
+function showP(id){
+  reA=id;renderRN();const p=PP.find(x=>x.id===id);if(!p)return;
+  document.getElementById('redet').innerHTML=
+    '<div class="red-y">'+p.y+' · '+p.tags.filter(t=>t!=='tl').map(t=>TN[t]||t).join(' · ')+'</div>'+
+    '<div class="red-ttl">'+p.title+'</div><div class="red-aut">'+p.author+'</div>'+
+    '<div class="red-tags">'+p.tags.map(t=>'<span class="rtag '+t+'">'+(TN[t]||t)+'</span>').join('')+'</div>'+
+    '<div class="red-sec"><div class="red-slbl">O que foi descoberto</div><div class="red-stxt">'+p.oq+'</div></div>'+
+    '<div class="red-sec"><div class="red-slbl">Por que foi esquecida</div><div class="red-stxt">'+p.es+'</div></div>'+
+    '<div class="red-sec"><div class="red-slbl">Aplicação clínica em 2026</div><div class="red-app">'+p.ap+'</div></div>';
+}
+buildRF();renderRN();
+
+/* ── CONSULTA IA ── */
+let ciM='c';
+function setM(m,btn){ciM=m;document.querySelectorAll('.mc').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+function askCI(q){document.getElementById('cita').value=q;runCI();}
+async function runCI(){
+  const q=document.getElementById('cita').value.trim();
+  if(!q)return;if(!gk()){openModal();return;}
+  const sb=document.getElementById('cisend');sb.disabled=true;sb.textContent='…';
+  const mT={c:'Foco clínico: protocolo, diagnóstico diferencial, conduta. Direto e baseado em evidência.',h:'Foco histórico: descoberta, por que foi esquecida, o que foi redescoberto, o que ainda é ignorado.',b:'Foco nas lacunas brasileiras: o que não é feito, normas PT-BR ausentes, pesquisas necessárias.'};
+  const sys='Fonoaudióloga clínica sênior brasileira. Conhece pesquisas históricas: García 1854, Semon 1881, Froeschels 1924 (78% resolução disfonia), Travis 1927 (dominância cerebral gagueira — confirmada fMRI 2024), Luria 1947 (reorganização cerebral), Pommerenke 1948 (zonas gatilho disfagia), Wolff 1956 (audição neonatal pré-BERA), Schuell 1964 (afasia severa platô — redescoberta 2008), Ptacek 1966 (voz senil normativos), Ryan 1986 (Communication Predicament), Kemper 1994 (elderspeak danos cognitivos), Williams 2004 (4h → −58% ILPI).\n'+mT[ciM]+'\nCite autores/anos. Separe certeza de hipótese. Máx 380 palavras. Português brasileiro.\nPergunta: '+q;
+  const out=document.getElementById('ciout'),idx=Date.now();
+  out.innerHTML='<div class="co-e" id="ce'+idx+'"><div class="co-q">'+q+'</div><div class="co-a" id="ca'+idx+'"><div class="r-load"><div class="spb"></div>Consultando…</div></div></div>';
+  const res=await callAI(sys);
+  sb.disabled=false;sb.textContent='Enviar';
+  const el=document.getElementById('ca'+idx);
+  if(!res||res.e){el.innerHTML='<span style="color:var(--amb);white-space:pre-wrap">'+(res?.m||'Erro.')+'</span>';return;}
+  el.textContent='';let i=0,txt=res.t;
+  (function type(){if(i<txt.length){el.innerHTML=txt.slice(0,++i).replace(/\n/g,'<br>')+'<span class="caret"></span>';setTimeout(type,i<30?0:3);}else{el.innerHTML=txt.replace(/\n/g,'<br>');}})();
+}
 </script>
 </body>
 </html>
