@@ -1,151 +1,1176 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clinica de Fonoaudiologia</title>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400&display=swap" rel="stylesheet">
-    <style>
-        /* Estilos Gerais */
-        body, html {
-            margin: 0; padding: 0; height: 100%; font-family: 'IBM Plex Sans', sans-serif; background: #0b0e13; color: #c8cdd8;
-        }
-        .container {
-            display: grid; grid-template-rows: 60px 1fr; height: 100vh;
-        }
-        /* Top Bar */
-        .topbar {
-            background: #111; display: flex; align-items: center; padding: 0 16px; border-bottom: 1px solid #2e3445;
-        }
-        .topbar h1 {
-            margin-right: 24px; font-size: 20px; color: #c8cdd8;
-        }
-        .tabs {
-            display: flex; margin-left: auto;
-        }
-        .tab {
-            margin: 0 10px; padding: 10px; cursor: pointer; color: #7a8099; border: none; background: none; transition: color 0.2s;
-        }
-        .tab:hover {
-            color: #4a9eff;
-        }
-        /* Workspace */
-        .workspace {
-            display: flex;
-        }
-        .sidebar {
-            width: 220px; background: #111; color: #c8cdd8; padding: 10px; overflow-y: auto;
-        }
-        .content {
-            flex: 1; padding: 20px; overflow-y: auto; background: #161a21;
-        }
-        /* Button Styles */
-        .btn {
-            padding: 10px; background: #4a9eff; color: #000; border: none; cursor: pointer; transition: background 0.2s;
-        }
-        .btn:hover {
-            background: #6ab5ff;
-        }
-        /* Result Styling */
-        .result {
-            margin-top: 20px; padding: 10px; background: #252a35; border-radius: 5px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHONOBASE CLINICAL — Estação de Trabalho Fonoaudiológica 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Serif:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+
+:root{
+  --bg:        #0b0e13;
+  --panel:     #111318;
+  --panel2:    #161a21;
+  --panel3:    #1c2029;
+  --border:    #252a35;
+  --border2:   #2e3445;
+  --text:      #c8cdd8;
+  --text2:     #7a8099;
+  --text3:     #454d63;
+  --accent:    #4a9eff;
+  --accent-d:  rgba(74,158,255,.1);
+  --accent-d2: rgba(74,158,255,.05);
+  --green:     #3ecf6a;
+  --green-d:   rgba(62,207,106,.08);
+  --amber:     #f0a500;
+  --amber-d:   rgba(240,165,0,.1);
+  --red:       #e05252;
+  --red-d:     rgba(224,82,82,.1);
+  --purple:    #9b72cf;
+  --purple-d:  rgba(155,114,207,.08);
+  --teal:      #2ec4b6;
+  --teal-d:    rgba(46,196,182,.08);
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:13px;
+  line-height:1.5;
+}
+
+/* ═══ LAYOUT SHELL ═══ */
+.shell{
+  display:grid;
+  grid-template-rows:40px 1fr;
+  height:100vh;
+}
+
+/* ═══ TOPBAR ═══ */
+.topbar{
+  background:var(--panel);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+  padding:0 16px;gap:0;
+  position:relative;z-index:100;
+}
+.tb-logo{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;font-weight:600;letter-spacing:3px;
+  text-transform:uppercase;color:var(--text);
+  margin-right:24px;padding-right:24px;
+  border-right:1px solid var(--border);
+  white-space:nowrap;
+}
+.tb-logo em{color:var(--accent);font-style:normal;}
+.tb-tabs{display:flex;gap:0;flex:1;}
+.tb-tab{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  font-weight:400;letter-spacing:1px;text-transform:uppercase;
+  padding:0 16px;height:40px;display:flex;align-items:center;
+  background:none;border:none;color:var(--text3);
+  cursor:pointer;transition:all .15s;border-bottom:2px solid transparent;
+  white-space:nowrap;
+}
+.tb-tab:hover{color:var(--text2);}
+.tb-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+.tb-right{
+  display:flex;align-items:center;gap:12px;margin-left:auto;
+}
+.key-indicator{
+  display:flex;align-items:center;gap:6px;
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  letter-spacing:1px;text-transform:uppercase;
+  padding:4px 10px;border:1px solid var(--border2);
+  cursor:pointer;transition:all .2s;
+}
+.key-indicator.on{color:var(--green);border-color:rgba(62,207,106,.3);}
+.key-indicator.off{color:var(--amber);}
+.key-indicator:hover{border-color:var(--accent);}
+.kdot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.kdot-on{background:var(--green);}
+.kdot-off{background:var(--amber);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.tb-time{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  color:var(--text3);letter-spacing:1px;
+}
+
+/* ═══ WORKSPACE ═══ */
+.workspace{
+  display:grid;
+  grid-template-columns:220px 1fr 280px;
+  overflow:hidden;
+}
+
+/* ═══ LEFT SIDEBAR ═══ */
+.sidebar-l{
+  background:var(--panel);
+  border-right:1px solid var(--border);
+  overflow-y:auto;display:flex;flex-direction:column;
+}
+.sidebar-l::-webkit-scrollbar{width:2px;}
+.sidebar-l::-webkit-scrollbar-thumb{background:var(--border2);}
+
+.sl-section{border-bottom:1px solid var(--border);}
+.sl-header{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  letter-spacing:3px;text-transform:uppercase;color:var(--text3);
+  padding:10px 14px 6px;
+}
+.sl-item{
+  display:flex;align-items:center;gap:10px;
+  padding:7px 14px;cursor:pointer;transition:all .15s;
+  font-size:12px;color:var(--text2);border-left:2px solid transparent;
+}
+.sl-item:hover{background:var(--panel2);color:var(--text);}
+.sl-item.active{background:var(--accent-d2);color:var(--accent);border-left-color:var(--accent);}
+.sl-icon{width:14px;height:14px;flex-shrink:0;opacity:.6;font-size:12px;line-height:14px;text-align:center;}
+.sl-item.active .sl-icon{opacity:1;}
+.sl-badge{
+  margin-left:auto;font-family:'IBM Plex Mono',monospace;
+  font-size:8px;padding:1px 5px;border-radius:2px;
+}
+.badge-new{background:var(--accent-d);color:var(--accent);}
+.badge-warn{background:var(--amber-d);color:var(--amber);}
+
+/* ═══ MAIN CONTENT ═══ */
+.main{
+  overflow:hidden;display:flex;flex-direction:column;
+}
+.panel-content{
+  display:none;flex:1;overflow:hidden;
+  flex-direction:column;
+}
+.panel-content.active{display:flex;}
+
+/* ─ PANEL HEADER ─ */
+.panel-header{
+  padding:12px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;background:var(--panel);
+}
+.ph-title{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;
+  font-weight:600;letter-spacing:2px;text-transform:uppercase;
+  color:var(--text);
+}
+.ph-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+.ph-actions{display:flex;gap:6px;}
+.ph-btn{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  letter-spacing:2px;text-transform:uppercase;
+  padding:5px 12px;border:1px solid var(--border2);
+  background:none;color:var(--text2);cursor:pointer;transition:all .15s;
+}
+.ph-btn:hover{border-color:var(--accent);color:var(--accent);}
+.ph-btn.primary{background:var(--accent);color:#000;border-color:var(--accent);font-weight:500;}
+.ph-btn.primary:hover{background:#6ab5ff;transform:none;}
+
+/* ═══ ANALISADOR DE FALA ═══ */
+.analyzer-layout{
+  display:grid;grid-template-columns:1fr 1fr;
+  flex:1;overflow:hidden;
+}
+.analyzer-left{
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.analyzer-right{
+  display:flex;flex-direction:column;overflow:hidden;
+}
+
+/* context bar */
+.ctx-bar{
+  display:flex;gap:0;border-bottom:1px solid var(--border);
+  flex-shrink:0;overflow-x:auto;background:var(--panel);
+}
+.ctx-bar::-webkit-scrollbar{height:2px;}
+.ctx-tab{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  letter-spacing:1px;text-transform:uppercase;
+  padding:8px 14px;background:none;border:none;
+  color:var(--text3);cursor:pointer;transition:all .15s;
+  white-space:nowrap;border-bottom:2px solid transparent;flex-shrink:0;
+}
+.ctx-tab:hover{color:var(--text2);}
+.ctx-tab.active{color:var(--accent);border-bottom-color:var(--accent);background:var(--accent-d2);}
+
+/* input zone */
+.input-zone{
+  flex:1;display:flex;flex-direction:column;
+  padding:16px;gap:10px;overflow:hidden;
+}
+.iz-label{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  letter-spacing:3px;text-transform:uppercase;color:var(--text3);
+}
+.speech-ta{
+  flex:1;background:var(--panel2);
+  border:1px solid var(--border);
+  color:var(--text);font-family:'IBM Plex Serif',serif;
+  font-size:15px;line-height:1.75;
+  padding:16px;outline:none;resize:none;
+  transition:border-color .2s;
+}
+.speech-ta:focus{border-color:var(--accent);}
+.speech-ta::placeholder{color:var(--text3);font-style:italic;font-size:13px;}
+
+.action-row{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;flex-wrap:wrap;flex-shrink:0;
+}
+.examples-row{display:flex;flex-wrap:wrap;gap:4px;}
+.ex-chip{
+  font-size:11px;padding:3px 9px;
+  border:1px solid var(--border2);background:none;
+  color:var(--text3);cursor:pointer;transition:all .15s;
+}
+.ex-chip:hover{border-color:var(--accent);color:var(--accent);}
+
+.run-btn{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  font-weight:500;letter-spacing:2px;text-transform:uppercase;
+  padding:9px 20px;background:var(--accent);color:#000;
+  border:none;cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;gap:8px;flex-shrink:0;
+}
+.run-btn:hover{background:#6ab5ff;}
+.run-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+/* result zone */
+.result-zone{
+  flex:1;overflow-y:auto;
+}
+.result-zone::-webkit-scrollbar{width:3px;}
+.result-zone::-webkit-scrollbar-thumb{background:var(--border2);}
+
+.result-empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100%;gap:8px;
+}
+.re-icon{font-size:32px;opacity:.2;}
+.re-msg{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);}
+
+/* loading */
+.result-loading{
+  display:flex;align-items:center;gap:12px;padding:20px;
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:2px;text-transform:uppercase;color:var(--text3);
+}
+.spin{
+  width:14px;height:14px;border:2px solid var(--border2);
+  border-top-color:var(--accent);border-radius:50%;
+  animation:sp .6s linear infinite;flex-shrink:0;
+}
+@keyframes sp{to{transform:rotate(360deg);}}
+
+/* result blocks */
+.r-score-row{
+  display:grid;grid-template-columns:100px 1fr;
+  border-bottom:1px solid var(--border);
+}
+.r-score-block{
+  padding:16px;border-right:1px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.score-n{
+  font-family:'IBM Plex Mono',monospace;font-size:48px;
+  font-weight:600;line-height:1;
+}
+.score-lbl{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:2px;text-transform:uppercase;color:var(--text3);
+  margin-top:3px;text-align:center;
+}
+.s-high{color:var(--red);}
+.s-mid{color:var(--amber);}
+.s-low{color:var(--green);}
+.s-none{color:var(--text2);}
+
+.r-verdict{padding:16px;}
+.rv-lbl{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:3px;text-transform:uppercase;color:var(--text3);
+  margin-bottom:6px;
+}
+.rv-txt{
+  font-family:'IBM Plex Mono',monospace;font-size:16px;
+  font-weight:600;line-height:1.2;
+}
+.v-high{color:var(--red);}
+.v-mid{color:var(--amber);}
+.v-low{color:var(--green);}
+.v-none{color:var(--text2);}
+
+.r-blocks{display:flex;flex-direction:column;gap:0;}
+.r-block{
+  border-bottom:1px solid var(--border);padding:14px 16px;
+}
+.rb-label{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:3px;text-transform:uppercase;color:var(--text3);
+  margin-bottom:8px;display:flex;align-items:center;gap:6px;
+}
+.rb-dot{width:4px;height:4px;border-radius:50%;flex-shrink:0;}
+.rb-content{font-size:12px;color:var(--text2);line-height:1.75;white-space:pre-wrap;}
+.rb-content strong{color:var(--text);}
+
+.markers-list{display:flex;flex-direction:column;gap:4px;}
+.marker{
+  display:flex;align-items:flex-start;gap:8px;
+  font-size:12px;color:var(--text2);line-height:1.5;
+  padding:5px 8px;background:var(--panel2);border-left:2px solid var(--accent);
+}
+.marker::before{content:'↗';color:var(--accent);flex-shrink:0;font-size:10px;margin-top:2px;font-family:'IBM Plex Mono',monospace;}
+
+.alt-block{
+  background:var(--green-d);border-left:2px solid var(--green);
+  padding:10px 12px;
+  font-family:'IBM Plex Serif',serif;font-size:14px;font-style:italic;
+  color:#a0f0b8;line-height:1.5;margin-bottom:8px;
+}
+
+/* honesty bar */
+.honesty-bar{
+  background:var(--panel2);border-top:1px solid var(--border);
+  padding:10px 16px;flex-shrink:0;
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  letter-spacing:1px;color:var(--text3);
+  display:flex;align-items:center;gap:8px;
+}
+.hb-dot{width:5px;height:5px;border-radius:50%;background:var(--amber);flex-shrink:0;}
+
+/* ═══ PESQUISAS ═══ */
+.research-layout{
+  flex:1;overflow:hidden;
+  display:grid;grid-template-columns:200px 1fr;
+}
+.research-nav{
+  border-right:1px solid var(--border);
+  background:var(--panel);
+  overflow-y:auto;
+}
+.rn-item{
+  padding:10px 14px;cursor:pointer;transition:all .15s;
+  font-size:11px;color:var(--text2);
+  border-bottom:1px solid var(--border);
+  border-left:2px solid transparent;
+}
+.rn-item:hover{background:var(--panel2);color:var(--text);}
+.rn-item.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-d2);}
+.rn-year{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  color:var(--text3);margin-bottom:2px;
+}
+.rn-title{font-size:11px;line-height:1.35;}
+
+.research-detail{
+  overflow-y:auto;padding:24px 28px;
+}
+.research-detail::-webkit-scrollbar{width:3px;}
+.research-detail::-webkit-scrollbar-thumb{background:var(--border2);}
+.rd-empty{
+  height:100%;display:flex;align-items:center;justify-content:center;
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:2px;text-transform:uppercase;color:var(--text3);
+}
+.rd-year{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:3px;color:var(--amber);text-transform:uppercase;
+  margin-bottom:8px;display:flex;align-items:center;gap:8px;
+}
+.rd-title{
+  font-family:'IBM Plex Serif',serif;font-size:28px;font-weight:400;
+  line-height:1.2;margin-bottom:6px;color:var(--text);
+}
+.rd-author{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:1px;color:var(--text3);margin-bottom:20px;
+}
+.rd-section{margin-bottom:16px;}
+.rd-section-lbl{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:3px;text-transform:uppercase;color:var(--text3);
+  margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--border);
+}
+.rd-section-txt{
+  font-size:13px;color:var(--text2);line-height:1.8;
+}
+.rd-section-txt strong{color:var(--text);}
+.rd-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.rd-badge{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:2px;text-transform:uppercase;
+  padding:3px 8px;border:1px solid;
+}
+.b-lost{color:var(--red);border-color:var(--red);background:var(--red-d);}
+.b-voice{color:var(--teal);border-color:var(--teal);background:var(--teal-d);}
+.b-fluency{color:var(--purple);border-color:var(--purple);background:var(--purple-d);}
+.b-aphasia{color:var(--green);border-color:var(--green);background:var(--green-d);}
+.b-swallow{color:var(--amber);border-color:var(--amber);background:var(--amber-d);}
+.b-hearing{color:var(--text2);border-color:var(--border2);background:var(--panel2);}
+.b-infant{color:#cf9b50;border-color:#cf9b50;background:rgba(207,155,80,.08);}
+.b-lang{color:#72a8cf;border-color:#72a8cf;background:rgba(114,168,207,.08);}
+
+/* ═══ CONSULTA IA ═══ */
+.consult-layout{
+  flex:1;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.consult-input{
+  border-bottom:1px solid var(--border);
+  padding:12px 16px;background:var(--panel);
+  flex-shrink:0;
+}
+.ci-row{display:flex;gap:8px;align-items:flex-start;}
+.ci-context{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:1px;text-transform:uppercase;
+  padding:8px 12px;border:1px solid var(--border2);
+  background:var(--panel2);color:var(--text2);cursor:pointer;
+  transition:all .15s;flex-shrink:0;align-self:stretch;
+}
+.ci-context.sel{border-color:var(--accent);color:var(--accent);background:var(--accent-d);}
+.ci-ta{
+  flex:1;background:var(--panel2);border:1px solid var(--border);
+  color:var(--text);font-family:'IBM Plex Serif',serif;font-size:14px;
+  padding:9px 12px;outline:none;resize:none;min-height:38px;
+  transition:border-color .2s;line-height:1.5;
+}
+.ci-ta:focus{border-color:var(--accent);}
+.ci-ta::placeholder{color:var(--text3);font-style:italic;font-size:12px;}
+.ci-send{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  letter-spacing:2px;text-transform:uppercase;
+  padding:9px 16px;background:var(--accent);color:#000;
+  border:none;cursor:pointer;font-weight:500;flex-shrink:0;
+  align-self:flex-end;transition:all .2s;
+}
+.ci-send:hover{background:#6ab5ff;}
+.ci-send:disabled{opacity:.4;cursor:not-allowed;}
+
+.chips-row{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px;}
+.chip{
+  font-size:10px;padding:3px 8px;
+  border:1px solid var(--border2);background:none;
+  color:var(--text3);cursor:pointer;transition:all .15s;
+  font-family:'IBM Plex Mono',monospace;letter-spacing:.5px;
+}
+.chip:hover{border-color:var(--accent);color:var(--accent);}
+
+.consult-output{
+  flex:1;overflow-y:auto;padding:20px 24px;
+}
+.consult-output::-webkit-scrollbar{width:3px;}
+.consult-output::-webkit-scrollbar-thumb{background:var(--border2);}
+
+.co-entry{
+  border-bottom:1px solid var(--border);
+  padding-bottom:20px;margin-bottom:20px;
+}
+.co-q{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:1px;color:var(--text3);
+  margin-bottom:8px;padding:8px 10px;
+  background:var(--panel2);border-left:2px solid var(--accent);
+}
+.co-a{
+  font-size:13px;color:var(--text2);line-height:1.85;
+  white-space:pre-wrap;
+}
+.co-a strong{color:var(--text);}
+.caret{
+  display:inline-block;width:2px;height:.85em;
+  background:var(--accent);animation:pulse .8s infinite;
+  vertical-align:middle;margin-left:1px;
+}
+.co-placeholder{
+  display:flex;flex-direction:column;gap:6px;
+  padding:24px 0;
+}
+.cop-msg{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:2px;text-transform:uppercase;color:var(--text3);
+}
+
+/* ═══ MODULES ═══ */
+.modules-grid{
+  flex:1;overflow-y:auto;padding:16px;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:8px;align-content:start;
+}
+.modules-grid::-webkit-scrollbar{width:3px;}
+.modules-grid::-webkit-scrollbar-thumb{background:var(--border2);}
+.mod-card{
+  background:var(--panel);border:1px solid var(--border);
+  padding:16px;cursor:pointer;transition:all .2s;
+  position:relative;overflow:hidden;
+}
+.mod-card:hover{border-color:var(--border2);background:var(--panel2);}
+.mod-card.active-mod{border-color:var(--accent);background:var(--accent-d2);}
+.mc-tag{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:2px;text-transform:uppercase;color:var(--text3);
+  margin-bottom:8px;
+}
+.mc-icon{font-size:20px;margin-bottom:8px;}
+.mc-title{
+  font-size:13px;font-weight:500;color:var(--text);
+  margin-bottom:4px;line-height:1.3;
+}
+.mc-desc{font-size:11px;color:var(--text3);line-height:1.5;}
+.mc-status{
+  position:absolute;top:10px;right:10px;
+  font-family:'IBM Plex Mono',monospace;font-size:7px;
+  letter-spacing:2px;text-transform:uppercase;
+  padding:2px 6px;border:1px solid;
+}
+.ms-live{color:var(--green);border-color:rgba(62,207,106,.3);}
+.ms-ai{color:var(--accent);border-color:var(--accent-d);}
+.ms-beta{color:var(--amber);border-color:var(--amber-d);}
+
+/* ═══ RIGHT SIDEBAR ═══ */
+.sidebar-r{
+  background:var(--panel);
+  border-left:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.sr-tab-row{
+  display:flex;gap:0;border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.sr-tab{
+  flex:1;font-family:'IBM Plex Mono',monospace;font-size:9px;
+  letter-spacing:1px;text-transform:uppercase;
+  padding:9px 6px;background:none;border:none;
+  color:var(--text3);cursor:pointer;transition:all .15s;
+  border-bottom:2px solid transparent;
+}
+.sr-tab:hover{color:var(--text2);}
+.sr-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+.sr-content{flex:1;overflow-y:auto;padding:14px;}
+.sr-content::-webkit-scrollbar{width:2px;}
+.sr-content::-webkit-scrollbar-thumb{background:var(--border2);}
+
+/* info widgets */
+.info-block{
+  background:var(--panel2);border:1px solid var(--border);
+  margin-bottom:8px;overflow:hidden;
+}
+.ib-header{
+  padding:8px 12px;border-bottom:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.ib-title{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  letter-spacing:2px;text-transform:uppercase;color:var(--text3);
+}
+.ib-badge{
+  font-family:'IBM Plex Mono',monospace;font-size:7px;
+  letter-spacing:1px;padding:1px 5px;
+}
+.ib-body{padding:10px 12px;}
+
+.stat-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:4px 0;border-bottom:1px solid var(--border);
+}
+.stat-row:last-child{border-bottom:none;}
+.sr-lbl{font-size:11px;color:var(--text3);}
+.sr-val{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;
+  color:var(--text);font-weight:500;
+}
+.sr-val.hi{color:var(--amber);}
+.sr-val.ok{color:var(--green);}
+.sr-val.crit{color:var(--red);}
+
+.ref-item{
+  padding:8px 0;border-bottom:1px solid var(--border);
+  cursor:pointer;transition:all .15s;
+}
+.ref-item:last-child{border-bottom:none;}
+.ref-item:hover .ref-title{color:var(--accent);}
+.ref-year{
+  font-family:'IBM Plex Mono',monospace;font-size:8px;
+  color:var(--amber);letter-spacing:1px;margin-bottom:2px;
+}
+.ref-title{font-size:11px;color:var(--text2);line-height:1.35;transition:color .15s;}
+
+/* ═══ MODAL ═══ */
+.modal-ov{
+  position:fixed;inset:0;background:rgba(11,14,19,.85);
+  z-index:1000;display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(8px);
+}
+.modal{
+  background:var(--panel);border:1px solid var(--border2);
+  width:460px;padding:28px;
+  animation:fadein .2s ease;
+}
+@keyframes fadein{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:none;}}
+.modal-title{
+  font-family:'IBM Plex Mono',monospace;font-size:12px;
+  font-weight:600;letter-spacing:2px;text-transform:uppercase;
+  color:var(--text);margin-bottom:4px;
+}
+.modal-sub{font-size:12px;color:var(--text3);margin-bottom:20px;line-height:1.6;}
+.modal-steps{
+  border-left:2px solid var(--accent);padding:12px 16px;
+  background:var(--panel2);margin-bottom:16px;
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:.5px;color:var(--text2);line-height:2.2;
+}
+.modal-steps a{color:var(--accent);text-decoration:none;}
+.modal-steps a:hover{text-decoration:underline;}
+.modal-steps strong{color:var(--text);}
+.kinp-row{display:flex;gap:0;margin-bottom:10px;}
+.kinp{
+  flex:1;background:var(--panel2);border:1px solid var(--border2);border-right:none;
+  color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:12px;
+  padding:10px 14px;outline:none;
+}
+.kinp:focus{border-color:var(--accent);}
+.keye{
+  background:var(--panel2);border:1px solid var(--border2);
+  padding:10px 12px;cursor:pointer;color:var(--text2);font-size:14px;
+}
+.modal-note{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  letter-spacing:.5px;color:var(--text3);
+  line-height:2.0;margin-bottom:16px;
+}
+.modal-note strong{color:var(--text2);}
+.modal-btns{display:flex;gap:8px;}
+.mbtn-s{
+  flex:1;font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:2px;text-transform:uppercase;
+  padding:11px;background:var(--accent);color:#000;border:none;cursor:pointer;
+  font-weight:500;transition:all .2s;
+}
+.mbtn-s:hover{background:#6ab5ff;}
+.mbtn-c{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:2px;text-transform:uppercase;
+  padding:11px 16px;background:none;color:var(--text3);
+  border:1px solid var(--border2);cursor:pointer;transition:all .2s;
+}
+.mbtn-c:hover{border-color:var(--text2);color:var(--text2);}
+
+/* RESPONSIVE / SMALL SCREENS */
+@media(max-width:1100px){
+  .workspace{grid-template-columns:180px 1fr 240px;}
+}
+@media(max-width:860px){
+  .workspace{grid-template-columns:1fr;}
+  .sidebar-l,.sidebar-r{display:none;}
+  .analyzer-layout{grid-template-columns:1fr;}
+  .analyzer-left{border-right:none;border-bottom:1px solid var(--border);min-height:300px;}
+  html,body{overflow:auto;}
+  .shell{height:auto;}
+  .workspace,.main,.panel-content,.analyzer-layout{overflow:visible;height:auto;}
+  .speech-ta{min-height:140px;}
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <!-- Top Bar -->
-        <div class="topbar">
-            <h1>Clinica de Fonoaudiologia</h1>
-            <div class="tabs">
-                <button class="tab" onclick="showPanel('analisador')">Analisador de Fala</button>
-                <button class="tab" onclick="showPanel('consulta')">Consulta IA</button>
-                <button class="tab" onclick="showPanel('pesquisas')">Pesquisas</button>
-            </div>
+
+<div class="shell">
+
+  <!-- ═══ TOPBAR ═══ -->
+  <div class="topbar">
+    <div class="tb-logo">PHONO<em>BASE</em>&nbsp;CLINICAL</div>
+    <div class="tb-tabs">
+      <button class="tb-tab active" onclick="showPanel('analisador')" id="tab-analisador">Analisador de Fala</button>
+      <button class="tb-tab" onclick="showPanel('pesquisas')" id="tab-pesquisas">Pesquisas Históricas</button>
+      <button class="tb-tab" onclick="showPanel('consulta')" id="tab-consulta">Consulta IA</button>
+      <button class="tb-tab" onclick="showPanel('modulos')" id="tab-modulos">Módulos</button>
+    </div>
+    <div class="tb-right">
+      <div class="key-indicator off" id="ki" onclick="openModal()">
+        <span class="kdot kdot-off" id="ki-dot"></span>
+        <span id="ki-txt">Ativar IA</span>
+      </div>
+      <div class="tb-time" id="clock">--:--</div>
+    </div>
+  </div>
+
+  <!-- ═══ WORKSPACE ═══ -->
+  <div class="workspace">
+
+    <!-- ─ LEFT SIDEBAR ─ -->
+    <div class="sidebar-l">
+      <div class="sl-section">
+        <div class="sl-header">Análise</div>
+        <div class="sl-item active" onclick="showPanel('analisador');setSub('infantil')">
+          <span class="sl-icon">🗣</span> Fala Infantilizada
+          <span class="sl-badge badge-new">NOVO</span>
         </div>
-        
-        <!-- Workspace -->
-        <div class="workspace">
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <h3>Ferramentas</h3>
-                <button class="btn" onclick="setSub('infantil')">Fala Infantilizada</button>
-                <button class="btn" onclick="setSub('voz')">Padrão Vocal</button>
-                <button class="btn" onclick="setSub('fluencia')">Fluência</button>
-                <button class="btn" onclick="setSub('linguagem')">Linguagem</button>
-                <button class="btn" onclick="setSub('degluticao')">Deglutição</button>
-                <button class="btn" onclick="setSub('afasia')">Afasia</button>
-            </div>
-            
-            <!-- Main Content -->
-            <div class="content" id="main-content">
-                <div id="panel-analisador" class="panel active">
-                    <h2>Analisador de Fala</h2>
-                    <textarea id="speech-ta" rows="6" placeholder="Cole aqui a transcrição da fala..."></textarea>
-                    <button class="btn" onclick="runAnalysis()">Analisar</button>
-                    <div id="result-zone" class="result">Aguardando análise...</div>
-                </div>
-                <div id="panel-consulta" class="panel" style="display:none;">
-                    <h2>Consulta IA</h2>
-                    <textarea id="ci-ta" rows="4" placeholder="Descreva o caso do paciente..."></textarea>
-                    <button class="btn" onclick="runConsult()">Enviar Consulta</button>
-                    <div id="consult-output" class="result">Aguardando consulta...</div>
-                </div>
-                <div id="panel-pesquisas" class="panel" style="display:none;">
-                    <h2>Pesquisas de Última Geração</h2>
-                    <div id="research-list"></div>
-                </div>
-            </div>
+        <div class="sl-item" onclick="showPanel('analisador');setSub('voz')">
+          <span class="sl-icon">🎙</span> Padrão Vocal
         </div>
+        <div class="sl-item" onclick="showPanel('analisador');setSub('fluencia')">
+          <span class="sl-icon">💬</span> Fluência
+        </div>
+        <div class="sl-item" onclick="showPanel('analisador');setSub('linguagem')">
+          <span class="sl-icon">📝</span> Linguagem
+        </div>
+        <div class="sl-item" onclick="showPanel('analisador');setSub('deglutição')">
+          <span class="sl-icon">🍽</span> Relato de Deglutição
+        </div>
+        <div class="sl-item" onclick="showPanel('analisador');setSub('afasia')">
+          <span class="sl-icon">🧠</span> Afasia / Neuro
+        </div>
+      </div>
+      <div class="sl-section">
+        <div class="sl-header">Base Científica</div>
+        <div class="sl-item" onclick="showPanel('pesquisas')">
+          <span class="sl-icon">📚</span> Pesquisas Históricas
+        </div>
+        <div class="sl-item" onclick="showPanel('consulta')">
+          <span class="sl-icon">🤖</span> Consulta IA
+        </div>
+      </div>
+      <div class="sl-section">
+        <div class="sl-header">Ferramentas</div>
+        <div class="sl-item" onclick="showPanel('modulos')">
+          <span class="sl-icon">⚙</span> Módulos Clínicos
+        </div>
+      </div>
+      <div style="margin-top:auto;padding:14px;border-top:1px solid var(--border);">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;">Aviso clínico</div>
+        <div style="font-size:11px;color:var(--text3);line-height:1.6;">Esta plataforma é suporte de decisão — não substitui avaliação fonoaudiológica presencial.</div>
+      </div>
     </div>
 
-    <script>
-        function showPanel(panel) {
-            document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
-            document.getElementById('panel-' + panel).style.display = 'block';
-        }
+    <!-- ─ MAIN ─ -->
+    <div class="main">
 
-        function runAnalysis() {
-            const text = document.getElementById('speech-ta').value;
-            if (!text) {
-                alert('Por favor, insira um texto para análise.');
-                return;
-            }
-            document.getElementById('result-zone').innerText = "Analisando...";
-            // Simulação de resposta
-            setTimeout(() => {
-                document.getElementById('result-zone').innerText = "Análise concluída! (Aqui viria o resultado da análise)";
-            }, 2000);
-        }
+      <!-- ══ ANALISADOR ══ -->
+      <div class="panel-content active" id="panel-analisador">
+        <div class="panel-header">
+          <div>
+            <div class="ph-title">Analisador de Fala</div>
+            <div class="ph-sub" id="ph-sub-txt">Cole ou transcreva a fala do paciente para análise clínica com IA</div>
+          </div>
+          <div class="ph-actions">
+            <button class="ph-btn" onclick="clearAnalyzer()">Limpar</button>
+            <button class="ph-btn primary" onclick="runAnalysis()">Analisar</button>
+          </div>
+        </div>
 
-        function runConsult() {
-            const query = document.getElementById('ci-ta').value;
-            if (!query) {
-                alert('Por favor, descreva o caso.');
-                return;
-            }
-            document.getElementById('consult-output').innerText = "Consultando...";
-            // Simulação de resposta
-            setTimeout(() => {
-                document.getElementById('consult-output').innerText = "Resposta da IA: (Aqui viria a resposta da consulta)";
-            }, 2000);
-        }
+        <div class="analyzer-layout">
+          <!-- INPUT SIDE -->
+          <div class="analyzer-left">
+            <!-- context tabs -->
+            <div class="ctx-bar">
+              <button class="ctx-tab active" data-ctx="infantil" onclick="pickCtx(this)">Fala Infantilizada</button>
+              <button class="ctx-tab" data-ctx="voz" onclick="pickCtx(this)">Padrão Vocal</button>
+              <button class="ctx-tab" data-ctx="fluencia" onclick="pickCtx(this)">Fluência</button>
+              <button class="ctx-tab" data-ctx="linguagem" onclick="pickCtx(this)">Linguagem</button>
+              <button class="ctx-tab" data-ctx="degluticao" onclick="pickCtx(this)">Deglutição</button>
+              <button class="ctx-tab" data-ctx="afasia" onclick="pickCtx(this)">Afasia / Neuro</button>
+            </div>
 
-        function setSub(sub) {
-            console.log('Sub selecionado: ' + sub);
-            // Aqui você pode executar a lógica relacionada ao sub selecionado
-        }
+            <div class="input-zone">
+              <div class="iz-label" id="iz-lbl">Transcrição da fala / texto a analisar:</div>
+              <textarea class="speech-ta" id="speech-ta" rows="8"
+                placeholder="Cole aqui a transcrição da fala, relato do paciente, ou texto a ser analisado…"></textarea>
+              <div class="action-row">
+                <div>
+                  <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:5px;">Exemplos</div>
+                  <div class="examples-row" id="examples-row"></div>
+                </div>
+                <button class="run-btn" id="run-btn" onclick="runAnalysis()">
+                  <div class="spin" id="run-spin" style="display:none;"></div>
+                  <span id="run-txt">Analisar</span>
+                </button>
+              </div>
+            </div>
 
-        function loadResearch() {
-            const researchData = [
-                { year: 2023, title: "Estudo sobre Fluência", description: "Um estudo recente sobre a fluência na fala." },
-                { year: 2022, title: "Análise de Afasia", description: "Pesquisas sobre diferentes tipos de afasia." }
-            ];
-            const researchList = document.getElementById('research-list');
-            researchList.innerHTML = researchData.map(r => `<div><strong>${r.year}:</strong> ${r.title} - ${r.description}</div>`).join('');
-        }
+            <div class="honesty-bar">
+              <span class="hb-dot"></span>
+              A análise identifica apenas padrões presentes no texto. Ausência de marcadores não descarta patologia. Avaliação presencial é insubstituível.
+            </div>
+          </div>
 
-        loadResearch(); // Carrega as pesquisas ao iniciar
-    </script>
+          <!-- RESULT SIDE -->
+          <div class="analyzer-right">
+            <div style="padding:10px 14px;border-bottom:1px solid var(--border);background:var(--panel);flex-shrink:0;">
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);">Resultado da Análise</div>
+            </div>
+            <div class="result-zone" id="result-zone">
+              <div class="result-empty" id="result-empty">
+                <div class="re-icon">◈</div>
+                <div class="re-msg">Aguardando análise</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PESQUISAS ══ -->
+      <div class="panel-content" id="panel-pesquisas">
+        <div class="panel-header">
+          <div>
+            <div class="ph-title">Pesquisas Históricas</div>
+            <div class="ph-sub">Descobertas esquecidas com aplicação clínica real · 1854–2026</div>
+          </div>
+          <div class="ph-actions">
+            <select id="re-filter" onchange="filterResearch()" style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;background:var(--panel2);color:var(--text2);border:1px solid var(--border2);padding:5px 10px;outline:none;cursor:pointer;">
+              <option value="all">Todas as áreas</option>
+              <option value="lost">Esquecidas / Perdidas</option>
+              <option value="voice">Voz & Laringe</option>
+              <option value="fluency">Fluência</option>
+              <option value="aphasia">Afasia & Neuro</option>
+              <option value="swallow">Deglutição</option>
+              <option value="hearing">Audição</option>
+              <option value="infant">Fala Infantilizada</option>
+              <option value="lang">Linguagem</option>
+            </select>
+          </div>
+        </div>
+        <div class="research-layout">
+          <div class="research-nav" id="research-nav"></div>
+          <div class="research-detail" id="research-detail">
+            <div class="rd-empty">Selecione uma pesquisa ao lado</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ CONSULTA ══ -->
+      <div class="panel-content" id="panel-consulta">
+        <div class="panel-header">
+          <div>
+            <div class="ph-title">Consulta IA Clínica</div>
+            <div class="ph-sub">Fonoaudiologia baseada em evidência · 170 anos de pesquisa</div>
+          </div>
+          <div class="ph-actions">
+            <button class="ph-btn" id="mode-clinica" onclick="setConsultMode('clinica',this)">Protocolo</button>
+            <button class="ph-btn" id="mode-historica" onclick="setConsultMode('historica',this)">Histórico</button>
+            <button class="ph-btn" id="mode-brasil" onclick="setConsultMode('brasil',this)">Brasil</button>
+          </div>
+        </div>
+        <div class="consult-layout">
+          <div class="consult-input">
+            <div class="ci-row">
+              <textarea class="ci-ta" id="ci-ta" rows="2"
+                placeholder="Ex: Paciente 68 anos, rouquidão há 3 meses, sem dor, fumante 30 anos — hipóteses diagnósticas e conduta?"
+                onkeydown="if(event.ctrlKey&&event.key==='Enter')runConsult()"></textarea>
+              <button class="ci-send" id="ci-send" onclick="runConsult()">Enviar</button>
+            </div>
+            <div class="chips-row">
+              <button class="chip" onclick="setConsultQ('Critérios diagnósticos e conduta em presbifonia: quando indicar terapia vs. cirurgia?')">Presbifonia</button>
+              <button class="chip" onclick="setConsultQ('Como diferenciar disfonia funcional de disfonia organofuncional na anamnese?')">Disfonia</button>
+              <button class="chip" onclick="setConsultQ('Protocolo de triagem de disfagia pós-AVC: quais sinais de alerta e quando encaminhar para FEES?')">Disfagia pós-AVC</button>
+              <button class="chip" onclick="setConsultQ('Gagueira em adulto: quando indica terapia fluência-shaping vs. stuttering modification?')">Gagueira adulto</button>
+              <button class="chip" onclick="setConsultQ('Afasia de Broca vs. Wernicke: diferenças clínicas na avaliação informal à beira do leito?')">Afasia beira leito</button>
+              <button class="chip" onclick="setConsultQ('Método Mastigado de Froeschels 1924: protocolo clínico, indicações e contraindicações?')">Froeschels</button>
+              <button class="chip" onclick="setConsultQ('Quais pesquisas históricas de fonoaudiologia foram esquecidas e têm aplicação clínica hoje?')">Pesquisas esquecidas</button>
+              <button class="chip" onclick="setConsultQ('Elderspeak: como treinar uma equipe de ILPI em 4 horas segundo Williams 2004?')">Treinar ILPI</button>
+            </div>
+          </div>
+          <div class="consult-output" id="consult-output">
+            <div class="co-placeholder">
+              <div class="cop-msg">◈ &nbsp; Aguardando consulta</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:4px;">Use Ctrl+Enter para enviar · Escolha o modo no cabeçalho</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ MÓDULOS ══ -->
+      <div class="panel-content" id="panel-modulos">
+        <div class="panel-header">
+          <div>
+            <div class="ph-title">Módulos Clínicos</div>
+            <div class="ph-sub">Ferramentas especializadas de avaliação e suporte</div>
+          </div>
+        </div>
+        <div class="modules-grid">
+          <div class="mod-card" onclick="showPanel('analisador');pickCtxByName('infantil')">
+            <div class="mc-status ms-ai">IA</div>
+            <div class="mc-tag">01 · Linguagem</div>
+            <div class="mc-icon">🗣</div>
+            <div class="mc-title">Analisador de Fala Infantilizada</div>
+            <div class="mc-desc">Detecta patronizing speech, elderspeak e infantilização em todos os contextos adultos.</div>
+          </div>
+          <div class="mod-card" onclick="showPanel('analisador');pickCtxByName('voz')">
+            <div class="mc-status ms-ai">IA</div>
+            <div class="mc-tag">02 · Voz</div>
+            <div class="mc-icon">🎙</div>
+            <div class="mc-title">Analisador de Padrão Vocal</div>
+            <div class="mc-desc">Identifica padrões de disfonia funcional, comportamentos compensatórios e sinais de alerta em transcrições.</div>
+          </div>
+          <div class="mod-card" onclick="showPanel('analisador');pickCtxByName('fluencia')">
+            <div class="mc-status ms-ai">IA</div>
+            <div class="mc-tag">03 · Fluência</div>
+            <div class="mc-icon">💬</div>
+            <div class="mc-title">Analisador de Fluência</div>
+            <div class="mc-desc">Tipifica disfluências, calcula taxa aproximada e diferencia gagueira de disfluência comum.</div>
+          </div>
+          <div class="mod-card" onclick="showPanel('analisador');pickCtxByName('linguagem')">
+            <div class="mc-status ms-ai">IA</div>
+            <div class="mc-tag">04 · Linguagem</div>
+            <div class="mc-icon">📝</div>
+            <div class="mc-title">Análise de Linguagem</div>
+            <div class="mc-desc">Avalia complexidade sintática, coerência discursiva, marcadores de alteração de linguagem.</div>
+          </div>
+          <div class="mod-card" onclick="showPanel('analisador');pickCtxByName('degluticao')">
+            <div class="mc-status ms-ai">IA</div>
+            <div class="mc-tag">05 · Deglutição</div>
+            <div class="mc-icon">🍽</div>
+            <div class="mc-title">Triagem de Disfagia por Relato</div>
+            <div class="mc-desc">Analisa relato de sintomas de deglutição e identifica sinais de risco para encaminhamento.</div>
+          </div>
+          <div class="mod-card" onclick="showPanel('analisador');pickCtxByName('afasia')">
+            <div class="mc-status ms-ai">IA</div>
+            <div class="mc-tag">06 · Neurologia</div>
+            <div class="mc-icon">🧠</div>
+            <div class="mc-title">Análise de Afasia</div>
+            <div class="mc-desc">Identifica padrões compatíveis com diferentes tipos de afasia a partir de amostras de fala.</div>
+          </div>
+          <div class="mod-card" onclick="showPanel('pesquisas')">
+            <div class="mc-status ms-live">Ativo</div>
+            <div class="mc-tag">07 · Referência</div>
+            <div class="mc-icon">📚</div>
+            <div class="mc-title">Banco de Pesquisas Históricas</div>
+            <div class="mc-desc">Descobertas esquecidas de 1854 a 2026 com aplicação clínica documentada.</div>
+          </div>
+          <div class="mod-card" onclick="showPanel('consulta')">
+            <div class="mc-status ms-ai">IA</div>
+            <div class="mc-tag">08 · IA</div>
+            <div class="mc-icon">🤖</div>
+            <div class="mc-title">Consulta IA Clínica</div>
+            <div class="mc-desc">Suporte de decisão baseado em evidência para diagnóstico diferencial e conduta.</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /main -->
+
+    <!-- ─ RIGHT SIDEBAR ─ -->
+    <div class="sidebar-r">
+      <div class="sr-tab-row">
+        <button class="sr-tab active" onclick="showSrTab('info',this)">Info</button>
+        <button class="sr-tab" onclick="showSrTab('refs',this)">Refs</button>
+        <button class="sr-tab" onclick="showSrTab('stats',this)">Stats</button>
+      </div>
+
+      <div class="sr-content" id="sr-info">
+        <div class="info-block">
+          <div class="ib-header">
+            <div class="ib-title">Contexto ativo</div>
+            <div class="ib-badge ms-ai">IA</div>
+          </div>
+          <div class="ib-body">
+            <div id="sr-ctx-name" style="font-size:12px;color:var(--text);margin-bottom:4px;font-weight:500;">Fala Infantilizada</div>
+            <div id="sr-ctx-desc" style="font-size:11px;color:var(--text3);line-height:1.6;">Detecta patronizing speech, elderspeak e condescending communication em qualquer texto adulto.</div>
+          </div>
+        </div>
+        <div class="info-block">
+          <div class="ib-header"><div class="ib-title">Referência rápida</div></div>
+          <div class="ib-body">
+            <div class="stat-row"><span class="sr-lbl">Kemper 1994</span><span class="sr-val">Elderspeak</span></div>
+            <div class="stat-row"><span class="sr-lbl">Ryan 1986</span><span class="sr-val">Predicament</span></div>
+            <div class="stat-row"><span class="sr-lbl">Williams 2003</span><span class="sr-val">84% ILPI</span></div>
+            <div class="stat-row"><span class="sr-lbl">Williams 2004</span><span class="sr-val">−58% treino</span></div>
+          </div>
+        </div>
+        <div class="info-block">
+          <div class="ib-header"><div class="ib-title">Importante</div></div>
+          <div class="ib-body">
+            <div style="font-size:11px;color:var(--text3);line-height:1.7;">
+              A IA analisa apenas o que está no texto.<br>
+              <strong style="color:var(--amber);">Não inventa dados.</strong><br>
+              Se o texto for insuficiente, o resultado dirá isso.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sr-content" id="sr-refs" style="display:none;">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px;">Referências rápidas</div>
+        <div id="refs-list"></div>
+      </div>
+
+      <div class="sr-content" id="sr-stats" style="display:none;">
+        <div class="info-block">
+          <div class="ib-header"><div class="ib-title">Sessão atual</div></div>
+          <div class="ib-body">
+            <div class="stat-row"><span class="sr-lbl">Análises</span><span class="sr-val" id="stat-analyses">0</span></div>
+            <div class="stat-row"><span class="sr-lbl">Consultas IA</span><span class="sr-val" id="stat-consults">0</span></div>
+            <div class="stat-row"><span class="sr-lbl">Último score</span><span class="sr-val" id="stat-last-score">—</span></div>
+          </div>
+        </div>
+        <div class="info-block">
+          <div class="ib-header"><div class="ib-title">Prevalência (evidência)</div></div>
+          <div class="ib-body">
+            <div class="stat-row"><span class="sr-lbl">Elderspeak ILPI</span><span class="sr-val hi">84%</span></div>
+            <div class="stat-row"><span class="sr-lbl">Disfagia pós-AVC</span><span class="sr-val hi">65–78%</span></div>
+            <div class="stat-row"><span class="sr-lbl">Disfonia funcional</span><span class="sr-val hi">~40% disfonias</span></div>
+            <div class="stat-row"><span class="sr-lbl">Gagueira (pop.)</span><span class="sr-val ok">~1%</span></div>
+            <div class="stat-row"><span class="sr-lbl">Afasia pós-AVC</span><span class="sr-val hi">~30%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /workspace -->
+</div><!-- /shell -->
+
+<!-- MODAL -->
+<div class="modal-ov" id="modal" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-title">Configurar Chave Gemini AI</div>
+    <div class="modal-sub">Necessário para todas as funções de IA. Chave gratuita do Google AI Studio.</div>
+    <div class="modal-steps">
+      1 → <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a><br>
+      2 → Login com conta Google<br>
+      3 → Clique em <strong>"Create API Key"</strong><br>
+      4 → Cole a chave abaixo (começa com <strong>AIza…</strong>)
+    </div>
+    <div class="kinp-row">
+      <input type="password" class="kinp" id="kinp" placeholder="AIzaSy…" autocomplete="off">
+      <button class="keye" onclick="document.getElementById('kinp').type=document.getElementById('kinp').type==='password'?'text':'password'">👁</button>
+    </div>
+    <div class="modal-note">
+      🔒 <strong>Salva só no navegador</strong> — não é enviada a terceiros<br>
+      🆓 <strong>Gratuita</strong> — 1.500 consultas/dia<br>
+      🗑 Para apagar: localStorage.removeItem no console do navegador
+    </div>
+    <div class="modal-btns">
+      <button class="mbtn-s" onclick="saveKey()">Salvar e Ativar</button>
+      <button class="mbtn-c" onclick="closeModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+/* ─── CLOCK ─── */
+function tick(){
+  const n=new Date();
+  document.getElementById('clock').textContent=
+    String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
+}
+tick();setInterval(tick,1000);
+
+/* ─── SESSION STATS ─── */
+let sessionStats={analyses:0,consults:0,lastScore:'—'};
+function updateStats(){
+  document.getElementById('stat-analyses').textContent=sessionStats.analyses;
+  document.getElementById('stat-consults').textContent=sessionStats.consults;
+  document.getElementById('stat-last-score').textContent=sessionStats.lastScore;
+}
+
+/* ─── NAVIGATION ─── */
+function showPanel(name){
+  document.querySelectorAll('.panel-content').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tb-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.sl-item').forEach(b=>b.classList.remove('active'));
+  const p=document.getElementById('panel-'+name);
+  const t=document.getElementById('tab-'+name);
+  if(p)p.classList.add('active');
+  if(t)t.classList.add('active');
+}
+function setSub(name){
+  // also switch ctx tab
+  const tab=document.querySelector(`.ctx-tab[data-ctx="${name}"]`);
+  if(tab)tab.click();
+}
+function showSrTab(name,btn){
+  document.querySelectorAll('.sr-content').forEach(c=>c.style.display='none');
+  document.querySelectorAll('.sr-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sr-'+name).style.display='block';
+  btn.classList.add('active');
+}
+
+/* ─── API KEY ─── */
+const KS='phonobase_cli_2026';
+const getKey=()=>localStorage.getItem(KS)||'';
+function openModal(){
+  document.getElementById('kinp').value=getKey();
+  document.getElementById('kinp').type='password';
+  document.getElementById('modal').style.display='flex';
+  setTimeout(()=>document.getElementById('kinp').focus(),80);
+}
+function closeModal(){document.getElementById('modal').style.display='none';}
+document.getElementById('kinp').addEventListener('keydown',e=>{if(e.key==='Enter')saveKey();});
+function saveKey(){
+  const k=document.getElementById('kinp').value.trim();
+  if(!k){alert('Insira a chave.');return;}
+  if(!k.startsWith('AIza')){alert('Chave inválida — deve começar com AIza');return;}
+  localStorage.setItem(KS,k);updateKeyUI();closeModal();
+}
+function updateKeyUI(){
+  const k=getKey();
+  const ki=document.getElementById('ki');
+  const kd=document.getElementById('ki-dot');
+  const kt=document.getElementById('ki-txt');
+  if(k){
+    ki.className='key-indicator on';
+    kd.className='kdot kdot-on';
+    kt.textContent='IA · '+k.slice(0,8)+'…';
+  } else {
+    ki.className='key-indicator off';
+    kd.className='kdot kdot-off';
+    kt.textContent='Ativar IA';
+  }
+}
+updateKeyUI();
+
+
+/* ── GEMINI ── */
+async function callGemini(prompt){
+  const key=getKey();
+  if(!key){openModal();return null;}
+  const MODELS=['gemini-1.5-flash','gemini-2.0-flash'];
+  for(const model of MODELS){
+    let resp,body;
+    try{
+      resp=await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
+        {method:'POST',headers:{'Content-Type':'application/json'},
+         body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:750,temperature:0.25}})}
+      );
+      body=await resp.json().catch(()=>({}));
+    }catch(e){continue;}
+    if(!resp.ok){
+      const code=resp.status;
+      const msg=(body?.error?.message||'').slice(0,200);
+      if(code===400)return{err:true,msg:`Chave inválida (400): ${msg}\n\nGere uma nova em aistudio.google.com/apikey`};
+      if(code===403){continue;}
+      if(code===429){
+        if(model===MODELS[MODELS.length-1])
+          return{err:true,msg:`Cota esgotada (429): ${msg||'Aguarde ~1 minuto. Limite gratuito: 15 req/min.'}`};
+        continue;
+      }
+      if(code>=500){continue;}
+      return{err:true,msg:`Erro ${code}: ${msg}`};
+    }
+    const fin=body?.candidates?.[0]?.finishReason;
+    if(fin==='SAFETY')return{err:true,msg:'Conteúdo bloqueado pelos filtros do Google.'};
+    if(fin==='MAX_TOKENS')return{err:true,msg:'Resposta cortada — use um texto menor.'};
+    const text=body?.candidates?.[0]?.content?.parts?.[0]?.text||'';
+    if(text)return{err:false,text};
+  }
+  return{err:true,msg:'Sem resposta. Verifique conexão e tente novamente.'};
+}
+function parseJSON(raw){
+  const c=raw.replace(/^```(?:json)?\s*/,'').replace(/\s*```\s*$/,'').trim();
+  try{return{ok:true,data:JSON.parse(c)};}catch(e){return{ok:false,raw};}
+}
+
+/* INIT */
+showPanel('analisador');
+document.getElementById('mode-clinica').classList.add('primary');
+</script>
 </body>
 </html>
