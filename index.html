@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -241,7 +240,49 @@ body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;min-
   .speech-modes{grid-template-columns:1fr}
   .home-hero h1{font-size:2rem}
   .timer-display{font-size:1.6rem}
+  html{font-size:16px}
 }
+/* FONO ACTIVITIES */
+.fono-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+@media(max-width:640px){.fono-grid{grid-template-columns:1fr 1fr}}
+.fono-card{background:var(--paper);border:2px solid var(--line);border-radius:14px;padding:16px 12px;cursor:pointer;transition:all .2s;text-align:center;position:relative}
+.fono-card:hover{transform:translateY(-3px);border-color:#aac8e8}
+.fono-card.selected{border-color:var(--speech);background:var(--speech-bg);box-shadow:0 4px 16px rgba(0,119,204,.12)}
+.fono-card-icon{font-size:1.8rem;display:block;margin-bottom:6px}
+.fono-card-title{font-weight:700;font-size:.82rem;margin-bottom:3px;color:var(--ink)}
+.fono-card-desc{font-size:.68rem;color:var(--ink3);line-height:1.35}
+.fono-badge{position:absolute;top:8px;right:8px;font-size:.55rem;font-weight:700;padding:2px 6px;border-radius:10px;font-family:'DM Mono',monospace}
+.fono-badge.new{background:#e8f4ff;color:#0077cc}
+.fono-badge.pop{background:#eaf7ec;color:#2d7a3a}
+/* Activity Area */
+.activity-panel{background:var(--paper);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:20px}
+.activity-header{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;background:var(--bg)}
+.activity-icon{font-size:1.4rem}
+.activity-title{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;flex:1}
+.activity-meta{font-size:.68rem;color:var(--ink3);font-family:'DM Mono',monospace}
+.activity-body{padding:20px}
+/* Exercise display */
+.exercise-display{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:20px;text-align:center;margin-bottom:16px;min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.exercise-word{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:900;letter-spacing:.02em;color:var(--ink);line-height:1.1}
+.exercise-syllables{font-size:1rem;color:var(--ink3);margin-top:6px;font-family:'DM Mono',monospace;letter-spacing:.05em}
+.exercise-instruction{font-size:.85rem;color:var(--ink2);margin-top:8px;line-height:1.5}
+/* Trava-língua */
+.trava-text{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;line-height:1.5;color:var(--ink);text-align:center;padding:10px}
+.trava-detail{font-size:.78rem;color:var(--ink3);text-align:center;margin-top:8px;font-style:italic}
+/* Score tracker */
+.score-row{display:flex;gap:10px;margin-bottom:14px;align-items:center;flex-wrap:wrap}
+.score-badge{font-family:'DM Mono',monospace;font-size:.75rem;padding:5px 12px;border-radius:20px;border:1.5px solid var(--line);color:var(--ink2)}
+.score-badge.good{border-color:var(--easy);color:var(--easy);background:var(--easy-bg)}
+.score-badge.bad{border-color:var(--dificil);color:var(--dificil);background:var(--dificil-bg)}
+/* Progress dots */
+.progress-dots{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.prog-dot{width:12px;height:12px;border-radius:50%;background:var(--line);transition:background .2s}
+.prog-dot.done-ok{background:var(--easy)}
+.prog-dot.done-err{background:var(--dificil)}
+.prog-dot.current{background:var(--accent);box-shadow:0 0 0 3px rgba(232,93,4,.2)}
+/* Browser warning */
+.browser-warning{background:#fff4e0;border:1.5px solid var(--medio);border-radius:10px;padding:12px 16px;font-size:.8rem;color:var(--ink2);margin-bottom:16px;display:none}
+.browser-warning strong{color:var(--medio)}
 </style>
 </head>
 <body>
@@ -254,6 +295,7 @@ body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;min-
     <div class="topbar-tabs">
       <button class="topbar-tab active" id="tabBtnReading" onclick="switchMainTab('reading')">📖 Leitura</button>
       <button class="topbar-tab" id="tabBtnSpeech" onclick="switchMainTab('speech')">🎤 Fala</button>
+      <button class="topbar-tab" id="tabBtnFono" onclick="switchMainTab('fono')">🧠 Fono</button>
     </div>
     <div class="topbar-right">
       <button class="btn btn-ghost" onclick="showHistory()">📊 Histórico</button>
@@ -332,8 +374,56 @@ body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;min-
     </div>
   </div>
 
-  <!-- TAB: FALA -->
-  <div id="mainTabSpeech" class="home-wrap" style="display:none">
+  <!-- TAB: FONO -->
+  <div id="mainTabFono" class="home-wrap" style="display:none">
+    <div class="speech-hero">
+      <h2>Atividades <em>Fonoaudiológicas</em></h2>
+      <p>Exercícios clínicos para adultos: dicção, articulação, fluência, memória auditiva e muito mais — baseados em práticas de fonoaudiologia.</p>
+    </div>
+
+    <!-- GRADE DE ATIVIDADES -->
+    <div style="margin-bottom:12px"><div class="section-title">Escolha uma Atividade</div><div class="section-sub">6 módulos baseados em fonoaudiologia clínica para adultos</div></div>
+    <div class="fono-grid" id="fonoGrid">
+      <div class="fono-card selected" id="fonoCard-trava" onclick="selectFonoActivity('trava')">
+        <span class="fono-badge pop">Popular</span>
+        <span class="fono-card-icon">👅</span>
+        <div class="fono-card-title">Trava-Língua</div>
+        <div class="fono-card-desc">Agilidade articulatória e precisão de fonemas</div>
+      </div>
+      <div class="fono-card" id="fonoCard-silabas" onclick="selectFonoActivity('silabas')">
+        <span class="fono-badge new">Novo</span>
+        <span class="fono-card-icon">🔤</span>
+        <div class="fono-card-title">Sílabas e Fonemas</div>
+        <div class="fono-card-desc">Treinamento de sons difíceis do português</div>
+      </div>
+      <div class="fono-card" id="fonoCard-respiracao" onclick="selectFonoActivity('respiracao')">
+        <span class="fono-card-icon">🌬️</span>
+        <div class="fono-card-title">Respiração e Voz</div>
+        <div class="fono-card-desc">Controle do ar, projeção vocal e apoio</div>
+      </div>
+      <div class="fono-card" id="fonoCard-memoria" onclick="selectFonoActivity('memoria')">
+        <span class="fono-card-icon">🧩</span>
+        <div class="fono-card-title">Memória Auditiva</div>
+        <div class="fono-card-desc">Retenção e sequenciamento verbal</div>
+      </div>
+      <div class="fono-card" id="fonoCard-ritmo" onclick="selectFonoActivity('ritmo')">
+        <span class="fono-card-icon">🥁</span>
+        <div class="fono-card-title">Ritmo e Prosódia</div>
+        <div class="fono-card-desc">Entonação, pausas e expressividade</div>
+      </div>
+      <div class="fono-card" id="fonoCard-fluencia" onclick="selectFonoActivity('fluencia')">
+        <span class="fono-badge new">Clínico</span>
+        <span class="fono-card-icon">💬</span>
+        <div class="fono-card-title">Fluência Verbal</div>
+        <div class="fono-card-desc">Evocação semântica e velocidade lexical</div>
+      </div>
+    </div>
+
+    <!-- PAINEL DA ATIVIDADE ATIVA -->
+    <div id="fonoActivityPanel"></div>
+  </div>
+
+
     <div class="speech-hero">
       <h2>Analise sua <em>fala</em></h2>
       <p>Grave sua voz lendo em voz alta ou fale livremente. O sistema identifica problemas de dicção, ritmo, hesitações e muito mais.</p>
@@ -373,6 +463,9 @@ body{background:var(--bg);color:var(--ink);font-family:'DM Sans',sans-serif;min-
         <div id="speechSupportBadge" style="font-size:.7rem;font-family:'DM Mono',monospace;color:var(--easy)">● API disponível</div>
       </div>
       <div class="speech-panel-body">
+        <div class="browser-warning" id="browserWarning">
+          <strong>⚠ Atenção:</strong> O reconhecimento de voz não é suportado no Firefox. Use <strong>Google Chrome</strong> ou <strong>Microsoft Edge</strong> para usar esta função.
+        </div>
 
         <!-- BOTÃO NO TOPO -->
         <div style="text-align:center;margin-bottom:20px">
@@ -895,15 +988,18 @@ let timerInterval = null;
 let timerRunning = false;
 let timerStarted = false;
 let timerPaused = false;
-let history = [];
-try { history = JSON.parse(localStorage.getItem('leitura_history') || '[]'); } catch(e){ history = []; }
+let readHistory = [];
+try { readHistory = JSON.parse(localStorage.getItem('leitura_history') || '[]'); } catch(e){ readHistory = []; }
 
 // ===== MAIN TAB SWITCH =====
 function switchMainTab(tab) {
   document.getElementById('mainTabReading').style.display = tab === 'reading' ? '' : 'none';
   document.getElementById('mainTabSpeech').style.display = tab === 'speech' ? '' : 'none';
+  document.getElementById('mainTabFono').style.display = tab === 'fono' ? '' : 'none';
   document.getElementById('tabBtnReading').classList.toggle('active', tab === 'reading');
   document.getElementById('tabBtnSpeech').classList.toggle('active', tab === 'speech');
+  document.getElementById('tabBtnFono').classList.toggle('active', tab === 'fono');
+  if(tab === 'fono' && !currentFonoActivity) selectFonoActivity('trava');
 }
 
 // ===== INIT =====
@@ -987,10 +1083,10 @@ function drawProgressChart(canvas, recent, avg) {
 }
 
 function updateStats() {
-  document.getElementById('statSessions').textContent = history.length;
-  if (!history.length) return;
+  document.getElementById('statSessions').textContent = readHistory.length;
+  if (!readHistory.length) return;
 
-  const wpms = history.map(h => h.wpm);
+  const wpms = readHistory.map(h => h.wpm);
   const avg = Math.round(wpms.reduce((a,b)=>a+b,0)/wpms.length);
   const best = Math.max(...wpms);
   document.getElementById('statAvgWPM').textContent = avg;
@@ -998,7 +1094,7 @@ function updateStats() {
 
   // ── STREAK ──────────────────────────────────────────
   const todayStr = new Date().toLocaleDateString('pt-BR');
-  const dates = [...new Set(history.map(h => h.date))];
+  const dates = [...new Set(readHistory.map(h => h.date))];
   let streak = 0;
   let checkDate = new Date();
   for(let i = 0; i < 365; i++) {
@@ -1013,7 +1109,7 @@ function updateStats() {
   document.getElementById('progressDashboard').style.display = '';
 
   // ── EVOLUTION CHART ──────────────────────────────────
-  const recent = history.slice(0, 15).reverse();
+  const recent = readHistory.slice(0, 15).reverse();
   const canvas = document.getElementById('progressChart');
   // Ensure canvas width is correct after display:'' 
   requestAnimationFrame(() => drawProgressChart(canvas, recent, avg));
@@ -1021,7 +1117,7 @@ function updateStats() {
   // ── META SEMANAL ─────────────────────────────────────
   // Meta = melhor PPM da semana passada + 10%, mínimo 200
   const oneWeekAgo = new Date(); oneWeekAgo.setDate(oneWeekAgo.getDate()-7);
-  const thisWeek = history.filter(h => {
+  const thisWeek = readHistory.filter(h => {
     const parts = h.date.split('/');
     if(parts.length < 3) return false;
     const d = new Date(+parts[2], +parts[1]-1, +parts[0]);
@@ -1029,8 +1125,8 @@ function updateStats() {
   });
   const weekBest = thisWeek.length ? Math.max(...thisWeek.map(h=>h.wpm)) : 0;
   const weekSessions = thisWeek.length;
-  const prevWeekBest = history.length > thisWeek.length
-    ? Math.max(...history.slice(thisWeek.length).map(h=>h.wpm).slice(0,20))
+  const prevWeekBest = readHistory.length > thisWeek.length
+    ? Math.max(...readHistory.slice(thisWeek.length).map(h=>h.wpm).slice(0,20))
     : avg;
   const weekGoal = Math.max(200, Math.round(prevWeekBest * 1.1));
   const weekPct = Math.min(100, Math.round((weekBest / weekGoal) * 100));
@@ -1045,9 +1141,9 @@ function updateStats() {
   // ── RECORDES PESSOAIS ─────────────────────────────────
   const records = [
     { label: 'Melhor sessão', val: best + ' PPM', ok: best >= 300 },
-    { label: 'Sessão mais longa', val: (() => { const t = history.reduce((a,h)=>{ const p=h.time?.split(':'); return p ? Math.max(a,+p[0]*60+ +p[1]) : a; },0); return t ? Math.floor(t/60)+'m '+( t%60)+'s' : '—'; })(), ok: true },
+    { label: 'Sessão mais longa', val: (() => { const t = readHistory.reduce((a,h)=>{ const p=h.time?.split(':'); return p ? Math.max(a,+p[0]*60+ +p[1]) : a; },0); return t ? Math.floor(t/60)+'m '+( t%60)+'s' : '—'; })(), ok: true },
     { label: 'Sequência máx.', val: streak + ' dia(s)', ok: streak >= 3 },
-    { label: 'Nível mais alto', val: (() => { const lvls={easy:0,medio:1,dificil:2,avancado:3,extremo:4}; const names=['Fácil','Médio','Difícil','Avançado','Extremo']; const top=history.reduce((a,h)=>Math.max(a,lvls[h.level]||0),0); return names[top]; })(), ok: true }
+    { label: 'Nível mais alto', val: (() => { const lvls={easy:0,medio:1,dificil:2,avancado:3,extremo:4}; const names=['Fácil','Médio','Difícil','Avançado','Extremo']; const top=readHistory.reduce((a,h)=>Math.max(a,lvls[h.level]||0),0); return names[top]; })(), ok: true }
   ];
 
   const box = document.getElementById('personalRecords');
@@ -1578,9 +1674,9 @@ function renderResult(d) {
 
   buildFullReport(wpm, secs, words, currentText.level, finalGrade);
 
-  history.unshift({wpm,time:timeStr,words,level:currentText.level,title:currentText.title,grade:finalGrade,date:new Date().toLocaleDateString('pt-BR')});
-  if(history.length>50) history.pop();
-  try { localStorage.setItem('leitura_history',JSON.stringify(history)); } catch(e){}
+  readHistory.unshift({wpm,time:timeStr,words,level:currentText.level,title:currentText.title,grade:finalGrade,date:new Date().toLocaleDateString('pt-BR')});
+  if(readHistory.length>50) readHistory.pop();
+  try { localStorage.setItem('leitura_history',JSON.stringify(readHistory)); } catch(e){}
 
   showScreen('result');
   window.scrollTo(0,0);
@@ -1815,6 +1911,7 @@ function checkSpeechSupport(){
   if(!SR){
     document.getElementById('speechSupportBadge').textContent = '⚠ Use Chrome/Edge';
     document.getElementById('speechSupportBadge').style.color = 'var(--medio)';
+    document.getElementById('browserWarning').style.display = '';
   }
 }
 
@@ -2266,17 +2363,34 @@ function goHome(){
 
 // ===== HISTORY =====
 function showHistory(){
-  if(!history.length){ showToast('Nenhum histórico ainda!'); return; }
+  if(!readHistory.length){ showToast('Nenhum histórico ainda!'); return; }
   const lvlNames={easy:'Fácil',medio:'Médio',dificil:'Difícil',avancado:'Avançado',extremo:'Extremo'};
   const gc={S:'#c8a000',A:'#2d7a3a',B:'#4caf50',C:'#b06a00',D:'#c0392b',F:'#888'};
-  const html=history.slice(0,15).map(h=>`
-    <div style="display:flex;align-items:center;gap:14px;padding:10px 16px;background:#fff;border:1px solid #e8e0d0;border-radius:10px;margin-bottom:8px">
-      <div style="font-family:serif;font-size:1.3rem;font-weight:700;color:${gc[h.grade]||'#333'};min-width:55px">${h.wpm}</div>
-      <div style="flex:1"><div style="font-weight:500;font-size:.83rem;margin-bottom:2px">${h.title}</div><div style="font-size:.68rem;color:#9a8870;font-family:monospace">${h.date} · ${lvlNames[h.level]||h.level} · ${h.time}</div></div>
+  const html=readHistory.slice(0,20).map(h=>`
+    <div style="display:flex;align-items:center;gap:14px;padding:10px 16px;background:var(--bg);border:1px solid var(--line);border-radius:10px;margin-bottom:8px">
+      <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:${gc[h.grade]||'#333'};min-width:55px">${h.wpm}<br><span style="font-size:.55rem;font-family:'DM Mono',monospace;color:var(--ink3)">PPM</span></div>
+      <div style="flex:1"><div style="font-weight:500;font-size:.83rem;margin-bottom:2px">${h.title}</div><div style="font-size:.68rem;color:var(--ink3);font-family:'DM Mono',monospace">${h.date} · ${lvlNames[h.level]||h.level} · ${h.time}</div></div>
       <div style="font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:20px;background:${gc[h.grade]}22;color:${gc[h.grade]}">${h.grade}</div>
     </div>`).join('');
-  const w=window.open('','_blank','width=560,height=620');
-  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Histórico</title><style>body{font-family:sans-serif;background:#faf8f4;padding:24px;color:#1a1410}h2{font-family:serif;font-size:1.4rem;margin-bottom:18px}</style></head><body><h2>📊 Histórico de Leituras</h2>${html}</body></html>`);
+  // Create inline modal
+  let modal = document.getElementById('historyModal');
+  if(!modal){
+    modal = document.createElement('div');
+    modal.id = 'historyModal';
+    modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px';
+    modal.onclick = e => { if(e.target===modal) modal.remove(); };
+    document.body.appendChild(modal);
+  }
+  modal.innerHTML = `
+    <div style="background:var(--paper);border-radius:16px;max-width:580px;width:100%;max-height:80vh;overflow-y:auto;padding:24px;position:relative">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+        <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700">📊 Histórico de Leituras</div>
+        <button onclick="document.getElementById('historyModal').remove()" style="border:none;background:transparent;cursor:pointer;font-size:1.3rem;color:var(--ink3);padding:4px">×</button>
+      </div>
+      ${html}
+      ${readHistory.length>20?`<div style="text-align:center;font-size:.75rem;color:var(--ink3);margin-top:8px">Mostrando as 20 sessões mais recentes de ${readHistory.length} total</div>`:''}
+    </div>`;
+  modal.style.display='flex';
 }
 
 // ===== TOAST =====
@@ -2286,6 +2400,555 @@ function showToast(msg){
   setTimeout(()=>t.classList.remove('show'),2800);
 }
 
+// ===== FONO ACTIVITIES ENGINE =====
+let currentFonoActivity = null;
+let fonoState = {};
+
+// ── DADOS DAS ATIVIDADES ──────────────────────────────────
+
+const TRAVA_LINGUAS = [
+  { text: 'O rato roeu a roupa do rei de Roma.', focus: 'R inicial e medial', dica: 'Foque no "R" forte no início e no "R" suave no meio das palavras.' },
+  { text: 'Três pratos de trigo para três tigres tristes.', focus: 'TR e GR', dica: 'O grupo "TR" exige língua rápida. Não aspire o T.' },
+  { text: 'Sabendo o sabiá que o sábia sabia assobiar, o sábia assoviava sabendo.', focus: 'S e Sibilantes', dica: 'Controle o ar nos sibilantes para não assobiar involuntariamente.' },
+  { text: 'Que queijo é esse? É queixada queimada com quiabo.', focus: 'QU e CH', dica: 'Atenção à posição da bochecha no "QU" — não abra demais a boca.' },
+  { text: 'Num ninho de mafagafos, cinco mafagafinhos há.', focus: 'Nasais M/N/NH', dica: 'Vibrar o nariz nos sons nasais. Sinta a ressonância nas maçãs do rosto.' },
+  { text: 'Pinga pinga vai a pinga, pinga a pinga até parar.', focus: 'P oclusivo', dica: 'Cada P deve ter um sopro curto e preciso de ar. Não deixe vazar.' },
+  { text: 'Casa, casaco, cascata, casulo, casaco fino, casacão.', focus: 'CA/CO/CU', dica: 'Mude a posição da língua para cada vogal mantendo o C firme.' },
+  { text: 'Fui à feira, vi frutas frescas e figos fracos, futilmente.', focus: 'F fricativo', dica: 'O F é feito com os dentes superiores na borda do lábio inferior.' },
+  { text: 'Zunzum de zunzum zumbia o zum zum zum do sol.', focus: 'Z sonoro', dica: 'O Z é vibrado — a garganta deve vibrar. Coloque a mão no pescoço para sentir.' },
+  { text: 'Lá vai o lobo, leva o lixo leve, lá longe no largo.', focus: 'L lateral', dica: 'A língua toca os alvéolos (atrás dos dentes). Não deixe virar som de U.' },
+  { text: 'Vivendo vim ver velas verdes voar além do vento vão.', focus: 'V fricativo', dica: 'Igual ao F mas com vibração. Sinta os lábios e dentes vibrando juntos.' },
+  { text: 'Chico cheiroso chutou o chão cheio de choradeira.', focus: 'CH palatal', dica: 'A língua se arqueia levemente para o céu da boca. Não force.' },
+];
+
+const FONEMAS_EXERCICIOS = [
+  { title: 'Vogais Longas', instruction: 'Sustente cada vogal por 5 segundos com voz firme e constante.', items: ['AAAAAA', 'EEEEEE', 'IIIIII', 'OOOOOO', 'UUUUUU'], dica: 'Mantenha o volume estável do início ao fim. Sinal de bom controle respiratório.' },
+  { title: 'Pares Mínimos B/P', instruction: 'Diga em voz alta distinguindo claramente B (sonoro) de P (surdo).', items: ['bala / pala', 'bico / pico', 'bote / pote', 'barco / parco', 'bem / pem'], dica: 'O B vibra a garganta; o P não. Teste colocando os dedos no pescoço.' },
+  { title: 'Pares Mínimos D/T', instruction: 'Diga em voz alta distinguindo D (sonoro) de T (surdo).', items: ['dado / tato', 'dedo / teto', 'doca / toca', 'dão / tão', 'dente / tente'], dica: 'O D é suave; o T tem um "bafão" de ar. Coloque a palma em frente à boca.' },
+  { title: 'Encontros Consonantais BR/PR', instruction: 'Articule os grupos claramente, sem inserir vogal entre as consoantes.', items: ['bravo', 'preto', 'brasileiro', 'problema', 'brincadeira', 'aprender'], dica: 'Erro comum: dizer "buravo" ou "pureto". As consoantes devem ser simultâneas.' },
+  { title: 'Sílabas Finais Travadas', instruction: 'Diga as palavras terminando claramente a consoante final.', items: ['real', 'animal', 'capital', 'hospital', 'digital', 'marginal'], dica: 'O L final no Brasil vira "u" (reau). Pratique a forma culta com L claro.' },
+  { title: 'R Vibrante vs R Fricativo', instruction: 'Compare o R inicial (forte) com o R intervocálico (suave).', items: ['rato / caro', 'roda / fora', 'rico / piro', 'rua / cura', 'remo / pero'], dica: 'Deixe sua região gerir o som — o importante é ser consistente e inteligível.' },
+];
+
+const RESPIRACAO_EXERCICIOS = [
+  { title: 'Respiração Diafragmática', icon: '🌬️', steps: ['Sente-se ou deite-se confortavelmente.', 'Coloque uma mão no peito e outra na barriga.', 'Inspire pelo nariz por 4 segundos — a barriga deve subir, não o peito.', 'Expire pela boca por 6 segundos com lábios levemente abertos.', 'Repita 8 vezes mantendo o tórax imóvel.'], dica: 'Esta é a base do suporte vocal. Cantores, atores e oradores dependem disso.' },
+  { title: 'Controle de Fluxo de Ar', icon: '💨', steps: ['Inspire profundamente pelo nariz (4s).', 'Com os lábios em bico, expire fazendo um "sssss" contínuo.', 'Tente manter o sssss por 15 segundos sem interrupção.', 'Aumente para 20s na próxima tentativa.', 'Objetivo final: 25 segundos de sssss estável.'], dica: 'A duração do sssss indica sua capacidade de suporte vocal. Menos de 10s é baixo.' },
+  { title: 'Apoio Vocal nas Frases', icon: '🔊', steps: ['Inspire profundamente antes de começar.', 'Diga a frase inteira SEM pausar para respirar: "O bom fonoaudiólogo diagnostica e trata distúrbios da comunicação humana."', 'Depois diga com pausas naturais nos pontos estratégicos.', 'Observe onde o ar acaba e onde deveria ter respirado.'], dica: 'Profissionais planejam as respirações. Não espere o ar acabar — respire nos pontos de pontuação.' },
+  { title: 'Aquecimento Vocal M e N', icon: '🎵', steps: ['Faça "mmmmmm" com lábios fechados por 5 segundos.', 'Sinta a vibração nos lábios e nariz — isso é ressonância.', 'Vá subindo o tom: "mm-mm-mm" como se concordasse.', 'Faça o mesmo com "nnnnn" sentindo vibração na ponta do nariz.', 'Termine com "mmmm-ah" abrindo a boca ao final.'], dica: 'Este exercício aquece as cordas vocais com suavidade. Faça sempre antes de falar muito.' },
+  { title: 'Projeção Vocal sem Gritar', icon: '📢', steps: ['Fique a 1 metro da parede. Diga "hoje" normalmente.', 'Recue 2 metros. Diga "hoje" com a mesma qualidade.', 'Recue mais 1 metro. Diga "hoje está um dia lindo" sem gritar, mas projetando.', 'A voz deve ser mais intensa pelo apoio — não pela tensão.', 'Teste: sua voz soa tensa ou aberta?'], dica: 'Gritar força as cordas vocais. Projetar usa o corpo inteiro como caixa de ressonância.' },
+];
+
+const MEMORIA_SERIES = [
+  { nivel: 'Fácil (3 itens)', series: [['casa', 'porta', 'janela'], ['mesa', 'cadeira', 'sofá'], ['gato', 'cachorro', 'peixe'], ['verde', 'azul', 'vermelho']] },
+  { nivel: 'Médio (5 itens)', series: [['ônibus', 'metrô', 'bicicleta', 'avião', 'trem'], ['pão', 'leite', 'queijo', 'manteiga', 'café'], ['Brasil', 'Argentina', 'Chile', 'Uruguai', 'Peru']] },
+  { nivel: 'Difícil (7 itens)', series: [['telefone', 'caneta', 'caderno', 'óculos', 'carteira', 'chave', 'relógio'], ['anatomia', 'fisiologia', 'patologia', 'farmacologia', 'semiologia', 'cirurgia', 'clínica']] },
+  { nivel: 'Avançado (9 itens + ordem)', series: [['maçã', 'banana', 'uva', 'pera', 'abacaxi', 'manga', 'laranja', 'melão', 'goiaba'], ['segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado', 'domingo', 'feriado', 'véspera']] },
+];
+
+const RITMO_EXERCICIOS = [
+  { title: 'Frases com Ênfase Variável', sets: [
+    { frase: 'Eu não disse que ela roubou o dinheiro.', enfases: ['Eu (não fui outro)', 'não disse (foi pensado)', 'disse (não escrevi)', 'ela (não outro)', 'roubou (não perdeu)', 'o dinheiro (não outro objeto)'] }
+  ], dica: 'A mesma frase tem 6 significados diferentes dependendo de qual palavra você enfatiza. Este é o poder da prosódia.' },
+  { title: 'Velocidade Controlada', sets: [
+    { instrucao: 'Diga a frase em 3 velocidades:', frase: 'A comunicação eficaz exige clareza, ritmo e intenção.', velocidades: ['Devagar (cada sílaba clara)', 'Velocidade normal de conversa', 'Rápido (sem perder inteligibilidade)'] }
+  ], dica: 'O ideal é variar a velocidade conforme o conteúdo. Informações novas = mais devagar. Informações conhecidas = mais rápido.' },
+  { title: 'Pausa Dramática', sets: [
+    { instrucao: 'Leia com as pausas indicadas por |:', frase: 'A maior habilidade humana | não é falar | mas saber quando | calar.', obs: 'As pausas são marcadas estrategicamente para criar impacto.' }
+  ], dica: 'O silêncio é parte da fala. Uma pausa bem colocada vale mais que dez palavras.' },
+  { title: 'Entonação Afirmativa vs Interrogativa', sets: [
+    { instrucao: 'Diga a mesma frase como afirmação e como pergunta:', frases: ['Você foi ao médico.', 'Você foi ao médico?', 'Ela terminou o projeto.', 'Ela terminou o projeto?'] }
+  ], dica: 'Na interrogativa, a voz sobe no final. Na afirmativa, desce ou fica plana.' },
+];
+
+const FLUENCIA_CATEGORIAS = [
+  { cat: 'Animais', exemplos: 5, lista: [] },
+  { cat: 'Frutas', exemplos: 6, lista: [] },
+  { cat: 'Profissões', exemplos: 5, lista: [] },
+  { cat: 'Verbos de movimento', exemplos: 5, lista: [] },
+  { cat: 'Palavras com a letra R', exemplos: 5, lista: [] },
+  { cat: 'Objetos que cabem num bolso', exemplos: 5, lista: [] },
+  { cat: 'Palavras com mais de 4 sílabas', exemplos: 4, lista: [] },
+  { cat: 'Coisas que se encontram num hospital', exemplos: 5, lista: [] },
+  { cat: 'Palavras que rimam com "amor"', exemplos: 5, lista: [] },
+  { cat: 'Ações que você faz pela manhã', exemplos: 5, lista: [] },
+];
+
+// ── RENDER FUNCTIONS ─────────────────────────────────────
+
+function selectFonoActivity(activity) {
+  currentFonoActivity = activity;
+  fonoState = {};
+  document.querySelectorAll('.fono-card').forEach(c => c.classList.remove('selected'));
+  const card = document.getElementById('fonoCard-' + activity);
+  if(card) card.classList.add('selected');
+  renderFonoActivity(activity);
+}
+
+function renderFonoActivity(activity) {
+  const panel = document.getElementById('fonoActivityPanel');
+  switch(activity) {
+    case 'trava':       panel.innerHTML = buildTravaActivity(); initTrava(); break;
+    case 'silabas':     panel.innerHTML = buildSilabasActivity(); initSilabas(); break;
+    case 'respiracao':  panel.innerHTML = buildRespiracaoActivity(); initRespiracao(); break;
+    case 'memoria':     panel.innerHTML = buildMemoriaActivity(); initMemoria(); break;
+    case 'ritmo':       panel.innerHTML = buildRitmoActivity(); initRitmo(); break;
+    case 'fluencia':    panel.innerHTML = buildFluenciaActivity(); initFluencia(); break;
+  }
+}
+
+// ── TRAVA-LÍNGUA ──────────────────────────────────────────
+function buildTravaActivity() {
+  return `
+  <div class="activity-panel">
+    <div class="activity-header">
+      <span class="activity-icon">👅</span>
+      <div class="activity-title">Trava-Língua — Articulação</div>
+      <div class="activity-meta" id="travaProgress">0/${TRAVA_LINGUAS.length}</div>
+    </div>
+    <div class="activity-body">
+      <div class="progress-dots" id="travaDots"></div>
+      <div style="margin-bottom:10px">
+        <span style="font-size:.72rem;color:var(--ink3);font-family:'DM Mono',monospace">FOCO: </span>
+        <span id="travaFocus" style="font-size:.72rem;font-weight:600;color:var(--speech)"></span>
+      </div>
+      <div class="exercise-display">
+        <div class="trava-text" id="travaText"></div>
+        <div class="trava-detail" id="travaDica"></div>
+      </div>
+      <div style="margin-bottom:14px">
+        <div style="font-size:.78rem;font-weight:600;color:var(--ink2);margin-bottom:8px">Velocidade: <span id="travaVelLabel" style="color:var(--accent)">Devagar (1x)</span></div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-ghost" style="font-size:.72rem;padding:5px 10px" onclick="setTravaVel(1)" id="vel1">🐢 1×</button>
+          <button class="btn btn-ghost" style="font-size:.72rem;padding:5px 10px" onclick="setTravaVel(2)" id="vel2">🐇 2×</button>
+          <button class="btn btn-ghost" style="font-size:.72rem;padding:5px 10px" onclick="setTravaVel(3)" id="vel3">⚡ 3×</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-accent" onclick="travaNext()" id="travaNextBtn">Próximo →</button>
+        <button class="btn btn-ghost" onclick="fonoSpeakItem(document.getElementById('travaText').textContent)" title="Ouvir exemplo">🔈 Ouvir</button>
+        <button class="btn btn-ghost" onclick="initTrava()">↺ Reiniciar</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function initTrava() {
+  fonoState.travaIdx = 0;
+  fonoState.travaVel = 1;
+  renderTrava();
+}
+
+function renderTrava() {
+  const idx = fonoState.travaIdx || 0;
+  const t = TRAVA_LINGUAS[idx];
+  if(!t) return;
+  document.getElementById('travaText').textContent = t.text;
+  document.getElementById('travaDica').textContent = '💡 ' + t.dica;
+  document.getElementById('travaFocus').textContent = t.focus;
+  document.getElementById('travaProgress').textContent = (idx+1) + '/' + TRAVA_LINGUAS.length;
+  // dots
+  const dots = document.getElementById('travaDots');
+  dots.innerHTML = TRAVA_LINGUAS.map((_,i) =>
+    `<div class="prog-dot ${i < idx ? 'done-ok' : i === idx ? 'current' : ''}"></div>`
+  ).join('');
+}
+
+function travaNext() {
+  fonoState.travaIdx = ((fonoState.travaIdx||0) + 1) % TRAVA_LINGUAS.length;
+  renderTrava();
+}
+
+function setTravaVel(v) {
+  fonoState.travaVel = v;
+  const labels = {1:'Devagar (1×)', 2:'Médio (2×)', 3:'Rápido (3×)'};
+  document.getElementById('travaVelLabel').textContent = labels[v];
+  [1,2,3].forEach(n => {
+    const btn = document.getElementById('vel'+n);
+    btn.style.background = n===v ? 'var(--ink)' : '';
+    btn.style.color = n===v ? '#fff' : '';
+  });
+  showToast(`Velocidade ${labels[v]} — repita ${v} vezes mais rápido que antes!`);
+}
+
+// ── SÍLABAS E FONEMAS ─────────────────────────────────────
+function buildSilabasActivity() {
+  return `
+  <div class="activity-panel">
+    <div class="activity-header">
+      <span class="activity-icon">🔤</span>
+      <div class="activity-title">Sílabas e Fonemas Difíceis</div>
+      <div class="activity-meta" id="silabaProgress">1/${FONEMAS_EXERCICIOS.length}</div>
+    </div>
+    <div class="activity-body">
+      <div class="progress-dots" id="silabaDots"></div>
+      <div class="exercise-display" id="silabaDisplay"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+        <button class="btn btn-accent" onclick="silabaNext()">Próximo →</button>
+        <button class="btn btn-ghost" onclick="initSilabas()">↺ Reiniciar</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function initSilabas() { fonoState.silabaIdx = 0; renderSilaba(); }
+
+function renderSilaba() {
+  const idx = fonoState.silabaIdx || 0;
+  const ex = FONEMAS_EXERCICIOS[idx];
+  if(!ex) return;
+  document.getElementById('silabaProgress').textContent = (idx+1)+'/'+FONEMAS_EXERCICIOS.length;
+  const dots = document.getElementById('silabaDots');
+  dots.innerHTML = FONEMAS_EXERCICIOS.map((_,i)=>
+    `<div class="prog-dot ${i<idx?'done-ok':i===idx?'current':''}"></div>`
+  ).join('');
+  document.getElementById('silabaDisplay').innerHTML = `
+    <div style="font-size:.78rem;font-weight:700;color:var(--speech);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">${ex.title}</div>
+    <div style="font-size:.85rem;color:var(--ink2);margin-bottom:14px;line-height:1.5">${ex.instruction}</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:14px">
+      ${ex.items.map(item=>`<span style="background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:7px 14px;font-family:'DM Mono',monospace;font-size:.88rem;font-weight:600;cursor:pointer" onclick="fonoSpeakItem('${item}')">${item} 🔈</span>`).join('')}
+    </div>
+    <div style="font-size:.78rem;color:var(--ink3);font-style:italic;border-top:1px solid var(--line);padding-top:10px">💡 ${ex.dica}</div>
+  `;
+}
+
+function silabaNext() {
+  fonoState.silabaIdx = ((fonoState.silabaIdx||0)+1) % FONEMAS_EXERCICIOS.length;
+  renderSilaba();
+}
+
+// ── RESPIRAÇÃO ────────────────────────────────────────────
+function buildRespiracaoActivity() {
+  return `
+  <div class="activity-panel">
+    <div class="activity-header">
+      <span class="activity-icon">🌬️</span>
+      <div class="activity-title">Respiração e Voz</div>
+      <div class="activity-meta" id="respProgress">1/${RESPIRACAO_EXERCICIOS.length}</div>
+    </div>
+    <div class="activity-body">
+      <div class="progress-dots" id="respDots"></div>
+      <div class="exercise-display" id="respDisplay" style="text-align:left;min-height:140px"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+        <button class="btn btn-accent" onclick="respNext()">Próximo Exercício →</button>
+        <button class="btn btn-ghost" onclick="initRespiracao()">↺ Reiniciar</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function initRespiracao() { fonoState.respIdx = 0; renderResp(); }
+
+function renderResp() {
+  const idx = fonoState.respIdx || 0;
+  const ex = RESPIRACAO_EXERCICIOS[idx];
+  if(!ex) return;
+  document.getElementById('respProgress').textContent = (idx+1)+'/'+RESPIRACAO_EXERCICIOS.length;
+  const dots = document.getElementById('respDots');
+  dots.innerHTML = RESPIRACAO_EXERCICIOS.map((_,i)=>
+    `<div class="prog-dot ${i<idx?'done-ok':i===idx?'current':''}"></div>`
+  ).join('');
+  document.getElementById('respDisplay').innerHTML = `
+    <div style="font-size:1.6rem;text-align:center;margin-bottom:8px">${ex.icon}</div>
+    <div style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;text-align:center;margin-bottom:14px">${ex.title}</div>
+    <ol style="padding-left:18px;display:flex;flex-direction:column;gap:8px">
+      ${ex.steps.map((s,i)=>`<li style="font-size:.88rem;line-height:1.6;color:var(--ink2)"><strong style="color:var(--ink)">${i+1}.</strong> ${s}</li>`).join('')}
+    </ol>
+    <div style="margin-top:14px;font-size:.78rem;color:var(--speech);background:var(--speech-bg);padding:10px 14px;border-radius:8px;line-height:1.5">
+      💡 <strong>Dica fonoaudiológica:</strong> ${ex.dica}
+    </div>
+  `;
+}
+
+function respNext() {
+  fonoState.respIdx = ((fonoState.respIdx||0)+1) % RESPIRACAO_EXERCICIOS.length;
+  renderResp();
+}
+
+// ── MEMÓRIA AUDITIVA ──────────────────────────────────────
+function buildMemoriaActivity() {
+  return `
+  <div class="activity-panel">
+    <div class="activity-header">
+      <span class="activity-icon">🧩</span>
+      <div class="activity-title">Memória Auditiva Verbal</div>
+      <div class="activity-meta" id="memProgress">Nível 1</div>
+    </div>
+    <div class="activity-body">
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap" id="memNivelBtns">
+        ${MEMORIA_SERIES.map((s,i)=>`<button class="btn btn-ghost" style="font-size:.7rem;padding:5px 10px" onclick="selectMemNivel(${i})" id="memNivel${i}">${s.nivel}</button>`).join('')}
+      </div>
+      <div class="exercise-display" id="memDisplay" style="min-height:100px">
+        <div style="font-size:.9rem;color:var(--ink3)">Selecione um nível acima para começar.</div>
+      </div>
+      <div id="memControls" style="display:none;margin-top:14px">
+        <div style="margin-bottom:10px">
+          <button class="btn btn-accent" onclick="memShowItem()" id="memShowBtn">▶ Mostrar Próximo Item</button>
+          <button class="btn btn-ghost" style="margin-left:8px" onclick="memReveal()" id="memRevealBtn" style="display:none">✓ Revelar Tudo</button>
+        </div>
+        <div id="memResult" style="display:none;font-size:.85rem;line-height:1.8"></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function initMemoria() { fonoState.memNivel = 0; fonoState.memItemIdx = -1; fonoState.memShown = []; }
+
+function selectMemNivel(n) {
+  fonoState.memNivel = n;
+  fonoState.memItemIdx = -1;
+  fonoState.memShown = [];
+  document.getElementById('memProgress').textContent = MEMORIA_SERIES[n].nivel;
+  // Pick random series
+  const series = MEMORIA_SERIES[n].series;
+  fonoState.memCurrentSeries = series[Math.floor(Math.random()*series.length)];
+  document.getElementById('memControls').style.display = '';
+  document.getElementById('memResult').style.display = 'none';
+  document.getElementById('memShowBtn').style.display = '';
+  document.getElementById('memRevealBtn').style.display = 'none';
+  document.getElementById('memDisplay').innerHTML = `
+    <div style="font-size:.85rem;color:var(--ink2);margin-bottom:12px">Memorize os itens conforme aparecem. Depois, tente repeti-los <strong>na ordem exata</strong> em voz alta.</div>
+    <div id="memItems" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"></div>
+    <div id="memHint" style="font-size:.75rem;color:var(--ink3);margin-top:8px">Clique em "Mostrar Próximo Item" para começar.</div>
+  `;
+  // highlight buttons
+  document.querySelectorAll('[id^=memNivel]').forEach((b,i) => {
+    b.style.background = i===n ? 'var(--ink)' : '';
+    b.style.color = i===n ? '#fff' : '';
+  });
+}
+
+function memShowItem() {
+  fonoState.memItemIdx = (fonoState.memItemIdx||0) + 1;
+  const series = fonoState.memCurrentSeries;
+  if(!series) return;
+  fonoState.memShown = series.slice(0, fonoState.memItemIdx+1);
+  const items = document.getElementById('memItems');
+  if(items) {
+    items.innerHTML = fonoState.memShown.map((w,i)=>
+      `<span style="background:var(--speech-bg);border:1.5px solid #0077cc44;border-radius:8px;padding:8px 14px;font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;animation:fadeUp .3s ease both;animation-delay:${i*0.05}s">${w}</span>`
+    ).join('');
+    fonoSpeakItem(fonoState.memShown.join(', '));
+  }
+  const hint = document.getElementById('memHint');
+  if(hint) hint.textContent = fonoState.memItemIdx >= series.length-1 ? '✅ Todos os itens foram mostrados! Agora repita em voz alta na ordem.' : `Item ${fonoState.memItemIdx+1} de ${series.length}`;
+
+  if(fonoState.memItemIdx >= series.length-1){
+    document.getElementById('memShowBtn').style.display='none';
+    document.getElementById('memRevealBtn').style.display='';
+    // After 3s, hide items for real challenge
+    setTimeout(()=>{
+      const it = document.getElementById('memItems');
+      if(it){ it.innerHTML = '<div style="font-size:.85rem;color:var(--ink3);font-style:italic">Itens ocultos — repita de memória em voz alta!</div>'; }
+    }, 3000);
+  }
+}
+
+function memReveal() {
+  const series = fonoState.memCurrentSeries;
+  const res = document.getElementById('memResult');
+  if(res && series){
+    res.style.display = '';
+    res.innerHTML = `<strong>Sequência completa:</strong><br>${series.map((w,i)=>`<span style="display:inline-block;background:var(--easy-bg);border:1px solid var(--easy);border-radius:6px;padding:4px 10px;margin:2px;font-size:.85rem;font-family:'DM Mono',monospace">${i+1}. ${w}</span>`).join(' ')}<br><div style="margin-top:10px;font-size:.8rem;color:var(--ink3)">Acertou a ordem? Tente um nível mais difícil!</div>`;
+    fonoSpeakItem(series.join(', '));
+  }
+}
+
+// ── RITMO E PROSÓDIA ──────────────────────────────────────
+function buildRitmoActivity() {
+  return `
+  <div class="activity-panel">
+    <div class="activity-header">
+      <span class="activity-icon">🥁</span>
+      <div class="activity-title">Ritmo e Prosódia</div>
+      <div class="activity-meta" id="ritmoProgress">1/${RITMO_EXERCICIOS.length}</div>
+    </div>
+    <div class="activity-body">
+      <div class="progress-dots" id="ritmoDots"></div>
+      <div class="exercise-display" id="ritmoDisplay" style="text-align:left;min-height:140px"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+        <button class="btn btn-accent" onclick="ritmoNext()">Próximo →</button>
+        <button class="btn btn-ghost" onclick="initRitmo()">↺ Reiniciar</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function initRitmo() { fonoState.ritmoIdx = 0; renderRitmo(); }
+
+function renderRitmo() {
+  const idx = fonoState.ritmoIdx || 0;
+  const ex = RITMO_EXERCICIOS[idx];
+  if(!ex) return;
+  document.getElementById('ritmoProgress').textContent = (idx+1)+'/'+RITMO_EXERCICIOS.length;
+  const dots = document.getElementById('ritmoDots');
+  dots.innerHTML = RITMO_EXERCICIOS.map((_,i)=>
+    `<div class="prog-dot ${i<idx?'done-ok':i===idx?'current':''}"></div>`
+  ).join('');
+  let html = `<div style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;margin-bottom:14px;color:var(--ink)">${ex.title}</div>`;
+
+  ex.sets.forEach(set => {
+    if(set.frase && set.enfases) {
+      html += `<div style="font-size:.9rem;font-weight:600;color:var(--ink);margin-bottom:10px;line-height:1.6">"${set.frase}"</div>`;
+      html += `<div style="font-size:.78rem;color:var(--ink2);margin-bottom:8px">Repita a frase 6 vezes enfatizando a palavra em destaque:</div>`;
+      html += `<div style="display:flex;flex-wrap:wrap;gap:6px">`;
+      set.enfases.forEach((e,i) => {
+        const parts = e.split(' ');
+        html += `<div style="background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:7px 12px;font-size:.78rem;cursor:pointer" onclick="fonoSpeakItem('${set.frase}')">
+          <strong style="color:var(--accent)">${parts[0]}</strong> <span style="color:var(--ink3)">${parts.slice(1).join(' ')}</span>
+        </div>`;
+      });
+      html += `</div>`;
+    } else if(set.instrucao && set.frase) {
+      html += `<div style="font-size:.83rem;color:var(--ink2);margin-bottom:10px">${set.instrucao}</div>`;
+      html += `<div style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;text-align:center;padding:12px;background:var(--bg);border-radius:10px;margin-bottom:10px">"${set.frase}"</div>`;
+      if(set.velocidades) {
+        set.velocidades.forEach(v => {
+          html += `<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--paper);border:1px solid var(--line);border-radius:8px;margin-bottom:6px;cursor:pointer" onclick="fonoSpeakItem('${set.frase}')">
+            <span style="font-size:.75rem;font-family:'DM Mono',monospace;color:var(--ink3);flex-shrink:0">▶</span>
+            <span style="font-size:.82rem">${v}</span>
+          </div>`;
+        });
+      }
+    } else if(set.instrucao && set.frases) {
+      html += `<div style="font-size:.83rem;color:var(--ink2);margin-bottom:12px">${set.instrucao}</div>`;
+      set.frases.forEach((f,i) => {
+        html += `<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:${i%2===0?'var(--speech-bg)':'var(--bg)'};border:1px solid var(--line);border-radius:8px;margin-bottom:6px;cursor:pointer" onclick="fonoSpeakItem('${f}')">
+          <span style="font-size:.85rem;flex:1">${f}</span><span style="font-size:.75rem;color:var(--ink3)">🔈</span>
+        </div>`;
+      });
+    } else if(set.instrucao && set.frase && set.obs) {
+      html += `<div style="font-size:.83rem;color:var(--ink2);margin-bottom:10px">${set.instrucao}</div>`;
+      html += `<div style="font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;line-height:1.8;text-align:center;padding:14px;background:var(--bg);border-radius:10px;margin-bottom:8px">${set.frase}</div>`;
+      html += `<div style="font-size:.75rem;color:var(--ink3);text-align:center;font-style:italic">${set.obs}</div>`;
+    }
+  });
+
+  html += `<div style="margin-top:12px;font-size:.78rem;color:var(--speech);background:var(--speech-bg);padding:10px 14px;border-radius:8px;line-height:1.5">💡 ${ex.dica}</div>`;
+  document.getElementById('ritmoDisplay').innerHTML = html;
+}
+
+function ritmoNext() {
+  fonoState.ritmoIdx = ((fonoState.ritmoIdx||0)+1) % RITMO_EXERCICIOS.length;
+  renderRitmo();
+}
+
+// ── FLUÊNCIA VERBAL ───────────────────────────────────────
+let fluenciaTimer = null;
+let fluenciaSeconds = 0;
+
+function buildFluenciaActivity() {
+  return `
+  <div class="activity-panel">
+    <div class="activity-header">
+      <span class="activity-icon">💬</span>
+      <div class="activity-title">Fluência Verbal — Evocação Semântica</div>
+      <div class="activity-meta">Tarefa cronometrada</div>
+    </div>
+    <div class="activity-body">
+      <div style="font-size:.82rem;color:var(--ink2);margin-bottom:14px;line-height:1.6">
+        Quando o cronômetro iniciar, diga em voz alta o máximo de palavras da categoria em <strong>60 segundos</strong>. Este teste é usado clinicamente para avaliar fluência lexical.
+      </div>
+      <div class="exercise-display" id="fluenciaDisplay">
+        <div style="font-size:.8rem;color:var(--ink3)">Clique em "Nova Categoria" para começar.</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+        <div style="font-family:'DM Mono',monospace;font-size:2rem;font-weight:500;color:var(--ink)" id="fluenciaTimer">1:00</div>
+        <div style="flex:1">
+          <div style="font-size:.72rem;color:var(--ink3);margin-bottom:4px">progresso</div>
+          <div style="height:8px;background:var(--line);border-radius:4px;overflow:hidden"><div id="fluenciaBar" style="height:100%;background:var(--easy);border-radius:4px;transition:width .5s;width:100%"></div></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-accent" onclick="fluenciaStart()" id="fluenciaStartBtn">▶ Iniciar</button>
+        <button class="btn btn-ghost" onclick="fluenciaNova()" id="fluenciaNovaBtn">🔀 Nova Categoria</button>
+        <button class="btn btn-ghost" id="fluenciaStopBtn" style="display:none" onclick="fluenciaStop()">■ Parar</button>
+      </div>
+      <div id="fluenciaResult" style="display:none;margin-top:16px"></div>
+    </div>
+  </div>`;
+}
+
+function initFluencia() {
+  fonoState.fluenciaIdx = Math.floor(Math.random()*FLUENCIA_CATEGORIAS.length);
+  fluenciaSeconds = 60;
+  renderFluenciaCategory();
+}
+
+function fluenciaNova() {
+  if(fluenciaTimer) { clearInterval(fluenciaTimer); fluenciaTimer=null; }
+  fonoState.fluenciaIdx = Math.floor(Math.random()*FLUENCIA_CATEGORIAS.length);
+  fluenciaSeconds = 60;
+  document.getElementById('fluenciaTimer').textContent = '1:00';
+  document.getElementById('fluenciaBar').style.width = '100%';
+  document.getElementById('fluenciaBar').style.background = 'var(--easy)';
+  document.getElementById('fluenciaResult').style.display = 'none';
+  document.getElementById('fluenciaStartBtn').style.display = '';
+  document.getElementById('fluenciaStopBtn').style.display = 'none';
+  renderFluenciaCategory();
+}
+
+function renderFluenciaCategory() {
+  const cat = FLUENCIA_CATEGORIAS[fonoState.fluenciaIdx||0];
+  document.getElementById('fluenciaDisplay').innerHTML = `
+    <div style="font-size:.75rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">Categoria</div>
+    <div style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;color:var(--ink);margin-bottom:8px">${cat.cat}</div>
+    <div style="font-size:.78rem;color:var(--ink3)">Referência: adulto típico diz ${cat.exemplos}+ palavras em 60s</div>
+  `;
+}
+
+function fluenciaStart() {
+  document.getElementById('fluenciaStartBtn').style.display='none';
+  document.getElementById('fluenciaStopBtn').style.display='';
+  document.getElementById('fluenciaNovaBtn').style.display='none';
+  fluenciaSeconds = 60;
+  fluenciaTimer = setInterval(()=>{
+    fluenciaSeconds--;
+    const m = Math.floor(fluenciaSeconds/60);
+    const s = fluenciaSeconds%60;
+    document.getElementById('fluenciaTimer').textContent = m+':'+String(s).padStart(2,'0');
+    const pct = (fluenciaSeconds/60)*100;
+    document.getElementById('fluenciaBar').style.width = pct+'%';
+    document.getElementById('fluenciaBar').style.background = pct > 50 ? 'var(--easy)' : pct > 20 ? '#e9c46a' : 'var(--dificil)';
+    if(fluenciaSeconds <= 0) fluenciaStop();
+  }, 1000);
+  showToast('Fale agora! 60 segundos...');
+}
+
+function fluenciaStop() {
+  if(fluenciaTimer) { clearInterval(fluenciaTimer); fluenciaTimer=null; }
+  document.getElementById('fluenciaStartBtn').style.display='';
+  document.getElementById('fluenciaStopBtn').style.display='none';
+  document.getElementById('fluenciaNovaBtn').style.display='';
+  const cat = FLUENCIA_CATEGORIAS[fonoState.fluenciaIdx||0];
+  const used = 60 - fluenciaSeconds;
+  const res = document.getElementById('fluenciaResult');
+  res.style.display = '';
+  res.innerHTML = `
+    <div style="background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px">
+      <div style="font-weight:700;margin-bottom:8px">📊 Resultado — ${cat.cat}</div>
+      <div style="font-size:.85rem;color:var(--ink2);line-height:1.8">
+        Referência clínica: adultos típicos nomeiam <strong>${cat.exemplos}+ itens</strong> em 60 segundos.<br>
+        Você usou <strong>${used}s</strong> de 60s. ${fluenciaSeconds<=0?'Tempo encerrado.':'Encerrado antes do tempo.'}<br>
+        <br>
+        <strong>Interpretação:</strong> Se conseguiu ${cat.exemplos}+ itens = fluência preservada. 
+        Se menos de ${Math.ceil(cat.exemplos*0.6)} = atenção para vocabulário ativo.<br>
+        <br>
+        <span style="color:var(--speech);font-size:.8rem">💡 Pratique esta atividade 3× por semana com categorias diferentes para expandir seu vocabulário ativo.</span>
+      </div>
+    </div>`;
+  document.getElementById('fluenciaTimer').textContent = '0:00';
+  document.getElementById('fluenciaBar').style.width = '0%';
+}
+
+// ── UTILITÁRIO TTS ────────────────────────────────────────
+function fonoSpeakItem(text) {
+  if(!window.speechSynthesis) { showToast('Síntese de voz não disponível neste navegador.'); return; }
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = 'pt-BR';
+  utt.rate = 0.85;
+  window.speechSynthesis.speak(utt);
+}
 // ===== RUN =====
 init();
 </script>
