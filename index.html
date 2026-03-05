@@ -656,7 +656,7 @@ select:focus, input[type="text"]:focus {
     <div class="panel-icon icon-stop">🎲</div>
     <div>
       <div class="panel-title">Jogo STOP</div>
-      <div class="panel-desc">Preencha todas as categorias com palavras que começam com a letra sorteada. Rápido!</div>
+      <div class="panel-desc">15 categorias. 45 segundos. Sem moleza — cada campo vazio é ponto perdido.</div>
     </div>
   </div>
 
@@ -666,18 +666,18 @@ select:focus, input[type="text"]:focus {
         <div class="field-label">Dificuldade</div>
         <select id="stopDif">
           <option value="1">🟢 Fácil — 5 categorias</option>
-          <option value="2" selected>🟡 Médio — 8 categorias</option>
+          <option value="2">🟡 Médio — 8 categorias</option>
           <option value="3">🔴 Difícil — 12 categorias</option>
-          <option value="4">⚫ Extremo — 15 categorias</option>
+          <option value="4" selected>⚫ Extremo — 15 categorias</option>
         </select>
       </div>
       <div>
         <div class="field-label">Tempo</div>
         <select id="stopTempo">
+          <option value="30">30 segundos 🔥</option>
+          <option value="45" selected>45 segundos ⚡</option>
           <option value="60">1 minuto</option>
-          <option value="90" selected>1 min 30 seg</option>
-          <option value="120">2 minutos</option>
-          <option value="180">3 minutos</option>
+          <option value="90">1 min 30 seg</option>
           <option value="0">Sem limite</option>
         </select>
       </div>
@@ -711,7 +711,7 @@ select:focus, input[type="text"]:focus {
     <div class="panel-icon icon-flu">💬</div>
     <div>
       <div class="panel-title">Fluência Verbal</div>
-      <div class="panel-desc">Fale o maior número possível de palavras diferentes dentro da categoria. Use o microfone!</div>
+      <div class="panel-desc">Nível extremo. 45 segundos. Palavras raras e obscuras — quanto você realmente sabe?</div>
     </div>
   </div>
 
@@ -721,9 +721,9 @@ select:focus, input[type="text"]:focus {
         <div class="field-label">Dificuldade</div>
         <select id="fluDif">
           <option value="1">🟢 Fácil</option>
-          <option value="2" selected>🟡 Médio</option>
+          <option value="2">🟡 Médio</option>
           <option value="3">🔴 Difícil</option>
-          <option value="4">⚫ Extremo</option>
+          <option value="4" selected>⚫ Extremo</option>
         </select>
       </div>
       <div>
@@ -743,9 +743,10 @@ select:focus, input[type="text"]:focus {
     <div>
       <div class="field-label">Duração</div>
       <select id="fluTempo">
-        <option value="60" selected>1 minuto</option>
+        <option value="30">30 segundos 🔥</option>
+        <option value="45" selected>45 segundos ⚡</option>
+        <option value="60">1 minuto</option>
         <option value="90">1 min 30 seg</option>
-        <option value="120">2 minutos</option>
       </select>
     </div>
     <div style="margin-top:14px">
@@ -783,7 +784,7 @@ select:focus, input[type="text"]:focus {
     <div class="panel-icon icon-ler">📖</div>
     <div>
       <div class="panel-title">Desafio de Leitura</div>
-      <div class="panel-desc">Leia o texto em voz alta o mais rápido e claro possível. Sua velocidade é medida automaticamente.</div>
+      <div class="panel-desc">Textos de nível insano. 45 segundos. Pronuncie cada palavra corretamente — cada tropeço conta.</div>
     </div>
   </div>
 
@@ -793,21 +794,22 @@ select:focus, input[type="text"]:focus {
         <div class="field-label">Nível de dificuldade</div>
         <select id="lerNivel" onchange="atualizarTextoLeitura()">
           <option value="1">🟢 1 — Iniciante</option>
-          <option value="2" selected>🟡 2 — Básico</option>
+          <option value="2">🟡 2 — Básico</option>
           <option value="3">🟠 3 — Intermediário</option>
           <option value="4">🔴 4 — Avançado</option>
           <option value="5">⚫ 5 — Expert</option>
           <option value="6">🌪️ 6 — Ultra</option>
-          <option value="7">💀 7 — Insano</option>
+          <option value="7" selected>💀 7 — Insano</option>
           <option value="8">🌀 8 — Caótico</option>
         </select>
       </div>
       <div>
         <div class="field-label">Tempo de leitura</div>
         <select id="lerTempoCfg">
+          <option value="30">30 segundos 🔥</option>
+          <option value="45" selected>45 segundos ⚡</option>
           <option value="60">1 minuto</option>
-          <option value="90" selected>1 min 30 seg</option>
-          <option value="120">2 minutos</option>
+          <option value="90">1 min 30 seg</option>
         </select>
       </div>
     </div>
@@ -844,7 +846,7 @@ select:focus, input[type="text"]:focus {
     <div class="panel-icon icon-mem">🧠</div>
     <div>
       <div class="panel-title">Memória Visual</div>
-      <div class="panel-desc">Encontre os pares de cartas combinando-as. Treina atenção, memória de trabalho e velocidade cognitiva.</div>
+      <div class="panel-desc">24 cartas. Você tem 90 segundos. Cartas viram de volta em 600ms — não pisque.</div>
     </div>
   </div>
 
@@ -854,10 +856,10 @@ select:focus, input[type="text"]:focus {
         <div class="field-label">Grade</div>
         <select id="memGrade">
           <option value="2">2×2 — 4 cartas</option>
-          <option value="3">3×3 — 9 cartas (ímpar)</option>
-          <option value="4" selected>4×4 — 16 cartas</option>
+          <option value="3">3×3 — 9 cartas</option>
+          <option value="4">4×4 — 16 cartas</option>
           <option value="5">5×4 — 20 cartas</option>
-          <option value="6">6×4 — 24 cartas</option>
+          <option value="6" selected>6×4 — 24 cartas 💀</option>
         </select>
       </div>
       <div>
@@ -878,8 +880,8 @@ select:focus, input[type="text"]:focus {
     <div class="card">
       <div class="info-bar">
         <div class="info-stat">
-          <div class="info-stat-val" id="memTimer">0:00</div>
-          <div class="info-stat-label">Tempo</div>
+          <div class="info-stat-val" id="memTimer">1:30</div>
+          <div class="info-stat-label">⏱ Limite</div>
         </div>
         <div class="info-stat">
           <div class="info-stat-val" id="memTentativas">0</div>
@@ -905,7 +907,7 @@ select:focus, input[type="text"]:focus {
     <div class="panel-icon icon-aud">👂</div>
     <div>
       <div class="panel-title">Treino Auditivo</div>
-      <div class="panel-desc">Análise fonológica, segmentação silábica e discriminação auditiva. Essencial para fonoaudiologia.</div>
+      <div class="panel-desc">20 questões. Dificuldade máxima. A palavra toca uma vez — não tem replay.</div>
     </div>
   </div>
 
@@ -917,15 +919,15 @@ select:focus, input[type="text"]:focus {
           <option value="sil">Contar sílabas</option>
           <option value="ini">Letra inicial</option>
           <option value="fim">Letra final</option>
-          <option value="pal">Identidade de palavra</option>
+          <option value="pal" selected>Identidade de palavra 💀</option>
         </select>
       </div>
       <div>
         <div class="field-label">Dificuldade</div>
         <select id="audDif">
           <option value="1">🟢 Fácil</option>
-          <option value="2" selected>🟡 Médio</option>
-          <option value="3">🔴 Difícil</option>
+          <option value="2">🟡 Médio</option>
+          <option value="3" selected>🔴 Difícil</option>
         </select>
       </div>
     </div>
@@ -933,8 +935,8 @@ select:focus, input[type="text"]:focus {
       <div class="field-label">Número de questões</div>
       <select id="audQtd">
         <option value="5">5 questões</option>
-        <option value="10" selected>10 questões</option>
-        <option value="20">20 questões</option>
+        <option value="10">10 questões</option>
+        <option value="20" selected>20 questões 🔥</option>
       </select>
     </div>
     <button class="btn-primary btn-rose" onclick="iniciarAud()" style="margin-top:14px">▶ COMEÇAR TREINO</button>
@@ -1076,7 +1078,7 @@ function iniciarStop() {
       document.getElementById('stopTimer').textContent = m+':'+(s<10?'0':'')+s;
       const pct = (stopSecsLeft/stopSecsTotal)*100;
       document.getElementById('stopProg').style.width = pct+'%';
-      if (stopSecsLeft<=10) document.getElementById('stopTimer').classList.add('urgent');
+      if (stopSecsLeft<=15) document.getElementById('stopTimer').classList.add('urgent');
       if (stopSecsLeft<=0) { clearInterval(stopTimerInterval); finalizarStop(); }
     }, 1000);
   } else {
@@ -1111,7 +1113,7 @@ function finalizarStop() {
 
   const max = dados.cats.length * 10;
   const pct = Math.round((pts/max)*100);
-  const grade = pct>=90?'S':pct>=80?'A':pct>=60?'B':pct>=40?'C':'D';
+  const grade = pct>=100?'S':pct>=90?'A':pct>=75?'B':pct>=50?'C':'D';
   const msg = grade==='S'?'Perfeito! 🔥':grade==='A'?'Excelente! 💪':grade==='B'?'Muito bom! 👏':grade==='C'?'Continue praticando 📚':'Tente novamente 💡';
 
   document.getElementById('stopResultado').innerHTML = `
@@ -1161,21 +1163,33 @@ function iniciarFlu() {
       const s = fluSecsLeft%60;
       document.getElementById('fluTimer').textContent = m+':'+(s<10?'0':'')+s;
       document.getElementById('fluProg').style.width = (fluSecsLeft/fluSecsTotal*100)+'%';
+      if (fluSecsLeft<=10) document.getElementById('fluTimer').classList.add('urgent');
       if (fluSecsLeft<=0) { clearInterval(fluTimerInt); finalizarFlu(); }
     }, 1000);
 
     const rec = new SR();
     rec.lang = 'pt-BR';
     rec.continuous = true;
+    rec.interimResults = true;
+
     rec.onresult = e => {
       for (let i = e.resultIndex; i < e.results.length; i++) {
         if (e.results[i].isFinal) {
-          e.results[i][0].transcript.toLowerCase().split(/\s+/).forEach(w => {
-            if (w.length > 2 && !pals.has(w)) {
+          const words = e.results[i][0].transcript
+            .toLowerCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z\s]/g, '')
+            .split(/\s+/)
+            .filter(w => w.length >= 2);
+
+          words.forEach(w => {
+            if (!pals.has(w)) {
               pals.add(w);
               const chip = document.createElement('span');
               chip.className = 'chip';
-              chip.textContent = w;
+              chip.textContent = e.results[i][0].transcript.toLowerCase().split(/\s+/).find(orig =>
+                orig.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,'') === w
+              ) || w;
               document.getElementById('fluChips').appendChild(chip);
               document.getElementById('fluCount').textContent = pals.size;
             }
@@ -1199,7 +1213,7 @@ function finalizarFlu() {
   document.getElementById('fluAtivo').style.display = 'none';
 
   const total = document.querySelectorAll('#fluChips .chip').length;
-  const nota = total>=20?'S':total>=15?'A':total>=10?'B':total>=5?'C':'D';
+  const nota = total>=30?'S':total>=22?'A':total>=15?'B':total>=8?'C':'D';
   document.getElementById('fluResultado').innerHTML = `
     <div class="score-card">
       <div class="grade-badge grade-${nota}">${nota}</div>
@@ -1277,7 +1291,7 @@ function finalizarLer() {
   document.getElementById('lerAtivo').style.display = 'none';
 
   const ppm = lerSecs>0?Math.round((lerPalavras/lerSecs)*60):0;
-  const nota = ppm>=120?'S':ppm>=100?'A':ppm>=80?'B':ppm>=60?'C':'D';
+  const nota = ppm>=160?'S':ppm>=140?'A':ppm>=110?'B':ppm>=80?'C':'D';
   const feedback = nota==='S'?'Leitura excepcional! 🚀':nota==='A'?'Excelente fluência! 💪':nota==='B'?'Boa velocidade! 👏':nota==='C'?'Pratique mais para melhorar 📚':'Continue treinando 💡';
 
   document.getElementById('lerResultado').innerHTML = `
@@ -1330,12 +1344,16 @@ function iniciarMem() {
   memTotalPairs = pairs;
   memAttempts = 0;
   memSecs = 0;
+  const MEM_LIMIT = 90;
 
   clearInterval(memTimerInt);
   memTimerInt = setInterval(() => {
     memSecs++;
-    const m=Math.floor(memSecs/60), s=memSecs%60;
-    document.getElementById('memTimer').textContent = m+':'+(s<10?'0':'')+s;
+    const remaining = MEM_LIMIT - memSecs;
+    const m=Math.floor(Math.abs(remaining)/60), s=Math.abs(remaining)%60;
+    document.getElementById('memTimer').textContent = (remaining<0?'-':'')+m+':'+(s<10?'0':'')+s;
+    if (remaining<=10) document.getElementById('memTimer').style.color='var(--red)';
+    if (remaining<=0) { clearInterval(memTimerInt); mostrarResultadoMem(true); }
   }, 1000);
 
   document.getElementById('memConfig').style.display = 'none';
@@ -1377,30 +1395,35 @@ function flipCard(card) {
       document.getElementById('memProg').style.width = (memMatched/memTotalPairs*100)+'%';
       if (memMatched===memTotalPairs) {
         clearInterval(memTimerInt);
-        setTimeout(mostrarResultadoMem, 600);
+        setTimeout(mostrarResultadoMem, 200);
       } else { toast('Par encontrado! ✅'); }
     } else {
       setTimeout(() => {
         memFlipped.forEach(c=>{ c.classList.remove('face-up'); c.style.fontSize='0'; });
         memFlipped = [];
-      }, 900);
+      }, 300);
     }
   }
 }
 
-function mostrarResultadoMem() {
+function mostrarResultadoMem(timeout=false) {
+  clearInterval(memTimerInt);
+  document.getElementById('memGame').style.display = 'none';
   const m=Math.floor(memSecs/60), s=memSecs%60;
   const tempoStr = m+':'+(s<10?'0':'')+s;
-  const eficiencia = Math.round((memTotalPairs/memAttempts)*100);
-  const nota = eficiencia>=90?'S':eficiencia>=75?'A':eficiencia>=60?'B':eficiencia>=45?'C':'D';
+  const eficiencia = memAttempts>0?Math.round((memMatched/memTotalPairs)*100):0;
+  const efAttempts = memAttempts>0?Math.round((memTotalPairs/memAttempts)*100):0;
+  const nota = !timeout&&efAttempts>=95?'S':!timeout&&efAttempts>=80?'A':!timeout&&efAttempts>=65?'B':!timeout&&efAttempts>=50?'C':'D';
+  const timeoutMsg = timeout?`<div style="color:var(--red);font-weight:700;margin-bottom:8px">⏰ TEMPO ESGOTADO! ${memMatched}/${memTotalPairs} pares encontrados</div>`:'';
 
   document.getElementById('memResultado').innerHTML = `
     <div class="score-card">
+      ${timeoutMsg}
       <div class="grade-badge grade-${nota}">${nota}</div>
-      <div class="score-big">${eficiencia}%</div>
-      <div class="score-label">eficiência de memória</div>
+      <div class="score-big">${timeout?memMatched+'/'+memTotalPairs:efAttempts+'%'}</div>
+      <div class="score-label">${timeout?'pares encontrados em 90s':'eficiência de tentativas'}</div>
       <div class="stats-row" style="margin-top:16px">
-        <div class="stat-box"><div class="stat-val">${tempoStr}</div><div class="stat-lbl">Tempo total</div></div>
+        <div class="stat-box"><div class="stat-val">${tempoStr}</div><div class="stat-lbl">Tempo</div></div>
         <div class="stat-box"><div class="stat-val">${memAttempts}</div><div class="stat-lbl">Tentativas</div></div>
         <div class="stat-box"><div class="stat-val">${nota}</div><div class="stat-lbl">Nota</div></div>
       </div>
@@ -1409,7 +1432,7 @@ function mostrarResultadoMem() {
     </div>
   `;
   document.getElementById('memResultado').style.display = '';
-  toast(`🧠 Parabéns! Nota ${nota} — ${eficiencia}% de eficiência`);
+  toast(timeout?`⏰ Tempo! ${memMatched}/${memTotalPairs} pares`:`🧠 Nota ${nota} — ${efAttempts}% eficiência`);
 }
 
 // ==================== AUDITIVO ====================
@@ -1483,7 +1506,7 @@ function mostrarQuestao() {
   if (window.speechSynthesis) {
     const utt = new SpeechSynthesisUtterance(q.palavra);
     utt.lang = 'pt-BR';
-    utt.rate = .85;
+    utt.rate = 1.15;
     speechSynthesis.speak(utt);
   }
 
@@ -1524,9 +1547,9 @@ function responderAud(resposta, btnEl) {
   document.getElementById('audAcertos').textContent = audAcertos;
 
   if (audAtual>=audTotal) {
-    setTimeout(mostrarResultadoAud, 1200);
+    setTimeout(mostrarResultadoAud, 600);
   } else {
-    setTimeout(mostrarQuestao, 1500);
+    setTimeout(mostrarQuestao, 800);
   }
 }
 
@@ -1535,7 +1558,7 @@ function mostrarResultadoAud() {
   document.getElementById('audGame').style.display = 'none';
 
   const pct = Math.round(audAcertos/audTotal*100);
-  const nota = pct>=90?'S':pct>=80?'A':pct>=70?'B':pct>=50?'C':'D';
+  const nota = pct>=95?'S':pct>=85?'A':pct>=70?'B':pct>=55?'C':'D';
   const m=Math.floor(audSecs/60), s=audSecs%60;
 
   document.getElementById('audResultado').innerHTML = `
