@@ -6,82 +6,37 @@
 <title>FonoPRO — Completo Plus</title>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#f5f2ec;--paper:#fffef9;--ink:#18120a;--ink2:#4a3f30;--ink3:#9a8870;
-  --line:#e2d8c5;--accent:#c44a00;--accent-bg:#fff0e6;
-  --blue:#0066bb;--blue-bg:#e8f2ff;
-  --green:#2a7a38;--green-bg:#e8f7ea;
-  --amber:#a05a00;--amber-bg:#fff3e0;
-  --red:#c0392b;--red-bg:#fdecea;
-  --mic:#1a7aaa;--mic-bg:#e3f3ff;
-  --kara:#6b21a8;--kara-bg:#f3e8ff;
-}
+:root{--bg:#f5f2ec;--paper:#fffef9;--ink:#18120a;--ink2:#4a3f30;--ink3:#9a8870;--line:#e2d8c5;--accent:#c44a00;--accent-bg:#fff0e6;--blue:#0066bb;--blue-bg:#e8f2ff;--green:#2a7a38;--green-bg:#e8f7ea;--amber:#a05a00;--amber-bg:#fff3e0;--red:#c0392b;--red-bg:#fdecea;}
 html{font-size:16px}
 body{background:var(--bg);color:var(--ink);font-family:system-ui,'Segoe UI',sans-serif;min-height:100vh}
-
 .topbar{background:var(--paper);border-bottom:2px solid var(--ink);padding:0 18px;height:50px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.brand{font-family:Georgia,serif;font-size:1.15rem;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
+.brand{font-family:Georgia,serif;font-size:1.15rem;font-weight:700;letter-spacing:-.02em}
 .brand em{color:var(--accent);font-style:italic}
 .nav{display:flex;gap:2px;background:var(--bg);border-radius:8px;padding:3px;border:1px solid var(--line);margin-left:auto;overflow-x:auto}
 .nav-btn{padding:5px 11px;border-radius:5px;font-size:.72rem;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--ink3);white-space:nowrap;transition:all .15s}
 .nav-btn.active{background:var(--ink);color:#fff}
-
 .wrap{max-width:760px;margin:0 auto;padding:20px 16px 60px}
 .page{display:none}.page.active{display:block}
-
 .panel{background:var(--paper);border:1.5px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:14px}
 .panel-head{padding:12px 16px;background:var(--bg);border-bottom:1.5px solid var(--line);display:flex;align-items:center;gap:8px}
 .panel-icon{font-size:1.2rem}
 .panel-title{font-family:Georgia,serif;font-size:.95rem;font-weight:700;flex:1}
 .panel-body{padding:16px}
-
 .display{background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:16px;text-align:center;margin-bottom:12px}
 .big-text{font-family:Georgia,serif;font-size:1.35rem;font-weight:700;line-height:1.5;color:var(--ink)}
 .dica-box{background:var(--blue-bg);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:9px 12px;font-size:.76rem;color:var(--ink2);line-height:1.5;margin-bottom:12px}
-
 .btn{font-family:inherit;font-size:.75rem;font-weight:600;padding:7px 16px;border-radius:7px;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;min-height:44px}
 .btn-main{background:var(--ink);color:#fff}.btn-main:hover{background:var(--accent)}
 .btn-ghost{background:transparent;color:var(--ink2);border:1.5px solid var(--line)}.btn-ghost:hover{border-color:var(--ink3)}
-
 .vel-row{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap}
 .vel-btn{font-size:.67rem;padding:8px 12px;border-radius:6px;border:1.5px solid var(--line);background:transparent;cursor:pointer;transition:all .15s;font-family:inherit;font-weight:600;min-height:44px}
 .vel-btn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-
-.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0}
-.chip{background:var(--bg);border:1.5px solid var(--line);border-radius:6px;padding:6px 11px;font-family:monospace;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .15s}
-.chip:hover{border-color:var(--accent);background:var(--accent-bg)}
-
-.timer-big{font-family:monospace;font-size:2.4rem;font-weight:700;text-align:center;color:var(--ink);transition:color .3s}
-.timer-bar-wrap{height:7px;background:var(--line);border-radius:4px;overflow:hidden;margin:7px 0 12px}
-.timer-bar{height:100%;background:var(--green);border-radius:4px;transition:width .5s,background .5s}
-
-.result-box{background:var(--green-bg);border:1.5px solid var(--green);border-radius:9px;padding:12px;font-size:.8rem;line-height:1.7;margin-top:10px}
-.result-box.bad{background:var(--red-bg);border-color:var(--red)}
-
-#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:8px;font-size:.8rem;font-weight:600;z-index:9999;transition:transform .3s;white-space:nowrap}
+.chip{background:var(--bg);border:1.5px solid var(--line);border-radius:6px;padding:6px 11px;font-family:monospace;font-size:.82rem;font-weight:600}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:8px;font-size:.8rem;font-weight:600;z-index:9999;transition:transform .3s}
 #toast.show{transform:translateX(-50%) translateY(0)}
-
-.level-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:12px}
-.level-btn{padding:8px;border-radius:7px;border:1.5px solid var(--line);background:var(--paper);cursor:pointer;font-size:.8rem;font-weight:600;transition:all .15s;font-family:inherit;min-height:44px}
-.level-btn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-
-@media(max-width:768px){
-  html{font-size:14px}
-  .wrap{padding:16px 12px 50px}
-  .btn{padding:10px 14px}
-  .vel-btn{padding:8px 10px}
-  input{font-size:16px;padding:12px}
-}
-
-@media(max-width:480px){
-  html{font-size:13px}
-  .wrap{padding:12px 10px 45px}
-  .topbar{padding:0 10px;height:46px}
-  .nav-btn{padding:4px 8px;font-size:.65rem}
-  .btn{padding:8px 12px;font-size:.75rem}
-  .panel-body{padding:12px}
-  input{font-size:16px;padding:11px}
-}
+.timer-big{font-family:monospace;font-size:2.4rem;font-weight:700;text-align:center;color:var(--ink)}
+@media(max-width:768px){html{font-size:14px}.wrap{padding:16px 12px 50px}.btn{padding:10px 14px}.vel-btn{padding:8px 10px}input{font-size:16px;padding:12px}}
+@media(max-width:480px){html{font-size:13px}.wrap{padding:12px 10px 45px}.topbar{padding:0 10px;height:46px}.btn{padding:8px 12px}.panel-body{padding:12px}input{font-size:16px;padding:11px}}
 </style>
 </head>
 <body>
@@ -89,105 +44,23 @@ body{background:var(--bg);color:var(--ink);font-family:system-ui,'Segoe UI',sans
 <div class="topbar">
   <div class="brand">FonoPRO<em>Plus</em></div>
   <div class="nav">
-    <button class="nav-btn active" onclick="goPage('atividades')">🎯 Atividades</button>
+    <button class="nav-btn active" onclick="goPage('inicio')">🏠 Início</button>
+    <button class="nav-btn" onclick="goPage('fluencia')">💬 Fluência</button>
     <button class="nav-btn" onclick="goPage('stop')">🎲 STOP</button>
     <button class="nav-btn" onclick="goPage('karaoke')">🎤 Karaokê</button>
   </div>
 </div>
 
 <div class="wrap">
-  <!-- PÁGINA ATIVIDADES -->
-  <div class="page active" id="page-atividades">
+  <!-- PÁGINA INÍCIO -->
+  <div class="page active" id="page-inicio">
     <div class="panel">
-      <div class="panel-head"><span class="panel-icon">📖</span><div class="panel-title">Desafio de Leitura</div></div>
-      <div class="panel-body">
-        <div class="dica-box">Escolha o nível e leia o texto em voz alta. Análise completa de fala!</div>
-        
-        <div id="leiNivelConfig">
-          <label style="font-size:.75rem;font-weight:700;color:var(--ink2);display:block;margin-bottom:8px">Tempo Limite:</label>
-          <div class="vel-row">
-            <button class="vel-btn" onclick="leiTempo(60)">1 min</button>
-            <button class="vel-btn on" onclick="leiTempo(90)">1:30</button>
-            <button class="vel-btn" onclick="leiTempo(120)">2 min</button>
-            <button class="vel-btn" onclick="leiTempo(180)">3 min</button>
-            <button class="vel-btn" onclick="leiTempo(0)">∞</button>
-          </div>
-          
-          <label style="font-size:.75rem;font-weight:700;color:var(--ink2);display:block;margin-bottom:8px;margin-top:12px">Nível de Dificuldade:</label>
-          <div class="level-grid">
-            <button class="level-btn on" onclick="leiNivel(1)" title="Palavras simples, frases curtas">🟢 Fácil</button>
-            <button class="level-btn" onclick="leiNivel(2)" title="Palavras médias, frases normais">🟡 Normal</button>
-            <button class="level-btn" onclick="leiNivel(3)" title="Palavras com 4+ sílabas">🟠 Médio</button>
-            <button class="level-btn" onclick="leiNivel(4)" title="Textos complexos, palavras técnicas">🔴 Difícil</button>
-            <button class="level-btn" onclick="leiNivel(5)" title="Extremamente desafiador, prosódia exigida">⚫ Extremo</button>
-            <button class="level-btn" onclick="leiNivel(6)" title="Prosa clássica, inversões sintáticas">🌪️ Ultra</button>
-            <button class="level-btn" onclick="leiNivel(7)" title="Filosofia abstrusa, neologismos">💀 Insano</button>
-            <button class="level-btn" onclick="leiNivel(8)" title="Prosa fragmentada, inventada">🌀 Caótico</button>
-            <button class="level-btn" onclick="leiNivel(9)" title="Poesia desintegrada, impossível">👹 Absurdo</button>
-            <button class="level-btn" onclick="leiNivel(10)" title="Nível final absoluto, prova máxima">☠️ Apocalíptico</button>
-          </div>
-        </div>
-        
-        <div id="leiTexto" style="background:var(--bg);border:2px solid var(--line);border-radius:9px;padding:16px;min-height:120px;margin:16px 0;font-size:.95rem;line-height:1.8;color:var(--ink)"></div>
-        
-        <div id="leiInfoNivel" style="background:var(--blue-bg);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:12px;margin-bottom:12px;font-size:.78rem;line-height:1.6;display:none">
-          <div style="color:var(--ink2)"><strong id="leiNivelTit">Fácil</strong></div>
-          <div style="color:var(--ink3);margin-top:4px" id="leiNivelDesc"></div>
-          <div style="color:var(--ink3);margin-top:6px;font-size:.7rem">📊 Referência: <span id="leiNivelRef"></span></div>
-        </div>
-        
-        <button class="btn btn-main" id="leiBtn" style="width:100%;justify-content:center;padding:12px;font-size:.9rem;margin-bottom:10px" onclick="toggleLeitura()">
-          <span id="leiBtnIcon">▶</span>
-          <span id="leiBtnText">COMEÇAR</span>
-        </button>
-        
-        <div id="leiStatus" style="background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:10px;font-size:.78rem;color:var(--ink2);margin-bottom:10px;display:none">
-          <div>🎙️ <span id="leiStatusTxt">Gravando...</span></div>
-          <div style="margin-top:6px">Tempo: <span id="leiTempo">0:00</span> | Palavras: <span id="leiPalCount">0</span></div>
-        </div>
-        
-        <div id="leiResultado" style="display:none"></div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="panel-head"><span class="panel-icon">💬</span><div class="panel-title">Fluência Verbal Sem Erros</div></div>
-      <div class="panel-body">
-        <div class="dica-box">Escolha um tempo, escolha a categoria e fale o máximo de palavras diferentes!</div>
-        
-        <label style="font-size:.75rem;font-weight:700;color:var(--ink2);display:block;margin-bottom:8px">Tempo:</label>
-        <div class="vel-row">
-          <button class="vel-btn on" id="fluTm60" onclick="fluDefinirTempo(60)">1 min</button>
-          <button class="vel-btn" id="fluTm90" onclick="fluDefinirTempo(90)">1:30</button>
-          <button class="vel-btn" id="fluTm120" onclick="fluDefinirTempo(120)">2 min</button>
-        </div>
-        
-        <label style="font-size:.75rem;font-weight:700;color:var(--ink2);display:block;margin-bottom:8px;margin-top:12px">Categoria:</label>
-        <div class="vel-row" style="flex-wrap:wrap">
-          <button class="vel-btn on" id="fluCat0" onclick="fluDefinirCategoria(0)">Animais</button>
-          <button class="vel-btn" id="fluCat1" onclick="fluDefinirCategoria(1)">Frutas</button>
-          <button class="vel-btn" id="fluCat2" onclick="fluDefinirCategoria(2)">Cores</button>
-          <button class="vel-btn" id="fluCat3" onclick="fluDefinirCategoria(3)">Países</button>
-          <button class="vel-btn" id="fluCat4" onclick="fluDefinirCategoria(4)">Cidades</button>
-        </div>
-        
-        <button class="btn btn-main" id="fluBtn" style="width:100%;justify-content:center;padding:12px;font-size:.9rem;margin:16px 0" onclick="fluToggle()">
-          <span id="fluBtnIcon">▶</span> <span id="fluBtnText">COMEÇAR</span>
-        </button>
-        
-        <div id="fluCountdown" style="display:none;text-align:center;font-family:monospace;font-size:2rem;font-weight:900;color:var(--ink);margin:12px 0">1:00</div>
-        
-        <div id="fluPalavras" style="background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:12px;min-height:80px;display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start"></div>
-        
-        <div id="fluResultado" style="display:none;margin-top:16px"></div>
-      </div>
-    </div>
-
+      <div class="panel-head"><span class="panel-icon">🗣️</span><div class="panel-title">Trava-Línguas</div></div>
       <div class="panel-body">
         <div class="display">
           <div class="big-text" id="travasDisplay">O rato roeu a roupa do rei de Roma.</div>
         </div>
-        <div style="display:flex;gap:7px;flex-wrap:wrap">
+        <div style="display:flex;gap:7px">
           <button class="btn btn-main" onclick="falarTrava()">🔊 Ouvir</button>
           <button class="btn btn-ghost" onclick="proximaTrava()">→ Próximo</button>
         </div>
@@ -195,37 +68,64 @@ body{background:var(--bg);color:var(--ink);font-family:system-ui,'Segoe UI',sans
     </div>
   </div>
 
+  <!-- PÁGINA FLUÊNCIA -->
+  <div class="page" id="page-fluencia">
+    <div class="panel">
+      <div class="panel-head"><span class="panel-icon">💬</span><div class="panel-title">Fluência Verbal</div></div>
+      <div class="panel-body">
+        <div class="dica-box">Fale palavras diferentes da categoria. O sistema SÓ CONTA palavras NOVAS!</div>
+        
+        <label style="font-size:.75rem;font-weight:700;color:var(--ink2);display:block;margin-bottom:8px">Tempo:</label>
+        <div class="vel-row">
+          <button class="vel-btn on" onclick="fluSetTempo(60)">1 min</button>
+          <button class="vel-btn" onclick="fluSetTempo(90)">1:30</button>
+          <button class="vel-btn" onclick="fluSetTempo(120)">2 min</button>
+        </div>
+        
+        <label style="font-size:.75rem;font-weight:700;color:var(--ink2);display:block;margin-bottom:8px;margin-top:12px">Categoria:</label>
+        <div class="vel-row">
+          <button class="vel-btn on" onclick="fluSetCat(0)">Animais</button>
+          <button class="vel-btn" onclick="fluSetCat(1)">Frutas</button>
+          <button class="vel-btn" onclick="fluSetCat(2)">Cores</button>
+          <button class="vel-btn" onclick="fluSetCat(3)">Países</button>
+        </div>
+        
+        <button class="btn btn-main" style="width:100%;justify-content:center;padding:12px;margin:14px 0" id="fluBtnStart" onclick="fluStart()">▶ COMEÇAR</button>
+        
+        <div id="fluTimer" style="display:none;font-family:monospace;font-size:2rem;font-weight:900;text-align:center;margin:12px 0">1:00</div>
+        
+        <div id="fluChips" style="background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:12px;min-height:80px;display:flex;flex-wrap:wrap;gap:6px"></div>
+        
+        <div id="fluResult" style="display:none;margin-top:16px"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- PÁGINA STOP -->
   <div class="page" id="page-stop">
     <div class="panel">
-      <div class="panel-head"><span class="panel-icon">🎲</span><div class="panel-title">STOP — Jogo de Palavra</div></div>
+      <div class="panel-head"><span class="panel-icon">🎲</span><div class="panel-title">STOP</div></div>
       <div class="panel-body">
-        <div class="dica-box">Preencha todas as categorias começando com a letra sorteada.</div>
+        <div class="dica-box">Preencha as categorias com palavras começando com a letra sorteada!</div>
         
         <div id="stopConfig">
-          <div style="margin-bottom:12px">
-            <label style="font-size:.75rem;font-weight:700;color:var(--ink2);display:block;margin-bottom:6px">Tempo:</label>
-            <div class="vel-row">
-              <button class="vel-btn on" onclick="stopTempo(60)">1 min</button>
-              <button class="vel-btn" onclick="stopTempo(90)">1:30</button>
-              <button class="vel-btn" onclick="stopTempo(120)">2 min</button>
-              <button class="vel-btn" onclick="stopTempo(0)">∞</button>
-            </div>
+          <label style="font-size:.75rem;font-weight:700;color:var(--ink2);display:block;margin-bottom:8px">Tempo:</label>
+          <div class="vel-row">
+            <button class="vel-btn on" onclick="stopSetTempo(60)">1 min</button>
+            <button class="vel-btn" onclick="stopSetTempo(90)">1:30</button>
+            <button class="vel-btn" onclick="stopSetTempo(120)">2 min</button>
           </div>
-          <button class="btn btn-main" style="width:100%;justify-content:center;padding:12px;font-size:.9rem" onclick="stopComecaJogo()">🎲 COMEÇAR</button>
+          <button class="btn btn-main" style="width:100%;justify-content:center;padding:12px;margin-top:14px" onclick="stopStart()">🎲 COMEÇAR</button>
         </div>
         
         <div id="stopGame" style="display:none">
           <div class="display">
-            <div style="font-size:.72rem;color:var(--ink3);margin-bottom:8px">LETRA</div>
-            <div style="font-family:Georgia,serif;font-size:3rem;font-weight:900;color:var(--accent);margin-bottom:12px" id="stopLetra">A</div>
+            <div style="font-size:.8rem;color:var(--ink3)">LETRA SORTEADA</div>
+            <div style="font-family:Georgia,serif;font-size:3rem;font-weight:900;color:var(--accent);margin:10px 0" id="stopLetra">A</div>
             <div class="timer-big" id="stopTimer">1:00</div>
-            <div class="timer-bar-wrap"><div class="timer-bar" id="stopBar" style="width:100%"></div></div>
           </div>
-          
-          <form id="stopForm" style="margin:16px 0"></form>
-          
-          <button class="btn btn-main" style="background:var(--red);width:100%;justify-content:center;padding:12px;margin-bottom:8px;font-size:.9rem" onclick="stopParar()">🛑 PARAR!</button>
+          <form id="stopForm"></form>
+          <button class="btn btn-main" style="background:var(--red);width:100%;justify-content:center;padding:12px" onclick="stopEnd()">🛑 PARAR!</button>
         </div>
         
         <div id="stopResult" style="display:none"></div>
@@ -238,11 +138,8 @@ body{background:var(--bg);color:var(--ink);font-family:system-ui,'Segoe UI',sans
     <div class="panel">
       <div class="panel-head"><span class="panel-icon">🎤</span><div class="panel-title">Karaokê</div></div>
       <div class="panel-body">
-        <div class="dica-box">Selecione uma música e cante junto!</div>
-        
-        <div class="chips" id="karaGeneros"></div>
-        
-        <div id="karaGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:12px"></div>
+        <div class="dica-box">Clique em uma música para ver a letra e ouvi-la!</div>
+        <div id="karaGrade" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:12px"></div>
       </div>
     </div>
   </div>
@@ -251,11 +148,7 @@ body{background:var(--bg);color:var(--ink);font-family:system-ui,'Segoe UI',sans
 <div id="toast"></div>
 
 <script>
-// ════════════════════════════════════════════════
-// STATE & UTILS
-// ════════════════════════════════════════════════
-let estadoAtual={};
-
+// UTILS
 function goPage(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   document.getElementById('page-'+p).classList.add('active');
@@ -277,773 +170,86 @@ function speak(text,rate=0.9){
     u.lang='pt-BR';
     u.rate=rate;
     window.speechSynthesis.speak(u);
-  }catch(e){
-    console.error('Erro ao falar:',e);
-  }
+  }catch(e){}
 }
 
-// ════════════════════════════════════════════════
-// FLUÊNCIA VERBAL CORRIGIDA
-// ════════════════════════════════════════════════
-const FLU_CATEGORIAS=['Animais','Frutas','Cores','Países','Cidades'];
-let fluTempoMax=60, fluCategoria=0, fluAtivo=false, fluRec=null, fluPalavras=new Set(), fluTimer=null, fluSecsLeft=60;
-
-function fluDefinirTempo(t){
-  if(fluAtivo)return;
-  fluTempoMax=t;
-  document.querySelectorAll('#fluTm60,#fluTm90,#fluTm120').forEach(b=>b.classList.remove('on'));
-  document.getElementById('fluTm'+t).classList.add('on');
-}
-
-function fluDefinirCategoria(idx){
-  if(fluAtivo)return;
-  fluCategoria=idx;
-  document.querySelectorAll('[id^="fluCat"]').forEach((b,i)=>b.classList.toggle('on',i===idx));
-}
-
-function fluToggle(){
-  if(fluAtivo)fluParar();
-  else fluComec();
-}
-
-function fluComec(){
-  try{
-    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-    if(!SR)throw new Error('Navegador sem reconhecimento de voz');
-    
-    fluAtivo=true;
-    fluPalavras.clear();
-    fluSecsLeft=fluTempoMax;
-    
-    document.querySelectorAll('[id^="fluTm"],[id^="fluCat"]').forEach(b=>b.disabled=true);
-    document.getElementById('fluBtn').innerHTML='<span>⏹</span> <span>PARAR</span>';
-    document.getElementById('fluCountdown').style.display='';
-    document.getElementById('fluPalavras').innerHTML='';
-    document.getElementById('fluResultado').style.display='none';
-    
-    fluTimer=setInterval(()=>{
-      fluSecsLeft--;
-      const m=Math.floor(fluSecsLeft/60);
-      const s=fluSecsLeft%60;
-      document.getElementById('fluCountdown').textContent=m+':'+(s<10?'0':'')+s;
-      
-      if(fluSecsLeft<=0){
-        clearInterval(fluTimer);
-        fluParar();
-      }
-    },1000);
-    
-    fluRec=new SR();
-    fluRec.lang='pt-BR';
-    fluRec.continuous=true;
-    fluRec.interimResults=false;
-    
-    fluRec.onresult=(e)=>{
-      for(let i=e.resultIndex;i<e.results.length;i++){
-        if(e.results[i].isFinal){
-          const txt=e.results[i][0].transcript.trim().toLowerCase();
-          const palavras=txt.split(/\s+/).filter(p=>p.length>2);
-          
-          palavras.forEach(p=>{
-            const norm=normalizarPalavra(p);
-            if(norm.length>2 && !fluPalavras.has(norm)){
-              fluPalavras.add(norm);
-              
-              const chip=document.createElement('div');
-              chip.style.cssText='background:var(--green-bg);border:2px solid var(--green);color:var(--green);border-radius:7px;padding:6px 10px;font-size:.75rem;font-weight:600';
-              chip.textContent='✓ '+p;
-              document.getElementById('fluPalavras').appendChild(chip);
-            }
-          });
-        }
-      }
-    };
-    
-    fluRec.onerror=(e)=>{
-      if(e.error!=='no-speech')console.error('Erro:',e.error);
-    };
-    
-    fluRec.onend=()=>{
-      if(fluAtivo)setTimeout(()=>fluRec.start(),300);
-    };
-    
-    toast('🎤 Fale palavras de: '+FLU_CATEGORIAS[fluCategoria]);
-    fluRec.start();
-  }catch(e){
-    toast('❌ '+e.message);
-  }
-}
-
-function fluParar(){
-  fluAtivo=false;
-  if(fluRec)fluRec.stop();
-  if(fluTimer)clearInterval(fluTimer);
-  
-  document.querySelectorAll('[id^="fluTm"],[id^="fluCat"]').forEach(b=>b.disabled=false);
-  document.getElementById('fluBtn').innerHTML='<span>▶</span> <span>COMEÇAR</span>';
-  document.getElementById('fluCountdown').style.display='none';
-  
-  const total=fluPalavras.size;
-  const tempo=fluTempoMax-fluSecsLeft;
-  const ppm=tempo>0?Math.round((total/tempo)*60):0;
-  
-  let html='<div class="panel"><div class="panel-head"><span>💬</span><div>Resultado</div></div><div class="panel-body">';
-  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">';
-  html+='<div style="background:var(--blue-bg);border:1.5px solid var(--blue);border-radius:8px;padding:12px;text-align:center"><div style="font-family:Georgia,serif;font-size:1.8rem;font-weight:900;color:var(--blue)">'+total+'</div><div style="font-size:.65rem;color:var(--ink3)">Palavras Únicas</div></div>';
-  html+='<div style="background:var(--green-bg);border:1.5px solid var(--green);border-radius:8px;padding:12px;text-align:center"><div style="font-family:Georgia,serif;font-size:1.8rem;font-weight:900;color:var(--green)">'+ppm+'</div><div style="font-size:.65rem;color:var(--ink3)">Palavras/Min</div></div>';
-  html+='</div>';
-  
-  if(total===0){
-    html+='<div style="background:var(--red-bg);border:1.5px solid var(--red);border-radius:8px;padding:10px;font-size:.8rem;color:var(--red)">⚠️ Nenhuma palavra! Fale mais alto!</div>';
-  } else if(ppm<30){
-    html+='<div style="background:var(--green-bg);border:1.5px solid var(--green);border-radius:8px;padding:10px;font-size:.8rem;color:var(--green)">✅ '+total+' palavras diferentes! Bom!</div>';
-  } else {
-    html+='<div style="background:var(--green-bg);border:1.5px solid var(--green);border-radius:8px;padding:10px;font-size:.8rem;color:var(--green)">🎉 Excelente! '+total+' palavras!</div>';
-  }
-  
-  html+='<button class="btn btn-main" style="width:100%;justify-content:center;margin-top:12px" onclick="fluComec()">🔄 Repetir</button></div></div>';
-  document.getElementById('fluResultado').innerHTML=html;
-  document.getElementById('fluResultado').style.display='';
-  
-  toast('✅ '+total+' palavras!');
-}
-
-// ════════════════════════════════════════════════
-// DESAFIO DE LEITURA
-// ════════════════════════════════════════════════
-const TEXTOS_LEITURA={
-  1:{
-    titulo:'Fácil - Primeiras Palavras',
-    nivel:'🟢 FÁCIL',
-    dificuldade:'Palavras simples (1-2 sílabas). Frases curtas. Vocabulário do dia a dia.',
-    ref:'Crianças de 5-6 anos',
-    texto:'Gato. Cão. Rato. Casa. Pão. Água. Sol. Lua. Eu. Você. Ele. Ela. Nós. Todos. Aqui. Lá. Comer. Beber. Dormir. Correr. O gato é preto. O cão é grande. A casa é bonita. Eu amo meu gato. Você ama seu cão. Nós somos amigos.'
-  },
-  2:{
-    titulo:'Normal - Histórias Curtas',
-    nivel:'🟡 NORMAL',
-    dificuldade:'Palavras médias (2-3 sílabas). Frases completas. Histórias simples.',
-    ref:'Crianças de 7-8 anos',
-    texto:'João acordou cedo na segunda-feira. Ele foi correndo para a escola. Sua amiga Maria estava esperando no caminho. Juntos correram muito rápido. A professora explicou a lição de matemática. Todos os alunos escutaram com atenção. No intervalo, brincaram de futebol no pátio. À tarde tiveram educação física. As crianças saltaram, correram e dançaram. Quando o sino tocou, todos voltaram para a sala. O dia na escola foi muito divertido e cansativo.'
-  },
-  3:{
-    titulo:'Médio - Narrativa Estruturada',
-    nivel:'🟠 MÉDIO',
-    dificuldade:'Palavras de 4+ sílabas. Frases complexas. Textos com introdução, desenvolvimento e conclusão.',
-    ref:'Crianças de 9-10 anos',
-    texto:'A biblioteca municipal oferecia diversos livros fascinantes para os leitores apaixonados pela literatura. Entre as estantes coloridas, encontravam-se obras magníficas de autores consagrados do Brasil e do mundo. Os frequentadores pasavam horas lendo atentamente, absorvendo conhecimento e sabedoria infinita. Às vezes, o bibliotecário recomendava leituras extraordinárias e surpreendentes. Era um local tranquilo e aconchegante para se concentrar nas páginas interessantes. A iluminação natural das janelas criava uma atmosfera perfeita. Muitos estudantes preparavam seus trabalhos e pesquisas escolares naquele ambiente inspirador. A biblioteca representava um refúgio importante na comunidade.'
-  },
-  4:{
-    titulo:'Difícil - Texto Acadêmico',
-    nivel:'🔴 DIFÍCIL',
-    dificuldade:'Linguagem técnica. Palavras raras. Estrutura complexa. Exige concentração máxima.',
-    ref:'Adolescentes e adultos',
-    texto:'A aquisição fonológica em crianças demonstra desenvolvimento progressivo de componentes linguísticos fundamentais. Pesquisadores contemporâneos investigam mecanismos neurológicos subjacentes ao processamento cognitivo da fala. Observações longitudinais revelaram que a plasticidade cerebral facilita reorganização sináptica durante períodos críticos do desenvolvimento. Intervenções fonoaudiológicas precoces maximizam potencialidade neuroplástica, otimizando trajetórias desenvolimentais fonético-fonológicas. A precisão articulatória e a discriminação auditiva constituem elementos essenciais para a aquisição apropriada de sistemas fonêmicos. Estratégias terapêuticas baseadas em evidências demonstram eficácia significativa na remediação de transtornos articulatórios persistentes. A implementação de programas de estimulação auditiva propicia desenvolvimento linguístico equilibrado e integral.'
-  },
-  5:{
-    titulo:'Extremo - Desafio Total',
-    nivel:'⚫ EXTREMO',
-    dificuldade:'Prosódia exigida. Palavras raríssimas. Ritmo e entonação complexos. Máximo desafio!',
-    ref:'Profissionais de linguagem e especialistas',
-    texto:'Nas profundezas insondáveis da consciência fenomenológica, desdobra-se o transcendental emaranhado de percepções obnubiladas pela nebulosidade epistemológica contemporânea. Os discípulos hermenêuticos e contemplativos escrutinizam meticulosamente os recônditos labirintos semânticos, buscando inexoravelmente desvendar os arcanos intrincados da linguagem multifacetada. Mediante análise pormenorizada das sinuosidades prosódicas e melódicas da enunciação, descortinam-se gradualmente os véus diáfanos que encobrem a quintessência inefável da comunicação humana. Eis aí o ápice supremo da excelência discursiva: a maestria incomparável do discurso polifônico, sinestésico e polissemântico que transcende os limites convencionais da pragmática linguística tradicional. A concatenação erudita de vocábulos sesquipedalianos e a tessitura ornamentada do constructo semântico revelam a magnitude grandiloqüente da expressão verbal perfeccionista.'
-  },
-  6:{
-    titulo:'Ultra - Prosa Clássica',
-    nivel:'🌪️ ULTRA',
-    dificuldade:'Prosa literária clássica. Inversões sintáticas. Palavras obsoletas. Desafio linguístico superior.',
-    ref:'Especialistas em literatura',
-    texto:'Qual não foi minha surpresa ao vislumbrar, atravessando os umbráculos da floresta intocada, uma silhueta humana que parecia flutuar como espectro etéreo pelas sombras crepusculares. Naquele instante de perplexidade indizível, compreendi que os mistérios da natureza ultrapassavam sobremaneira os limites da compreensão humana vulgar. A frondosa vegetação sussurrava segredos ancestrais que apenas os iniciados podiam decifrar. Os raios do sol pontuavam a densa arborização, criando efeitos caliédoscópicos que fascinavamMinha mente exacerbada. Aquele cenário bucólico transcendia as dimensões do meramente físico, penetrando os domínios do sobrenatural e do inefável, despertando em mim sensações de atordoamento perturbador.'
-  },
-  7:{
-    titulo:'Insano - Textos Filosóficos',
-    nivel:'💀 INSANO',
-    dificuldade:'Filosofia abstrusa. Neologismos. Estruturas sinuosas. Desafio máximo da razão.',
-    ref:'Filósofos e pesquisadores',
-    texto:'A phenomenología da existência transcendental perpassa os dedalíferos caminhos da ontologia heideggeriana, reverberando através dos estratos diafanificamente estruturados da consciência fenomênica. A epochemé cartesiana, quando interseccionada com a hermenêutica gadameriana, evocifica a pluripotencialidade interpretativa inerente à intencionalidade husserliana. Destarte, a dialética negativa adorniana, em sua insurreição contra a identidade reificante, subverte as categorias sedimentadas do pensamento logocêntrico ocidental. A substituição do ser pelo nada heideggeriano propicia a manifestação veritativa da aletheia, desvelando os ocultamentos sedimentados na infraestrutura metafísica tradicional. A protuberância do devir nietzschiano transgride os confins epistemológicos da modernidade, acarretando a perspectival destituição da verdade absoluta.'
-  },
-  8:{
-    titulo:'Caótico - Prosa Experimental',
-    nivel:'🌀 CAÓTICO',
-    dificuldade:'Prosa fragmentada. Sintaxe quebrada. Palavras inventadas. Teste último da capacidade.',
-    ref:'Críticos de vanguarda',
-    texto:'Fragmentação. Descontinuidade. A palavra transcindo seu próprio significado num vórtice de significâncias plurívocas e sentidos metamorfósicos. Transcendente-imanente. Ser-não-ser. A linguagem desfaz-se nas teias do silêncio eloquente onde ecoam-reverberamNas-os ecos de ecos daquilo que nunca foi dito. Sinestesia absoluta: o gosto das sombras, o aroma da geometria, a textura do vazio. A sintaxe sucumbe ante a magnitude da significação inexprimível. Pura potencialidade de sentido cristalizando-se em cristais de incerteza. O logos transveste-se em pathos, em ethos, em puro devir semiótico. Multiplicidade fractal onde cada palavra contém infinitudes de outras palavras. Significante-significado-referente coalescem numa singularidade semiológica irredutível.'
-  },
-  9:{
-    titulo:'Absurdo - Poesia Desintegrada',
-    nivel:'👹 ABSURDO',
-    dificuldade:'Poesia avançada. Ritmo descontínuo. Palavras raríssimas inventadas. Teste da razão.',
-    ref:'Poetas experimentais',
-    texto:'Psicossamantropofágico tesselaçãoverbigeral do intersticial vácuo donde emanam-volatilizamse as formas lívidas da metamorfose quintessencial. Zeolatricidade penumbrática das substâncias quasiontológicas reverberamglissandam pelos abismos hiperbólicos da demiúrgia lacunar. Flocosidade pneumúrgia despedaçando a arque-retinalidade dos sentidos oxygenados num borbotilho prismático de cristalografias impossíveis. Vertiginosa ascensão-queda simultânea das partículas anímicas pelo vácuo siseístico. Cacofonias sinestéticas decompondo-recompondo a matéria semântica em fractais de pura nomeação autofágica. Glossolália transcendida em prototipogênese de significados ainda-não-nascidos dançando a dança da criação previa. Tanatografia luminosa sussurrando a morte da própria linguagem.'
-  },
-  10:{
-    titulo:'Apocalíptico - Máximo Desafio',
-    nivel:'☠️ APOCALÍPTICO',
-    dificuldade:'Nível impossível. Neologismos extremos. Estrutura desestruturada. Prova final absoluta.',
-    ref:'Mestres da linguagem',
-    texto:'Synchroclasmata verti-inversivas desintegrando-congregamse nos labirintos tétanós da omnipotencialidade semântica vítreas. Quasiconsciência flogísticaquântica reverberando através dos densos espessos do interstício transcategorial primordial. Noctambulísticossilenciovórtice apodícticamente irracionalizando a geometria euclidiana das significâncias verbigéricas. Anamorfoses gnomônicas da fenômenoplegia abstracionista desmoronando-recristalizamse em arquipélagos de fractais ontológicos impossíveis. Glossogênese automecânica despedaçando-amplificando-destilando a própria essência logomórfica em seus núcleos protopsíquicos incandescentes. Autofágica demiurgiacadavérica transmutando a matéria noumenal em puros atos de criação-destruição simultânea perpetuamente instantâneos. Logos em colapso superluminar sucumbindo às pressões de sua infinita densidade significativa no buraco negro linguístico da absoluta nomeação inominável.'
-  }
-};
-
-
-let leiNiv=1, leiAtiva=false, leiRec=null, leiTxt='', leiPals=0, leiSecs=0, leiTmr=null, leiTempoMax=90, leiUltimaTrans='';
-
-// Função para calcular distância de edição (Levenshtein)
-function calcularDistancia(a, b) {
-  const m = a.length;
-  const n = b.length;
-  const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
-  
-  for (let i = 0; i <= m; i++) dp[i][0] = i;
-  for (let j = 0; j <= n; j++) dp[0][j] = j;
-  
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (a[i - 1] === b[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1];
-      } else {
-        dp[i][j] = 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
-      }
-    }
-  }
-  return dp[m][n];
-}
-
-// Normalizar palavra
-function normalizarPalavra(p) {
-  return p.toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z]/g, '')
-    .trim();
-}
-
-function leiTempo(t){
-  if(leiAtiva)return;
-  leiTempoMax=t;
-  document.querySelectorAll('.vel-row .vel-btn').forEach(b=>b.classList.remove('on'));
-  event.target.classList.add('on');
-}
-
-function leiNivel(n){
-  if(leiAtiva)toggleLeitura();
-  leiNiv=n;
-  leiPals=0;
-  leiUltimaTrans='';
-  document.querySelectorAll('.level-btn').forEach((b,i)=>b.classList.toggle('on',i+1===n));
-  const txto=TEXTOS_LEITURA[n];
-  document.getElementById('leiTexto').textContent=txto.texto;
-  document.getElementById('leiNivelTit').textContent=txto.nivel;
-  document.getElementById('leiNivelDesc').textContent=txto.dificuldade;
-  document.getElementById('leiNivelRef').textContent=txto.ref;
-  document.getElementById('leiInfoNivel').style.display='';
-  document.getElementById('leiResultado').style.display='none';
-  document.getElementById('leiPalCount').textContent='0';
-}
-
-function toggleLeitura(){
-  if(leiAtiva)pararLeitura();
-  else comecaLeitura();
-}
-
-function comecaLeitura(){
-  try{
-    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-    if(!SR)throw new Error('Use Chrome, Edge ou navegador compatível!');
-    
-    leiAtiva=true;
-    leiPals=0;
-    leiUltimaTrans='';
-    leiSecs=leiTempoMax;
-    leiTxt='';
-    
-    document.getElementById('leiNivelConfig').style.display='none';
-    document.getElementById('leiStatus').style.display='';
-    document.getElementById('leiBtn').innerHTML='<span>⏹</span><span>PARAR</span>';
-    document.getElementById('leiResultado').style.display='none';
-    document.getElementById('leiPalCount').textContent='0';
-    document.getElementById('leiStatusTxt').textContent='🎙️ Clique no microfone e fale!';
-    
-    // Cronômetro REGRESSIVO
-    const timer=setInterval(()=>{
-      leiSecs--;
-      const m=Math.floor(leiSecs/60);
-      const s=leiSecs%60;
-      const display=m+':'+(s<10?'0':'')+s;
-      document.getElementById('leiTempo').textContent=display;
-      
-      const statusEl=document.getElementById('leiStatusTxt');
-      if(leiSecs<=10){
-        statusEl.textContent='⏰ Tempo acabando... ('+leiPals+' palavras)';
-        statusEl.style.color='var(--red)';
-      } else if(leiSecs<=30){
-        statusEl.textContent='🔔 Metade do tempo! ('+leiPals+' palavras)';
-        statusEl.style.color='var(--amber)';
-      } else {
-        statusEl.textContent='🎙️ Ouvindo... ('+leiPals+' palavras)';
-        statusEl.style.color='var(--ink2)';
-      }
-      
-      if(leiSecs<=0){
-        clearInterval(timer);
-        pararLeitura();
-        toast('⏰ Tempo encerrado!');
-      }
-    },1000);
-    leiTmr=timer;
-    
-    leiRec=new SR();
-    leiRec.lang='pt-BR';
-    leiRec.continuous=true;
-    leiRec.interimResults=false;
-    leiRec.maxAlternatives=1;
-    
-    leiRec.onstart=()=>{
-      document.getElementById('leiStatusTxt').textContent='🎙️ Ouvindo... fale em voz alta!';
-    };
-    
-    leiRec.onresult=(e)=>{
-      for(let i=e.resultIndex;i<e.results.length;i++){
-        if(e.results[i].isFinal){
-          const transcript=e.results[i][0].transcript.trim();
-          
-          if(transcript.length>0){
-            // IMPORTANTE: Só processa se for DIFERENTE do último
-            if(transcript !== leiUltimaTrans){
-              // Split em palavras e normaliza cada uma
-              const palavras=transcript.split(/\s+/).filter(p=>p.length>0);
-              
-              // Conta apenas palavras NOVAS (não iguais às anteriores)
-              let novasPalavras=0;
-              for(let p of palavras){
-                const norm=normalizarPalavra(p);
-                
-                // Verifica se é muito similar a alguma anterior
-                let ehRepetida=false;
-                for(let anterior of leiTxt.split(/\s+/)){
-                  const normAnterior=normalizarPalavra(anterior);
-                  const distancia=calcularDistancia(norm, normAnterior);
-                  
-                  // Se distância é 0 ou 1, é repetição
-                  if(distancia<=1 && norm.length>2){
-                    ehRepetida=true;
-                    break;
-                  }
-                }
-                
-                // Só conta se for NOVA
-                if(!ehRepetida && norm.length>2){
-                  novasPalavras++;
-                }
-              }
-              
-              leiPals+=novasPalavras;
-              leiUltimaTrans=transcript;
-              leiTxt+=transcript+' ';
-              
-              console.log('Capturou:',transcript,'=',novasPalavras,'palavras novas. Total:',leiPals);
-            }
-            
-            document.getElementById('leiPalCount').textContent=leiPals;
-          }
-        }
-      }
-    };
-    
-    leiRec.onerror=(e)=>{
-      console.error('Erro:',e.error);
-      if(e.error==='no-speech'){
-        document.getElementById('leiStatusTxt').textContent='⚠️ Nenhuma voz! Fale mais alto!';
-      } else if(e.error!=='network'){
-        document.getElementById('leiStatusTxt').textContent='⚠️ Erro: '+e.error;
-      }
-    };
-    
-    leiRec.onend=()=>{
-      if(leiAtiva){
-        setTimeout(()=>{
-          if(leiAtiva){
-            try{
-              leiRec.start();
-            }catch(e){
-              console.error('Erro ao reiniciar:',e);
-            }
-          }
-        },500);
-      }
-    };
-    
-    toast('🎤 Microfone ativo! Fale claro e sem repetir!');
-    leiRec.start();
-  }catch(e){
-    toast('❌ '+e.message);
-    console.error('Erro:',e);
-  }
-}
-
-function pararLeitura(){
-  leiAtiva=false;
-  if(leiRec)leiRec.stop();
-  if(leiTmr)clearInterval(leiTmr);
-  
-  document.getElementById('leiNivelConfig').style.display='';
-  document.getElementById('leiStatus').style.display='none';
-  document.getElementById('leiBtn').innerHTML='<span>▶</span><span>COMEÇAR</span>';
-  
-  // Análise
-  const txtoOriginal=TEXTOS_LEITURA[leiNiv].texto;
-  const palCount=leiPals; // Usar contagem correta
-  const tempoUsado=leiTempoMax-leiSecs;
-  
-  // PPM: palavras por MINUTO
-  let ppm=0;
-  if(tempoUsado>0){
-    ppm=Math.round((palCount/tempoUsado)*60);
-  }
-  
-  // Acurácia: percentual do texto lido
-  const palOriginal=txtoOriginal.split(/\s+/).length;
-  let acuracia=0;
-  if(palOriginal>0){
-    acuracia=Math.min(100,Math.round((palCount/palOriginal)*100));
-  }
-  
-  // Pontuação com critérios claros
-  let nota='F';
-  let cor='var(--red)';
-  let criterio='';
-  
-  if(acuracia>=95&&ppm>=100){
-    nota='S'; 
-    cor='var(--green)';
-    criterio='EXCELENTE: Acurácia máxima + Velocidade ótima';
-  } else if(acuracia>=85&&ppm>=90){
-    nota='A'; 
-    cor='var(--green)';
-    criterio='MUITO BOM: Ótima acurácia e velocidade';
-  } else if(acuracia>=75&&ppm>=80){
-    nota='B'; 
-    cor='var(--blue)';
-    criterio='BOM: Acurácia boa e velocidade adequada';
-  } else if(acuracia>=60&&ppm>=60){
-    nota='C'; 
-    cor='var(--amber)';
-    criterio='SATISFATÓRIO: Acurácia e velocidade mínimas';
-  } else if(acuracia>=50){
-    nota='D'; 
-    cor='var(--amber)';
-    criterio='INSUFICIENTE: Precisa melhorar acurácia';
-  } else {
-    nota='F';
-    cor='var(--red)';
-    criterio='REPROVADO: Nenhuma palavra captada ou acurácia crítica';
-  }
-  
-  // Análise EXTREMAMENTE detalhada
-  let analise='<div style="margin-bottom:10px"><strong>📊 ANÁLISE COMPLETA:</strong></div>';
-  
-  if(leiTempoMax===0){
-    analise+='<div>∞ <strong>Modo livre:</strong> Sem limite de tempo. Foco na qualidade da leitura.</div>';
-  } else if(tempoUsado===0){
-    analise+='<div style="color:var(--red)">⏱️ <strong>Nenhuma palavra detectada!</strong> Verifique: 1) Microfone conectado? 2) Permissão de microfone? 3) Falando perto do microfone?</div>';
-  } else {
-    const tempoPct=Math.round((tempoUsado/leiTempoMax)*100);
-    if(tempoPct>=90){
-      analise+='<div>⏰ <strong>Velocidade baixa:</strong> Você usou '+tempoPct+'% do tempo. Pratique ler mais rápido, mas mantendo clareza!</div>';
-    } else if(tempoPct>=60){
-      analise+='<div>✅ <strong>Tempo adequado:</strong> Você usou '+tempoPct+'% do tempo. Ótima gestão do ritmo!</div>';
-    } else {
-      analise+='<div>⚡ <strong>Muito rápido:</strong> Você terminou com '+Math.round(100-tempoPct)+'% de tempo restante. Procure manter velocidade constante.</div>';
-    }
-  }
-  
-  if(palCount===0){
-    analise+='<div style="color:var(--red)">🔄 <strong>Problema de captura:</strong> Nenhuma palavra foi reconhecida. Tente de novo em um local mais silencioso.</div>';
-  } else {
-    if(ppm<60){
-      analise+='<div>🐢 <strong>Velocidade muito baixa ('+ppm+' pal/min):</strong> Objetivo mínimo é 60 pal/min. Leia com mais ritmo! ➜ Pratique texto de nível anterior</div>';
-    } else if(ppm<80){
-      analise+='<div>🚶 <strong>Velocidade baixa ('+ppm+' pal/min):</strong> Abaixo do ideal. Aumente o ritmo mantendo clareza! ➜ Repita este nível</div>';
-    } else if(ppm<100){
-      analise+='<div>📚 <strong>Velocidade normal ('+ppm+' pal/min):</strong> Aceitável. Você pode aumentar um pouco! ➜ Próximo nível recomendado</div>';
-    } else if(ppm<130){
-      analise+='<div>✅ <strong>Velocidade ótima ('+ppm+' pal/min):</strong> Excelente! Ritmo natural e fluido! ➜ Desafie-se com nível maior</div>';
-    } else {
-      analise+='<div>⚡ <strong>Velocidade muito alta ('+ppm+' pal/min):</strong> Risco de perda de clareza. Mantenha velocidade, mas pronuncie bem!</div>';
-    }
-  }
-  
-  if(acuracia===0){
-    analise+='<div style="color:var(--red)">❌ <strong>Acurácia crítica (0%):</strong> Sistema não reconheceu palavras. Problema técnico ou microfone não funciona.</div>';
-  } else if(acuracia<50){
-    analise+='<div style="color:var(--red)">🔄 <strong>Acurácia muito baixa ('+acuracia+'%):</strong> Sistema capturou poucos palavras. Fale MAIS ALTO e MAIS CLARO! ➜ Teste microfone</div>';
-  } else if(acuracia<70){
-    analise+='<div>⚠️ <strong>Acurácia baixa ('+acuracia+'%):</strong> Melhore a dição e fale mais perto do microfone! ➜ Repita com mais clareza</div>';
-  } else if(acuracia<85){
-    analise+='<div>💬 <strong>Acurácia boa ('+acuracia+'%):</strong> Fala clara e compreensível! ➜ Pequenas melhorias levarão a excelência</div>';
-  } else if(acuracia<95){
-    analise+='<div>🎯 <strong>Acurácia muito boa ('+acuracia+'%):</strong> Dição cristalina! Pratique para atingir 95%+ ➜ Quase perfeito!</div>';
-  } else {
-    analise+='<div>🏆 <strong>Acurácia excelente ('+acuracia+'%):</strong> PERFEITO! Dição impecável! ➜ Desafie-se com nível maior</div>';
-  }
-  
-  // Recomendações por nível
-  if(leiNiv===1){
-    if(nota==='S'||nota==='A')analise+='<div style="background:var(--green-bg);padding:8px;border-radius:6px;margin-top:10px">🚀 <strong>Parabéns!</strong> Você domina o nível Fácil. ➜ Avance para o nível Normal!</div>';
-    else if(nota==='B'||nota==='C')analise+='<div style="background:var(--blue-bg);padding:8px;border-radius:6px;margin-top:10px">📖 Bom desempenho! Pratique mais neste nível ou avance para o próximo.</div>';
-    else analise+='<div style="background:var(--red-bg);padding:8px;border-radius:6px;margin-top:10px">⚠️ Pratique mais este nível antes de avançar.</div>';
-  } else if(leiNiv===5){
-    if(nota==='S'||nota==='A')analise+='<div style="background:var(--green-bg);padding:8px;border-radius:6px;margin-top:10px">👑 <strong>MÁXIMO NÍVEL!</strong> Você é um mestre da leitura! Prosódia, velocidade e precisão impecáveis!</div>';
-    else analise+='<div style="background:var(--amber-bg);padding:8px;border-radius:6px;margin-top:10px">⚫ Nível Extremo é desafiador! Continue praticando para dominar a prosódia avançada.</div>';
-  } else {
-    if(nota==='S'||nota==='A')analise+='<div style="background:var(--green-bg);padding:8px;border-radius:6px;margin-top:10px">✅ Excelente! Próximo nível aguarda. ➜ Desafie-se!</div>';
-    else if(nota==='D'||nota==='F')analise+='<div style="background:var(--red-bg);padding:8px;border-radius:6px;margin-top:10px">⚠️ Repita este nível e melhore antes de avançar.</div>';
-  }
-  
-  document.getElementById('leiResultado').innerHTML=`
-    <div class="panel">
-      <div class="panel-head"><span>📖</span><div>Resultado Final — ${TEXTOS_LEITURA[leiNiv].nivel}</div></div>
-      <div class="panel-body">
-        <div style="text-align:center;margin-bottom:16px">
-          <div style="font-family:Georgia,serif;font-size:3.2rem;font-weight:900;color:${cor};line-height:1">${nota}</div>
-          <div style="font-size:.7rem;color:var(--ink3);margin-top:4px">${criterio}</div>
-        </div>
-        
-        <div style="background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:12px;margin-bottom:14px;font-size:.78rem">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-            <div style="text-align:center;background:var(--blue-bg);padding:10px;border-radius:6px">
-              <div style="font-family:Georgia,serif;font-size:1.8rem;font-weight:900;color:var(--blue)">${ppm}</div>
-              <div style="font-size:.65rem;color:var(--ink3);margin-top:3px">Palavras/Min</div>
-            </div>
-            <div style="text-align:center;background:var(--green-bg);padding:10px;border-radius:6px">
-              <div style="font-family:Georgia,serif;font-size:1.8rem;font-weight:900;color:var(--green)">${acuracia}%</div>
-              <div style="font-size:.65rem;color:var(--ink3);margin-top:3px">Acurácia</div>
-            </div>
-          </div>
-          
-          <div style="color:var(--ink3);margin-bottom:6px"><strong>⏱️ Tempo limite:</strong> ${leiTempoMax===0?'∞':Math.floor(leiTempoMax/60)+':'+String(leiTempoMax%60).padStart(2,'0')}</div>
-          <div style="color:var(--ink3);margin-bottom:6px"><strong>⏳ Tempo usado:</strong> ${Math.floor(tempoUsado/60)}:${String(tempoUsado%60).padStart(2,'0')}</div>
-          <div style="color:var(--ink3);margin-bottom:6px"><strong>🎙️ Palavras captadas:</strong> ${palCount}</div>
-          <div style="color:var(--ink3)"><strong>📄 Esperado no texto:</strong> ${palOriginal}</div>
-        </div>
-        
-        <div style="background:var(--blue-bg);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:12px;font-size:.76rem;line-height:1.7;margin-bottom:14px;color:var(--ink2)">
-          ${analise}
-        </div>
-        
-        <div style="display:flex;gap:7px;flex-wrap:wrap">
-          <button class="btn btn-main" style="flex:1;min-width:120px;justify-content:center" onclick="leiNivel(${leiNiv})">🔄 Repetir Nível</button>
-          <button class="btn btn-ghost" style="flex:1;min-width:120px;justify-content:center" onclick="leiNivel(${Math.max(1,leiNiv-1)})">⬅️ Nível Anterior</button>
-          <button class="btn btn-ghost" style="flex:1;min-width:120px;justify-content:center" onclick="leiNivel(${Math.min(5,leiNiv+1)})">Próximo ➜</button>
-        </div>
-      </div>
-    </div>
-  `;
-  document.getElementById('leiResultado').style.display='';
-}
-const TRAVAS=[
-  'O rato roeu a roupa do rei de Roma.',
-  'Três pratos de trigo para três tigres tristes.',
-  'Que querem que faça com as quatro queimações?',
-  'Sou seu seguro de segurança, señor sensato.',
-  'Peça para pipoca pipa pipoco pipá pipecar!',
-];
+// TRAVAS
+const TRAVAS=['O rato roeu a roupa do rei de Roma.','Três pratos de trigo para três tigres tristes.','Que querem que faça com as quatro queimações?','Sou seu seguro de segurança, señor sensato.'];
 let travasIdx=0;
+function falarTrava(){speak(TRAVAS[travasIdx]);}
+function proximaTrava(){travasIdx=(travasIdx+1)%TRAVAS.length;document.getElementById('travasDisplay').textContent=TRAVAS[travasIdx];}
 
-function falarTrava(){
-  speak(TRAVAS[travasIdx]);
-}
-
-function proximaTrava(){
-  travasIdx=(travasIdx+1)%TRAVAS.length;
-  document.getElementById('travasDisplay').textContent=TRAVAS[travasIdx];
-}
-
-// ════════════════════════════════════════════════
 // FLUÊNCIA
-// ════════════════════════════════════════════════
-const FLUENCIA_CATS=['Animais','Frutas','Cores','Países','Cidades','Verbos','Alimentos','Objetos'];
-let fluIdx=0,fluTem=60,fluAtiva=false,fluRec=null,fluSecs=60,fluWords=[];
-
-// ════════════════════════════════════════════════
-// STOP
-// ════════════════════════════════════════════════
-const STOP_CATS=['Nome','Cor','Animal','País','Cidade','Marca','Comida'];
-const STOP_PALAVRAS={'nome':['joão','maria','jose','pedro','ana','carlos','bruno','alice','bianca'],'cor':['branco','azul','vermelho','verde','amarelo','rosa','roxo'],'animal':['burro','gato','cachorro','peixe','cobra','leao','tigre'],'país':['brasil','argentina','mexico','japao','alemanha','franca','espanha'],'cidade':['barueri','saopaulo','riodejaneiro','brasilia','salvador','recife','manaus'],'marca':['bmw','ford','chevrolet','fiat','vw','toyota','honda'],'comida':['biscoito','pao','arroz','feijao','macarrao','pizza','hamburger']};
-
-let stopTp=60,stopScs=60,stopLtr='A',stopTmr=null;
-
-function stopTempo(t){
-  stopTp=t;
-  document.querySelectorAll('.vel-row').forEach(b=>b.classList.remove('on'));
-  event.target.classList.add('on');
-}
-
-function stopComecaJogo(){
-  const letras='ABCDEFGIJLMNOPQRSTUVXZ';
-  stopLtr=letras[Math.floor(Math.random()*letras.length)];
-  stopScs=stopTp;
-  
-  document.getElementById('stopConfig').style.display='none';
-  document.getElementById('stopGame').style.display='';
-  document.getElementById('stopResult').style.display='none';
-  document.getElementById('stopLetra').textContent=stopLtr;
-  
-  if(stopTp>0){
-    document.getElementById('stopTimer').textContent=Math.floor(stopScs/60)+':'+String(stopScs%60).padStart(2,'0');
-    stopTmr=setInterval(()=>{
-      stopScs--;
-      document.getElementById('stopTimer').textContent=Math.floor(stopScs/60)+':'+String(stopScs%60).padStart(2,'0');
-      const pct=(stopScs/stopTp)*100;
-      document.getElementById('stopBar').style.width=pct+'%';
-      if(stopScs<=0){clearInterval(stopTmr);stopParar();}
-    },1000);
-  }
-  
-  const form=document.getElementById('stopForm');
-  form.innerHTML=STOP_CATS.map((c,i)=>`
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-      <label style="font-size:.73rem;font-weight:700;min-width:100px;text-align:right;color:var(--ink2)">${c}:</label>
-      <input type="text" id="stop-${i}" placeholder="Com ${stopLtr}..." style="flex:1;border:2px solid var(--line);border-radius:7px;padding:10px 12px;font-size:16px;outline:none;background:var(--paper);color:var(--ink);font-family:inherit" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--line)'">
-    </div>
-  `).join('');
-  
-  setTimeout(()=>{
-    const inp=document.getElementById('stop-0');
-    if(inp){
-      inp.focus();
-      inp.click();
-    }
-  },100);
-}
-
-function stopParar(){
-  if(stopTmr)clearInterval(stopTmr);
-  document.getElementById('stopGame').style.display='none';
-  document.getElementById('stopResult').style.display='';
-  
-  let pontos=0,html='';
-  STOP_CATS.forEach((c,i)=>{
-    const inp=document.getElementById('stop-'+i);
-    const val=inp.value.trim().toLowerCase();
-    const temLetra=val.startsWith(stopLtr.toLowerCase());
-    const key=c.toLowerCase();
-    const lista=STOP_PALAVRAS[key]||[];
-    const ehValida=temLetra&&lista.includes(val);
-    const pts=ehValida?10:0;
-    pontos+=pts;
-    html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;background:${ehValida?'var(--green-bg)':'var(--red-bg)'};margin-bottom:5px"><span>${ehValida?'✅':'❌'}</span><div style="flex:1"><span style="font-size:.73rem;color:var(--ink3)">${c}</span><span style="font-size:.8rem;font-weight:700;margin-left:6px">${val||'(vazio)'}</span></div><span style="font-weight:700">${pts>0?'+'+pts:'0'}</span></div>`;
-  });
-  
-  const max=STOP_CATS.length*10;
-  const pct=Math.round((pontos/max)*100);
-  const nota=pct>=90?'S':pct>=80?'A':pct>=70?'B':pct>=60?'C':'F';
-  
-  document.getElementById('stopResult').innerHTML=`
-    <div class="panel">
-      <div class="panel-head"><span>🎲</span><div>Resultado — Letra ${stopLtr}</div></div>
-      <div class="panel-body">
-        <div style="text-align:center;margin-bottom:16px">
-          <div style="font-family:Georgia,serif;font-size:2.5rem;font-weight:900;color:${pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)'}">${nota}</div>
-          <div style="font-size:.7rem;color:var(--ink3)">${pontos}/${max} pontos</div>
-        </div>
-        <div style="margin-bottom:14px">${html}</div>
-        <button class="btn btn-main" style="width:100%;justify-content:center" onclick="stopComecaJogo()">🎲 Nova</button>
-      </div>
-    </div>
-  `;
-}
-
-// ════════════════════════════════════════════════
-// KARAOKÊ
-// ════════════════════════════════════════════════
-const MUSICAS=[
-  {titulo:'Garota de Ipanema',artista:'Tom Jobim',genero:'MPB',letra:'Olha que coisa mais linda,\nMais cheia de graça...\nÉ ela, menina,\nQue vem e que passa...'},
-  {titulo:'Aquarela',artista:'Toquinho',genero:'Infantil',letra:'Numa folha qualquer\nEu desenho um sol amarelo\nE com cinco ou seis riscas simples\nFaço uma casa...'},
-  {titulo:'Asa Branca',artista:'Luiz Gonzaga',genero:'Forró',letra:'Quando o verde dos teus olhos\nSe mistura com o verde do mar\nA gente fica verde,\nDe esperança de se abraçar...'},
-  {titulo:'Evidências',artista:'Chitãozinho & Xororó',genero:'Sertanejo',letra:'Basta um olhar e nada é como era\nAcho estranho pensar como você\nMexe comigo, eu todo me desespero\nAcho estranho não saber de você...'},
-  {titulo:'Pais e Filhos',artista:'Legião Urbana',genero:'Rock',letra:'Não é sobre chegar no topo do mundo\nE saber que conquistou tudo\nÉ saber que para chegar lá\nVocê deixou muita gente pra trás...'},
-  {titulo:'Parabéns',artista:'Diversos',genero:'Infantil',letra:'Parabéns pra você,\nNesta data querida\nMuita felicidade,\nMuito sucesso na vida...'},
-  {titulo:'Imagine',artista:'John Lennon',genero:'Rock',letra:'Imagine all the people\nLiving life in peace\nYou, you may say I\'m a dreamer\nBut I\'m not the only one...'},
-  {titulo:'Let It Be',artista:'The Beatles',genero:'Rock',letra:'And when the broken-hearted people\nLiving in the world agree\nThere will be an answer\nLet it be...'},
-];
-
-function initKara(){
-  const generos=[...new Set(MUSICAS.map(m=>m.genero))];
-  document.getElementById('karaGeneros').innerHTML=generos.map(g=>`<button class="chip" onclick="filtroKara('${g}')">${g}</button>`).join('')+'<button class="chip on" onclick="filtroKara(\'todas\')">⭐ Todas</button>';
-  filtroKara('todas');
-}
-
-function filtroKara(g){
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
-  if(g==='todas'){
-    document.querySelectorAll('.chip').forEach((c,i)=>{
-      if(c.textContent.includes('⭐'))c.classList.add('on');
-    });
-  } else {
-    event?.target?.classList.add('on');
-  }
-  
-  const musicas=g==='todas'?MUSICAS:MUSICAS.filter(m=>m.genero===g);
-  document.getElementById('karaGrid').innerHTML=musicas.map(m=>`
-    <div style="border:2px solid var(--kara);border-radius:9px;padding:12px;cursor:pointer;background:var(--kara-bg);transition:all .2s" 
-         onclick="karaAbrir('${m.titulo}')"
-         onmouseover="this.style.boxShadow='0 4px 12px rgba(107,33,168,.2)'"
-         onmouseout="this.style.boxShadow='none'">
-      <div style="font-size:.65rem;color:var(--kara);font-weight:700;text-transform:uppercase;letter-spacing:.05em">${m.genero}</div>
-      <div style="font-weight:700;font-size:.85rem;margin-top:4px;color:var(--ink)">${m.titulo}</div>
-      <div style="font-size:.7rem;color:var(--ink3);margin-top:2px">🎤 ${m.artista}</div>
-    </div>
-  `).join('');
-}
-
-function karaAbrir(titulo){
-  const musica=MUSICAS.find(m=>m.titulo===titulo);
-  if(!musica)return;
-  
-  const modal=document.createElement('div');
-  modal.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:9999';
-  
-  const conteudo=document.createElement('div');
-  conteudo.style.cssText='background:var(--paper);border-radius:12px;padding:24px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto';
-  conteudo.innerHTML=`
-    <div style="text-align:center;margin-bottom:20px">
-      <div style="font-size:2rem;margin-bottom:10px">🎤</div>
-      <h2 style="margin:0;font-family:Georgia,serif;font-size:1.4rem;color:var(--ink)">${musica.titulo}</h2>
-      <div style="color:var(--ink3);font-size:.9rem;margin-top:6px">${musica.artista} • ${musica.genero}</div>
-    </div>
-    
-    <div style="background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:16px;margin-bottom:16px;font-size:.95rem;line-height:1.8;white-space:pre-wrap;color:var(--ink)">
-      ${musica.letra}
-    </div>
-    
-    <div style="display:flex;gap:8px;justify-content:center">
-      <button class="btn btn-main" onclick="karaFalar('${musica.titulo}')">🔊 Ouvir</button>
-      <button class="btn btn-ghost" onclick="this.parentElement.parentElement.parentElement.remove()">Fechar</button>
-    </div>
-  `;
-  
-  modal.appendChild(conteudo);
-  modal.onclick=(e)=>{
-    if(e.target===modal)modal.remove();
-  };
-  document.body.appendChild(modal);
-}
-
-function karaFalar(titulo){
-  const musica=MUSICAS.find(m=>m.titulo===titulo);
-  if(!musica)return;
-  
+const FLU_CATS=['Animais','Frutas','Cores','Países'];
+let fluTempo=60,fluCat=0,fluAtivo=false,fluRec=null,fluPals=new Set(),fluTmr=null,fluSecs=60;
+function fluSetTempo(t){fluTempo=t;document.querySelectorAll('[onclick*="fluSetTempo"]').forEach(b=>b.classList.remove('on'));event.target.classList.add('on');}
+function fluSetCat(i){fluCat=i;document.querySelectorAll('[onclick*="fluSetCat"]').forEach(b=>b.classList.remove('on'));event.target.classList.add('on');}
+function fluStart(){
   try{
-    window.speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(musica.titulo+'. '+musica.letra);
-    u.lang='pt-BR';
-    u.rate=0.9;
-    window.speechSynthesis.speak(u);
-    toast('🎵 Tocando: '+titulo);
-  }catch(e){
-    toast('❌ Erro ao reproduzir');
-  }
+    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR)throw new Error('Navegador incompatível');
+    fluAtivo=true;fluPals.clear();fluSecs=fluTempo;
+    document.getElementById('fluBtnStart').innerHTML='⏹ PARAR';
+    document.getElementById('fluTimer').style.display='';
+    document.getElementById('fluChips').innerHTML='';
+    document.getElementById('fluResult').style.display='none';
+    fluTmr=setInterval(()=>{fluSecs--;document.getElementById('fluTimer').textContent=Math.floor(fluSecs/60)+':'+(fluSecs%60<10?'0':'')+(fluSecs%60);if(fluSecs<=0){clearInterval(fluTmr);fluEnd();}},1000);
+    fluRec=new SR();fluRec.lang='pt-BR';fluRec.continuous=true;
+    fluRec.onresult=(e)=>{for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal){const txt=e.results[i][0].transcript.toLowerCase().split(/\s+/);txt.forEach(p=>{const norm=p.replace(/[^a-z]/g,'');if(norm.length>2&&!fluPals.has(norm)){fluPals.add(norm);const c=document.createElement('div');c.style.cssText='background:var(--green-bg);border:2px solid var(--green);color:var(--green);border-radius:6px;padding:6px 10px;font-size:.75rem;font-weight:600';c.textContent='✓ '+p;document.getElementById('fluChips').appendChild(c);}});}}};
+    fluRec.start();toast('🎤 Fale: '+FLU_CATS[fluCat]);
+  }catch(e){toast('❌ '+e.message);}
+}
+function fluEnd(){
+  fluAtivo=false;if(fluRec)fluRec.stop();if(fluTmr)clearInterval(fluTmr);
+  document.getElementById('fluBtnStart').innerHTML='▶ COMEÇAR';
+  document.getElementById('fluTimer').style.display='none';
+  const total=fluPals.size;const tempo=fluTempo-fluSecs;const ppm=tempo>0?Math.round((total/tempo)*60):0;
+  let h='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div style="background:var(--blue-bg);border:1.5px solid var(--blue);border-radius:8px;padding:12px;text-align:center"><div style="font-family:Georgia,serif;font-size:1.6rem;font-weight:900;color:var(--blue)">'+total+'</div><div style="font-size:.65rem;color:var(--ink3)">Palavras Únicas</div></div><div style="background:var(--green-bg);border:1.5px solid var(--green);border-radius:8px;padding:12px;text-align:center"><div style="font-family:Georgia,serif;font-size:1.6rem;font-weight:900;color:var(--green)">'+ppm+'</div><div style="font-size:.65rem;color:var(--ink3)">Palavras/Min</div></div></div>';
+  if(total>0)h+='<div style="background:var(--green-bg);border:1.5px solid var(--green);border-radius:8px;padding:10px;font-size:.8rem;color:var(--green)">🎉 '+total+' palavras diferentes!</div>';
+  document.getElementById('fluResult').innerHTML=h;document.getElementById('fluResult').style.display='';toast('✅ '+total+' palavras!');
 }
 
+// STOP
+const STOP_CATS=['Nome','Animal','Cor','Fruta'];
+let stopTempo=60,stopScs=60,stopLtr='A',stopTmr=null;
+function stopSetTempo(t){stopTempo=t;document.querySelectorAll('[onclick*="stopSetTempo"]').forEach(b=>b.classList.remove('on'));event.target.classList.add('on');}
+function stopStart(){
+  const ltrs='ABCDEFGIJLMNOPQRSTUVXZ';stopLtr=ltrs[Math.floor(Math.random()*ltrs.length)];stopScs=stopTempo;
+  document.getElementById('stopConfig').style.display='none';document.getElementById('stopGame').style.display='';document.getElementById('stopResult').style.display='none';
+  document.getElementById('stopLetra').textContent=stopLtr;document.getElementById('stopTimer').textContent=Math.floor(stopScs/60)+':'+String(stopScs%60).padStart(2,'0');
+  stopTmr=setInterval(()=>{stopScs--;document.getElementById('stopTimer').textContent=Math.floor(stopScs/60)+':'+String(stopScs%60).padStart(2,'0');if(stopScs<=0){clearInterval(stopTmr);stopEnd();}},1000);
+  const form=document.getElementById('stopForm');form.innerHTML=STOP_CATS.map((c,i)=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><label style="font-size:.75rem;font-weight:700;min-width:80px;text-align:right;color:var(--ink2)">${c}:</label><input type="text" placeholder="Com ${stopLtr}..." style="flex:1;border:2px solid var(--line);border-radius:7px;padding:10px 12px;font-size:16px;outline:none;background:var(--paper)" id="stop-${i}"></div>`).join('');
+  setTimeout(()=>document.getElementById('stop-0').focus(),100);
+}
+function stopEnd(){
+  clearInterval(stopTmr);document.getElementById('stopGame').style.display='none';document.getElementById('stopResult').style.display='';
+  let pts=0,html='';
+  STOP_CATS.forEach((c,i)=>{
+    const inp=document.getElementById('stop-'+i);const val=inp.value.toLowerCase().trim();
+    const ok=val.startsWith(stopLtr.toLowerCase())&&val.length>1;pts+=ok?10:0;
+    html+='<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;background:'+(ok?'var(--green-bg)':'var(--red-bg)')+';margin-bottom:5px"><span>'+(ok?'✅':'❌')+'</span><div style="flex:1"><span style="font-size:.73rem;color:var(--ink3)">${c}</span><span style="font-size:.8rem;font-weight:700;margin-left:6px">${val||'(vazio)'}</span></div></div>';
+  });
+  const max=STOP_CATS.length*10;
+  document.getElementById('stopResult').innerHTML='<div class="panel"><div class="panel-head"><span>🎲</span><div>Resultado</div></div><div class="panel-body"><div style="text-align:center;margin-bottom:16px"><div style="font-family:Georgia,serif;font-size:2.4rem;font-weight:900;color:'+(pts>=max*0.7?'var(--green)':'var(--red)')+'">'+(pts>=max*0.9?'S':pts>=max*0.8?'A':pts>=max*0.7?'B':'C')+'</div><div style="font-size:.75rem;color:var(--ink3)">'+pts+'/'+max+' pontos</div></div><div>'+html+'</div><button class="btn btn-main" style="width:100%;justify-content:center;margin-top:12px" onclick="stopStart()">🎲 Nova</button></div></div>';
+}
+
+// KARAOKÊ
+const MUSICAS=[
+  {titulo:'Garota de Ipanema',artista:'Tom Jobim',letra:'Olha que coisa mais linda,\nMais cheia de graça...\nÉ ela, menina,\nQue vem e que passa...'},
+  {titulo:'Aquarela',artista:'Toquinho',letra:'Numa folha qualquer\nEu desenho um sol amarelo\nE com cinco ou seis riscas simples\nFaço uma casa...'},
+  {titulo:'Imagine',artista:'John Lennon',letra:'Imagine all the people\nLiving life in peace\nYou, you may say I\'m a dreamer\nBut I\'m not the only one...'},
+  {titulo:'Parabéns',artista:'Diversos',letra:'Parabéns pra você,\nNesta data querida\nMuita felicidade,\nMuito sucesso na vida...'},
+];
+function initKara(){
+  document.getElementById('karaGrade').innerHTML=MUSICAS.map(m=>`<div style="border:2px solid var(--blue);border-radius:9px;padding:12px;cursor:pointer;background:var(--blue-bg);transition:all .2s" onclick="karaAbrir('${m.titulo}')" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,102,187,.2)'" onmouseout="this.style.boxShadow='none'"><div style="font-size:.65rem;color:var(--blue);font-weight:700">🎵 Música</div><div style="font-weight:700;font-size:.85rem;margin-top:4px">${m.titulo}</div><div style="font-size:.7rem;color:var(--ink3);margin-top:2px">${m.artista}</div></div>`).join('');
+}
+function karaAbrir(titulo){
+  const m=MUSICAS.find(x=>x.titulo===titulo);if(!m)return;
+  const modal=document.createElement('div');modal.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:9999';
+  const cont=document.createElement('div');cont.style.cssText='background:var(--paper);border-radius:12px;padding:24px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto';
+  cont.innerHTML=`<div style="text-align:center;margin-bottom:20px"><div style="font-size:2rem;margin-bottom:10px">🎤</div><h2 style="margin:0;font-family:Georgia,serif;font-size:1.2rem">${m.titulo}</h2><div style="color:var(--ink3);font-size:.9rem">${m.artista}</div></div><div style="background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:16px;margin-bottom:16px;font-size:.95rem;line-height:1.8;white-space:pre-wrap;color:var(--ink)">${m.letra}</div><div style="display:flex;gap:8px;justify-content:center"><button class="btn btn-main" onclick="speak('${m.titulo}. '+\`${m.letra}\`);toast('🎵 Tocando')">🔊 Ouvir</button><button class="btn btn-ghost" onclick="this.closest('div').parentElement.remove()">Fechar</button></div>`;
+  modal.appendChild(cont);modal.onclick=(e)=>{if(e.target===modal)modal.remove();};document.body.appendChild(modal);
+}
 initKara();
 </script>
 </body>
