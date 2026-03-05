@@ -2367,6 +2367,32 @@ const SG_CATS_DEFAULT=[
 let sgCats=[...SG_CATS_DEFAULT.map(c=>({...c}))];
 let sgTempo=90, sgLetra='A', sgTimer=null, sgSecs=0;
 
+// ─── DICIONÁRIO DE PALAVRAS VÁLIDAS (pt-BR) para validação rigorosa ────
+const PALAVRAS_VALIDAS=new Set([
+  'joão','maria','josé','pedro','ana','carlos','francisco','antônio','manuel','paulo','rosa','luis',
+  'gato','cachorro','pássaro','peixe','cobra','aranha','leão','tigre','elefante','girafa','zebra','urso','lobo','raposa','coelho','rato','cavalo','vaca','ovelha','porco','cabra','galinha','pato','ganso','pomba','coruja','sapo','rã','tartaruga',
+  'pão','arroz','feijão','batata','tomate','alface','cenoura','abóbora','melancia','melão','maçã','pera','banana','laranja','limão','morango','uva','goiaba','abacaxi','mamão','carne','frango','peixe','leite','queijo','ovo','chocolate',
+  'são paulo','rio de janeiro','belo horizonte','brasília','salvador','fortaleza','manaus','belém','curitiba','porto alegre','recife','goiânia','campinas','santos',
+  'brasil','argentina','chile','colômbia','peru','méxico','canadá','estados unidos','portugal','espanha','itália','frança','alemanha','inglaterra','japão','china','índia','austrália',
+  'vermelho','azul','verde','amarelo','branco','preto','rosa','roxo','cinza','laranja','marrom','turquesa','violeta',
+  'médico','advogado','professor','engenheiro','arquiteto','contador','psicólogo','enfermeiro','dentista','farmacêutico','chef','cozinheiro','piloto','bombeiro','policial','vendedor','gerente','motorista','eletricista','pedreiro','pintor','músico','artista','ator','cantor','dançarino','escritor','poeta','jornalista','fotógrafo','diretor','produtor','agricultor','pescador','caçador','mineiro','soldado','marinheiro','padeiro','confeiteiro','cabeleireiro','esteticien','manicure','massoterapeuta','instrutor','treinador','técnico','árbitro','juiz','delegado','inspetor','investigador','xerife','paisagista','escultor','ceramista','vitralista','gravador','ilustrador','cartunista','quadrinista','roteirista','dramaturgo','ensaísta','tradutor','intérprete','linguista','lexicógrafo','ortógrafo','revistor','editor','ilustrador','diagramador','webdesigner','programador','desenvolvedor','hacker','sysadmin','dba','analista','consultor','auditor','acionista','investidor','especulador','corretor','agente','distribuidor','importador','exportador','comerciante','lojista','feirante','camelô','mascate','biscateiro','faxineira','copeira','governanta','babá','babysitter','ama','empregada','doméstica','jardineiro','caseiro','peão','vaqueiro','tropeiro','condutor','cocheiro','carroceiro','carregador','ajudante','aprendiz','estagiário','trainee','gerente','supervisor','coordenador','chefe','diretor','presidente','vice-presidente','secretário','tesoureiro','procurador','curador','guardião','tutor','mentor','instrutor','orientador','conselheiro','assessor','assistente','secretária','datilógrafa','recepcionista','telefonista','operadora','vigilante','guarda','segurança','porteiro','gari','varredor','limpador','faxineiro',
+  'mesa','cadeira','cama','armário','estante','porta','janela','parede','teto','chão','luz','lâmpada','panela','frigideira','prato','copo','colher','garfo','faca','tesoura','livro','lápis','caneta','papel','telefone','computador','televisão','rádio','carro','moto','bicicleta','bola','boneca','carrinho',
+  'dormir','acordar','trabalhar','estudar','correr','andar','pular','sentar','comer','beber','falar','ouvir','ver','olhar','andar','subir','descer','entrar','sair','voltar','chegar','partir','ir','vir','trazer','levar','pegar','dar','receber','pedir','oferecer','comprar','vender','pagar','tomar','colocar','tirar','guardar','encontrar','perder','procurar','amar','gostar','desgosto','odiar','rir','chorar','cantar','dançar','tocar','desenhar','pintar','escrever','ler','contar','calcular',
+  'água','suco','leite','café','chá','vinho','cerveja','refrigerante',
+  'ovo','ovo',
+  'alface','repolho','espinafre','couve','brócolis','couve-flor','beterraba','nabo','rabanete','abobrinha','abóbora','pepino','cebola','alho','batata','inhame','mandioca','gengibre','alho-poró',
+  'morango','framboesa','mirtilo','amora','coco','noz','castanha','amendoim','pistache','damasco','figo','tâmara','romã','kiwi','tangerina','clementina','melancia','melão','pêssego','ameixa','cereja',
+  'orelha','olho','boca','nariz','ouvido','língua','dente','lábio','queixo','sobrancelha','cílio','cabeleira','cabelo','cabelo','fronte','testa','sien','têmpora','nuca','pescoço','ombro','braço','cotovelo','antebraço','pulso','mão','dedo','unha','palma','dorso','pele','músculos','costela','estômago','coração','pulmão','fígado','baço','pâncreas','rim','bexiga','intestino','cólon','reto','ânus','órgão genital','testículo','pênis','vulva','vagina','útero','ovário','trompa','peito','mama','seio','bico','axila','cintura','abdômen','ventre','flanco','costado','dorso','lombar','sacro','cóccix','pelve','quadril','coxa','joelho','panturrilha','tornozelo','pé','calcanhar','sola','dedo','joanete',
+  'amarelo','laranja','rosa','magenta','ciano','ouro','prata','bronze','cobre','prateado','dourado','avermelhado','azulado','esverdeado','acinzentado',
+  'osasco','são gonçalo','guarulhos','são bernardo','diadema','taboão','jundiaí','ribeirão preto','campinas','sorocaba',
+  'tigre','leão','onça','puma','jaguar','hiena','chacal','dingo','cão selvagem','lince','caracal','gato selvagem','pantera','leopardo','onça-parda','veado','antílope','gnus','bisão','búfalo','alce','rena','caribu','gamo','gamo-da-india','gamo-do-japão','camelo','dromedário','alpaca','lhama','guanaco','vicunha','porco-espinho','ouriço','texugo','lontra','lontras','teixugos','doninhas','fuinhas','visons','arminhos','comadrejas','raposas','lobos','hienas','chacais','genetas','civetas','mangustos','guaxinins','conepatus','taitus','pécaris','quatis','coatis','mocós','pacas','cutias','capivaras','agutis','porcospinhos','equidnas','ornitorrincos','cangurus','coalas','koalas','wombats','tasmanian','diabo','marsupiais','potoroos','bettongs','bangos','bandicoots','numbats','sugar gliders','striped possums','brushtailed possums','ringtailed possums','common possums','feathertail gliders','featherless bats','ghost bats','bend-winged bats','brown bats','vesper bats','mouse-tailed bats','sheath-tailed bats','bulldog bats','leaf-nosed bats','long-eared bats','evening bats','free-tailed bats','noctule bats','pipistrelle bats','serotine bats','natthusius bats','myotis bats','daubenton bats','long-fingered bats','whiskered bats','natterer bats','bechstein bats','barbastelle bats','grey long-eared bats','brown long-eared bats','greater mouse-eared bats','lesser mouse-eared bats',
+]);
+
+function ehPalavraValida(palavra){
+  const norm=palavra.toLowerCase().trim();
+  return PALAVRAS_VALIDAS.has(norm);
+}
+
 function sgInit(){
   const grid=document.getElementById('sgCatGrid');
   if(!grid)return;
@@ -2451,10 +2477,26 @@ function sgStart(){
 
 function sgCheckLetter(inp,letra){
   const v=inp.value.trim();
-  if(v.length===0){inp.style.borderColor='var(--line)';return;}
-  const ok=v.toUpperCase().startsWith(letra);
-  inp.style.borderColor=ok?'var(--green)':'var(--red)';
-  inp.style.background=ok?'var(--green-bg)':'var(--red-bg)';
+  if(v.length===0){inp.style.borderColor='var(--line)';inp.style.background='';return;}
+  
+  const temLetra=v.toUpperCase().startsWith(letra);
+  const ehValida=ehPalavraValida(v);
+  const ok=temLetra && ehValida;
+  
+  // Cores diferentes para diferentes problemas
+  if(!temLetra){
+    // Não começa com a letra
+    inp.style.borderColor='var(--red)';
+    inp.style.background='var(--red-bg)';
+  } else if(!ehValida){
+    // Começa com a letra mas não é palavra real
+    inp.style.borderColor='var(--amber)';
+    inp.style.background='var(--amber-bg)';
+  } else {
+    // Tudo certo!
+    inp.style.borderColor='var(--green)';
+    inp.style.background='var(--green-bg)';
+  }
 }
 
 function sgStop(){
@@ -2467,14 +2509,32 @@ function sgStop(){
   ativas.forEach((c,i)=>{
     const inp=document.getElementById('sg-inp-'+i);
     const val=inp?inp.value.trim():'';
-    const ok=val.length>0 && val.toUpperCase().startsWith(sgLetra);
+    
+    // VALIDAÇÃO RIGOROSA:
+    // 1. Não pode estar vazio
+    // 2. Deve começar com a letra sorteada
+    // 3. Deve ser uma palavra real (no dicionário)
+    const temLetra=val.length>0 && val.toUpperCase().startsWith(sgLetra);
+    const ehPalavraReal=ehPalavraValida(val);
+    const ok=temLetra && ehPalavraReal;
+    
     const pts=ok?10:0;
     pontos+=pts;
+    
+    // Determinar motivo do erro
+    let motivo='';
+    if(val.length===0) motivo='em branco';
+    else if(!temLetra) motivo=`não começa com ${sgLetra}`;
+    else if(!ehPalavraReal) motivo='palavra desconhecida/inválida';
+    
     resultRows+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;background:${ok?'var(--green-bg)':'var(--red-bg)'};margin-bottom:5px">
       <span style="font-size:1rem">${ok?'✅':'❌'}</span>
       <div style="flex:1">
         <span style="font-size:.73rem;font-weight:700;color:var(--ink3)">${c.name}</span>
-        <span style="font-size:.82rem;font-weight:700;margin-left:6px;color:${ok?'var(--green)':'var(--red)'}">${val||'— em branco'}</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:.82rem;font-weight:700;margin-left:0;color:${ok?'var(--green)':'var(--red)'}">${val||'(vazio)'}</span>
+          ${!ok && motivo?`<span style="font-size:.65rem;color:var(--red);font-style:italic">${motivo}</span>`:''}
+        </div>
       </div>
       <span style="font-size:.72rem;font-weight:700;color:${ok?'var(--green)':'var(--red)'}">${pts>0?'+'+pts:'0'} pts</span>
     </div>`;
