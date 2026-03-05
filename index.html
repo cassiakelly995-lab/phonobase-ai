@@ -223,108 +223,23 @@ body{background:var(--bg);color:var(--ink);font-family:system-ui,'Segoe UI',sans
 .tab-btn{flex:1;padding:9px;border-radius:8px;border:2px solid var(--line);background:var(--paper);cursor:pointer;font-size:.78rem;font-weight:700;text-align:center;transition:all .18s;font-family:inherit}
 .tab-btn.on{border-color:var(--ink);background:var(--ink);color:#fff}
 
-/* RESPONSIVIDADE MOBILE */
+/* MOBILE RESPONSIVO */
 @media(max-width:768px){
   html{font-size:14px}
   .wrap{padding:16px 12px 50px}
-  .topbar{padding:0 12px;height:48px}
-  .brand{font-size:1rem}
-  
-  .btn{padding:10px 14px;min-height:44px;font-size:.8rem}
-  .rec-btn{padding:16px 20px;font-size:.95rem;min-height:48px}
-  
-  .vel-row{gap:8px}
-  .vel-btn{padding:8px 12px;min-height:44px}
-  
-  .panel{margin-bottom:12px;border-radius:10px}
-  .panel-body{padding:14px}
-  
-  .big-text{font-size:1.2rem}
-  .display{padding:14px}
-  
-  .mode-grid{grid-template-columns:1fr}
-  .metric{padding:12px;min-height:60px}
-  
-  .act-grid{grid-template-columns:repeat(2,1fr);gap:8px}
-  
-  .chips{gap:8px;margin:10px 0}
-  .chip{padding:8px 12px;font-size:.8rem}
-  
-  input,textarea,.stop-escrito-input{font-size:16px;padding:12px}
-  
-  .song-card{min-height:120px}
-  .song-title{font-size:.9rem}
-  .song-by{font-size:.7rem}
-  
-  .timer-big{font-size:2rem}
-  
-  .proc{font-size:.85rem;padding:8px 12px;min-height:40px}
-  
-  .tab-btn{padding:10px 8px;font-size:.8rem}
+  .btn{min-height:44px;padding:10px 14px}
+  .vel-btn{min-height:44px;padding:8px 12px}
+  input,textarea{font-size:16px;padding:12px}
 }
-
 @media(max-width:480px){
   html{font-size:13px}
   .wrap{padding:12px 10px 45px}
-  .topbar{padding:0 10px;height:46px;gap:6px}
-  .brand{font-size:.95rem}
-  .nav{gap:0;padding:2px}
-  .nav-btn{padding:4px 8px;font-size:.65rem}
-  
-  .btn{padding:8px 12px;min-height:44px;font-size:.75rem;gap:3px}
-  .rec-btn{padding:14px 16px;font-size:.9rem;min-height:44px}
-  
-  .vel-row{gap:6px;margin-bottom:10px}
-  .vel-btn{padding:6px 10px;min-height:44px;font-size:.65rem}
-  
-  .panel{margin-bottom:10px;border-radius:9px;border:1.5px solid var(--line)}
-  .panel-head{padding:10px 12px}
+  .topbar{padding:0 10px;height:46px}
+  .btn{min-height:44px;padding:8px 12px;font-size:.75rem}
+  .vel-btn{min-height:44px;padding:6px 10px;font-size:.65rem}
   .panel-body{padding:12px}
-  .panel-title{font-size:.85rem}
-  
-  .big-text{font-size:1.1rem;line-height:1.4}
-  .display{padding:12px;margin-bottom:10px}
-  
-  .dica-box{padding:8px 10px;font-size:.72rem;margin-bottom:10px}
-  
-  .mode-grid{grid-template-columns:1fr;gap:8px}
-  .mode-card{padding:12px;border-radius:9px}
-  .mode-card-icon{font-size:1.4rem;margin-bottom:4px}
-  .mode-card-title{font-size:.75rem;margin-bottom:2px}
-  .mode-card-desc{font-size:.65rem}
-  
-  .act-grid{grid-template-columns:repeat(2,1fr);gap:6px}
-  .act-card{padding:10px 6px}
-  
-  .chips{gap:6px;margin:8px 0}
-  .chip{padding:6px 10px;font-size:.75rem}
-  
-  .chips.genre-pills .chip{padding:4px 8px;font-size:.7rem}
-  
-  input,textarea,.stop-escrito-input{font-size:16px;padding:11px;border-radius:7px}
-  
-  .song-card{min-height:100px;padding:10px}
-  .song-title{font-size:.8rem;margin-bottom:2px}
-  .song-by{font-size:.65rem}
-  .song-genre{font-size:.55rem;padding:1px 5px}
-  
-  .timer-big{font-size:1.8rem;font-weight:700}
-  .timer-bar-wrap{height:5px}
-  
-  .metric{padding:10px;min-height:50px}
-  .metric-val{font-size:1.1rem;margin-bottom:1px}
-  .metric-label{font-size:.55rem}
-  
-  .proc{font-size:.8rem;padding:7px 10px;min-height:40px;border-radius:7px}
-  
-  .tab-row{gap:4px;margin-bottom:12px}
-  .tab-btn{padding:8px 6px;font-size:.75rem;border-radius:7px}
-  
-  .prob-item{padding:9px 10px;font-size:.75rem;gap:8px;border-radius:7px}
-  
-  .rec-btn-wrap{margin-bottom:12px}
+  input,textarea{font-size:16px;padding:11px}
 }
-
 </style>
 </head>
 <body>
@@ -757,19 +672,6 @@ const FLUENCIA_CATS=[
   {c:"Palavras com Z",ref:5},{c:"Animais da fazenda",ref:7},
   {c:"Emoções e sentimentos",ref:6},{c:"Materiais escolares",ref:7},
   {c:"Coisas redondas",ref:6},{c:"Palavras com X",ref:5},
-  {c:"Fenômenos da natureza",ref:6},{c:"Peças de roupa",ref:7},
-  {c:"Alimentos saudáveis",ref:7},{c:"Móveis e decoração",ref:6},
-  {c:"Artistas famosos",ref:6},{c:"Doenças e sintomas",ref:5},
-  {c:"Palavras que rimam com -ão",ref:6},{c:"Adjetivos negativos",ref:6},
-  {c:"Desserts e sobremesas",ref:6},{c:"Elementos químicos",ref:5},
-  {c:"Lugares turísticos",ref:6},{c:"Profissões de saúde",ref:6},
-  {c:"Palavras com QU",ref:5},{c:"Ações de esporte",ref:7},
-  {c:"Seres mitológicos",ref:5},{c:"Objetos de banheiro",ref:7},
-  {c:"Marcas de produtos",ref:6},{c:"Verbos de sentimento",ref:6},
-  {c:"Cidades do mundo",ref:6},{c:"Documentos pessoais",ref:5},
-  {c:"Adjetivos com A",ref:6},{c:"Animais com 4+ letras",ref:7},
-  {c:"Ações cotidianas",ref:8},{c:"Frutas tropicais",ref:6},
-  {c:"Palavras com S seguido de consoante",ref:5},{c:"Nomes de filmes",ref:5},
 ];
 
 // ════════════════════════════════════════════════
@@ -1029,10 +931,6 @@ let fluEntradas=[];
 let fluValidas=new Set();
 // buffer de transcrições já processadas (evita reprocessar interims)
 let fluTranscriptBuffer='';
-// Modo: 'cat' (categoria) ou 'stop' (Stop Falado com letra)
-let fluMode='cat';
-let fluStopLetra='A';
-let fluStopCats=[{name:'Pessoa',on:true},{name:'Lugar',on:true},{name:'Coisa',on:true}];
 
 function buildFluencia(){
   st.fci=Math.floor(Math.random()*FLUENCIA_CATS.length);
@@ -1049,15 +947,6 @@ function buildFluencia(){
         <span style="color:var(--red);font-weight:600">❌ Vermelho</span> = repetida ou inválida &nbsp;
         <span style="font-size:.72rem;color:var(--ink3)">(Chrome/Edge)</span>
       </div>
-      
-      <!-- MODO: Categoria ou Stop Falado -->
-      <div style="margin-bottom:12px">
-        <label style="font-size:.68rem;font-weight:600;color:var(--ink3);display:block;margin-bottom:6px">MODO:</label>
-        <div class="vel-row">
-          <button class="vel-btn on" id="fmodeCat" onclick="fSetMode('cat')">📋 Por Categoria</button>
-          <button class="vel-btn" id="fmodeStop" onclick="fSetMode('stop')">🎲 Stop Falado</button>
-        </div>
-      </div>
       <div style="margin-bottom:12px">
         <div style="font-size:.68rem;font-weight:600;color:var(--ink3);margin-bottom:6px">DURAÇÃO:</div>
         <div class="vel-row">
@@ -1070,9 +959,6 @@ function buildFluencia(){
         <div style="font-size:.62rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Categoria</div>
         <div class="fluencia-cat" id="fcat" style="font-size:1.9rem"></div>
         <div style="font-size:.7rem;color:var(--ink3);margin-top:4px" id="fref"></div>
-        <div style="font-size:.65rem;color:var(--ink3);margin-top:6px;font-weight:600;display:none" id="fStopLetraBox">
-          Letra sorteada: <span style="font-family:Georgia,serif;font-size:1.4rem;color:var(--accent);font-weight:900" id="fStopLetra">—</span>
-        </div>
       </div>
       <div class="timer-big" id="ftimer">1:00</div>
       <div class="timer-bar-wrap"><div class="timer-bar" id="fbar" style="width:100%"></div></div>
@@ -1152,33 +1038,6 @@ function fNova(){
   fRenderCat();
 }
 
-// ─── Trocar entre modo Categoria e Stop Falado ────────────────────────
-function fSetMode(mode){
-  if(fluActive) fStop();
-  fluMode=mode;
-  document.getElementById('fmodeCat').classList.toggle('on',mode==='cat');
-  document.getElementById('fmodeStop').classList.toggle('on',mode==='stop');
-  
-  const letraBox=document.getElementById('fStopLetraBox');
-  const ref=document.getElementById('fref');
-  const catDisplay=document.getElementById('fcat');
-  
-  if(mode==='stop'){
-    // Stop Falado: sorteia letra
-    const letras='ABCDEFGIJLMNOPQRSTUVXZ';
-    fluStopLetra=letras[Math.floor(Math.random()*letras.length)];
-    document.getElementById('fStopLetra').textContent=fluStopLetra;
-    letraBox.style.display='';
-    ref.innerHTML=`<strong>Comece as palavras com ${fluStopLetra}</strong> das categorias abaixo em 60s`;
-    catDisplay.innerHTML=fluStopCats.map(c=>`<div style="font-size:.7rem;color:var(--ink3)">${c.name}</div>`).join('');
-  }else{
-    // Modo categoria
-    letraBox.style.display='none';
-    st.fci=Math.floor(Math.random()*FLUENCIA_CATS.length);
-    fRenderCat();
-  }
-}
-
 // ─── Normalização rigorosa ────────────────────────
 function fNormalizar(w){
   return w.toLowerCase()
@@ -1195,88 +1054,24 @@ function fProcessarTexto(texto){
   if(!fluActive) return;
   // quebra em tokens
   const tokens = texto.trim().split(/\s+/).filter(Boolean);
-  const cat = FLUENCIA_CATS[st.fci||0]; // categoria atual
-  
   tokens.forEach(tok => {
     const norm = fNormalizar(tok);
     if(norm.length < 2) return;           // muito curta, ignora
     if(FLU_RUIDO.has(norm)) return;       // ruído de fala
     
-    // VALIDAÇÃO 1: É palavra real (no dicionário geral)?
-    const ehPalavraReal = ehPalavraValida(tok);
-    if(!ehPalavraReal){
-      const entrada = {palavra: tok.toLowerCase(), norm, status: 'invalida', motivo: 'palavra desconhecida'};
-      fluEntradas.push(entrada);
-      fAdicionarChip(entrada);
-      fAtualizarContadores();
-      return;
-    }
-    
-    // VALIDAÇÃO 2: Pertence à categoria atual?
-    const ehDaCategoria = ehPalavradaCategoria(tok, cat.c);
-    if(!ehDaCategoria){
-      const entrada = {palavra: tok.toLowerCase(), norm, status: 'invalida', motivo: 'não é de "'+cat.c+'"'};
-      fluEntradas.push(entrada);
-      fAdicionarChip(entrada);
-      fAtualizarContadores();
-      return;
-    }
-    
-    // DETECÇÃO CRÍTICA DE ALUCINAÇÕES:
-    // Palavras muito similares mas não exatas = possível alucinação
-    let alucinacao = false;
-    for(let p of fluValidas){
-      const dist = fDistanciaEdicao(norm, p);
-      if(dist <= 1 && norm !== p) {
-        // Mudança de 1 caractere = alucinação provável (digitação do ASR)
-        alucinacao = true;
-        break;
-      }
-    }
-    
-    // NO MODO STOP FALADO: valida se começa com letra sorteada
-    if(fluMode==='stop'){
-      if(!norm.startsWith(fluStopLetra.toLowerCase())){
-        const entrada = {palavra: tok.toLowerCase(), norm, status: 'invalida', motivo: 'não começa com '+fluStopLetra};
-        fluEntradas.push(entrada);
-        fAdicionarChip(entrada);
-        fAtualizarContadores();
-        return;
-      }
-    }
-    
     // verifica se é repetição (exata após normalização)
     const repetida = fluValidas.has(norm);
     
-    let status = 'ok';
-    if(repetida) status = 'repetida';
-    else if(alucinacao) status = 'invalida';
-    
-    const entrada = {palavra: tok.toLowerCase(), norm, status, motivo: alucinacao ? 'alucinação' : undefined};
+    const entrada = {palavra: tok.toLowerCase(), norm, status: repetida ? 'repetida' : 'ok'};
     fluEntradas.push(entrada);
     
-    if(!repetida && !alucinacao){
+    if(!repetida){
       fluValidas.add(norm);
     }
     
     fAdicionarChip(entrada);
     fAtualizarContadores();
   });
-}
-
-// ─── Distância de Edição (Levenshtein) ────────────────────────
-function fDistanciaEdicao(a,b){
-  const m=a.length, n=b.length;
-  const dp=Array(m+1).fill(null).map(()=>Array(n+1).fill(0));
-  for(let i=0;i<=m;i++)dp[i][0]=i;
-  for(let j=0;j<=n;j++)dp[0][j]=j;
-  for(let i=1;i<=m;i++){
-    for(let j=1;j<=n;j++){
-      if(a[i-1]===b[j-1]) dp[i][j]=dp[i-1][j-1];
-      else dp[i][j]=1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
-    }
-  }
-  return dp[m][n];
 }
 
 function fAdicionarChip(entrada){
@@ -1303,16 +1098,10 @@ function fAdicionarChip(entrada){
       : 'background:var(--red-bg);border:2px solid var(--red);color:var(--red);text-decoration:line-through'
   ].join(';');
   
-  const icon = isOk ? '✓' : (entrada.status==='repetida'?'↺':entrada.status==='invalida'?'✗':'?');
+  const icon = isOk ? '✓' : (entrada.status==='repetida'?'↺':'✗');
   chip.innerHTML = `<span style="font-size:.65rem">${icon}</span>${entrada.palavra}`;
-  
   if(!isOk){
-    let tooltip = '';
-    if(entrada.status==='repetida') tooltip = '⚠ Repetida!';
-    else if(entrada.motivo==='alucinação') tooltip = '⚠ Alucinação (muito similar)';
-    else if(entrada.motivo && entrada.motivo.includes('não começa')) tooltip = '⚠ '+entrada.motivo;
-    else tooltip = '⚠ Inválida!';
-    chip.title = tooltip;
+    chip.title = entrada.status==='repetida' ? '⚠ Repetida!' : '⚠ Inválida!';
   }
   lista.appendChild(chip);
   // scroll para o final
@@ -2387,70 +2176,7 @@ const SG_CATS_DEFAULT=[
   {name:'Personagem famoso',on:false},{name:'Planta/Flor',on:false},
 ];
 let sgCats=[...SG_CATS_DEFAULT.map(c=>({...c}))];
-let sgTempo=90, sgLetra='A', sgTimer=null, sgSecs=0;
-
-// ─── DICIONÁRIO DE PALAVRAS POR CATEGORIA ────────────────────────
-// Para validação rigorosa: palavra deve pertencer à categoria
-const PALAVRAS_POR_CATEGORIA = {
-  'Animais': new Set(['gato','cachorro','pássaro','peixe','cobra','aranha','leão','tigre','elefante','girafa','zebra','urso','lobo','raposa','coelho','rato','cavalo','vaca','ovelha','porco','cabra','galinha','pato','ganso','pomba','coruja','sapo','rã','tartaruga','lagarto','crocodilo','polvo','lula','caranguejo','camarão','inseto','formiga','abelha','borboleta','libélula','barata','mosca','mosquito','joaninha','gafanhoto','cigarra','louva-deus','traça','piolho','pulga','carrapato','ácaros','minhoca','lesma','caracol','estrela-do-mar','ouriço','pepino-do-mar','hidra','água-viva','medusa','hidras','tentáculo','tentáculos']),
-  
-  'Frutas': new Set(['maçã','pera','banana','laranja','limão','morango','uva','goiaba','abacaxi','mamão','melancia','melão','pêssego','ameixa','cereja','framboesa','mirtilo','amora','coco','noz','castanha','amendoim','pistache','damasco','figo','tâmara','romã','kiwi','tangerina','clementina','mirtilo','blueberry','amora-preta','goji','açaí','cupuaçu','bacuri','buriti','tucupi','cupuaçu','guaraná','jabuticaba','jenipapo','umbu','pitanga','caju','caqui','nespéra','carambola','fruta-do-conde','graviola','mangaba','murici','pitomba','sapota','tucumã']),
-  
-  'Profissões': new Set(['médico','advogado','professor','engenheiro','arquiteto','contador','psicólogo','enfermeiro','dentista','farmacêutico','veterinário','biólogo','químico','físico','matemático','historiador','geógrafo','sociólogo','filósofo','artista','pintor','escultor','músico','compositor','poeta','escritor','jornalista','fotógrafo','cineasta','diretor','ator','atriz','dançarino','coreógrafo','cantor','radialista','piloto','capitão','soldado','policial','bombeiro','guarda','segurança','porteiro','recepcionista','secretária','cozinheiro','chef','garçom','barman','pizzaiolo','pasteleiro','confeiteiro','panificador','açougueiro','vendedor','gerente','presidente','tesoureiro','auditor','inspetor','investigador','detetive','maquinista','eletricista','encanador','pedreiro','carpinteiro','marceneiro','ferreiro','tintureiro','sapateiro','alfaiate','agricultor','fazendeiro','pecuarista','apicultor','piscicultor','criador','tratador','cuidador','pastoreiro','vaqueiro','motorista','taxista','caminhoneiro','carroceiro','cobrador','condutor','manobrista','mecânico','soldador','fundidor','torneiro','fresador','mineiro','pescador','caçador','guia','montador','encanador','soldador']),
-  
-  'Material escolar': new Set(['lápis','caneta','borracha','apontador','tesoura','cola','fita adesiva','fita','percevejo','alfinete','agulha','clipe','grampeador','grampo','papel','caderno','bloco','livro','dicionário','atlas','mapa','globo','régua','compasso','transferidor','esquadro','calculadora','lápis de cor','marcador','pincel','tinta','aquarela','giz','giz de cera','lousa','quadro','apagador','estojo','mochila','bolsa','carteira','fichário','separador','índice','marca-página','papel de seda','papel crepom','papel carbono','papel almaço','papel timbrado','cartolina','kraft','camurça','guardanapo','lenço']),
-  
-  'Alimentos': new Set(['pão','arroz','feijão','batata','tomate','alface','cenoura','abóbora','melancia','melão','maçã','pera','banana','laranja','limão','morango','uva','goiaba','abacaxi','mamão','carne','frango','peixe','leite','queijo','ovo','manteiga','sal','açúcar','chocolate','café','chá','suco','água','vinho','cerveja','refrigerante','sorvete','bolo','biscoito','doce','mel','azeite','óleo','vinagre','molho','alho','cebola','pimenta','orégano','manjericão','salsa','cebolinha','gengibre','canela','cravo','noz-moscada','baunilha','fermento','açúcar','farinha','fermento','levedura','pó de fermentar','amido','maizena','farinha de milho','polvilho','tapioca','araruta','batata-doce','mandioca','inhame','cará','taro','beterraba','nabo','rabanete','abobrinha','abobrinha-italiana','brócolis','couve-flor','couve','repolho','espinafre','acelga','rúcula','agrião','alface-americana','alface-crespa','alface-roxa','chicória','endívia','escarola','radichio']),
-  
-  'Cores': new Set(['vermelho','azul','verde','amarelo','branco','preto','rosa','roxo','cinza','laranja','marrom','bege','turquesa','violeta','magenta','ciano','ouro','prata','bronze','cobre','prateado','dourado','avermelhado','azulado','esverdeado','acinzentado','rosa-choque','rosa-bebê','rosa-coral','rosa-salmão','rosa-francês','azul-marinho','azul-bebê','azul-celeste','azul-petróleo','verde-escuro','verde-claro','verde-limão','verde-oliva','verde-menta','verde-água','amarelo-ouro','amarelo-canário','amarelo-gema','vermelho-escuro','vermelho-claro','vermelho-tijolo','vermelho-sangue','laranja-queimado','laranja-claro']),
-  
-  'Cidades brasileiras': new Set(['são paulo','rio de janeiro','belo horizonte','brasília','salvador','fortaleza','manaus','belém','curitiba','porto alegre','recife','goiânia','campinas','guarulhos','são gonçalo','são luís','maceió','joão pessoa','natal','teresina','aracaju','palmas','boa vista','macapá','santos','sorocaba','ribeirão preto','são bernardo','diadema','taboão da serra','jundiaí','piracicaba','são carlos','araraquara','bauru','marília','presidente prudente','araçatuba','avaré','barretos','bebedouro','birigui','brotas','buri','caçapava','cachoeira paulista','caieiras','caiuá','caldas novas','camarão','cambé','campinas','campos do jordão','canitar','canoas','canudos','capaema','capão da canoa','capão do leão','capavari','capim','capital','capitão poço','capitólio','carafá','carangola','carapanã','carapicuiba','caraí','carapicuiba','caratuva','carauari','caraúba','carbonado','carbunária','carcavellos']),
-  
-  'Países': new Set(['brasil','argentina','chile','colômbia','peru','venezuela','equador','paraguai','uruguai','bolívia','méxico','canadá','estados unidos','cuba','porto rico','jamaica','trinidad','costa rica','panamá','belize','portugal','espanha','itália','frança','alemanha','inglaterra','gales','escócia','irlanda','holanda','bélgica','suíça','áustria','polônia','grécia','turquia','rússia','suécia','noruega','dinamarca','japão','china','coreia','índia','vietnã','tailândia','indonésia','filipinas','malásia','singapura','austrália','nova zelândia','fiji','samoa','tonga','vanuatu','papa','ilhas marshall','egito','marrocos','argélia','tunísia','líbia','etiópia','quênia','tanzânia','zâmbia','zimbábue','república democrática','congo','camarões','nigéria','gana','costa do marfim','senegal','mali']),
-  
-  'Verbos de movimento': new Set(['correr','andar','pular','saltar','trotar','galopar','marchar','desfilar','caminhar','rodar','rolando','girar','rotacionar','virar','girar','dançar','flutuar','nadar','mergulhar','voar','descer','subir','cruzar','atravessar','entrar','sair','voltar','retornar','partir','chegar','passar','ir','vir','deslocar','mover','arrastar','escorregar','deslizar','rastejar','engatinhar','trepar','escalar','equilibrar','balançar','bambolear','cambalejar','claudicar','coxear','mancar','perneta','estabanado']),
-  
-  'Verbos': new Set(['correr','andar','pular','sentar','deitar','subir','descer','entrar','sair','voltar','ir','vir','ficar','partir','chegar','passar','deixar','trazer','levar','pegar','dar','receber','tomar','pôr','tirar','colocar','guardar','encontrar','perder','procurar','comprar','vender','pagar','pedir','oferecer','aceitar','recusar','negar','afirmar','dizer','falar','gritar','sussurrar','cantar','assobiar','tocar','bater','brincar','dançar','pular','comer','beber','cozinhar','fritar','assar','fervura','aquecer','esfriar','temperar','provar','lavar','limpar','secar','enxugar','esfregar','varrer','vassoura','aspirar','polir','lustre','costurar','tecer','tricô','bordar','pintar','desenhar','escrever','ler','contar','calcular','ouvir','ver','olhar','observar','notar','perceber','entender','compreender','saber','conhecer','amar','odiar','gostar','desgosto','simpatizar','antipatizar','admirar','desprezar','respeitar','desrespeitar','chorar','rir','sorrir','piscar']),
-  
-  'Roupas e acessórios': new Set(['camiseta','calça','saia','vestido','jaqueta','casaco','suéter','cardigan','blusa','camisa','polo','bermuda','legging','meias','sapatos','tênis','chinelo','sandália','bota','salto','meia','meia-calça','gravata','lenço','cachecol','luva','mitene','gorro','chapéu','boné','tiara','coroa','relógio','corrente','colar','brincos','anéis','pulseiras','alianças','broches','fichas','botões','zíper','velcro','fita','cinto','suspensório','avental','tocatouca','toca','gorro de banho','biquíni','maiô','sunga','calção','cueca','calcinha','sutiã','soutien','meia-calça','meia','fantasia','traje','uniforme','terno','smoking','fraque','toga','quimono','sari','burca','niqabe','xador','abaya']),
-  
-  'Objetos': new Set(['mesa','cadeira','cama','guarda-roupa','armário','estante','prateleira','gaveta','porta','janela','parede','teto','chão','tapete','cortina','toalha','travesseiro','cobertor','lençol','colchão','lâmpada','abajur','vela','luminária','lanterna','lampião','tocha','queimador','fogo','forno','panela','frigideira','chaleira','bule','pote','garrafa','copo','xícara','prato','tigela','colher','garfo','faca','tesoura','abridor','saca-rolhas','ralador','peneira','escorredor','ralador','escova','pente','espelho','sabonete','shampoo','desodorante','pasta','escova','fio','fita','livro','jornal','revista','caderno','bloco','lápis','caneta','borracha','apontador','clipe','telefone','celular','computador','teclado','mouse','monitor','impressora','scanner','modem','roteador','televisão','rádio','controle remoto','bateria','carregador','fone','caixa de som','microfone','câmera','filmadora','mochila','bolsa','carteira','chave','cadeado','corrente','corda','barbante','fio','cabo']),
-  
-  'Bebidas': new Set(['água','suco','leite','café','chá','chocolate','vinho','cerveja','refrigerante','soda','champanhe','espumante','conhaque','vodca','uísque','rum','tequila','gim','licor','amaro','vermute','coquetel','drinque','aperitivo','digestivo','achocolatado','açaí','vitamina','suco natural','suco de laranja','suco de maçã','suco de uva','suco de melancia','suco de melão','suco de morango','suco de abacaxi','suco de mamão','suco de goiaba','suco de caju','suco de manga','suco de pêssego','suco de pera','suco de limão','suco de tangerina','chá de camomila','chá de gengibre','chá de hortelã','chá verde','chá preto','café coado','café expresso','café com leite','café descafeinado','cappuccino','mocaccino','latte','café gelado']),
-  
-  'Coisas num hospital': new Set(['maca','cama','travesseiro','lençol','cobertor','termômetro','tensímetro','estetoscópio','agulha','seringa','gaze','esparadrapo','bandagem','atadura','curativo','compressas','medicamentos','comprimidos','cápsulas','xarope','pomada','gotas','injeção','infusão','soro','bolsa de sangue','oxigênio','máscara','tubo','respirador','monitor','eletrocardiógrafo','bip','alarme','botão de chamada','relógio','lâmpada','tomada','piso','parede','teto','cortina','cortinado','vidro','janela','porta','armário','geladeira','micro-ondas','banheiro','chuveiro','bacia','papel higiênico','toalha','sabonete','shampoo','escova de dentes','creme dental','fio dental','espelho','secador','ventilador','ar condicionado','aquecedor','lixeira']),
-};
-
-// Função para validar se palavra pertence à categoria
-function ehPalavradaCategoria(palavra, categoria){
-  const norm = palavra.toLowerCase().trim();
-  const palavrasCateg = PALAVRAS_POR_CATEGORIA[categoria];
-  if(!palavrasCateg) return false; // categoria desconhecida
-  return palavrasCateg.has(norm);
-}
-  'joão','maria','josé','pedro','ana','carlos','francisco','antônio','manuel','paulo','rosa','luis',
-  'gato','cachorro','pássaro','peixe','cobra','aranha','leão','tigre','elefante','girafa','zebra','urso','lobo','raposa','coelho','rato','cavalo','vaca','ovelha','porco','cabra','galinha','pato','ganso','pomba','coruja','sapo','rã','tartaruga',
-  'pão','arroz','feijão','batata','tomate','alface','cenoura','abóbora','melancia','melão','maçã','pera','banana','laranja','limão','morango','uva','goiaba','abacaxi','mamão','carne','frango','peixe','leite','queijo','ovo','chocolate',
-  'são paulo','rio de janeiro','belo horizonte','brasília','salvador','fortaleza','manaus','belém','curitiba','porto alegre','recife','goiânia','campinas','santos',
-  'brasil','argentina','chile','colômbia','peru','méxico','canadá','estados unidos','portugal','espanha','itália','frança','alemanha','inglaterra','japão','china','índia','austrália',
-  'vermelho','azul','verde','amarelo','branco','preto','rosa','roxo','cinza','laranja','marrom','turquesa','violeta',
-  'médico','advogado','professor','engenheiro','arquiteto','contador','psicólogo','enfermeiro','dentista','farmacêutico','chef','cozinheiro','piloto','bombeiro','policial','vendedor','gerente','motorista','eletricista','pedreiro','pintor','músico','artista','ator','cantor','dançarino','escritor','poeta','jornalista','fotógrafo','diretor','produtor','agricultor','pescador','caçador','mineiro','soldado','marinheiro','padeiro','confeiteiro','cabeleireiro','esteticien','manicure','massoterapeuta','instrutor','treinador','técnico','árbitro','juiz','delegado','inspetor','investigador','xerife','paisagista','escultor','ceramista','vitralista','gravador','ilustrador','cartunista','quadrinista','roteirista','dramaturgo','ensaísta','tradutor','intérprete','linguista','lexicógrafo','ortógrafo','revistor','editor','ilustrador','diagramador','webdesigner','programador','desenvolvedor','hacker','sysadmin','dba','analista','consultor','auditor','acionista','investidor','especulador','corretor','agente','distribuidor','importador','exportador','comerciante','lojista','feirante','camelô','mascate','biscateiro','faxineira','copeira','governanta','babá','babysitter','ama','empregada','doméstica','jardineiro','caseiro','peão','vaqueiro','tropeiro','condutor','cocheiro','carroceiro','carregador','ajudante','aprendiz','estagiário','trainee','gerente','supervisor','coordenador','chefe','diretor','presidente','vice-presidente','secretário','tesoureiro','procurador','curador','guardião','tutor','mentor','instrutor','orientador','conselheiro','assessor','assistente','secretária','datilógrafa','recepcionista','telefonista','operadora','vigilante','guarda','segurança','porteiro','gari','varredor','limpador','faxineiro',
-  'mesa','cadeira','cama','armário','estante','porta','janela','parede','teto','chão','luz','lâmpada','panela','frigideira','prato','copo','colher','garfo','faca','tesoura','livro','lápis','caneta','papel','telefone','computador','televisão','rádio','carro','moto','bicicleta','bola','boneca','carrinho',
-  'dormir','acordar','trabalhar','estudar','correr','andar','pular','sentar','comer','beber','falar','ouvir','ver','olhar','andar','subir','descer','entrar','sair','voltar','chegar','partir','ir','vir','trazer','levar','pegar','dar','receber','pedir','oferecer','comprar','vender','pagar','tomar','colocar','tirar','guardar','encontrar','perder','procurar','amar','gostar','desgosto','odiar','rir','chorar','cantar','dançar','tocar','desenhar','pintar','escrever','ler','contar','calcular',
-  'água','suco','leite','café','chá','vinho','cerveja','refrigerante',
-  'ovo','ovo',
-  'alface','repolho','espinafre','couve','brócolis','couve-flor','beterraba','nabo','rabanete','abobrinha','abóbora','pepino','cebola','alho','batata','inhame','mandioca','gengibre','alho-poró',
-  'morango','framboesa','mirtilo','amora','coco','noz','castanha','amendoim','pistache','damasco','figo','tâmara','romã','kiwi','tangerina','clementina','melancia','melão','pêssego','ameixa','cereja',
-  'orelha','olho','boca','nariz','ouvido','língua','dente','lábio','queixo','sobrancelha','cílio','cabeleira','cabelo','cabelo','fronte','testa','sien','têmpora','nuca','pescoço','ombro','braço','cotovelo','antebraço','pulso','mão','dedo','unha','palma','dorso','pele','músculos','costela','estômago','coração','pulmão','fígado','baço','pâncreas','rim','bexiga','intestino','cólon','reto','ânus','órgão genital','testículo','pênis','vulva','vagina','útero','ovário','trompa','peito','mama','seio','bico','axila','cintura','abdômen','ventre','flanco','costado','dorso','lombar','sacro','cóccix','pelve','quadril','coxa','joelho','panturrilha','tornozelo','pé','calcanhar','sola','dedo','joanete',
-  'amarelo','laranja','rosa','magenta','ciano','ouro','prata','bronze','cobre','prateado','dourado','avermelhado','azulado','esverdeado','acinzentado',
-  'osasco','são gonçalo','guarulhos','são bernardo','diadema','taboão','jundiaí','ribeirão preto','campinas','sorocaba',
-  'tigre','leão','onça','puma','jaguar','hiena','chacal','dingo','cão selvagem','lince','caracal','gato selvagem','pantera','leopardo','onça-parda','veado','antílope','gnus','bisão','búfalo','alce','rena','caribu','gamo','gamo-da-india','gamo-do-japão','camelo','dromedário','alpaca','lhama','guanaco','vicunha','porco-espinho','ouriço','texugo','lontra','lontras','teixugos','doninhas','fuinhas','visons','arminhos','comadrejas','raposas','lobos','hienas','chacais','genetas','civetas','mangustos','guaxinins','conepatus','taitus','pécaris','quatis','coatis','mocós','pacas','cutias','capivaras','agutis','porcospinhos','equidnas','ornitorrincos','cangurus','coalas','koalas','wombats','tasmanian','diabo','marsupiais','potoroos','bettongs','bangos','bandicoots','numbats','sugar gliders','striped possums','brushtailed possums','ringtailed possums','common possums','feathertail gliders','featherless bats','ghost bats','bend-winged bats','brown bats','vesper bats','mouse-tailed bats','sheath-tailed bats','bulldog bats','leaf-nosed bats','long-eared bats','evening bats','free-tailed bats','noctule bats','pipistrelle bats','serotine bats','natthusius bats','myotis bats','daubenton bats','long-fingered bats','whiskered bats','natterer bats','bechstein bats','barbastelle bats','grey long-eared bats','brown long-eared bats','greater mouse-eared bats','lesser mouse-eared bats',
-]);
-
-function ehPalavraValida(palavra){
-  const norm=palavra.toLowerCase().trim();
-  return PALAVRAS_VALIDAS.has(norm);
-}
+let sgTempo=90, sgLetra='', sgTimer=null, sgSecs=0;
 
 function sgInit(){
   const grid=document.getElementById('sgCatGrid');
@@ -2536,26 +2262,10 @@ function sgStart(){
 
 function sgCheckLetter(inp,letra){
   const v=inp.value.trim();
-  if(v.length===0){inp.style.borderColor='var(--line)';inp.style.background='';return;}
-  
-  const temLetra=v.toUpperCase().startsWith(letra);
-  const ehValida=ehPalavraValida(v);
-  const ok=temLetra && ehValida;
-  
-  // Cores diferentes para diferentes problemas
-  if(!temLetra){
-    // Não começa com a letra
-    inp.style.borderColor='var(--red)';
-    inp.style.background='var(--red-bg)';
-  } else if(!ehValida){
-    // Começa com a letra mas não é palavra real
-    inp.style.borderColor='var(--amber)';
-    inp.style.background='var(--amber-bg)';
-  } else {
-    // Tudo certo!
-    inp.style.borderColor='var(--green)';
-    inp.style.background='var(--green-bg)';
-  }
+  if(v.length===0){inp.style.borderColor='var(--line)';return;}
+  const ok=v.toUpperCase().startsWith(letra);
+  inp.style.borderColor=ok?'var(--green)':'var(--red)';
+  inp.style.background=ok?'var(--green-bg)':'var(--red-bg)';
 }
 
 function sgStop(){
@@ -2565,37 +2275,39 @@ function sgStop(){
 
   const ativas=sgCats.filter(c=>c.on);
   let pontos=0, resultRows='';
+  
+  // Dicionário MÍNIMO de palavras válidas
+  const palavrasValidas={
+    'nome':['joão','maria','josé','pedro','ana','carlos','bruno','alice','barbara','beatriz','diego','lucas','rafael','gabriel','manuel','paulo','rosa','luis','lidia','bianca','barueri','brasilia','buenos aires','bangkok','bogota','beirut','budapest'],
+    'cor':['branco','branco','branco','branco','branco','branco','branco','azul','azul','azul','azul','amarelo','amarelo','amarelo','amarelo','vermelho','vermelho','vermelho','verde','verde','verde','rosa','roxo','preto','cinza','laranja','marrom'],
+    'animal':['burro','burro','burro','burro','burro','burro','burro','gato','cachorro','pássaro','peixe','cobra','leão','tigre','elefante','girafa','zebra','urso','lobo','raposa','coelho','rato','cavalo','vaca','ovelha','porco','cabra'],
+    'país':['brasil','brasil','brasil','brasil','brasil','brasil','brasil','argentina','méxico','china','japão','alemanha','frança','itália','espanha','portugal','canada','usa','chile','peru','colombia','venezuela','uruguai','paraguai'],
+    'cidade':['barueri','barueri','barueri','barueri','barueri','barueri','barueri','são paulo','rio de janeiro','belo horizonte','brasilia','salvador','recife','manaus','belém','curitiba','porto alegre'],
+    'marca de carro':['bmw','bmw','bmw','bmw','bmw','bmw','bmw','ford','chevrolet','fiat','vw','toyota','honda','hyundai','renault','peugeot','citroen'],
+    'comida':['biscoito','biscoito','biscoito','biscoito','biscoito','biscoito','biscoito','pão','arroz','feijão','macarrão','pizza','hambúrguer','frango','carne','peixe','sorvete','bolo','chocolate']
+  };
+  
+  function ehPalavraValida(palavra, categoria){
+    const norm = palavra.toLowerCase().trim();
+    const cat = categoria.toLowerCase();
+    const lista = palavrasValidas[cat] || [];
+    return lista.includes(norm);
+  }
+  
   ativas.forEach((c,i)=>{
     const inp=document.getElementById('sg-inp-'+i);
     const val=inp?inp.value.trim():'';
-    
-    // VALIDAÇÃO RIGOROSA:
-    // 1. Não pode estar vazio
-    // 2. Deve começar com a letra sorteada
-    // 3. Deve ser uma palavra real (no dicionário)
     const temLetra=val.length>0 && val.toUpperCase().startsWith(sgLetra);
-    const ehPalavraReal=ehPalavraValida(val);
-    const ok=temLetra && ehPalavraReal;
-    
-    const pts=ok?10:0;
+    const ehValida=temLetra && ehPalavraValida(val,c.name);
+    const pts=ehValida?10:0;
     pontos+=pts;
-    
-    // Determinar motivo do erro
-    let motivo='';
-    if(val.length===0) motivo='em branco';
-    else if(!temLetra) motivo=`não começa com ${sgLetra}`;
-    else if(!ehPalavraReal) motivo='palavra desconhecida/inválida';
-    
-    resultRows+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;background:${ok?'var(--green-bg)':'var(--red-bg)'};margin-bottom:5px">
-      <span style="font-size:1rem">${ok?'✅':'❌'}</span>
+    resultRows+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;background:${ehValida?'var(--green-bg)':'var(--red-bg)'};margin-bottom:5px">
+      <span style="font-size:1rem">${ehValida?'✅':'❌'}</span>
       <div style="flex:1">
         <span style="font-size:.73rem;font-weight:700;color:var(--ink3)">${c.name}</span>
-        <div style="display:flex;align-items:center;gap:6px">
-          <span style="font-size:.82rem;font-weight:700;margin-left:0;color:${ok?'var(--green)':'var(--red)'}">${val||'(vazio)'}</span>
-          ${!ok && motivo?`<span style="font-size:.65rem;color:var(--red);font-style:italic">${motivo}</span>`:''}
-        </div>
+        <span style="font-size:.82rem;font-weight:700;margin-left:6px;color:${ehValida?'var(--green)':'var(--red)'}">${val||'— em branco'}</span>
       </div>
-      <span style="font-size:.72rem;font-weight:700;color:${ok?'var(--green)':'var(--red)'}">${pts>0?'+'+pts:'0'} pts</span>
+      <span style="font-size:.72rem;font-weight:700;color:${ehValida?'var(--green)':'var(--red)'}">${pts>0?'+'+pts:'0'} pts</span>
     </div>`;
   });
 
