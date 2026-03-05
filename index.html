@@ -1195,10 +1195,32 @@ function fProcessarTexto(texto){
   if(!fluActive) return;
   // quebra em tokens
   const tokens = texto.trim().split(/\s+/).filter(Boolean);
+  const cat = FLUENCIA_CATS[st.fci||0]; // categoria atual
+  
   tokens.forEach(tok => {
     const norm = fNormalizar(tok);
     if(norm.length < 2) return;           // muito curta, ignora
     if(FLU_RUIDO.has(norm)) return;       // ruído de fala
+    
+    // VALIDAÇÃO 1: É palavra real (no dicionário geral)?
+    const ehPalavraReal = ehPalavraValida(tok);
+    if(!ehPalavraReal){
+      const entrada = {palavra: tok.toLowerCase(), norm, status: 'invalida', motivo: 'palavra desconhecida'};
+      fluEntradas.push(entrada);
+      fAdicionarChip(entrada);
+      fAtualizarContadores();
+      return;
+    }
+    
+    // VALIDAÇÃO 2: Pertence à categoria atual?
+    const ehDaCategoria = ehPalavradaCategoria(tok, cat.c);
+    if(!ehDaCategoria){
+      const entrada = {palavra: tok.toLowerCase(), norm, status: 'invalida', motivo: 'não é de "'+cat.c+'"'};
+      fluEntradas.push(entrada);
+      fAdicionarChip(entrada);
+      fAtualizarContadores();
+      return;
+    }
     
     // DETECÇÃO CRÍTICA DE ALUCINAÇÕES:
     // Palavras muito similares mas não exatas = possível alucinação
@@ -2367,8 +2389,45 @@ const SG_CATS_DEFAULT=[
 let sgCats=[...SG_CATS_DEFAULT.map(c=>({...c}))];
 let sgTempo=90, sgLetra='A', sgTimer=null, sgSecs=0;
 
-// ─── DICIONÁRIO DE PALAVRAS VÁLIDAS (pt-BR) para validação rigorosa ────
-const PALAVRAS_VALIDAS=new Set([
+// ─── DICIONÁRIO DE PALAVRAS POR CATEGORIA ────────────────────────
+// Para validação rigorosa: palavra deve pertencer à categoria
+const PALAVRAS_POR_CATEGORIA = {
+  'Animais': new Set(['gato','cachorro','pássaro','peixe','cobra','aranha','leão','tigre','elefante','girafa','zebra','urso','lobo','raposa','coelho','rato','cavalo','vaca','ovelha','porco','cabra','galinha','pato','ganso','pomba','coruja','sapo','rã','tartaruga','lagarto','crocodilo','polvo','lula','caranguejo','camarão','inseto','formiga','abelha','borboleta','libélula','barata','mosca','mosquito','joaninha','gafanhoto','cigarra','louva-deus','traça','piolho','pulga','carrapato','ácaros','minhoca','lesma','caracol','estrela-do-mar','ouriço','pepino-do-mar','hidra','água-viva','medusa','hidras','tentáculo','tentáculos']),
+  
+  'Frutas': new Set(['maçã','pera','banana','laranja','limão','morango','uva','goiaba','abacaxi','mamão','melancia','melão','pêssego','ameixa','cereja','framboesa','mirtilo','amora','coco','noz','castanha','amendoim','pistache','damasco','figo','tâmara','romã','kiwi','tangerina','clementina','mirtilo','blueberry','amora-preta','goji','açaí','cupuaçu','bacuri','buriti','tucupi','cupuaçu','guaraná','jabuticaba','jenipapo','umbu','pitanga','caju','caqui','nespéra','carambola','fruta-do-conde','graviola','mangaba','murici','pitomba','sapota','tucumã']),
+  
+  'Profissões': new Set(['médico','advogado','professor','engenheiro','arquiteto','contador','psicólogo','enfermeiro','dentista','farmacêutico','veterinário','biólogo','químico','físico','matemático','historiador','geógrafo','sociólogo','filósofo','artista','pintor','escultor','músico','compositor','poeta','escritor','jornalista','fotógrafo','cineasta','diretor','ator','atriz','dançarino','coreógrafo','cantor','radialista','piloto','capitão','soldado','policial','bombeiro','guarda','segurança','porteiro','recepcionista','secretária','cozinheiro','chef','garçom','barman','pizzaiolo','pasteleiro','confeiteiro','panificador','açougueiro','vendedor','gerente','presidente','tesoureiro','auditor','inspetor','investigador','detetive','maquinista','eletricista','encanador','pedreiro','carpinteiro','marceneiro','ferreiro','tintureiro','sapateiro','alfaiate','agricultor','fazendeiro','pecuarista','apicultor','piscicultor','criador','tratador','cuidador','pastoreiro','vaqueiro','motorista','taxista','caminhoneiro','carroceiro','cobrador','condutor','manobrista','mecânico','soldador','fundidor','torneiro','fresador','mineiro','pescador','caçador','guia','montador','encanador','soldador']),
+  
+  'Material escolar': new Set(['lápis','caneta','borracha','apontador','tesoura','cola','fita adesiva','fita','percevejo','alfinete','agulha','clipe','grampeador','grampo','papel','caderno','bloco','livro','dicionário','atlas','mapa','globo','régua','compasso','transferidor','esquadro','calculadora','lápis de cor','marcador','pincel','tinta','aquarela','giz','giz de cera','lousa','quadro','apagador','estojo','mochila','bolsa','carteira','fichário','separador','índice','marca-página','papel de seda','papel crepom','papel carbono','papel almaço','papel timbrado','cartolina','kraft','camurça','guardanapo','lenço']),
+  
+  'Alimentos': new Set(['pão','arroz','feijão','batata','tomate','alface','cenoura','abóbora','melancia','melão','maçã','pera','banana','laranja','limão','morango','uva','goiaba','abacaxi','mamão','carne','frango','peixe','leite','queijo','ovo','manteiga','sal','açúcar','chocolate','café','chá','suco','água','vinho','cerveja','refrigerante','sorvete','bolo','biscoito','doce','mel','azeite','óleo','vinagre','molho','alho','cebola','pimenta','orégano','manjericão','salsa','cebolinha','gengibre','canela','cravo','noz-moscada','baunilha','fermento','açúcar','farinha','fermento','levedura','pó de fermentar','amido','maizena','farinha de milho','polvilho','tapioca','araruta','batata-doce','mandioca','inhame','cará','taro','beterraba','nabo','rabanete','abobrinha','abobrinha-italiana','brócolis','couve-flor','couve','repolho','espinafre','acelga','rúcula','agrião','alface-americana','alface-crespa','alface-roxa','chicória','endívia','escarola','radichio']),
+  
+  'Cores': new Set(['vermelho','azul','verde','amarelo','branco','preto','rosa','roxo','cinza','laranja','marrom','bege','turquesa','violeta','magenta','ciano','ouro','prata','bronze','cobre','prateado','dourado','avermelhado','azulado','esverdeado','acinzentado','rosa-choque','rosa-bebê','rosa-coral','rosa-salmão','rosa-francês','azul-marinho','azul-bebê','azul-celeste','azul-petróleo','verde-escuro','verde-claro','verde-limão','verde-oliva','verde-menta','verde-água','amarelo-ouro','amarelo-canário','amarelo-gema','vermelho-escuro','vermelho-claro','vermelho-tijolo','vermelho-sangue','laranja-queimado','laranja-claro']),
+  
+  'Cidades brasileiras': new Set(['são paulo','rio de janeiro','belo horizonte','brasília','salvador','fortaleza','manaus','belém','curitiba','porto alegre','recife','goiânia','campinas','guarulhos','são gonçalo','são luís','maceió','joão pessoa','natal','teresina','aracaju','palmas','boa vista','macapá','santos','sorocaba','ribeirão preto','são bernardo','diadema','taboão da serra','jundiaí','piracicaba','são carlos','araraquara','bauru','marília','presidente prudente','araçatuba','avaré','barretos','bebedouro','birigui','brotas','buri','caçapava','cachoeira paulista','caieiras','caiuá','caldas novas','camarão','cambé','campinas','campos do jordão','canitar','canoas','canudos','capaema','capão da canoa','capão do leão','capavari','capim','capital','capitão poço','capitólio','carafá','carangola','carapanã','carapicuiba','caraí','carapicuiba','caratuva','carauari','caraúba','carbonado','carbunária','carcavellos']),
+  
+  'Países': new Set(['brasil','argentina','chile','colômbia','peru','venezuela','equador','paraguai','uruguai','bolívia','méxico','canadá','estados unidos','cuba','porto rico','jamaica','trinidad','costa rica','panamá','belize','portugal','espanha','itália','frança','alemanha','inglaterra','gales','escócia','irlanda','holanda','bélgica','suíça','áustria','polônia','grécia','turquia','rússia','suécia','noruega','dinamarca','japão','china','coreia','índia','vietnã','tailândia','indonésia','filipinas','malásia','singapura','austrália','nova zelândia','fiji','samoa','tonga','vanuatu','papa','ilhas marshall','egito','marrocos','argélia','tunísia','líbia','etiópia','quênia','tanzânia','zâmbia','zimbábue','república democrática','congo','camarões','nigéria','gana','costa do marfim','senegal','mali']),
+  
+  'Verbos de movimento': new Set(['correr','andar','pular','saltar','trotar','galopar','marchar','desfilar','caminhar','rodar','rolando','girar','rotacionar','virar','girar','dançar','flutuar','nadar','mergulhar','voar','descer','subir','cruzar','atravessar','entrar','sair','voltar','retornar','partir','chegar','passar','ir','vir','deslocar','mover','arrastar','escorregar','deslizar','rastejar','engatinhar','trepar','escalar','equilibrar','balançar','bambolear','cambalejar','claudicar','coxear','mancar','perneta','estabanado']),
+  
+  'Verbos': new Set(['correr','andar','pular','sentar','deitar','subir','descer','entrar','sair','voltar','ir','vir','ficar','partir','chegar','passar','deixar','trazer','levar','pegar','dar','receber','tomar','pôr','tirar','colocar','guardar','encontrar','perder','procurar','comprar','vender','pagar','pedir','oferecer','aceitar','recusar','negar','afirmar','dizer','falar','gritar','sussurrar','cantar','assobiar','tocar','bater','brincar','dançar','pular','comer','beber','cozinhar','fritar','assar','fervura','aquecer','esfriar','temperar','provar','lavar','limpar','secar','enxugar','esfregar','varrer','vassoura','aspirar','polir','lustre','costurar','tecer','tricô','bordar','pintar','desenhar','escrever','ler','contar','calcular','ouvir','ver','olhar','observar','notar','perceber','entender','compreender','saber','conhecer','amar','odiar','gostar','desgosto','simpatizar','antipatizar','admirar','desprezar','respeitar','desrespeitar','chorar','rir','sorrir','piscar']),
+  
+  'Roupas e acessórios': new Set(['camiseta','calça','saia','vestido','jaqueta','casaco','suéter','cardigan','blusa','camisa','polo','bermuda','legging','meias','sapatos','tênis','chinelo','sandália','bota','salto','meia','meia-calça','gravata','lenço','cachecol','luva','mitene','gorro','chapéu','boné','tiara','coroa','relógio','corrente','colar','brincos','anéis','pulseiras','alianças','broches','fichas','botões','zíper','velcro','fita','cinto','suspensório','avental','tocatouca','toca','gorro de banho','biquíni','maiô','sunga','calção','cueca','calcinha','sutiã','soutien','meia-calça','meia','fantasia','traje','uniforme','terno','smoking','fraque','toga','quimono','sari','burca','niqabe','xador','abaya']),
+  
+  'Objetos': new Set(['mesa','cadeira','cama','guarda-roupa','armário','estante','prateleira','gaveta','porta','janela','parede','teto','chão','tapete','cortina','toalha','travesseiro','cobertor','lençol','colchão','lâmpada','abajur','vela','luminária','lanterna','lampião','tocha','queimador','fogo','forno','panela','frigideira','chaleira','bule','pote','garrafa','copo','xícara','prato','tigela','colher','garfo','faca','tesoura','abridor','saca-rolhas','ralador','peneira','escorredor','ralador','escova','pente','espelho','sabonete','shampoo','desodorante','pasta','escova','fio','fita','livro','jornal','revista','caderno','bloco','lápis','caneta','borracha','apontador','clipe','telefone','celular','computador','teclado','mouse','monitor','impressora','scanner','modem','roteador','televisão','rádio','controle remoto','bateria','carregador','fone','caixa de som','microfone','câmera','filmadora','mochila','bolsa','carteira','chave','cadeado','corrente','corda','barbante','fio','cabo']),
+  
+  'Bebidas': new Set(['água','suco','leite','café','chá','chocolate','vinho','cerveja','refrigerante','soda','champanhe','espumante','conhaque','vodca','uísque','rum','tequila','gim','licor','amaro','vermute','coquetel','drinque','aperitivo','digestivo','achocolatado','açaí','vitamina','suco natural','suco de laranja','suco de maçã','suco de uva','suco de melancia','suco de melão','suco de morango','suco de abacaxi','suco de mamão','suco de goiaba','suco de caju','suco de manga','suco de pêssego','suco de pera','suco de limão','suco de tangerina','chá de camomila','chá de gengibre','chá de hortelã','chá verde','chá preto','café coado','café expresso','café com leite','café descafeinado','cappuccino','mocaccino','latte','café gelado']),
+  
+  'Coisas num hospital': new Set(['maca','cama','travesseiro','lençol','cobertor','termômetro','tensímetro','estetoscópio','agulha','seringa','gaze','esparadrapo','bandagem','atadura','curativo','compressas','medicamentos','comprimidos','cápsulas','xarope','pomada','gotas','injeção','infusão','soro','bolsa de sangue','oxigênio','máscara','tubo','respirador','monitor','eletrocardiógrafo','bip','alarme','botão de chamada','relógio','lâmpada','tomada','piso','parede','teto','cortina','cortinado','vidro','janela','porta','armário','geladeira','micro-ondas','banheiro','chuveiro','bacia','papel higiênico','toalha','sabonete','shampoo','escova de dentes','creme dental','fio dental','espelho','secador','ventilador','ar condicionado','aquecedor','lixeira']),
+};
+
+// Função para validar se palavra pertence à categoria
+function ehPalavradaCategoria(palavra, categoria){
+  const norm = palavra.toLowerCase().trim();
+  const palavrasCateg = PALAVRAS_POR_CATEGORIA[categoria];
+  if(!palavrasCateg) return false; // categoria desconhecida
+  return palavrasCateg.has(norm);
+}
   'joão','maria','josé','pedro','ana','carlos','francisco','antônio','manuel','paulo','rosa','luis',
   'gato','cachorro','pássaro','peixe','cobra','aranha','leão','tigre','elefante','girafa','zebra','urso','lobo','raposa','coelho','rato','cavalo','vaca','ovelha','porco','cabra','galinha','pato','ganso','pomba','coruja','sapo','rã','tartaruga',
   'pão','arroz','feijão','batata','tomate','alface','cenoura','abóbora','melancia','melão','maçã','pera','banana','laranja','limão','morango','uva','goiaba','abacaxi','mamão','carne','frango','peixe','leite','queijo','ovo','chocolate',
