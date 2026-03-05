@@ -1,286 +1,147 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FonoPRO Plus</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#f5f2ec;--paper:#fffef9;--ink:#18120a;--ink2:#4a3f30;--ink3:#9a8870;--line:#e2d8c5;--accent:#c44a00;--blue:#0066bb;--blue-bg:#e8f2ff;--green:#2a7a38;--green-bg:#e8f7ea;--amber:#a05a00;--amber-bg:#fff3e0;--red:#c0392b;--red-bg:#fdecea}
-html{font-size:16px}body{background:var(--bg);color:var(--ink);font-family:system-ui,sans-serif;min-height:100vh}
-.topbar{background:var(--paper);border-bottom:2px solid var(--ink);padding:0 18px;height:50px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100}
-.brand{font-family:Georgia,serif;font-size:1.15rem;font-weight:700}.brand em{color:var(--accent);font-style:italic}
-.nav{display:flex;gap:2px;background:var(--bg);border-radius:8px;padding:3px;border:1px solid var(--line);margin-left:auto}
-.nav-btn{padding:5px 11px;border-radius:5px;font-size:.72rem;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--ink3);white-space:nowrap}.nav-btn.active{background:var(--ink);color:#fff}
-.wrap{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>FonoPRO</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}:root{--bg:#f5f2ec;--paper:#fffef9;--ink:#18120a;--ink2:#4a3f30;--blue:#0066bb;--blue-bg:#e8f2ff;--green:#2a7a38;--green-bg:#e8f7ea}html{font-size:16px}body{background:var(--bg);color:var(--ink);font-family:system-ui,sans-serif}
+.top{background:var(--paper);border-bottom:2px solid var(--ink);padding:12px 18px;display:flex;align-items:center;gap:10px;position:sticky;top:0}
+.brand{font-size:1.1rem;font-weight:700;margin-right:auto}
+.nav{display:flex;gap:8px}
+.btn{padding:8px 14px;border-radius:6px;border:none;cursor:pointer;font-weight:600;font-size:.85rem;min-height:44px}
+.btn-nav{background:transparent;border:1px solid #ccc}.btn-nav.active{background:var(--ink);color:#fff}
+.btn-main{background:var(--ink);color:#fff;border:none}
+.wrap{max-width:700px;margin:0 auto;padding:20px 16px 80px}
 .page{display:none}.page.active{display:block}
-.panel{background:var(--paper);border:1.5px solid var(--line);border-radius:12px;margin-bottom:14px}
-.panel-head{padding:12px 16px;background:var(--bg);border-bottom:1.5px solid var(--line);display:flex;align-items:center;gap:8px}
-.panel-title{font-family:Georgia,serif;font-size:.95rem;font-weight:700;flex:1}
-.panel-body{padding:16px}
-.display{background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:16px;text-align:center;margin-bottom:12px}
-.big-text{font-family:Georgia,serif;font-size:1.35rem;font-weight:700;line-height:1.5}
-.dica-box{background:var(--blue-bg);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:9px 12px;font-size:.76rem;color:var(--ink2);margin-bottom:12px}
-.btn{font-family:inherit;font-size:.75rem;font-weight:600;padding:8px 16px;border-radius:7px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:5px;min-height:44px}
-.btn-main{background:var(--ink);color:#fff}.btn-ghost{background:transparent;color:var(--ink2);border:1.5px solid var(--line)}
-.vel-row{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap}
-.vel-btn{font-size:.67rem;padding:8px 12px;border-radius:6px;border:1.5px solid var(--line);background:transparent;cursor:pointer;font-family:inherit;font-weight:600;min-height:44px}
-.vel-btn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-.level-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin-bottom:12px}
-.level-btn{padding:8px;border-radius:7px;border:1.5px solid var(--line);background:var(--paper);cursor:pointer;font-size:.8rem;font-weight:600;font-family:inherit;min-height:44px}
-.level-btn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-.chip{background:var(--bg);border:1.5px solid var(--line);border-radius:6px;padding:6px 11px;font-size:.82rem;font-weight:600;display:inline-block;margin:2px}
-#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:8px;font-size:.8rem;z-index:9999;transition:transform .3s}
+.panel{background:var(--paper);border:1.5px solid #ddd;border-radius:10px;padding:16px;margin-bottom:14px}
+.dica{background:var(--blue-bg);border-left:3px solid var(--blue);padding:10px 12px;border-radius:0 6px 6px 0;font-size:.8rem;margin-bottom:12px}
+.texto{background:var(--bg);border:1px solid #ddd;border-radius:8px;padding:12px;margin:12px 0;min-height:100px;line-height:1.6}
+.timer{font-family:monospace;font-size:2rem;font-weight:900;text-align:center;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0}
+.chips{display:flex;flex-wrap:wrap;gap:6px;background:var(--bg);padding:12px;border-radius:8px;min-height:60px}
+.chip{background:var(--green-bg);border:1px solid var(--green);color:var(--green);padding:4px 8px;border-radius:4px;font-size:.75rem;font-weight:600}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--ink);color:#fff;padding:12px 16px;border-radius:6px;z-index:999;transition:transform .3s}
 #toast.show{transform:translateX(-50%) translateY(0)}
-.timer-big{font-family:monospace;font-size:2.4rem;font-weight:700;text-align:center}
-input{border:1.5px solid var(--line);border-radius:7px;padding:10px 12px;font-size:.9rem;font-family:inherit;background:var(--paper);color:var(--ink);outline:none}
-@media(max-width:768px){html{font-size:14px}.wrap{padding:16px 12px 50px}input{font-size:16px;padding:12px}}
-</style>
-</head>
+@media(max-width:600px){html{font-size:14px}input{font-size:16px!important;padding:12px!important}}
+</style></head>
 <body>
 
-<div class="topbar">
-  <div class="brand">FonoPRO<em>Plus</em></div>
+<div class="top">
+  <div class="brand">FonoPRO Plus</div>
   <div class="nav">
-    <button class="nav-btn active" onclick="goPage('leitura')">📖 Leitura</button>
-    <button class="nav-btn" onclick="goPage('fluencia')">💬 Fluência</button>
-    <button class="nav-btn" onclick="goPage('travas')">🗣️ Travas</button>
-    <button class="nav-btn" onclick="goPage('karaoke')">🎤 Karaokê</button>
+    <button class="btn btn-nav active" onclick="go('ler')">📖</button>
+    <button class="btn btn-nav" onclick="go('flu')">💬</button>
+    <button class="btn btn-nav" onclick="go('tra')">🗣️</button>
+    <button class="btn btn-nav" onclick="go('kar')">🎤</button>
   </div>
 </div>
 
 <div class="wrap">
-  <!-- LEITURA -->
-  <div class="page active" id="page-leitura">
-    <div class="panel">
-      <div class="panel-head"><span style="font-size:1.2rem">📖</span><div class="panel-title">Desafio de Leitura</div></div>
-      <div class="panel-body">
-        <div class="dica-box">Escolha tempo e nível. Leia em voz alta!</div>
-        
-        <label style="font-size:.75rem;font-weight:700;color:var(--ink2);display:block;margin-bottom:8px">Tempo:</label>
-        <div class="vel-row">
-          <button class="vel-btn" onclick="leiSetTempo(60)">1 min</button>
-          <button class="vel-btn on" onclick="leiSetTempo(90)">1:30</button>
-          <button class="vel-btn" onclick="leiSetTempo(120)">2 min</button>
-          <button class="vel-btn" onclick="leiSetTempo(0)">∞</button>
-        </div>
-        
-        <label style="font-size:.75rem;font-weight:700;color:var(--ink2);display:block;margin-bottom:8px">Nível (1-10):</label>
-        <div class="level-grid">
-          <button class="level-btn on" onclick="leiSetNivel(1)">🟢 1</button>
-          <button class="level-btn" onclick="leiSetNivel(2)">🟡 2</button>
-          <button class="level-btn" onclick="leiSetNivel(3)">🟠 3</button>
-          <button class="level-btn" onclick="leiSetNivel(4)">🔴 4</button>
-          <button class="level-btn" onclick="leiSetNivel(5)">⚫ 5</button>
-          <button class="level-btn" onclick="leiSetNivel(6)">🌪️ 6</button>
-          <button class="level-btn" onclick="leiSetNivel(7)">💀 7</button>
-          <button class="level-btn" onclick="leiSetNivel(8)">🌀 8</button>
-          <button class="level-btn" onclick="leiSetNivel(9)">👹 9</button>
-          <button class="level-btn" onclick="leiSetNivel(10)">☠️ 10</button>
-        </div>
-        
-        <div id="leiTexto" class="display" style="min-height:120px;font-size:.95rem;line-height:1.8"></div>
-        
-        <button class="btn btn-main" id="leiBtn" style="width:100%;justify-content:center;padding:12px" onclick="leiToggle()">▶ COMEÇAR</button>
-        
-        <div id="leiStatus" style="background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:10px;font-size:.78rem;margin-top:10px;display:none">
-          <div>🎙️ <span id="leiMsg">Gravando...</span></div>
-          <div style="margin-top:6px">Tempo: <span id="leiTm">0:00</span> | Palavras: <span id="leiCt">0</span></div>
-        </div>
-        
-        <div id="leiRes" style="display:none;margin-top:10px"></div>
-      </div>
-    </div>
-  </div>
 
-  <!-- FLUÊNCIA -->
-  <div class="page" id="page-fluencia">
-    <div class="panel">
-      <div class="panel-head"><span style="font-size:1.2rem">💬</span><div class="panel-title">Fluência Verbal</div></div>
-      <div class="panel-body">
-        <div class="dica-box">Fale palavras diferentes da categoria!</div>
-        
-        <label style="font-size:.75rem;font-weight:700;color:var(--ink2);display:block;margin-bottom:8px">Tempo:</label>
-        <div class="vel-row">
-          <button class="vel-btn on" onclick="fluSetTempo(30)">30s</button>
-          <button class="vel-btn" onclick="fluSetTempo(60)">1 min</button>
-          <button class="vel-btn" onclick="fluSetTempo(90)">1:30</button>
-        </div>
-        
-        <label style="font-size:.75rem;font-weight:700;color:var(--ink2);display:block;margin-bottom:8px">Categoria:</label>
-        <div class="vel-row">
-          <button class="vel-btn on" id="fluC0" onclick="fluSetCat(0)">Animais</button>
-          <button class="vel-btn" id="fluC1" onclick="fluSetCat(1)">Frutas</button>
-          <button class="vel-btn" id="fluC2" onclick="fluSetCat(2)">Cores</button>
-          <button class="vel-btn" id="fluC3" onclick="fluSetCat(3)">Países</button>
-        </div>
-        
-        <button class="btn btn-main" id="fluBtn" style="width:100%;justify-content:center;padding:12px" onclick="fluToggle()">▶ COMEÇAR</button>
-        
-        <div id="fluTm" class="timer-big" style="display:none;margin:12px 0">1:00</div>
-        
-        <div id="fluWords" style="background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:12px;min-height:80px;margin-top:12px"></div>
-        
-        <div id="fluRes" style="display:none;margin-top:12px"></div>
-      </div>
+<!-- LEITURA -->
+<div class="page active" id="page-ler">
+  <div class="panel">
+    <h2>📖 Desafio de Leitura</h2>
+    <p style="font-size:.9rem;color:#666;margin:8px 0">Leia em voz alta!</p>
+    
+    <label>Nível:</label>
+    <div class="grid" style="grid-template-columns:repeat(5,1fr)">
+      <button class="btn" id="lv1" onclick="leiNv(1)">1</button>
+      <button class="btn" id="lv2" onclick="leiNv(2)">2</button>
+      <button class="btn" id="lv3" onclick="leiNv(3)">3</button>
+      <button class="btn" id="lv4" onclick="leiNv(4)">4</button>
+      <button class="btn" id="lv5" onclick="leiNv(5)">5</button>
     </div>
+    
+    <div id="leiTxt" class="texto"></div>
+    
+    <button class="btn btn-main" id="leiBtn" onclick="leiGo()" style="width:100%;padding:12px">▶ COMEÇAR</button>
+    
+    <div id="leiSta" style="display:none;background:#f0f0f0;padding:10px;border-radius:6px;margin-top:10px;font-size:.85rem">
+      Tempo: <span id="leiTm">0:00</span> | Palavras: <span id="leiPc">0</span>
+    </div>
+    
+    <div id="leiRes" style="display:none;margin-top:12px"></div>
   </div>
+</div>
 
-  <!-- TRAVAS -->
-  <div class="page" id="page-travas">
-    <div class="panel">
-      <div class="panel-head"><span style="font-size:1.2rem">🗣️</span><div class="panel-title">Trava-Línguas</div></div>
-      <div class="panel-body">
-        <div class="display" style="font-size:1rem;line-height:1.8">
-          <div id="travasDisplay">O rato roeu a roupa do rei de Roma.</div>
-        </div>
-        <div style="display:flex;gap:7px">
-          <button class="btn btn-main" onclick="travasSpeak()">🔊 Ouvir</button>
-          <button class="btn btn-ghost" onclick="travasNext()">→ Próximo</button>
-        </div>
-      </div>
+<!-- FLUÊNCIA -->
+<div class="page" id="page-flu">
+  <div class="panel">
+    <h2>💬 Fluência Verbal</h2>
+    <p style="font-size:.9rem;color:#666;margin:8px 0">Fale palavras diferentes!</p>
+    
+    <label>Categoria:</label>
+    <div class="grid" style="grid-template-columns:repeat(2,1fr)">
+      <button class="btn" id="fc0" onclick="fluCat(0)">Animais</button>
+      <button class="btn" id="fc1" onclick="fluCat(1)">Frutas</button>
+      <button class="btn" id="fc2" onclick="fluCat(2)">Cores</button>
+      <button class="btn" id="fc3" onclick="fluCat(3)">Países</button>
     </div>
+    
+    <button class="btn btn-main" id="fluBtn" onclick="fluGo()" style="width:100%;padding:12px;margin-top:12px">▶ COMEÇAR</button>
+    
+    <div id="fluTm" class="timer" style="display:none">1:00</div>
+    
+    <div id="fluWds" class="chips"></div>
+    
+    <div id="fluRes" style="display:none;margin-top:12px"></div>
   </div>
+</div>
 
-  <!-- KARAOKÊ -->
-  <div class="page" id="page-karaoke">
-    <div class="panel">
-      <div class="panel-head"><span style="font-size:1.2rem">🎤</span><div class="panel-title">Karaokê</div></div>
-      <div class="panel-body">
-        <div class="dica-box">Clique em uma música para ver a letra!</div>
-        <div id="karaGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:12px"></div>
-      </div>
+<!-- TRAVAS -->
+<div class="page" id="page-tra">
+  <div class="panel">
+    <h2>🗣️ Trava-Línguas</h2>
+    <div id="traVz" class="texto">O rato roeu a roupa do rei de Roma.</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-main" onclick="traSpk()">🔊 Ouvir</button>
+      <button class="btn" onclick="traNxt()">→ Próximo</button>
     </div>
   </div>
+</div>
+
+<!-- KARAOKÊ -->
+<div class="page" id="page-kar">
+  <div class="panel">
+    <h2>🎤 Karaokê</h2>
+    <div id="karGd" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px"></div>
+  </div>
+</div>
+
 </div>
 
 <div id="toast"></div>
 
 <script>
 // GLOBAL
-function goPage(p){
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  document.getElementById('page-'+p).classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  event.target.classList.add('active');
-}
-
-function toast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2500);
-}
-
-function speak(txt,rate=0.9){
-  try{
-    window.speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(txt);
-    u.lang='pt-BR';
-    u.rate=rate;
-    window.speechSynthesis.speak(u);
-  }catch(e){}
-}
+function go(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');document.querySelectorAll('.btn-nav').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+function speak(t){try{window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='pt-BR';u.rate=0.9;window.speechSynthesis.speak(u);}catch(e){}}
 
 // LEITURA
-const TXTS={1:'Gato. Cão. Rato.',2:'João foi à escola.',3:'A biblioteca oferecia livros.',4:'Desenvolvimento linguístico progressivo.',5:'Nas profundezas da consciência...',6:'Qual não foi minha surpresa...',7:'Phenomenología da existência...',8:'Fragmentação. Descontinuidade.',9:'Psicossamantropofágico...',10:'Synchroclasmata verti-inversivas...'};
-let leiTmx=90,leiNv=1,leiAct=false,leiRec=null,leiPw=0,leiSc=90,leiTr=null;
-
-function leiSetTempo(t){leiTmx=t;document.querySelectorAll('.vel-row .vel-btn').forEach(b=>b.classList.remove('on'));event.target.classList.add('on');}
-
-function leiSetNivel(n){leiNv=n;document.querySelectorAll('.level-btn').forEach((b,i)=>b.classList.toggle('on',i+1===n));document.getElementById('leiTexto').textContent=TXTS[n]||'Texto';}
-
-function leiToggle(){leiAct?leiStop():leiGo();}
-
-function leiGo(){
-  try{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)throw new Error('Incompatível');
-    leiAct=true;leiPw=0;leiSc=leiTmx;
-    document.getElementById('leiBtn').innerHTML='⏹ PARAR';
-    document.getElementById('leiStatus').style.display='';
-    document.getElementById('leiRes').style.display='none';
-    leiTr=setInterval(()=>{leiSc--;const m=Math.floor(leiSc/60);const s=leiSc%60;document.getElementById('leiTm').textContent=m+':'+(s<10?'0':'')+s;if(leiSc<=0){clearInterval(leiTr);leiStop();}},1000);
-    leiRec=new SR();leiRec.lang='pt-BR';leiRec.continuous=true;
-    leiRec.onresult=(e)=>{for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal){const n=e.results[i][0].transcript.split(/\s+/).length;leiPw+=n;document.getElementById('leiCt').textContent=leiPw;}}};
-    leiRec.onend=()=>{if(leiAct)setTimeout(()=>leiRec.start(),300);};
-    toast('🎤 Começe!');leiRec.start();
-  }catch(e){toast('❌ '+e.message);}
-}
-
-function leiStop(){
-  leiAct=false;if(leiRec)leiRec.stop();if(leiTr)clearInterval(leiTr);
-  document.getElementById('leiBtn').innerHTML='▶ COMEÇAR';
-  document.getElementById('leiStatus').style.display='none';
-  const tm=leiTmx-leiSc;const ppm=tm>0?Math.round((leiPw/tm)*60):0;
-  let h='<div class="panel"><div class="panel-head"><span>📖</span></div><div class="panel-body"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div style="background:var(--blue-bg);border:1.5px solid var(--blue);border-radius:8px;padding:12px;text-align:center"><div style="font-family:Georgia,serif;font-size:1.6rem;font-weight:900;color:var(--blue)">'+ppm+'</div><div style="font-size:.65rem;color:var(--ink3)">Pal/min</div></div><div style="background:var(--green-bg);border:1.5px solid var(--green);border-radius:8px;padding:12px;text-align:center"><div style="font-family:Georgia,serif;font-size:1.6rem;font-weight:900;color:var(--green)">'+leiPw+'</div><div style="font-size:.65rem;color:var(--ink3)">Palavras</div></div></div><div style="background:var(--green-bg);border:1.5px solid var(--green);border-radius:8px;padding:10px;font-size:.8rem;color:var(--green)">✅ '+leiPw+' palavras!</div></div></div>';
-  document.getElementById('leiRes').innerHTML=h;
-  document.getElementById('leiRes').style.display='';
-  toast('✅ '+leiPw+'!');
-}
+const TXTS={1:'Gato. Cão. Rato.',2:'João foi à escola.',3:'A biblioteca oferecia livros.',4:'Desenvolvimento linguístico progressivo.',5:'Nas profundezas da consciência...'};
+let leiNvl=1,leiAct=false,leiRec=null,leiPw=0,leiSc=90,leiTr=null;
+function leiNv(n){leiNvl=n;document.querySelectorAll('[id^="lv"]').forEach(b=>b.style.background='');document.getElementById('lv'+n).style.background='var(--ink)';document.getElementById('lv'+n).style.color='#fff';document.getElementById('leiTxt').textContent=TXTS[n]||'Texto';}
+function leiGo(){try{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('Navegador incompatível');return;}leiAct=true;leiPw=0;leiSc=90;document.getElementById('leiBtn').textContent='⏹ PARAR';document.getElementById('leiSta').style.display='';document.getElementById('leiRes').style.display='none';leiTr=setInterval(()=>{leiSc--;const m=Math.floor(leiSc/60);const s=leiSc%60;document.getElementById('leiTm').textContent=m+':'+(s<10?'0':'')+s;if(leiSc<=0){clearInterval(leiTr);leiEnd();}},1000);leiRec=new SR();leiRec.lang='pt-BR';leiRec.continuous=true;leiRec.onresult=(e)=>{for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal){const n=e.results[i][0].transcript.split(/\s+/).length;leiPw+=n;document.getElementById('leiPc').textContent=leiPw;}}};leiRec.onend=()=>{if(leiAct)setTimeout(()=>leiRec.start(),300);};toast('Comece!');leiRec.start();}catch(e){toast('Erro: '+e.message);}}
+function leiEnd(){leiAct=false;if(leiRec)leiRec.stop();if(leiTr)clearInterval(leiTr);document.getElementById('leiBtn').textContent='▶ COMEÇAR';document.getElementById('leiSta').style.display='none';const ppm=Math.round((leiPw/90)*60);document.getElementById('leiRes').innerHTML='<div style="background:var(--green-bg);border:1px solid var(--green);padding:12px;border-radius:8px;text-align:center"><div style="font-size:1.4rem;font-weight:900">'+ppm+'</div><div style="font-size:.8rem">Palavras/min ('+leiPw+' total)</div></div>';document.getElementById('leiRes').style.display='';toast('✅ '+leiPw+' palavras!');}
 
 // FLUÊNCIA
 const CATS=['Animais','Frutas','Cores','Países'];
-let fluTmx=30,fluCt=0,fluAct=false,fluRec=null,fluWds=[],fluSc=30,fluTr=null;
-
-function fluSetTempo(t){fluTmx=t;document.querySelectorAll('.vel-row .vel-btn').forEach(b=>b.classList.remove('on'));event.target.classList.add('on');}
-
-function fluSetCat(i){fluCt=i;document.querySelectorAll('[id^="fluC"]').forEach((b,j)=>b.classList.toggle('on',j===i));}
-
-function fluToggle(){fluAct?fluStop():fluGo();}
-
-function fluGo(){
-  try{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)throw new Error('Incompatível');
-    fluAct=true;fluWds=[];fluSc=fluTmx;
-    document.getElementById('fluBtn').innerHTML='⏹ PARAR';
-    document.getElementById('fluTm').style.display='';
-    document.getElementById('fluWords').innerHTML='';
-    document.getElementById('fluRes').style.display='none';
-    fluTr=setInterval(()=>{fluSc--;const m=Math.floor(fluSc/60);const s=fluSc%60;document.getElementById('fluTm').textContent=m+':'+(s<10?'0':'')+s;if(fluSc<=0){clearInterval(fluTr);fluStop();}},1000);
-    fluRec=new SR();fluRec.lang='pt-BR';fluRec.continuous=true;
-    fluRec.onresult=(e)=>{for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal){const ws=e.results[i][0].transcript.toLowerCase().split(/\s+/).filter(p=>p.length>2);ws.forEach(w=>{if(!fluWds.includes(w)){fluWds.push(w);const c=document.createElement('span');c.className='chip';c.textContent='✓ '+w;document.getElementById('fluWords').appendChild(c);}});}}};
-    fluRec.onend=()=>{if(fluAct)setTimeout(()=>fluRec.start(),300);};
-    toast('🎤 Fale!');fluRec.start();
-  }catch(e){toast('❌ '+e.message);}
-}
-
-function fluStop(){
-  fluAct=false;if(fluRec)fluRec.stop();if(fluTr)clearInterval(fluTr);
-  document.getElementById('fluBtn').innerHTML='▶ COMEÇAR';
-  document.getElementById('fluTm').style.display='none';
-  const tot=fluWds.length;const tm=fluTmx-fluSc;const ppm=tm>0?Math.round((tot/tm)*60):0;
-  let h='<div class="panel"><div class="panel-head"><span>💬</span></div><div class="panel-body"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div style="background:var(--blue-bg);border:1.5px solid var(--blue);border-radius:8px;padding:12px;text-align:center"><div style="font-family:Georgia,serif;font-size:1.6rem;font-weight:900;color:var(--blue)">'+tot+'</div><div style="font-size:.65rem;color:var(--ink3)">Palavras</div></div><div style="background:var(--green-bg);border:1.5px solid var(--green);border-radius:8px;padding:12px;text-align:center"><div style="font-family:Georgia,serif;font-size:1.6rem;font-weight:900;color:var(--green)">'+ppm+'</div><div style="font-size:.65rem;color:var(--ink3)">Pal/min</div></div></div><div style="background:var(--green-bg);border:1.5px solid var(--green);border-radius:8px;padding:10px;font-size:.8rem;color:var(--green)">🎉 '+tot+' palavras!</div></div></div>';
-  document.getElementById('fluRes').innerHTML=h;
-  document.getElementById('fluRes').style.display='';
-  toast('✅ '+tot+'!');
-}
+let fluCt=0,fluAct=false,fluRec=null,fluWds=[],fluSc=60,fluTr=null;
+function fluCat(i){fluCt=i;document.querySelectorAll('[id^="fc"]').forEach(b=>b.style.background='');document.getElementById('fc'+i).style.background='var(--ink)';document.getElementById('fc'+i).style.color='#fff';}
+function fluGo(){try{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('Navegador incompatível');return;}fluAct=true;fluWds=[];fluSc=60;document.getElementById('fluBtn').textContent='⏹ PARAR';document.getElementById('fluTm').style.display='';document.getElementById('fluWds').innerHTML='';document.getElementById('fluRes').style.display='none';fluTr=setInterval(()=>{fluSc--;const m=Math.floor(fluSc/60);const s=fluSc%60;document.getElementById('fluTm').textContent=m+':'+(s<10?'0':'')+s;if(fluSc<=0){clearInterval(fluTr);fluEnd();}},1000);fluRec=new SR();fluRec.lang='pt-BR';fluRec.continuous=true;fluRec.onresult=(e)=>{for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal){const ws=e.results[i][0].transcript.toLowerCase().split(/\s+/).filter(p=>p.length>2);ws.forEach(w=>{if(!fluWds.includes(w)){fluWds.push(w);const c=document.createElement('span');c.className='chip';c.textContent='✓ '+w;document.getElementById('fluWds').appendChild(c);}});}}};fluRec.onend=()=>{if(fluAct)setTimeout(()=>fluRec.start(),300);};toast('Fale!');fluRec.start();}catch(e){toast('Erro: '+e.message);}}
+function fluEnd(){fluAct=false;if(fluRec)fluRec.stop();if(fluTr)clearInterval(fluTr);document.getElementById('fluBtn').textContent='▶ COMEÇAR';document.getElementById('fluTm').style.display='none';const tot=fluWds.length;document.getElementById('fluRes').innerHTML='<div style="background:var(--green-bg);border:1px solid var(--green);padding:12px;border-radius:8px;text-align:center"><div style="font-size:1.4rem;font-weight:900">'+tot+'</div><div style="font-size:.8rem">Palavras diferentes!</div></div>';document.getElementById('fluRes').style.display='';toast('✅ '+tot+' palavras!');}
 
 // TRAVAS
-const TRAVAS=['O rato roeu a roupa do rei de Roma.','Três pratos de trigo para três tigres tristes.','Que querem que faça com as quatro queimações?','Sou seu seguro de segurança, señor sensato.','Peça para pipoca pipa pipoco pipá pipecar!'];
-let travasI=0;
-function travasSpeak(){speak(TRAVAS[travasI]);}
-function travasNext(){travasI=(travasI+1)%TRAVAS.length;document.getElementById('travasDisplay').textContent=TRAVAS[travasI];}
+const TRAS=['O rato roeu a roupa do rei de Roma.','Três pratos de trigo para três tigres tristes.','Que querem que faça com as quatro queimações?','Sou seu seguro de segurança, señor sensato.'];
+let traI=0;
+function traSpk(){speak(TRAS[traI]);}
+function traNxt(){traI=(traI+1)%TRAS.length;document.getElementById('traVz').textContent=TRAS[traI];}
 
 // KARAOKÊ
-const MUSICS=[
-  {t:'Garota de Ipanema',a:'Tom Jobim',l:'Olha que coisa mais linda,\nMais cheia de graça...\nÉ ela, menina,\nQue vem e que passa...'},
-  {t:'Aquarela',a:'Toquinho',l:'Numa folha qualquer\nEu desenho um sol amarelo\nE com cinco ou seis riscas simples\nFaço uma casa...'},
-  {t:'Asa Branca',a:'Luiz Gonzaga',l:'Quando o verde dos teus olhos\nSe mistura com o verde do mar\nA gente fica verde,\nDe esperança de se abraçar...'},
-  {t:'Parabéns',a:'Diversos',l:'Parabéns pra você,\nNesta data querida\nMuita felicidade,\nMuito sucesso na vida...'},
-  {t:'Imagine',a:'John Lennon',l:'Imagine all the people\nLiving life in peace\nYou, you may say I\'m a dreamer\nBut I\'m not the only one...'}
-];
+const MUS=[{t:'Garota de Ipanema',a:'Tom Jobim',l:'Olha que coisa mais linda...'},{t:'Aquarela',a:'Toquinho',l:'Numa folha qualquer...'},{t:'Parabéns',a:'Diversos',l:'Parabéns pra você...'},{t:'Imagine',a:'John Lennon',l:'Imagine all the people...'}];
+function karInit(){document.getElementById('karGd').innerHTML=MUS.map(m=>'<div style="border:1px solid #ddd;border-radius:8px;padding:12px;cursor:pointer;background:#f9f9f9" onclick="karOpen(\''+m.t+'\')"><div style="font-size:1.3rem;text-align:center">🎵</div><div style="font-weight:700;font-size:.85rem">'+m.t+'</div><div style="font-size:.7rem;color:#666">'+m.a+'</div></div>').join('');}
+function karOpen(tt){const m=MUS.find(x=>x.t===tt);if(!m)return;const d=document.createElement('div');d.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;z-index:9999';const c=document.createElement('div');c.style.cssText='background:var(--paper);border-radius:10px;padding:20px;width:90%;max-width:400px';c.innerHTML='<h2>'+m.t+'</h2><p style="font-size:.8rem;color:#666">'+m.a+'</p><div style="background:var(--bg);padding:10px;border-radius:6px;margin:10px 0;white-space:pre-wrap;max-height:200px;overflow-y:auto">'+m.l+'</div><div style="display:flex;gap:8px"><button class="btn btn-main" onclick="speak(\''+m.t+'. '+m.l+'\');toast(\'🎵\')">🔊 Ouvir</button><button class="btn" onclick="this.parentElement.parentElement.parentElement.remove()">Fechar</button></div>';d.appendChild(c);d.onclick=(e)=>{if(e.target===d)d.remove();};document.body.appendChild(d);}
 
-function karaInit(){
-  document.getElementById('karaGrid').innerHTML=MUSICS.map(m=>`<div style="border:2px solid var(--blue);border-radius:9px;padding:12px;cursor:pointer;background:var(--blue-bg);text-align:center" onclick="karaOpen('${m.t}')"><div style="font-size:1.5rem">🎵</div><div style="font-weight:700;font-size:.85rem;margin-top:4px">${m.t}</div><div style="font-size:.7rem;color:var(--ink3);margin-top:2px">${m.a}</div></div>`).join('');
-}
-
-function karaOpen(tt){
-  const m=MUSICS.find(x=>x.t===tt);if(!m)return;
-  const d=document.createElement('div');d.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:9999;overflow-y:auto';
-  const c=document.createElement('div');c.style.cssText='background:var(--paper);border-radius:12px;padding:24px;max-width:500px;width:90%;margin:20px auto';
-  c.innerHTML=`<div style="text-align:center;margin-bottom:20px"><div style="font-size:2rem">🎤</div><h2 style="margin:10px 0 0 0;font-family:Georgia,serif;font-size:1.2rem">${m.t}</h2><div style="color:var(--ink3);font-size:.9rem">${m.a}</div></div><div style="background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:16px;margin-bottom:16px;font-size:.95rem;line-height:1.8;white-space:pre-wrap;color:var(--ink);max-height:300px;overflow-y:auto">${m.l}</div><div style="display:flex;gap:8px"><button class="btn btn-main" onclick="speak('${m.t}. ${m.l}');toast('🎵')">🔊 Ouvir</button><button class="btn btn-ghost" onclick="this.closest('div').parentElement.remove()">Fechar</button></div>`;
-  d.appendChild(c);d.onclick=(e)=>{if(e.target===d)d.remove();};document.body.appendChild(d);
-}
-
-leiSetNivel(1);karaInit();
+document.getElementById('lv1').style.background='var(--ink)';document.getElementById('lv1').style.color='#fff';document.getElementById('leiTxt').textContent=TXTS[1];document.getElementById('fc0').style.background='var(--ink)';document.getElementById('fc0').style.color='#fff';karInit();
 </script>
 </body>
 </html>
