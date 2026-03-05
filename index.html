@@ -2261,11 +2261,26 @@ function sgStart(){
 }
 
 function sgCheckLetter(inp,letra){
-  const v=inp.value.trim();
-  if(v.length===0){inp.style.borderColor='var(--line)';return;}
-  const ok=v.toUpperCase().startsWith(letra);
-  inp.style.borderColor=ok?'var(--green)':'var(--red)';
-  inp.style.background=ok?'var(--green-bg)':'var(--red-bg)';
+  const v=inp.value.trim().toLowerCase();
+  if(v.length===0){inp.style.borderColor='var(--line)';inp.style.background='';return;}
+  
+  const temLetra=v.toUpperCase().startsWith(letra);
+  
+  // Palavras reais comuns
+  const palavrasReais=['joão','maria','josé','pedro','ana','carlos','bruno','alice','barbara','bianca','diego','lucas','rafael','branca','blanca','brás','brasil','barueri','brasilia','buenos aires','bangkok','beirut','budapest','branco','branco','azul','amarelo','vermelho','verde','rosa','roxo','preto','cinza','laranja','marrom','burro','burra','gato','cachorro','pássaro','peixe','cobra','leão','tigre','elefante','girafa','zebra','urso','lobo','raposa','coelho','rato','cavalo','vaca','ovelha','porco','cabra','bmw','ford','chevrolet','fiat','vw','toyota','honda','hyundai','renault','peugeot','citroen','biscoito','biscoita','pão','arroz','feijão','macarrão','pizza','hambúrguer','frango','carne','peixe','sorvete','bolo','chocolate','água','café','suco','leite','chá'];
+  
+  const ehPalavraReal=palavrasReais.includes(v);
+  
+  if(!temLetra){
+    inp.style.borderColor='var(--red)';
+    inp.style.background='var(--red-bg)';
+  } else if(!ehPalavraReal){
+    inp.style.borderColor='var(--amber)';
+    inp.style.background='var(--amber-bg)';
+  } else {
+    inp.style.borderColor='var(--green)';
+    inp.style.background='var(--green-bg)';
+  }
 }
 
 function sgStop(){
@@ -2276,38 +2291,24 @@ function sgStop(){
   const ativas=sgCats.filter(c=>c.on);
   let pontos=0, resultRows='';
   
-  // Dicionário MÍNIMO de palavras válidas
-  const palavrasValidas={
-    'nome':['joão','maria','josé','pedro','ana','carlos','bruno','alice','barbara','beatriz','diego','lucas','rafael','gabriel','manuel','paulo','rosa','luis','lidia','bianca','barueri','brasilia','buenos aires','bangkok','bogota','beirut','budapest'],
-    'cor':['branco','branco','branco','branco','branco','branco','branco','azul','azul','azul','azul','amarelo','amarelo','amarelo','amarelo','vermelho','vermelho','vermelho','verde','verde','verde','rosa','roxo','preto','cinza','laranja','marrom'],
-    'animal':['burro','burro','burro','burro','burro','burro','burro','gato','cachorro','pássaro','peixe','cobra','leão','tigre','elefante','girafa','zebra','urso','lobo','raposa','coelho','rato','cavalo','vaca','ovelha','porco','cabra'],
-    'país':['brasil','brasil','brasil','brasil','brasil','brasil','brasil','argentina','méxico','china','japão','alemanha','frança','itália','espanha','portugal','canada','usa','chile','peru','colombia','venezuela','uruguai','paraguai'],
-    'cidade':['barueri','barueri','barueri','barueri','barueri','barueri','barueri','são paulo','rio de janeiro','belo horizonte','brasilia','salvador','recife','manaus','belém','curitiba','porto alegre'],
-    'marca de carro':['bmw','bmw','bmw','bmw','bmw','bmw','bmw','ford','chevrolet','fiat','vw','toyota','honda','hyundai','renault','peugeot','citroen'],
-    'comida':['biscoito','biscoito','biscoito','biscoito','biscoito','biscoito','biscoito','pão','arroz','feijão','macarrão','pizza','hambúrguer','frango','carne','peixe','sorvete','bolo','chocolate']
-  };
-  
-  function ehPalavraValida(palavra, categoria){
-    const norm = palavra.toLowerCase().trim();
-    const cat = categoria.toLowerCase();
-    const lista = palavrasValidas[cat] || [];
-    return lista.includes(norm);
-  }
+  // Mesma lista de palavras reais
+  const palavrasReais=['joão','maria','josé','pedro','ana','carlos','bruno','alice','barbara','bianca','diego','lucas','rafael','branca','blanca','brás','brasil','barueri','brasilia','buenos aires','bangkok','beirut','budapest','branco','branco','azul','amarelo','vermelho','verde','rosa','roxo','preto','cinza','laranja','marrom','burro','burra','gato','cachorro','pássaro','peixe','cobra','leão','tigre','elefante','girafa','zebra','urso','lobo','raposa','coelho','rato','cavalo','vaca','ovelha','porco','cabra','bmw','ford','chevrolet','fiat','vw','toyota','honda','hyundai','renault','peugeot','citroen','biscoito','biscoita','pão','arroz','feijão','macarrão','pizza','hambúrguer','frango','carne','peixe','sorvete','bolo','chocolate','água','café','suco','leite','chá'];
   
   ativas.forEach((c,i)=>{
     const inp=document.getElementById('sg-inp-'+i);
-    const val=inp?inp.value.trim():'';
+    const val=inp?inp.value.trim().toLowerCase():'';
     const temLetra=val.length>0 && val.toUpperCase().startsWith(sgLetra);
-    const ehValida=temLetra && ehPalavraValida(val,c.name);
-    const pts=ehValida?10:0;
+    const ehReal=palavrasReais.includes(val);
+    const ok=temLetra && ehReal;
+    const pts=ok?10:0;
     pontos+=pts;
-    resultRows+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;background:${ehValida?'var(--green-bg)':'var(--red-bg)'};margin-bottom:5px">
-      <span style="font-size:1rem">${ehValida?'✅':'❌'}</span>
+    resultRows+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;background:${ok?'var(--green-bg)':'var(--red-bg)'};margin-bottom:5px">
+      <span style="font-size:1rem">${ok?'✅':'❌'}</span>
       <div style="flex:1">
         <span style="font-size:.73rem;font-weight:700;color:var(--ink3)">${c.name}</span>
-        <span style="font-size:.82rem;font-weight:700;margin-left:6px;color:${ehValida?'var(--green)':'var(--red)'}">${val||'— em branco'}</span>
+        <span style="font-size:.82rem;font-weight:700;margin-left:6px;color:${ok?'var(--green)':'var(--red)'}">${val||'— em branco'}</span>
       </div>
-      <span style="font-size:.72rem;font-weight:700;color:${ehValida?'var(--green)':'var(--red)'}">${pts>0?'+'+pts:'0'} pts</span>
+      <span style="font-size:.72rem;font-weight:700;color:${ok?'var(--green)':'var(--red)'}">${pts>0?'+'+pts:'0'} pts</span>
     </div>`;
   });
 
