@@ -901,18 +901,34 @@ function ri2Next(){st.ri2=((st.ri2||0)+1)%RITMO.length;if(st.ri2===0)toast('🎉
 
 // ─── FLUÊNCIA VERBAL ───────────────────────────────
 // variáveis de estado fluência
-let fluRec=null, fluWords=[], fluTimer=null, fluSecs=60, fluTotalSecs=60, fluActive=false;
+// ════════════════════════════════════════════════
+// FLUÊNCIA VERBAL — ENGINE RIGOROSO COM VOZ
+// ════════════════════════════════════════════════
+// Estado global
+let fluRec=null, fluTimer=null, fluSecs=60, fluTotalSecs=60, fluActive=false;
+// fluEntradas: array de objetos {palavra, status}
+// status: 'ok' | 'repetida' | 'invalida'
+let fluEntradas=[];
+// palavras únicas válidas já registradas (para dedup)
+let fluValidas=new Set();
+// buffer de transcrições já processadas (evita reprocessar interims)
+let fluTranscriptBuffer='';
 
 function buildFluencia(){
   st.fci=Math.floor(Math.random()*FLUENCIA_CATS.length);
-  fluWords=[]; fluActive=false;
+  fluEntradas=[]; fluValidas=new Set(); fluTranscriptBuffer=''; fluActive=false;
   if(fluTimer){clearInterval(fluTimer);fluTimer=null;}
-  if(fluRec){try{fluRec.stop();}catch(e){} fluRec=null;}
+  if(fluRec){try{fluRec.abort();}catch(e){} fluRec=null;}
   setTimeout(fRenderCat,10);
   return`<div class="panel">
-    <div class="panel-head"><span class="panel-icon">💬</span><div class="panel-title">Fluência Verbal — Evocação com Voz</div><div class="panel-meta" id="fcatmeta">—</div></div>
+    <div class="panel-head"><span class="panel-icon">💬</span><div class="panel-title">Fluência Verbal — Avaliação por Voz</div><div class="panel-meta" id="fcatmeta">—</div></div>
     <div class="panel-body">
-      <div style="font-size:.8rem;color:var(--ink2);margin-bottom:10px;line-height:1.5">Clique em <strong>▶ Iniciar</strong>, aguarde o sinal e fale o máximo de palavras da categoria. O sistema escuta, lista e dá a nota! 🎙️<br><small style="color:var(--ink3)">Funciona no Chrome/Edge com microfone.</small></div>
+      <div style="font-size:.8rem;color:var(--ink2);margin-bottom:10px;line-height:1.6">
+        Clique em <strong>▶ Iniciar</strong> e fale todas as palavras da categoria que conseguir.<br>
+        <span style="color:var(--green);font-weight:600">✅ Verde</span> = válida &nbsp;
+        <span style="color:var(--red);font-weight:600">❌ Vermelho</span> = repetida ou inválida &nbsp;
+        <span style="font-size:.72rem;color:var(--ink3)">(Chrome/Edge)</span>
+      </div>
       <div style="margin-bottom:12px">
         <div style="font-size:.68rem;font-weight:600;color:var(--ink3);margin-bottom:6px">DURAÇÃO:</div>
         <div class="vel-row">
@@ -922,19 +938,42 @@ function buildFluencia(){
         </div>
       </div>
       <div class="display" style="margin-bottom:10px">
-        <div style="font-size:.62rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Categoria sorteada</div>
-        <div class="fluencia-cat" id="fcat" style="font-size:1.8rem"></div>
+        <div style="font-size:.62rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Categoria</div>
+        <div class="fluencia-cat" id="fcat" style="font-size:1.9rem"></div>
         <div style="font-size:.7rem;color:var(--ink3);margin-top:4px" id="fref"></div>
       </div>
       <div class="timer-big" id="ftimer">1:00</div>
       <div class="timer-bar-wrap"><div class="timer-bar" id="fbar" style="width:100%"></div></div>
 
-      <div style="background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:12px;min-height:56px;margin-bottom:12px">
-        <div style="font-size:.62rem;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">🎙 PALAVRAS DETECTADAS</div>
-        <div id="fWordsList" style="display:flex;flex-wrap:wrap;gap:5px;min-height:28px">
-          <span style="font-size:.76rem;color:var(--ink3);font-style:italic">Aguardando início...</span>
+      <!-- contadores ao vivo -->
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+        <div style="flex:1;background:var(--green-bg);border:1.5px solid var(--green);border-radius:8px;padding:8px 12px;text-align:center">
+          <div style="font-family:Georgia,serif;font-size:1.6rem;font-weight:900;color:var(--green);line-height:1" id="fCountOk">0</div>
+          <div style="font-size:.58rem;color:var(--green);text-transform:uppercase;font-weight:700;letter-spacing:.05em">Válidas</div>
+        </div>
+        <div style="flex:1;background:var(--red-bg);border:1.5px solid var(--red);border-radius:8px;padding:8px 12px;text-align:center">
+          <div style="font-family:Georgia,serif;font-size:1.6rem;font-weight:900;color:var(--red);line-height:1" id="fCountRep">0</div>
+          <div style="font-size:.58rem;color:var(--red);text-transform:uppercase;font-weight:700;letter-spacing:.05em">Repetidas/Erros</div>
+        </div>
+        <div style="flex:1;background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:8px 12px;text-align:center">
+          <div style="font-family:Georgia,serif;font-size:1.6rem;font-weight:900;color:var(--ink);line-height:1" id="fCountTotal">0</div>
+          <div style="font-size:.58rem;color:var(--ink3);text-transform:uppercase;font-weight:700;letter-spacing:.05em">Total ditas</div>
         </div>
       </div>
+
+      <!-- lista de palavras em tempo real -->
+      <div style="background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:12px;min-height:70px;margin-bottom:10px">
+        <div style="font-size:.6rem;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">🎙 PALAVRAS DETECTADAS — ao vivo</div>
+        <div id="fWordsList" style="display:flex;flex-wrap:wrap;gap:5px;align-items:center">
+          <span style="font-size:.78rem;color:var(--ink3);font-style:italic">Aguardando início...</span>
+        </div>
+      </div>
+
+      <!-- transcricao bruta interim -->
+      <div style="background:#0d1117;border-radius:8px;padding:9px 12px;margin-bottom:10px;min-height:32px">
+        <div id="fInterim" style="font-family:monospace;font-size:.72rem;color:#7dd3fc;line-height:1.5;word-break:break-word">aguardando voz...</div>
+      </div>
+
       <div id="fMicStatus" style="font-size:.68rem;font-family:monospace;color:var(--ink3);text-align:center;margin-bottom:8px">● microfone inativo</div>
 
       <div class="btn-row">
@@ -957,128 +996,257 @@ function fSetTempo(s){
 function fRenderCat(){
   const c=FLUENCIA_CATS[st.fci||0];
   document.getElementById('fcat').textContent=c.c;
-  document.getElementById('fref').textContent='Meta: '+c.ref+'+ palavras • Adulto típico';
-  document.getElementById('fcatmeta').textContent='#'+(st.fci+1)+' de '+FLUENCIA_CATS.length;
+  document.getElementById('fref').textContent='Referência clínica: adulto típico nomeia '+c.ref+'+ palavras em 60s';
+  document.getElementById('fcatmeta').textContent='#'+(st.fci+1)+'/'+FLUENCIA_CATS.length;
 }
 
 function fNova(){
-  if(fluActive){fStop();}
-  fluWords=[];
+  if(fluActive) fStop();
+  fluEntradas=[]; fluValidas=new Set(); fluTranscriptBuffer='';
   st.fci=Math.floor(Math.random()*FLUENCIA_CATS.length);
   fluSecs=fluTotalSecs||60;
   const m=Math.floor(fluSecs/60),s=fluSecs%60;
-  document.getElementById('ftimer').textContent=m+':'+(s<10?'0':'')+s;
-  document.getElementById('ftimer').className='timer-big';
-  document.getElementById('fbar').style.width='100%';
-  document.getElementById('fbar').style.background='var(--green)';
-  document.getElementById('fstartbtn').style.display='';
-  document.getElementById('fstopbtn').style.display='none';
-  document.getElementById('fresult').style.display='none';
-  document.getElementById('fWordsList').innerHTML='<span style="font-size:.76rem;color:var(--ink3);font-style:italic">Aguardando início...</span>';
-  document.getElementById('fMicStatus').textContent='● microfone inativo';
-  document.getElementById('fMicStatus').style.color='var(--ink3)';
+  const timerEl=document.getElementById('ftimer');
+  if(timerEl){timerEl.textContent=m+':'+(s<10?'0':'')+s; timerEl.className='timer-big';}
+  const fbarEl=document.getElementById('fbar');
+  if(fbarEl){fbarEl.style.width='100%'; fbarEl.style.background='var(--green)';}
+  const sb=document.getElementById('fstartbtn'), sp=document.getElementById('fstopbtn');
+  if(sb)sb.style.display=''; if(sp)sp.style.display='none';
+  const fr=document.getElementById('fresult'); if(fr)fr.style.display='none';
+  const fl=document.getElementById('fWordsList'); if(fl)fl.innerHTML='<span style="font-size:.78rem;color:var(--ink3);font-style:italic">Aguardando início...</span>';
+  const fi=document.getElementById('fInterim'); if(fi)fi.textContent='aguardando voz...';
+  const fm=document.getElementById('fMicStatus'); if(fm){fm.textContent='● microfone inativo'; fm.style.color='var(--ink3)';}
+  ['fCountOk','fCountRep','fCountTotal'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='0';});
   fRenderCat();
 }
 
+// ─── Normalização rigorosa ────────────────────────
+function fNormalizar(w){
+  return w.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')  // tira acentos
+    .replace(/[^a-z]/g,'')                              // só letras
+    .trim();
+}
+
+// Palavras de ruído que o reconhecedor às vezes injeta
+const FLU_RUIDO=new Set(['a','o','e','um','uma','de','da','do','em','na','no','que','se','por','para','com','mais','mas','isso','esta','este','ela','ele','nos','as','os','eu','me','te','lhe','meu','minha','seu','sua','oi','né','tipo','assim','então','sabe','tá','ah','eh','uh','hm','hmm','ahn','uhm']);
+
+// ─── Processar lote de palavras do recognizer ────
+function fProcessarTexto(texto){
+  if(!fluActive) return;
+  // quebra em tokens
+  const tokens = texto.trim().split(/\s+/).filter(Boolean);
+  tokens.forEach(tok => {
+    const norm = fNormalizar(tok);
+    if(norm.length < 2) return;           // muito curta, ignora
+    if(FLU_RUIDO.has(norm)) return;       // ruído de fala
+    
+    // verifica se é repetição (exata após normalização)
+    const repetida = fluValidas.has(norm);
+    
+    const entrada = {palavra: tok.toLowerCase(), norm, status: repetida ? 'repetida' : 'ok'};
+    fluEntradas.push(entrada);
+    
+    if(!repetida){
+      fluValidas.add(norm);
+    }
+    
+    fAdicionarChip(entrada);
+    fAtualizarContadores();
+  });
+}
+
+function fAdicionarChip(entrada){
+  const lista = document.getElementById('fWordsList');
+  if(!lista) return;
+  // remove placeholder
+  const placeholder = lista.querySelector('span[style*="italic"]');
+  if(placeholder) placeholder.remove();
+  
+  const isOk = entrada.status === 'ok';
+  const chip = document.createElement('span');
+  chip.style.cssText = [
+    'display:inline-flex',
+    'align-items:center',
+    'gap:3px',
+    'padding:4px 10px',
+    'border-radius:7px',
+    'font-size:.78rem',
+    'font-weight:700',
+    'font-family:monospace',
+    'animation:pop .2s ease',
+    isOk
+      ? 'background:var(--green-bg);border:2px solid var(--green);color:var(--green)'
+      : 'background:var(--red-bg);border:2px solid var(--red);color:var(--red);text-decoration:line-through'
+  ].join(';');
+  
+  const icon = isOk ? '✓' : (entrada.status==='repetida'?'↺':'✗');
+  chip.innerHTML = `<span style="font-size:.65rem">${icon}</span>${entrada.palavra}`;
+  if(!isOk){
+    chip.title = entrada.status==='repetida' ? '⚠ Repetida!' : '⚠ Inválida!';
+  }
+  lista.appendChild(chip);
+  // scroll para o final
+  lista.scrollTop = lista.scrollHeight;
+}
+
+function fAtualizarContadores(){
+  const ok = fluEntradas.filter(e=>e.status==='ok').length;
+  const erros = fluEntradas.filter(e=>e.status!=='ok').length;
+  const total = fluEntradas.length;
+  const el1=document.getElementById('fCountOk'); if(el1)el1.textContent=ok;
+  const el2=document.getElementById('fCountRep'); if(el2)el2.textContent=erros;
+  const el3=document.getElementById('fCountTotal'); if(el3)el3.textContent=total;
+}
+
+// ─── Iniciar reconhecimento ────────────────────────
 function fStart(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR){toast('⚠ Use Chrome ou Edge para usar o microfone!');return;}
-  fluWords=[]; fluActive=true; fluSecs=fluTotalSecs||60;
+  
+  fluEntradas=[]; fluValidas=new Set(); fluTranscriptBuffer=''; fluActive=true; fluSecs=fluTotalSecs||60;
   document.getElementById('fstartbtn').style.display='none';
   document.getElementById('fstopbtn').style.display='';
   document.getElementById('fresult').style.display='none';
   document.getElementById('fWordsList').innerHTML='';
-  document.getElementById('fMicStatus').textContent='🔴 GRAVANDO — fale agora!';
+  document.getElementById('fInterim').textContent='ouvindo...';
+  document.getElementById('fMicStatus').textContent='🔴 GRAVANDO — fale as palavras da categoria!';
   document.getElementById('fMicStatus').style.color='var(--red)';
-  toast('🎙 GO! Fale palavras da categoria: '+FLUENCIA_CATS[st.fci||0].c);
-
-  // STT
-  fluRec=new SR();
-  fluRec.lang='pt-BR'; fluRec.continuous=true; fluRec.interimResults=true;
-  fluRec.onresult=e=>{
-    for(let i=e.resultIndex;i<e.results.length;i++){
-      if(e.results[i].isFinal){
-        const raw=e.results[i][0].transcript.trim();
-        // cada palavra separada
-        raw.split(/\s+/).forEach(w=>{
-          const clean=w.toLowerCase().replace(/[^a-záàâãéèêíïóôõúüçñ]/gi,'').trim();
-          if(clean.length>1 && !fluWords.includes(clean)){
-            fluWords.push(clean);
-            fAddWordChip(clean);
-          }
-        });
-      }
-    }
-  };
-  fluRec.onerror=e=>{if(e.error==='no-speech')return; if(fluActive)setTimeout(fRestartRec,300);};
-  fluRec.onend=()=>{if(fluActive)setTimeout(fRestartRec,200);};
-  try{fluRec.start();}catch(e){}
-
-  // timer
+  ['fCountOk','fCountRep','fCountTotal'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='0';});
+  
+  const cat=FLUENCIA_CATS[st.fci||0];
+  toast('🎙 Fale palavras de: '+cat.c);
+  
+  fIniciarRec(SR);
+  
   fluTimer=setInterval(()=>{
     fluSecs--;
     const m=Math.floor(fluSecs/60),s=fluSecs%60;
-    document.getElementById('ftimer').textContent=m+':'+String(s).padStart(2,'0');
+    const timerEl=document.getElementById('ftimer');
+    if(timerEl) timerEl.textContent=m+':'+String(s).padStart(2,'0');
     const pct=fluSecs/(fluTotalSecs||60);
-    document.getElementById('fbar').style.width=(pct*100)+'%';
-    document.getElementById('fbar').style.background=pct>.5?'var(--green)':pct>.2?'#e9a000':'var(--red)';
-    if(fluSecs<=10) document.getElementById('ftimer').className='timer-big urgent';
+    const fbarEl=document.getElementById('fbar');
+    if(fbarEl){
+      fbarEl.style.width=(pct*100)+'%';
+      fbarEl.style.background=pct>.5?'var(--green)':pct>.2?'#e9a000':'var(--red)';
+    }
+    if(fluSecs<=10 && timerEl) timerEl.className='timer-big urgent';
     if(fluSecs<=0){clearInterval(fluTimer);fluTimer=null;fStop();}
   },1000);
 }
 
-function fRestartRec(){
-  if(!fluActive)return;
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR)return;
-  try{fluRec=new SR();fluRec.lang='pt-BR';fluRec.continuous=true;fluRec.interimResults=true;
-    fluRec.onresult=e=>{for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal){const raw=e.results[i][0].transcript.trim();raw.split(/\s+/).forEach(w=>{const clean=w.toLowerCase().replace(/[^a-záàâãéèêíïóôõúüçñ]/gi,'').trim();if(clean.length>1&&!fluWords.includes(clean)){fluWords.push(clean);fAddWordChip(clean);}});}}};
-    fluRec.onerror=e=>{if(e.error==='no-speech')return;if(fluActive)setTimeout(fRestartRec,300);};
-    fluRec.onend=()=>{if(fluActive)setTimeout(fRestartRec,200);};
+function fIniciarRec(SR){
+  if(!fluActive) return;
+  if(!SR) SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR) return;
+  
+  try{
+    fluRec=new SR();
+    fluRec.lang='pt-BR';
+    fluRec.continuous=true;
+    fluRec.interimResults=true;   // precisamos do interim para mostrar o que está sendo falado
+    fluRec.maxAlternatives=1;
+    
+    let ultimoFinalIdx=0;
+    
+    fluRec.onresult=function(e){
+      if(!fluActive) return;
+      
+      let interim='';
+      for(let i=e.resultIndex; i<e.results.length; i++){
+        const texto=e.results[i][0].transcript;
+        if(e.results[i].isFinal){
+          // Processa somente o novo trecho final
+          // (evita reprocessar o que já veio antes)
+          const novo=texto.slice(ultimoFinalIdx).trim();
+          if(novo) fProcessarTexto(novo);
+          ultimoFinalIdx=0; // cada onresult final = nova utterance
+          interim='';
+        } else {
+          interim+=texto;
+        }
+      }
+      // mostra interim na tela
+      const el=document.getElementById('fInterim');
+      if(el) el.textContent=interim||'ouvindo...';
+    };
+    
+    fluRec.onerror=function(e){
+      if(e.error==='no-speech'||e.error==='aborted') return;
+      console.warn('STT error:',e.error);
+      if(fluActive) setTimeout(()=>fIniciarRec(null),400);
+    };
+    
+    fluRec.onend=function(){
+      if(fluActive) setTimeout(()=>fIniciarRec(null),150);
+    };
+    
     fluRec.start();
-  }catch(e){}
-}
-
-function fAddWordChip(w){
-  const el=document.getElementById('fWordsList');
-  const chip=document.createElement('span');
-  chip.style.cssText='display:inline-block;background:var(--blue-bg);border:1.5px solid var(--blue);border-radius:6px;padding:3px 9px;font-size:.78rem;font-weight:700;font-family:monospace;animation:pop .2s ease;color:var(--ink)';
-  chip.textContent=w;
-  el.appendChild(chip);
+  } catch(ex){
+    console.warn('STT start error:',ex);
+    if(fluActive) setTimeout(()=>fIniciarRec(null),600);
+  }
 }
 
 function fStop(){
   fluActive=false;
   if(fluTimer){clearInterval(fluTimer);fluTimer=null;}
-  if(fluRec){try{fluRec.stop();}catch(e){} fluRec=null;}
-  document.getElementById('fstartbtn').style.display='';
-  document.getElementById('fstopbtn').style.display='none';
-  document.getElementById('ftimer').textContent='0:00';
-  document.getElementById('ftimer').className='timer-big';
-  document.getElementById('fbar').style.width='0%';
-  document.getElementById('fMicStatus').textContent='● microfone inativo';
-  document.getElementById('fMicStatus').style.color='var(--ink3)';
+  if(fluRec){try{fluRec.abort();}catch(e){} fluRec=null;}
+  
+  const timerEl=document.getElementById('ftimer');
+  if(timerEl){timerEl.textContent='0:00'; timerEl.className='timer-big';}
+  const fbarEl=document.getElementById('fbar');
+  if(fbarEl) fbarEl.style.width='0%';
+  const sb=document.getElementById('fstartbtn'); if(sb)sb.style.display='';
+  const sp=document.getElementById('fstopbtn'); if(sp)sp.style.display='none';
+  const fm=document.getElementById('fMicStatus');
+  if(fm){fm.textContent='● microfone inativo'; fm.style.color='var(--ink3)';}
+  const fi=document.getElementById('fInterim'); if(fi) fi.textContent='—';
 
+  // ── RESULTADO RIGOROSO ──
   const cat=FLUENCIA_CATS[st.fci||0];
-  const total=fluWords.length;
-  const used=(fluTotalSecs||60)-fluSecs;
+  const totalDitas=fluEntradas.length;
+  const validas=fluEntradas.filter(e=>e.status==='ok');
+  const invalidas=fluEntradas.filter(e=>e.status!=='ok');
+  const nVal=validas.length;
+  const nInv=invalidas.length;
+  const used=Math.max(0,(fluTotalSecs||60)-fluSecs);
 
-  // nota
-  let score, grade, cor, emoji;
-  const ratio=total/cat.ref;
-  if(ratio>=2){score=100;grade='S';cor='var(--green)';emoji='🏆';}
-  else if(ratio>=1.5){score=90;grade='A+';cor='var(--green)';emoji='⭐';}
-  else if(ratio>=1){score=80;grade='A';cor='var(--green)';emoji='✅';}
-  else if(ratio>=0.8){score=70;grade='B';cor='var(--blue)';emoji='👍';}
-  else if(ratio>=0.6){score=60;grade='C';cor='var(--amber)';emoji='📈';}
-  else if(ratio>=0.4){score=45;grade='D';cor='var(--amber)';emoji='⚠️';}
-  else{score=25;grade='F';cor='var(--red)';emoji='📉';}
+  // Nota rigorosa: penaliza erros
+  // score = válidas - (invalidas * 0.5), nunca negativo, sobre ref
+  const scoreBruto=Math.max(0, nVal - nInv*0.5);
+  const ratio=scoreBruto/cat.ref;
+  let grade,cor,emoji,feedbackTitulo;
+  if(ratio>=2){grade='S';cor='var(--green)';emoji='🏆';feedbackTitulo='Excepcional! Fluência verbal muito acima da referência.';}
+  else if(ratio>=1.5){grade='A+';cor='var(--green)';emoji='⭐';feedbackTitulo='Excelente! Fluência bem acima do esperado.';}
+  else if(ratio>=1){grade='A';cor='var(--green)';emoji='✅';feedbackTitulo='Boa fluência. Dentro da referência clínica.';}
+  else if(ratio>=0.75){grade='B';cor='var(--blue)';emoji='👍';feedbackTitulo='Adequado. Próximo da referência, mas pode melhorar.';}
+  else if(ratio>=0.5){grade='C';cor='var(--amber)';emoji='📈';feedbackTitulo='Abaixo do esperado. Pratique com mais categorias.';}
+  else if(ratio>=0.3){grade='D';cor='var(--amber)';emoji='⚠️';feedbackTitulo='Bem abaixo da referência. Recomenda-se acompanhamento.';}
+  else{grade='F';cor='var(--red)';emoji='📉';feedbackTitulo='Resultado muito baixo. Avaliação fonoaudiológica indicada.';}
 
-  const listaHTML=fluWords.length>0
-    ? fluWords.map((w,i)=>`<span style="display:inline-block;background:var(--paper);border:1px solid var(--green);border-radius:4px;padding:2px 8px;margin:2px 3px;font-size:.75rem;font-family:monospace;color:var(--ink)"><b>${i+1}.</b> ${w}</span>`).join('')
-    : '<span style="color:var(--ink3);font-style:italic;font-size:.78rem">Nenhuma palavra detectada. Verifique o microfone.</span>';
+  // Lista completa de palavras ditas com status visual
+  const listaHTML=fluEntradas.length>0
+    ? fluEntradas.map((e,i)=>{
+        const ok=e.status==='ok';
+        const icon=ok?'✓':'✗';
+        const motivo=e.status==='repetida'?' (repetida)':e.status==='invalida'?' (inválida)':'';
+        return `<span style="display:inline-flex;align-items:center;gap:3px;margin:2px 3px;padding:3px 9px;border-radius:6px;font-size:.75rem;font-family:monospace;font-weight:700;
+          ${ok?'background:var(--green-bg);border:1.5px solid var(--green);color:var(--green)':'background:var(--red-bg);border:1.5px solid var(--red);color:var(--red);text-decoration:line-through'}" 
+          title="${ok?'Válida':'⚠'+motivo}">
+          <b style="font-size:.6rem">${i+1}</b>&nbsp;${icon}&nbsp;${e.palavra}${motivo?'<span style="font-size:.55rem;opacity:.7">'+motivo+'</span>':''}
+        </span>`;
+      }).join('')
+    : '<span style="color:var(--ink3);font-style:italic;font-size:.8rem">Nenhuma palavra detectada. Verifique o microfone e fale mais perto.</span>';
 
-  const feedback=ratio>=1?'Ótima fluência! Vocabulário ativo bem preservado.':ratio>=0.6?'Desempenho adequado. Pratique mais para ampliar o vocabulário ativo.':'Abaixo da referência. Pratique 3× por semana com categorias variadas.';
+  // Detalhes dos erros
+  let erroDetalhe='';
+  if(nInv>0){
+    const repList=invalidas.filter(e=>e.status==='repetida').map(e=>e.palavra).join(', ');
+    if(repList) erroDetalhe+=`<div style="margin-top:6px;font-size:.74rem;color:var(--red)">🔁 <strong>Repetidas:</strong> ${repList}</div>`;
+  }
+
+  const wpm=used>0?Math.round((nVal/used)*60):0;
 
   const res=document.getElementById('fresult');
   res.style.display='';
@@ -1086,36 +1254,55 @@ function fStop(){
     <div class="panel">
       <div class="panel-head"><span class="panel-icon">${emoji}</span><div class="panel-title">Resultado — ${cat.c}</div></div>
       <div class="panel-body">
-        <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px;flex-wrap:wrap">
-          <div style="text-align:center;min-width:70px">
-            <div style="font-family:Georgia,serif;font-size:2.8rem;font-weight:900;color:${cor};line-height:1">${grade}</div>
-            <div style="font-size:.6rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em">Nota</div>
+        <!-- métricas principais -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px">
+          <div style="text-align:center;background:var(--bg);border-radius:9px;padding:10px 6px;border:2px solid ${cor}">
+            <div style="font-family:Georgia,serif;font-size:2.4rem;font-weight:900;color:${cor};line-height:1">${grade}</div>
+            <div style="font-size:.55rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Nota</div>
           </div>
-          <div style="text-align:center;min-width:60px">
-            <div style="font-family:Georgia,serif;font-size:2.4rem;font-weight:900;color:var(--ink);line-height:1">${total}</div>
-            <div style="font-size:.6rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em">Palavras</div>
+          <div style="text-align:center;background:var(--green-bg);border-radius:9px;padding:10px 6px;border:1.5px solid var(--green)">
+            <div style="font-family:Georgia,serif;font-size:2rem;font-weight:900;color:var(--green);line-height:1">${nVal}</div>
+            <div style="font-size:.55rem;color:var(--green);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Válidas ✓</div>
           </div>
-          <div style="text-align:center;min-width:60px">
-            <div style="font-family:Georgia,serif;font-size:2.4rem;font-weight:900;color:var(--ink);line-height:1">${used}s</div>
-            <div style="font-size:.6rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em">Usado</div>
+          <div style="text-align:center;background:var(--red-bg);border-radius:9px;padding:10px 6px;border:1.5px solid var(--red)">
+            <div style="font-family:Georgia,serif;font-size:2rem;font-weight:900;color:var(--red);line-height:1">${nInv}</div>
+            <div style="font-size:.55rem;color:var(--red);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Erros ✗</div>
           </div>
-          <div style="flex:1;min-width:140px">
-            <div style="height:10px;background:var(--line);border-radius:5px;overflow:hidden;margin-bottom:4px">
-              <div style="height:100%;width:${Math.min(100,Math.round(ratio*100))}%;background:${cor};border-radius:5px;transition:width .6s"></div>
-            </div>
-            <div style="font-size:.66rem;color:var(--ink3)">${total} de ${cat.ref} palavras de referência (${Math.round(ratio*100)}%)</div>
+          <div style="text-align:center;background:var(--bg);border-radius:9px;padding:10px 6px;border:1.5px solid var(--line)">
+            <div style="font-family:Georgia,serif;font-size:2rem;font-weight:900;color:var(--ink);line-height:1">${wpm}</div>
+            <div style="font-size:.55rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Palavras/min</div>
           </div>
         </div>
-        <div style="font-size:.78rem;font-weight:700;color:var(--ink2);margin-bottom:8px">📋 Palavras detectadas (${total}):</div>
-        <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:10px;line-height:2">${listaHTML}</div>
-        <div style="background:var(--blue-bg);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:9px 12px;font-size:.76rem;color:var(--ink2);line-height:1.5">
-          <strong>📊 Avaliação:</strong> ${feedback}<br>
-          <strong>🎯 Meta:</strong> ${cat.ref}+ palavras em ${fluTotalSecs}s = fluência preservada.<br>
-          <strong>💡 Dica:</strong> Se alguma palavra que você falou não apareceu, fale mais devagar e articulando bem.
+
+        <!-- barra de progresso -->
+        <div style="height:10px;background:var(--line);border-radius:5px;overflow:hidden;margin-bottom:6px">
+          <div style="height:100%;width:${Math.min(100,Math.round(ratio*100))}%;background:${cor};border-radius:5px;transition:width .8s"></div>
         </div>
-        <div style="display:flex;gap:7px;margin-top:10px;flex-wrap:wrap">
+        <div style="font-size:.68rem;color:var(--ink3);margin-bottom:12px">${nVal} válidas de ${cat.ref} de referência clínica — penalidade aplicada: −${(nInv*0.5).toFixed(1)} pontos por erros/repetições</div>
+
+        <!-- avaliação -->
+        <div style="background:${ratio>=1?'var(--green-bg)':ratio>=0.5?'var(--amber-bg)':'var(--red-bg)'};border-left:4px solid ${cor};border-radius:0 9px 9px 0;padding:10px 14px;margin-bottom:12px">
+          <div style="font-weight:700;font-size:.86rem;color:${cor};margin-bottom:4px">${emoji} ${feedbackTitulo}</div>
+          <div style="font-size:.76rem;color:var(--ink2);line-height:1.6">
+            Você disse <strong>${totalDitas}</strong> palavras no total (${used}s usados).<br>
+            <strong style="color:var(--green)">${nVal} válidas</strong>${nInv>0?` e <strong style="color:var(--red)">${nInv} com erro ou repetição</strong>`:''}.<br>
+            Ritmo: <strong>${wpm}</strong> palavras/minuto.
+          </div>
+          ${erroDetalhe}
+        </div>
+
+        <!-- lista completa -->
+        <div style="font-size:.74rem;font-weight:700;color:var(--ink2);margin-bottom:8px">📋 Todas as palavras ditas (${totalDitas}):</div>
+        <div style="background:var(--bg);border-radius:9px;padding:10px;line-height:2.2;margin-bottom:12px">${listaHTML}</div>
+
+        <div style="background:var(--blue-bg);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:9px 12px;font-size:.75rem;color:var(--ink2);line-height:1.6;margin-bottom:12px">
+          <strong>💡 Dica clínica:</strong> Evite repetir e tente palavras menos comuns. Quanto mais variado o vocabulário, melhor a fluência verbal.
+          Se uma palavra que falou não apareceu, articule mais devagar e pausada próximo ao microfone.
+        </div>
+
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
           <button class="btn btn-main" onclick="fNova()">🔀 Nova Categoria</button>
-          <button class="btn btn-ghost" onclick="fStart()">↺ Tentar Novamente</button>
+          <button class="btn btn-ghost" onclick="fStart()">↺ Repetir Esta</button>
         </div>
       </div>
     </div>`;
