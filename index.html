@@ -171,7 +171,7 @@ body::before {
 .icon-stop  { background: linear-gradient(135deg, #7c3aed, #a855f7); box-shadow: 0 8px 24px rgba(124,58,237,.35); }
 .icon-flu   { background: linear-gradient(135deg, #0891b2, #06b6d4); box-shadow: 0 8px 24px rgba(6,182,212,.35); }
 .icon-ler   { background: linear-gradient(135deg, #d97706, #f59e0b); box-shadow: 0 8px 24px rgba(245,158,11,.35); }
-.icon-mem   { background: linear-gradient(135deg, #059669, #10b981); box-shadow: 0 8px 24px rgba(16,185,129,.35); }
+.icon-mem   { background: linear-gradient(135deg, #7c3aed, #e11d48); box-shadow: 0 8px 24px rgba(200,50,100,.35); }
 .icon-aud   { background: linear-gradient(135deg, #e11d48, #f43f5e); box-shadow: 0 8px 24px rgba(244,63,94,.35); }
 
 .panel-title { font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; line-height: 1.1; }
@@ -645,7 +645,7 @@ select:focus, input[type="text"]:focus {
       <button class="tab active" onclick="mudarAba('stop',this)">🎲 STOP</button>
       <button class="tab" onclick="mudarAba('flu',this)">💬 Fluência</button>
       <button class="tab" onclick="mudarAba('ler',this)">📖 Leitura</button>
-      <button class="tab" onclick="mudarAba('mem',this)">🧠 Memória</button>
+      <button class="tab" onclick="mudarAba('mem',this)">🔥 Desafios</button>
       <button class="tab" onclick="mudarAba('aud',this)">👂 Auditivo</button>
     </nav>
   </div>
@@ -843,62 +843,82 @@ select:focus, input[type="text"]:focus {
   <div id="lerResultado" style="display:none"></div>
 </div>
 
-<!-- ===== MEMÓRIA ===== -->
+<!-- ===== DESAFIOS EXTREMOS ===== -->
 <div class="panel" id="mem">
   <div class="panel-hero">
-    <div class="panel-icon icon-mem">🧠</div>
+    <div class="panel-icon icon-mem">🔥</div>
     <div>
-      <div class="panel-title">Memória Visual</div>
-      <div class="panel-desc">24 cartas. Você tem 90 segundos. Cartas viram de volta em 600ms — não pisque.</div>
+      <div class="panel-title">Desafios Extremos</div>
+      <div class="panel-desc">Textos projetados para travar a língua. Trava-línguas, acumulativos, ritmo forçado e textos impossíveis — escolha seu sofrimento.</div>
     </div>
   </div>
 
   <div class="card" id="memConfig">
     <div class="config-grid">
       <div>
-        <div class="field-label">Grade</div>
-        <select id="memGrade">
-          <option value="2">2×2 — 4 cartas</option>
-          <option value="3">3×3 — 9 cartas</option>
-          <option value="4">4×4 — 16 cartas</option>
-          <option value="5">5×4 — 20 cartas</option>
-          <option value="6" selected>6×4 — 24 cartas 💀</option>
+        <div class="field-label">Tipo de desafio</div>
+        <select id="desafioTipo" onchange="atualizarDesafio()">
+          <option value="travlingua">👅 Trava-língua clássico</option>
+          <option value="acumulativo">🔺 Acumulativo (frase cresce)</option>
+          <option value="inversao">🔄 Inversão — leia ao contrário</option>
+          <option value="ritmo">🥁 Ritmo forçado</option>
+          <option value="homofono">🔊 Homófonos e parônimos</option>
+          <option value="cientifico">🔬 Científico impronunciável</option>
+          <option value="caos">💀 CAOS TOTAL</option>
         </select>
       </div>
       <div>
-        <div class="field-label">Tema</div>
-        <select id="memTema">
-          <option value="0">🐾 Animais</option>
-          <option value="1">🍎 Frutas</option>
-          <option value="2">⚽ Esportes</option>
-          <option value="3">🎭 Objetos</option>
-          <option value="4">🌍 Natureza</option>
+        <div class="field-label">Dificuldade</div>
+        <select id="desafioDif" onchange="atualizarDesafio()">
+          <option value="1">🟢 Iniciante</option>
+          <option value="2">🟡 Médio</option>
+          <option value="3">🔴 Difícil</option>
+          <option value="4" selected>💀 Extremo</option>
         </select>
       </div>
     </div>
-    <button class="btn-primary btn-green" onclick="iniciarMem()">▶ INICIAR JOGO</button>
+    <div style="margin-top:12px">
+      <div class="field-label">Tempo</div>
+      <select id="desafioTempo">
+        <option value="30">30 segundos 🔥</option>
+        <option value="45" selected>45 segundos ⚡</option>
+        <option value="60">1 minuto</option>
+        <option value="90">1 min 30 seg</option>
+      </select>
+    </div>
+    <div class="field-label" style="margin-top:14px">Texto do desafio</div>
+    <div id="desafioTexto" class="reading-text" style="font-size:1.05rem;line-height:1.9"></div>
+    <button class="btn-primary" style="margin-top:14px;background:linear-gradient(135deg,#7c3aed,#e11d48);box-shadow:0 4px 20px rgba(124,58,237,.4)" id="desafioBtn" onclick="toggleDesafio()">🔥 COMEÇAR DESAFIO</button>
   </div>
 
   <div id="memGame" style="display:none">
     <div class="card">
       <div class="info-bar">
         <div class="info-stat">
-          <div class="info-stat-val" id="memTimer">1:30</div>
-          <div class="info-stat-label">⏱ Limite</div>
+          <div class="info-stat-val" id="memTimer">0:45</div>
+          <div class="info-stat-label">⏱ Tempo</div>
         </div>
         <div class="info-stat">
-          <div class="info-stat-val" id="memTentativas">0</div>
-          <div class="info-stat-label">Tentativas</div>
+          <div class="info-stat-val" id="desafioRodada">1</div>
+          <div class="info-stat-label">Rodada</div>
         </div>
         <div class="info-stat">
-          <div class="info-stat-val" id="memPares">0</div>
-          <div class="info-stat-label">Pares ✓</div>
+          <div class="info-stat-val" id="desafioErros">0</div>
+          <div class="info-stat-label">❌ Erros</div>
         </div>
       </div>
-      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="memProg" style="width:0%;background:linear-gradient(90deg,#059669,#10b981)"></div></div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="memProg" style="width:100%;background:linear-gradient(90deg,#7c3aed,#e11d48)"></div></div>
     </div>
-    <div id="memGrid" class="memory-grid" style="grid-template-columns: repeat(4, 1fr)"></div>
-    <button class="btn-primary btn-outline" onclick="iniciarMem()" style="margin-top:12px">↺ Novo jogo</button>
+
+    <div class="card">
+      <div class="field-label" id="desafioGameLabel">Leia em voz alta com clareza</div>
+      <div id="desafioGameTexto" class="reading-text" style="font-size:1.1rem;line-height:2;min-height:110px"></div>
+      <div id="desafioFeedback" style="margin-top:10px;display:none"></div>
+      <div style="display:flex;gap:10px;margin-top:14px">
+        <button class="btn-primary btn-outline btn-sm" onclick="marcarErro()">❌ Errei</button>
+        <button class="btn-primary btn-sm" style="background:linear-gradient(135deg,#059669,#10b981);box-shadow:0 4px 16px rgba(16,185,129,.35)" onclick="proximoDesafio()">✅ Consegui!</button>
+      </div>
+    </div>
   </div>
 
   <div id="memResultado" style="display:none"></div>
@@ -1011,13 +1031,296 @@ const LER_TXTS = {
   8:'Synchroclástica vortex-inversiva desintegrando-congregam-se nos labirínticos tétanos da omnipotencialidade semântica vítrea quasiconsciência flogística reverberante hipercognoscitiva.'
 };
 
-const MEM_TEMAS = {
-  0:['🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐮','🐷','🐸','🐙','🐬','🦋','🦜','🦩','🦚','🐘','🦒','🦓','🦏'],
-  1:['🍎','🍊','🍋','🍇','🍓','🫐','🍈','🍑','🥭','🍍','🥝','🍒','🍌','🍐','🫒','🍅','🥑','🍆','🌽','🥕','🧄','🥦','🫑','🍄'],
-  2:['⚽','🏀','🏈','⚾','🥎','🏐','🏉','🥏','🎾','🏸','🏒','🏓','🏸','🥊','🥋','🤸','🏊','🚴','🏇','⛷️','🏂','🤺','🏋️','🤼'],
-  3:['🎸','🎹','🎺','🎷','🥁','🪘','🎻','🪗','🎵','🎤','📱','💻','⌚','📷','🔭','🔬','🎭','🎨','🎬','🎮','🧩','🎲','🀄','🎯'],
-  4:['🌸','🌺','🌻','🌹','🌷','💐','🌴','🌳','🌵','🍀','🍁','🍂','🌊','🏔️','🌋','🌈','☀️','🌙','⭐','🌊','🦋','🐝','🌿','🍃']
+const MEM_TEMAS = {}; // kept for compatibility
+
+// ==================== DESAFIOS EXTREMOS ====================
+
+const DESAFIOS = {
+  travlingua: {
+    1: [
+      'O rato roeu a roupa do rei de Roma.',
+      'Fui à Bahia e vi um bebê beber água.',
+      'Três tigres tristes trituram trigo.',
+      'Pedro pede para o padre parar o pato.',
+    ],
+    2: [
+      'O doce perguntou pro doce qual é o doce mais doce que o doce de batata doce.',
+      'Num ninho de mafagafos há sete mafagafinhos. Quem os desmafagafizou bom desmafagafizador será.',
+      'Sabendo que o sabiá sabia assobiar, o sabiá foi assobiar sem saber que o outro sabiá sabia assobiar melhor.',
+      'Quando digo digo, digo Diego. Quando não digo digo, não digo Diego. Digo Diogo.',
+    ],
+    3: [
+      'O tempo perguntou pro tempo quanto tempo o tempo tem. O tempo respondeu pro tempo que o tempo tem tanto tempo quanto tempo o tempo tem.',
+      'Che Guevara era um guerrilheiro que guerrilhava guerrilhando. Guerrilhou tanto que o guerrilheiro guerrilhado ficou sem guerrilha.',
+      'Fui à Finlândia e vi uma família de finlandeses falando finlandês fluidamente. Fluidez finlandesa é fascinante.',
+      'Paralelepípedo é uma palavra que o paralelepipedizador dificilmente desparalelepipedizará sem ajuda do desparalelepipedizador.',
+    ],
+    4: [
+      'O anti-constitucionalissimamente é a palavra mais longa da língua portuguesa. Pronuncie anti-constitucionalissimamente dez vezes sem errar anti-constitucionalissimamente.',
+      'Padaria, pão de ló, pamonha, pastel, pão de queijo, paçoca, pudim, pavê, panqueca, pirulito, pepino, pimenta, pitanga, pernil, panceta, pampepato, pão-de-mel.',
+      'Xerife xadrezista xingou o xará que xixi xeretava. O xará xeretão xelou o xerife xadrezista no xadrez xiita.',
+      'Frei Francolim foi a França, ficou faminto, falou francês, falhou francamente, fugiu ferido, forjou fiapos finos, fabricou frascos frágeis, fez fortuna.',
+    ]
+  },
+  acumulativo: {
+    1: [
+      ['O gato', 'O gato come', 'O gato come rato', 'O gato come rato todo dia'],
+      ['Ana fala', 'Ana fala muito', 'Ana fala muito bem', 'Ana fala muito bem português'],
+    ],
+    2: [
+      ['Lá vai', 'Lá vai Pedro', 'Lá vai Pedro pedindo', 'Lá vai Pedro pedindo pão', 'Lá vai Pedro pedindo pão para o padeiro', 'Lá vai Pedro pedindo pão para o padeiro português'],
+      ['Hoje eu vi', 'Hoje eu vi um pato', 'Hoje eu vi um pato pular', 'Hoje eu vi um pato pular no poço', 'Hoje eu vi um pato pular no poço fundo', 'Hoje eu vi um pato pular no poço fundo do quintal do Paulo'],
+    ],
+    3: [
+      ['Sete', 'Sete sábios', 'Sete sábios sérios', 'Sete sábios sérios sabem', 'Sete sábios sérios sabem sete', 'Sete sábios sérios sabem sete saberes', 'Sete sábios sérios sabem sete saberes supersabidos'],
+      ['Corre', 'Corre coelho', 'Corre coelho correndo', 'Corre coelho correndo célere', 'Corre coelho correndo célere com', 'Corre coelho correndo célere com cinco', 'Corre coelho correndo célere com cinco cenouras', 'Corre coelho correndo célere com cinco cenouras crocantes'],
+    ],
+    4: [
+      ['Anti', 'Anti-constitucional', 'Anti-constitucionalíssimo', 'Anti-constitucionalíssimamente', 'Anti-constitucionalíssimamente falando', 'Anti-constitucionalíssimamente falando sobre', 'Anti-constitucionalíssimamente falando sobre inconstitucionalidades', 'Anti-constitucionalíssimamente falando sobre inconstitucionalidades antidemocráticas'],
+      ['Psico', 'Psicóloga', 'Psicóloga pronuncia', 'Psicóloga pronuncia pneumonia', 'Psicóloga pronuncia pneumonia pterodáctilo', 'Psicóloga pronuncia pneumonia pterodáctilo pseudociência', 'Psicóloga pronuncia pneumonia pterodáctilo pseudociência psicossomático', 'Psicóloga pronuncia pneumonia pterodáctilo pseudociência psicossomático pterigóide'],
+    ]
+  },
+  inversao: {
+    1: ['amor → Roma', 'cama → amac', 'radar → radar', 'amas → sama'],
+    2: ['Leia esta frase de trás para frente: "a grama é verde e a vida é bela"', 'Leia de trás pra frente: "o sol nasce todo dia para iluminar"'],
+    3: [
+      'Soletree ao contrário: PNEUMONIA → A-I-N-O-M-U-E-N-P',
+      'Soletree ao contrário: PSICOLOGIA → A-I-G-O-L-O-C-I-S-P',
+      'Soletree ao contrário: CONSTITUIÇÃO → O-Ã-C-I-U-T-I-T-S-N-O-C',
+    ],
+    4: [
+      'Leia cada palavra desta frase ao contrário: "O sabiá cantava na copa da árvore verde" → O áibas avatnac an apoc ad erovra edrev',
+      'Soletree ao contrário sem parar: ANTICONSTITUCIONALISSIMAMENTE',
+      'Leia ao contrário silabando: "A borboleta borboleteou borboletando" → A / a-te-le-bor / uoe-te-le-bor / odna-te-le-bor',
+    ]
+  },
+  ritmo: {
+    1: [
+      'Bata na mesa no ★ e fale: "Um ★ dois ★ três ★ quatro ★ cinco" (bata no ★)',
+      'Fale em 4 tempos marcados: "GA — TO — CO — ME" pausando igual em cada sílaba',
+    ],
+    2: [
+      'Fale acelerando a cada repetição (×3): "Trigo, tigre, três. Trigo, tigre, três. TRIGO-TIGRE-TRÊS!"',
+      'Fale uma sílaba por segundo batendo palma: "PA-RA-LE-LE-PÍ-PE-DO" (7 palmas, 7 sílabas, 7 segundos)',
+      'Sussurre as consoantes e grite as vogais: "g-A-t-O c-O-m-E r-A-t-O"',
+    ],
+    3: [
+      'Alterne grave/agudo a cada palavra: "O(↓) GATO(↑) come(↓) RATO(↑) todo(↓) DIA(↑)"',
+      'Fale 3x mais rápido a cada rodada: "O rato roeu a roupa" → "Oratoroeuaroupa" → "ORATOROEUAROUPADAREIRAROMANA"',
+      'Fale batendo os pés alternados: "ES-quer-DO DI-rei-TO ES-quer-DO" — sincronize pé e sílaba',
+    ],
+    4: [
+      'MODO DISCO: cada sílaba é uma batida. Fale "AN-TI-CONS-TI-TU-CI-O-NAL-ÍS-SI-MA-MEN-TE" como uma música eletrônica de 140 BPM',
+      'Fale a frase inteira somente com as vogais primeiro, depois somente com as consoantes: "A extraordinária fenomenologia transcendental" → "A E-A-O-I-Á-I-A E-O-E-O-O-I-A A-A-E-E-A" depois "X-TR-RD-N-R-F-N-M-N-L-G-TR-NS-C-ND-NT-L"',
+    ]
+  },
+  homofono: {
+    1: [
+      'Diferença entre: CELA × SELA × SELLA. Use cada uma em uma frase.',
+      'Diferença entre: CONSERTO × CONCERTO. Fale: "O conserto do piano estava no concerto"',
+      'Diferença entre: ACENTO × ASSENTO. "O acento do ó está no assento da cadeira"',
+    ],
+    2: [
+      'Fale 5x sem errar: "O caçador caçou a caça na caça do castelo enquanto o casador casava na casa"',
+      'Leia com pronúncia diferente: SEXO × SECO × CEGO × CECO × SEXTO × SEXTETO',
+      'Diferença: COMPRIMENTO × CUMPRIMENTO × COMPRIMENTAR × CUMPRIMENTAR. Use todas em sequência.',
+    ],
+    3: [
+      'Fale distintos: "Mal o mau homem malhava o malho, a malha mal o mal o malfadado malhou"',
+      'Leia em sequência sem confundir: emigrar/imigrar, eminente/iminente, emergir/imergir, eminent/iminente, emigração/imigração',
+      'Pronúncia: SESSÃO × SECÇÃO × SEÇÃO × CESSÃO × CESSAÇÃO — todas diferentes, use em frases',
+    ],
+    4: [
+      'Fale sem gaguejar: "O comprimento do cumprimento foi comprimentado com cumprimento de comprimento incomensurável"',
+      'Leia: "O iminente eminente imigrou emigrando, imergindo emergindo, infligindo inflingindo a aflição inflação"',
+      'Diferença de pronúncia BR vs PT: ÔNIBUS/AUTOCARRO, GELADEIRA/FRIGORÍFICO, BANHEIRO/CASA-DE-BANHO — explique a diferença prosódica',
+    ]
+  },
+  cientifico: {
+    1: [
+      'Pneumonia, diarreia, reumatismo, hemorragia, oftalmologista.',
+      'Miocárdio, neurônio, epitélio, ribossomo, mitocôndria.',
+    ],
+    2: [
+      'Esternocleidomastoideo — o músculo do pescoço. Repita 3 vezes.',
+      'Fale: Pneumotórax hipertensivo, hemopneumotórax, pneumomediastino, pleurodese.',
+      'Parasparasympathomimetics — fármaco. Fale: propiltiouracil, hidroxicloroquina, azatioprina.',
+    ],
+    3: [
+      'Leia em voz alta: "A pneumoultramicroscopicossilicovulcanoconióse é uma doença pulmonar causada pela inalação de cinzas vulcânicas ultramicroscópicas"',
+      'Fale sem travar: Esternocleidomastoideo, Laringotraqueobronquite, Hipopituitarismo, Retroperitoneal, Parafoliculotireoidiano.',
+      'Leia: "O eletroencefalograma eletrocardiográfico eletroestimulou o eletromiograma eletrocutâneo do eletroanalista"',
+    ],
+    4: [
+      'Leia 3x seguidas: "Pneumonoultramicroscopicsilicovolcanoconiosis é considerada a maior palavra do idioma inglês, enquanto pneumoultramicroscopicossilicovulcanoconióse é sua equivalente lusófona"',
+      'Soletree e depois leia: Desoxirribonucleico — D-E-S-O-X-I-R-R-I-B-O-N-U-C-L-E-I-C-O. Agora: ácido desoxirribonucleico polimerase.',
+      'Leia o nome completo do IUPAC da tiamina: 2-[3-[(4-amino-2-metilpirimidin-5-il)metil]-4-metil-5-(2-fosfoonoxietil)tiazol-3-io] — tente não rir.',
+    ]
+  },
+  caos: {
+    1: [
+      'Leia em voz alta o mais rápido possível: "zumbi, zíper, zinco, zodíaco, zoológico, zombar, zunir, zarpar, zigzague, zênite"',
+    ],
+    2: [
+      'Leia sem parar e sem engolir sílaba: "Seis zigzagues de zíper, seis zangões zunindo, seis zebras no zoológico zurzindo no zelador"',
+      'Alterne grave/agudo e rápido/lento: "PNEUMO·ultra·MICRO·scópico·SILICO·vulcano·CONIÓSE"',
+    ],
+    3: [
+      'Leia esta frase 3x seguidas sem errar uma sílaba: "A fenomenologia da existência transcendental perpassa os dedalíferos caminhos da ontologia heideggeriana, reverberando através dos estratos diafanicamente estruturados da consciência coletiva"',
+      'Leia alternando pt-BR e pt-PT: "O ônibus (autocarro) parou (parou) no banheiro (casa-de-banho) do aeroporto (aeroporto) para reabastecer (abastecer)"',
+    ],
+    4: [
+      'DESAFIO FINAL: Leia tudo em 10 segundos → "Pneumoultramicroscopicossilicovulcanoconióse anticonstitucionalíssimamente desoxirribonucleico esternocleidomastoideo laringotraqueobronquite"',
+      'Cante em ritmo de rap: "AN-TI-CONS-TI-TU-CI-O-NAL, PNEU-MO-UL-TRA, DES-O-XI-RRI-BO, ES-TER-NO-CLEI-DO, PA-RA-LE-LE-PÍ-PE-DO, IN-CONS-TI-TU-CI-O-NAL-MEN-TE" — 16 tempos, sem parar.',
+      'Leia ao contrário silabando, em ritmo de metrônomo a 100bpm: "A extraordinária fenomenologia transcendental da linguística fonoaudiológica brasileira contemporânea"',
+    ]
+  }
 };
+
+// ==================== DESAFIO VARS ====================
+
+let desafioAtivo = false, desafioTimerInt, desafioSecs, desafioErros, desafioRodadaAtual, desafioLista, desafioTempoTotal;
+
+function getDesafioLista() {
+  const tipo = document.getElementById('desafioTipo').value;
+  const dif = parseInt(document.getElementById('desafioDif').value);
+  const dados = DESAFIOS[tipo];
+  if (!dados) return [];
+  // Get texts for this difficulty (fallback to lower)
+  let lista = dados[dif] || dados[3] || dados[2] || dados[1] || [];
+  // For acumulativo, flatten the steps into individual strings
+  if (tipo === 'acumulativo') {
+    // pick one sequence randomly and use its steps
+    const seq = lista[Math.floor(Math.random()*lista.length)];
+    return Array.isArray(seq) ? seq : [seq];
+  }
+  return [...lista].sort(() => Math.random() - .5);
+}
+
+function atualizarDesafio() {
+  const tipo = document.getElementById('desafioTipo').value;
+  const dif = parseInt(document.getElementById('desafioDif').value);
+  const dados = DESAFIOS[tipo];
+  let lista = dados[dif] || dados[3] || dados[2] || dados[1] || [];
+  let exemplo = lista[0];
+  if (tipo === 'acumulativo') {
+    const seq = Array.isArray(lista[0]) ? lista[0] : lista;
+    exemplo = seq.join(' → ');
+  }
+  document.getElementById('desafioTexto').textContent = typeof exemplo === 'string' ? exemplo : exemplo[0];
+}
+
+function toggleDesafio() {
+  if (desafioAtivo) { finalizarDesafio(); return; }
+  iniciarDesafio();
+}
+
+function iniciarDesafio() {
+  desafioLista = getDesafioLista();
+  if (!desafioLista.length) { toast('Sem desafios para esta seleção'); return; }
+
+  desafioAtivo = true;
+  desafioErros = 0;
+  desafioRodadaAtual = 0;
+  desafioTempoTotal = parseInt(document.getElementById('desafioTempo').value);
+  desafioSecs = desafioTempoTotal;
+
+  document.getElementById('memConfig').style.display = 'none';
+  document.getElementById('memGame').style.display = '';
+  document.getElementById('memResultado').style.display = 'none';
+  document.getElementById('desafioErros').textContent = '0';
+  document.getElementById('desafioRodada').textContent = '1';
+  document.getElementById('memTimer').style.color = '';
+  document.getElementById('memProg').style.width = '100%';
+
+  clearInterval(desafioTimerInt);
+  desafioTimerInt = setInterval(() => {
+    desafioSecs--;
+    const m = Math.floor(desafioSecs/60), s = desafioSecs%60;
+    document.getElementById('memTimer').textContent = m+':'+(s<10?'0':'')+s;
+    document.getElementById('memProg').style.width = (desafioSecs/desafioTempoTotal*100)+'%';
+    if (desafioSecs <= 10) document.getElementById('memTimer').style.color = 'var(--red)';
+    if (desafioSecs <= 0) { clearInterval(desafioTimerInt); finalizarDesafio(true); }
+  }, 1000);
+
+  mostrarDesafioAtual();
+  toast('🔥 Desafio iniciado! Leia em voz alta.');
+}
+
+function mostrarDesafioAtual() {
+  const texto = desafioLista[desafioRodadaAtual % desafioLista.length];
+  const tipo = document.getElementById('desafioTipo').value;
+  const labels = {
+    travlingua: '👅 Repita 3x sem errar — clareza e velocidade',
+    acumulativo: '🔺 Leia a sequência acumulando uma palavra por vez',
+    inversao: '🔄 Leia ao contrário conforme indicado',
+    ritmo: '🥁 Siga o ritmo indicado com precisão',
+    homofono: '🔊 Pronuncie com distinção clara cada palavra',
+    cientifico: '🔬 Leia com pronúncia técnica correta',
+    caos: '💀 SOBREVIVA se conseguir'
+  };
+  document.getElementById('desafioGameLabel').textContent = labels[tipo] || 'Leia em voz alta';
+  document.getElementById('desafioGameTexto').textContent = texto;
+  document.getElementById('desafioFeedback').style.display = 'none';
+  document.getElementById('desafioRodada').textContent = desafioRodadaAtual + 1;
+}
+
+function marcarErro() {
+  desafioErros++;
+  document.getElementById('desafioErros').textContent = desafioErros;
+  const fb = document.getElementById('desafioFeedback');
+  fb.innerHTML = `<div class="result-row bad">❌ Erro marcado! Tente de novo com calma.</div>`;
+  fb.style.display = '';
+  setTimeout(() => { fb.style.display = 'none'; }, 1500);
+  toast('❌ +1 erro');
+}
+
+function proximoDesafio() {
+  desafioRodadaAtual++;
+  const fb = document.getElementById('desafioFeedback');
+  fb.innerHTML = `<div class="result-row ok">✅ Ótimo! Próximo desafio.</div>`;
+  fb.style.display = '';
+  setTimeout(() => {
+    fb.style.display = 'none';
+    mostrarDesafioAtual();
+  }, 600);
+  toast('✅ Perfeito!');
+}
+
+function finalizarDesafio(timeout = false) {
+  desafioAtivo = false;
+  clearInterval(desafioTimerInt);
+  document.getElementById('memGame').style.display = 'none';
+
+  const completados = desafioRodadaAtual;
+  const tempoUsado = desafioTempoTotal - desafioSecs;
+  const m = Math.floor(tempoUsado/60), s = tempoUsado%60;
+  // Score: completados * 10 - erros * 5, min 0
+  const score = Math.max(0, completados * 10 - desafioErros * 5);
+  const nota = score >= 50 ? 'S' : score >= 35 ? 'A' : score >= 20 ? 'B' : score >= 10 ? 'C' : 'D';
+  const msg = nota === 'S' ? 'Fonoaudiologista nato! 🏆' : nota === 'A' ? 'Excelente dicção! 💪' : nota === 'B' ? 'Bom treino! 👏' : nota === 'C' ? 'Precisa praticar mais 📚' : 'Não desista! 💡';
+  const timeoutMsg = timeout ? `<div style="color:var(--red);font-weight:700;margin-bottom:8px">⏰ TEMPO ESGOTADO!</div>` : '';
+
+  document.getElementById('memResultado').innerHTML = `
+    <div class="score-card">
+      ${timeoutMsg}
+      <div class="grade-badge grade-${nota}">${nota}</div>
+      <div class="score-big">${score}</div>
+      <div class="score-label">pontos · ${msg}</div>
+      <div class="stats-row" style="margin-top:16px">
+        <div class="stat-box"><div class="stat-val">${completados}</div><div class="stat-lbl">Completados</div></div>
+        <div class="stat-box"><div class="stat-val">${desafioErros}</div><div class="stat-lbl">Erros</div></div>
+        <div class="stat-box"><div class="stat-val">${m+':'+(s<10?'0':'')+s}</div><div class="stat-lbl">Tempo</div></div>
+      </div>
+      <button class="btn-primary" style="margin-top:16px;background:linear-gradient(135deg,#7c3aed,#e11d48)" onclick="iniciarDesafio()">↺ Tentar novamente</button>
+      <button class="btn-primary btn-outline" onclick="document.getElementById('memConfig').style.display='';document.getElementById('memResultado').style.display='none'" style="margin-top:8px">⚙️ Configurar</button>
+    </div>
+  `;
+  document.getElementById('memResultado').style.display = '';
+  toast(`🔥 Nota ${nota} — ${score} pontos!`);
+}
+
+// ==================== AUDITIVO ====================
 
 const AUD_PALAVRAS = {
   1:[{p:'gato',s:2,i:'g',f:'o'},{p:'casa',s:2,i:'c',f:'a'},{p:'pato',s:2,i:'p',f:'o'},{p:'bolo',s:2,i:'b',f:'o'},{p:'cama',s:2,i:'c',f:'a'},{p:'dedo',s:2,i:'d',f:'o'},{p:'fada',s:2,i:'f',f:'a'},{p:'lata',s:2,i:'l',f:'a'},{p:'medo',s:2,i:'m',f:'o'},{p:'nata',s:2,i:'n',f:'a'},{p:'rato',s:2,i:'r',f:'o'},{p:'suco',s:2,i:'s',f:'o'},{p:'tapa',s:2,i:'t',f:'a'},{p:'vaca',s:2,i:'v',f:'a'},{p:'xale',s:2,i:'x',f:'e'}],
@@ -1199,34 +1502,70 @@ function iniciarFlu() {
     const rec = new SR();
     rec.lang = 'pt-BR';
     rec.continuous = true;
-    rec.interimResults = false;
+    rec.interimResults = true;  // captura palavras em tempo real, sem esperar pausa
     rec.maxAlternatives = 1;
 
     rec.onstart = () => setFluStatus('🔴 Ouvindo... fale!', 'var(--green)');
 
+    const interimVisto = new Set(); // evita duplicar enquanto a palavra ainda é interim
+
     rec.onresult = e => {
       for (let i = e.resultIndex; i < e.results.length; i++) {
         const transcript = e.results[i][0].transcript.trim().toLowerCase();
+        const isFinal = e.results[i].isFinal;
+
         transcript.split(/\s+/).forEach(w => {
           const limpa = w.replace(/[^\wÀ-ÿ]/gi, '');
           const chave = normStr(limpa);
-          if (limpa.length >= 2 && !pals.has(chave)) {
-            // Accept if in allowed list OR if allowed list is empty (fallback)
-            const aceito = allowed.size === 0 || allowed.has(chave);
-            if (aceito) {
-              pals.add(chave);
-              const chip = document.createElement('span');
-              chip.className = 'chip';
-              chip.textContent = limpa;
-              document.getElementById('fluChips').appendChild(chip);
-              document.getElementById('fluCount').textContent = pals.size;
-            } else {
-              // Show rejected word briefly
-              setFluStatus(`"${limpa}" não pertence à categoria`, 'var(--red)');
-              setTimeout(() => setFluStatus('🔴 Ouvindo... fale!', 'var(--green)'), 1200);
+          if (limpa.length < 2) return;
+
+          // Para results finais: remove do set interim e registra definitivamente
+          if (isFinal) {
+            interimVisto.delete(chave);
+            if (!pals.has(chave)) {
+              const aceito = allowed.size === 0 || allowed.has(chave);
+              if (aceito) {
+                pals.add(chave);
+                const chip = document.createElement('span');
+                chip.className = 'chip';
+                chip.textContent = limpa;
+                document.getElementById('fluChips').appendChild(chip);
+                document.getElementById('fluCount').textContent = pals.size;
+              } else {
+                setFluStatus(`"${limpa}" não é da categoria`, 'var(--red)');
+                setTimeout(() => setFluStatus('🔴 Ouvindo... fale!', 'var(--green)'), 1000);
+              }
+            }
+          } else {
+            // Interim: mostra imediatamente na tela sem ainda fixar no set
+            if (!pals.has(chave) && !interimVisto.has(chave)) {
+              const aceito = allowed.size === 0 || allowed.has(chave);
+              if (aceito) {
+                interimVisto.add(chave);
+                // Adiciona chip provisório (será substituído pelo final)
+                const id = 'interim-' + chave;
+                if (!document.getElementById(id)) {
+                  const chip = document.createElement('span');
+                  chip.className = 'chip';
+                  chip.id = id;
+                  chip.textContent = limpa;
+                  chip.style.opacity = '0.5';
+                  chip.style.border = '1px dashed rgba(52,211,153,.5)';
+                  document.getElementById('fluChips').appendChild(chip);
+                }
+              }
             }
           }
         });
+
+        // Quando finaliza, remove chips provisórios que não viraram definitivos
+        if (isFinal) {
+          interimVisto.forEach(ch => {
+            const el = document.getElementById('interim-' + ch);
+            if (el) el.remove();
+          });
+          interimVisto.clear();
+        }
       }
     };
 
@@ -1358,127 +1697,6 @@ function finalizarLer() {
 function atualizarTextoLeitura() {
   const niv = document.getElementById('lerNivel').value;
   document.getElementById('lerTexto').textContent = LER_TXTS[niv];
-}
-
-// ==================== MEMÓRIA ====================
-
-let memFlipped = [], memMatched = 0, memTotalPairs, memAttempts, memSecs, memTimerInt;
-
-function iniciarMem() {
-  const gradeVal = parseInt(document.getElementById('memGrade').value);
-  const tema = parseInt(document.getElementById('memTema').value);
-  const emojis = MEM_TEMAS[tema];
-
-  // Grid setup - always use even number of cards for proper pairing
-  let cols = gradeVal, rows = gradeVal;
-  if (gradeVal===5) { cols=5; rows=4; }
-  if (gradeVal===6) { cols=6; rows=4; }
-  const total = cols*rows % 2 === 0 ? cols*rows : cols*rows - 1; // ensure even
-  const pairs = total/2;
-
-  const cards = [];
-  for (let i=0; i<pairs; i++) {
-    cards.push(emojis[i%emojis.length], emojis[i%emojis.length]);
-  }
-  cards.sort(()=>Math.random()-.5);
-
-  memFlipped = [];
-  memMatched = 0;
-  memTotalPairs = pairs;
-  memAttempts = 0;
-  memSecs = 0;
-  const MEM_LIMIT = 90;
-
-  // Reset timer color
-  document.getElementById('memTimer').style.color = '';
-
-  clearInterval(memTimerInt);
-  memTimerInt = setInterval(() => {
-    memSecs++;
-    const remaining = MEM_LIMIT - memSecs;
-    const m=Math.floor(Math.abs(remaining)/60), s=Math.abs(remaining)%60;
-    document.getElementById('memTimer').textContent = (remaining<0?'-':'')+m+':'+(s<10?'0':'')+s;
-    if (remaining<=10) document.getElementById('memTimer').style.color='var(--red)';
-    if (remaining<=0) { clearInterval(memTimerInt); mostrarResultadoMem(true); }
-  }, 1000);
-
-  document.getElementById('memConfig').style.display = 'none';
-  document.getElementById('memGame').style.display = '';
-  document.getElementById('memResultado').style.display = 'none';
-  document.getElementById('memTentativas').textContent = '0';
-  document.getElementById('memPares').textContent = '0';
-  document.getElementById('memProg').style.width = '0%';
-
-  const grid = document.getElementById('memGrid');
-  grid.style.gridTemplateColumns = `repeat(${cols},1fr)`;
-  grid.innerHTML = '';
-  cards.forEach((emoji, idx) => {
-    const card = document.createElement('div');
-    card.className = 'mem-card face-down';
-    card.dataset.emoji = emoji;
-    card.dataset.idx = idx;
-    card.textContent = emoji;
-    card.style.fontSize = '0';
-    card.onclick = () => flipCard(card);
-    grid.appendChild(card);
-  });
-}
-
-function flipCard(card) {
-  if (card.classList.contains('face-up') || card.classList.contains('matched') || memFlipped.length>=2) return;
-  card.classList.add('face-up');
-  card.style.fontSize = '';
-  memFlipped.push(card);
-
-  if (memFlipped.length===2) {
-    memAttempts++;
-    document.getElementById('memTentativas').textContent = memAttempts;
-    if (memFlipped[0].dataset.emoji===memFlipped[1].dataset.emoji) {
-      memFlipped.forEach(c=>c.classList.replace('face-up','matched'));
-      memFlipped = [];
-      memMatched++;
-      document.getElementById('memPares').textContent = memMatched;
-      document.getElementById('memProg').style.width = (memMatched/memTotalPairs*100)+'%';
-      if (memMatched===memTotalPairs) {
-        clearInterval(memTimerInt);
-        setTimeout(mostrarResultadoMem, 200);
-      } else { toast('Par encontrado! ✅'); }
-    } else {
-      setTimeout(() => {
-        memFlipped.forEach(c=>{ c.classList.remove('face-up'); c.style.fontSize='0'; });
-        memFlipped = [];
-      }, 300);
-    }
-  }
-}
-
-function mostrarResultadoMem(timeout=false) {
-  clearInterval(memTimerInt);
-  document.getElementById('memGame').style.display = 'none';
-  const m=Math.floor(memSecs/60), s=memSecs%60;
-  const tempoStr = m+':'+(s<10?'0':'')+s;
-  const eficiencia = memAttempts>0?Math.round((memMatched/memTotalPairs)*100):0;
-  const efAttempts = memAttempts>0?Math.round((memTotalPairs/memAttempts)*100):0;
-  const nota = !timeout&&efAttempts>=95?'S':!timeout&&efAttempts>=80?'A':!timeout&&efAttempts>=65?'B':!timeout&&efAttempts>=50?'C':'D';
-  const timeoutMsg = timeout?`<div style="color:var(--red);font-weight:700;margin-bottom:8px">⏰ TEMPO ESGOTADO! ${memMatched}/${memTotalPairs} pares encontrados</div>`:'';
-
-  document.getElementById('memResultado').innerHTML = `
-    <div class="score-card">
-      ${timeoutMsg}
-      <div class="grade-badge grade-${nota}">${nota}</div>
-      <div class="score-big">${timeout?memMatched+'/'+memTotalPairs:efAttempts+'%'}</div>
-      <div class="score-label">${timeout?'pares encontrados em 90s':'eficiência de tentativas'}</div>
-      <div class="stats-row" style="margin-top:16px">
-        <div class="stat-box"><div class="stat-val">${tempoStr}</div><div class="stat-lbl">Tempo</div></div>
-        <div class="stat-box"><div class="stat-val">${memAttempts}</div><div class="stat-lbl">Tentativas</div></div>
-        <div class="stat-box"><div class="stat-val">${nota}</div><div class="stat-lbl">Nota</div></div>
-      </div>
-      <button class="btn-primary btn-green" onclick="iniciarMem()" style="margin-top:16px">↺ Jogar novamente</button>
-      <button class="btn-primary btn-outline" onclick="document.getElementById('memConfig').style.display='';document.getElementById('memGame').style.display='none';document.getElementById('memResultado').style.display='none'" style="margin-top:8px">⚙️ Configurar</button>
-    </div>
-  `;
-  document.getElementById('memResultado').style.display = '';
-  toast(timeout?`⏰ Tempo! ${memMatched}/${memTotalPairs} pares`:`🧠 Nota ${nota} — ${efAttempts}% eficiência`);
 }
 
 // ==================== AUDITIVO ====================
@@ -1651,6 +1869,7 @@ function mostrarResultadoAud() {
 
 // Init
 atualizarTextoLeitura();
+atualizarDesafio();
 </script>
 </body>
 </html>
