@@ -968,6 +968,7 @@ select:focus, input[type="text"]:focus {
       <div class="field-label" id="audPergunta">Quantas sílabas tem a palavra?</div>
       <div class="word-display" id="audWordDisplay">
         <div class="word-big" id="audPalavra">—</div>
+        <button class="btn-primary btn-outline btn-sm" style="margin-top:14px;width:auto;padding:8px 20px" onclick="repetirPalavraAud()">🔊 Repetir palavra</button>
       </div>
       <div class="syllable-display" id="audSilabas" style="display:none"></div>
       <div id="audOpcoes" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px"></div>
@@ -1061,13 +1062,14 @@ function iniciarStop() {
   document.getElementById('stopConfig').style.display = 'none';
   document.getElementById('stopGame').style.display = '';
   document.getElementById('stopResultado').style.display = 'none';
+  document.getElementById('stopTimer').classList.remove('urgent');
 
   const form = document.getElementById('stopForm');
   form.innerHTML = '';
   dados.cats.forEach((cat, i) => {
     const d = document.createElement('div');
     d.className = 'stop-field';
-    d.innerHTML = `<div class="stop-field-label">${cat}</div><input type="text" id="si${i}" placeholder="${letra}..." data-cat="${cat.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ã/g,'a').replace(/ç/g,'c')}">`;
+    d.innerHTML = `<div class="stop-field-label">${cat}</div><input type="text" id="si${i}" placeholder="${letra}..." data-cat="${normStr(cat)}">`;
     form.appendChild(d);
   });
   document.getElementById('si0').focus();
@@ -1089,6 +1091,10 @@ function iniciarStop() {
   }
 }
 
+function normStr(s) {
+  return s.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'');
+}
+
 function finalizarStop() {
   clearInterval(stopTimerInterval);
   const dif = document.getElementById('stopDif').value;
@@ -1096,15 +1102,23 @@ function finalizarStop() {
   const letra = document.getElementById('stopLetra').textContent.toLowerCase();
 
   document.getElementById('stopGame').style.display = 'none';
-  document.getElementById('stopConfig').style.display = '';
+  document.getElementById('stopConfig').style.display = 'none';
 
   let pts = 0, html = '<div style="margin-bottom:16px">';
   const inputs = document.querySelectorAll('#stopForm input');
   inputs.forEach((inp, i) => {
-    const cat = inp.getAttribute('data-cat');
-    const val = inp.value.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-    const catKey = Object.keys(dados.pals).find(k => k.startsWith(cat.slice(0,3))) || cat;
-    const ok = val && val[0] === letra && dados.pals[catKey] && dados.pals[catKey].some(p => p.normalize('NFD').replace(/[\u0300-\u036f]/g,'') === val);
+    const catKey = inp.getAttribute('data-cat');
+    const val = normStr(inp.value);
+    // Find best matching key in pals — exact match first, then starts-with
+    const palKeys = Object.keys(dados.pals);
+    const matchKey = palKeys.find(k => normStr(k) === catKey)
+                  || palKeys.find(k => normStr(k).startsWith(catKey.slice(0,4)))
+                  || palKeys.find(k => catKey.startsWith(normStr(k).slice(0,4)));
+    const palList = matchKey ? dados.pals[matchKey] : [];
+    // Valid if: non-empty, starts with the round letter, AND is in the word list (or generous: just starts with letter)
+    const startsOk = val.length >= 2 && val[0] === normStr(letra)[0];
+    const inList = palList.some(p => normStr(p) === val);
+    const ok = startsOk && inList;
     pts += ok ? 10 : 0;
     html += `<div class="result-row ${ok?'ok':'bad'}">
       <span class="result-icon">${ok?'✅':'❌'}</span>
@@ -1126,6 +1140,7 @@ function finalizarStop() {
       <div class="score-label">${pct}% de acerto · ${msg}</div>
       ${html}
       <button class="btn-primary" onclick="iniciarStop()" style="margin-top:16px">↺ Jogar novamente</button>
+      <button class="btn-primary btn-outline" onclick="document.getElementById('stopConfig').style.display='';document.getElementById('stopResultado').style.display='none'" style="margin-top:8px">⚙️ Configurar</button>
     </div>
   `;
   document.getElementById('stopResultado').style.display = '';
@@ -1153,6 +1168,11 @@ function iniciarFlu() {
   fluPlaying = true;
   fluSecsTotal = parseInt(document.getElementById('fluTempo').value);
   fluSecsLeft = fluSecsTotal;
+  const dif = parseInt(document.getElementById('fluDif').value);
+  const cat = parseInt(document.getElementById('fluCat').value);
+  // Build allowed word set for this category (all difficulties)
+  const allowed = new Set();
+  [1,2,3,4].forEach(d => { if (FLU_DADOS[d] && FLU_DADOS[d][cat]) FLU_DADOS[d][cat].forEach(w => allowed.add(normStr(w))); });
 
   document.getElementById('fluBtn').textContent = '🛑 Parar';
   document.getElementById('fluConfig').style.display = 'none';
@@ -1160,6 +1180,7 @@ function iniciarFlu() {
   document.getElementById('fluChips').innerHTML = '';
   document.getElementById('fluCount').textContent = '0';
   document.getElementById('fluResultado').style.display = 'none';
+  document.getElementById('fluTimer').classList.remove('urgent');
 
   const pals = new Set();
 
@@ -1188,14 +1209,22 @@ function iniciarFlu() {
         const transcript = e.results[i][0].transcript.trim().toLowerCase();
         transcript.split(/\s+/).forEach(w => {
           const limpa = w.replace(/[^\wÀ-ÿ]/gi, '');
-          const chave = limpa.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+          const chave = normStr(limpa);
           if (limpa.length >= 2 && !pals.has(chave)) {
-            pals.add(chave);
-            const chip = document.createElement('span');
-            chip.className = 'chip';
-            chip.textContent = limpa;
-            document.getElementById('fluChips').appendChild(chip);
-            document.getElementById('fluCount').textContent = pals.size;
+            // Accept if in allowed list OR if allowed list is empty (fallback)
+            const aceito = allowed.size === 0 || allowed.has(chave);
+            if (aceito) {
+              pals.add(chave);
+              const chip = document.createElement('span');
+              chip.className = 'chip';
+              chip.textContent = limpa;
+              document.getElementById('fluChips').appendChild(chip);
+              document.getElementById('fluCount').textContent = pals.size;
+            } else {
+              // Show rejected word briefly
+              setFluStatus(`"${limpa}" não pertence à categoria`, 'var(--red)');
+              setTimeout(() => setFluStatus('🔴 Ouvindo... fale!', 'var(--green)'), 1200);
+            }
           }
         });
       }
@@ -1256,6 +1285,7 @@ function toggleLer() {
 
 function iniciarLer() {
   try {
+    if (lerPlaying) { finalizarLer(); return; }
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) { toast('Microfone não suportado'); return; }
     lerPlaying = true;
@@ -1290,11 +1320,11 @@ function iniciarLer() {
         }
       }
     };
-    rec.onend = () => { if (lerPlaying) rec.start(); };
+    rec.onend = () => { if (lerPlaying) { try { rec.start(); } catch(e){} } };
     window.lerRec = rec;
     rec.start();
     toast('📖 Comece a ler!');
-  } catch(e) { toast('Erro: '+e.message); }
+  } catch(e) { lerPlaying = false; toast('Erro: '+e.message); }
 }
 
 function finalizarLer() {
@@ -1339,18 +1369,17 @@ function iniciarMem() {
   const tema = parseInt(document.getElementById('memTema').value);
   const emojis = MEM_TEMAS[tema];
 
-  // Grid setup
+  // Grid setup - always use even number of cards for proper pairing
   let cols = gradeVal, rows = gradeVal;
   if (gradeVal===5) { cols=5; rows=4; }
   if (gradeVal===6) { cols=6; rows=4; }
-  const total = cols*rows;
-  const pairs = Math.floor(total/2);
+  const total = cols*rows % 2 === 0 ? cols*rows : cols*rows - 1; // ensure even
+  const pairs = total/2;
 
   const cards = [];
   for (let i=0; i<pairs; i++) {
     cards.push(emojis[i%emojis.length], emojis[i%emojis.length]);
   }
-  if (total%2===1) cards.push('⭐');
   cards.sort(()=>Math.random()-.5);
 
   memFlipped = [];
@@ -1359,6 +1388,9 @@ function iniciarMem() {
   memAttempts = 0;
   memSecs = 0;
   const MEM_LIMIT = 90;
+
+  // Reset timer color
+  document.getElementById('memTimer').style.color = '';
 
   clearInterval(memTimerInt);
   memTimerInt = setInterval(() => {
@@ -1505,19 +1537,40 @@ function gerarQuestao(item, modo, dif) {
   }
 }
 
+function repetirPalavraAud() {
+  if (!audQuestoes || audAtual >= audQuestoes.length) return;
+  const palavra = audQuestoes[audAtual].palavra;
+  if (window.speechSynthesis) {
+    speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(palavra);
+    utt.lang = 'pt-BR';
+    utt.rate = 0.9; // slightly slower on replay
+    speechSynthesis.speak(utt);
+  }
+}
+
 function mostrarQuestao() {
   const q = audQuestoes[audAtual];
   const pct = (audAtual/audTotal*100);
+  const isIdentity = (document.getElementById('audModo').value === 'pal');
 
   document.getElementById('audQ').textContent = (audAtual+1)+'/'+audTotal;
   document.getElementById('audAcertos').textContent = audAcertos;
-  document.getElementById('audPerg').textContent = '0'; // not used
   document.getElementById('audPergunta').textContent = q.pergunta;
   document.getElementById('audPalavra').textContent = q.palavra;
   document.getElementById('audProg').style.width = pct+'%';
 
+  // In identity mode, blur the word so it's a real audio challenge
+  const wordDisplay = document.getElementById('audWordDisplay');
+  if (isIdentity) {
+    wordDisplay.classList.add('word-blur');
+  } else {
+    wordDisplay.classList.remove('word-blur');
+  }
+
   // TTS
   if (window.speechSynthesis) {
+    speechSynthesis.cancel();
     const utt = new SpeechSynthesisUtterance(q.palavra);
     utt.lang = 'pt-BR';
     utt.rate = 1.15;
@@ -1544,6 +1597,9 @@ function responderAud(resposta, btnEl) {
   const ok = String(resposta)===certa;
   if (ok) audAcertos++;
 
+  // Reveal blurred word on answer
+  document.getElementById('audWordDisplay').classList.remove('word-blur');
+
   document.querySelectorAll('#audOpcoes button').forEach(b => b.onclick = null);
   btnEl.style.background = ok?'linear-gradient(135deg,#059669,#10b981)':'linear-gradient(135deg,#dc2626,#ef4444)';
   btnEl.style.boxShadow = ok?'0 4px 16px rgba(16,185,129,.4)':'0 4px 16px rgba(239,68,68,.4)';
@@ -1563,7 +1619,7 @@ function responderAud(resposta, btnEl) {
   if (audAtual>=audTotal) {
     setTimeout(mostrarResultadoAud, 600);
   } else {
-    setTimeout(mostrarQuestao, 800);
+    setTimeout(mostrarQuestao, 900);
   }
 }
 
