@@ -120,10 +120,21 @@ body{background:var(--bg);color:var(--ink);font-family:system-ui,'Segoe UI',sans
             <button class="level-btn" onclick="leiNivel(3)" title="Palavras com 4+ sílabas">🟠 Médio</button>
             <button class="level-btn" onclick="leiNivel(4)" title="Textos complexos, palavras técnicas">🔴 Difícil</button>
             <button class="level-btn" onclick="leiNivel(5)" title="Extremamente desafiador, prosódia exigida">⚫ Extremo</button>
+            <button class="level-btn" onclick="leiNivel(6)" title="Prosa clássica, inversões sintáticas">🌪️ Ultra</button>
+            <button class="level-btn" onclick="leiNivel(7)" title="Filosofia abstrusa, neologismos">💀 Insano</button>
+            <button class="level-btn" onclick="leiNivel(8)" title="Prosa fragmentada, inventada">🌀 Caótico</button>
+            <button class="level-btn" onclick="leiNivel(9)" title="Poesia desintegrada, impossível">👹 Absurdo</button>
+            <button class="level-btn" onclick="leiNivel(10)" title="Nível final absoluto, prova máxima">☠️ Apocalíptico</button>
           </div>
         </div>
         
         <div id="leiTexto" style="background:var(--bg);border:2px solid var(--line);border-radius:9px;padding:16px;min-height:120px;margin:16px 0;font-size:.95rem;line-height:1.8;color:var(--ink)"></div>
+        
+        <div id="leiInfoNivel" style="background:var(--blue-bg);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:12px;margin-bottom:12px;font-size:.78rem;line-height:1.6;display:none">
+          <div style="color:var(--ink2)"><strong id="leiNivelTit">Fácil</strong></div>
+          <div style="color:var(--ink3);margin-top:4px" id="leiNivelDesc"></div>
+          <div style="color:var(--ink3);margin-top:6px;font-size:.7rem">📊 Referência: <span id="leiNivelRef"></span></div>
+        </div>
         
         <button class="btn btn-main" id="leiBtn" style="width:100%;justify-content:center;padding:12px;font-size:.9rem;margin-bottom:10px" onclick="toggleLeitura()">
           <span id="leiBtnIcon">▶</span>
@@ -271,35 +282,76 @@ function speak(text,rate=0.9){
 const TEXTOS_LEITURA={
   1:{
     titulo:'Fácil - Primeiras Palavras',
-    dificuldade:'⭐ Fácil',
-    desc:'Palavras simples. Perfeito para iniciar.',
-    texto:'Gato preto. Gato bonito. O gato come. O gato dorme. O gato quer sair. A casa é grande. A casa é bonita. Eu amo meu gato.'
+    nivel:'🟢 FÁCIL',
+    dificuldade:'Palavras simples (1-2 sílabas). Frases curtas. Vocabulário do dia a dia.',
+    ref:'Crianças de 5-6 anos',
+    texto:'Gato. Cão. Rato. Casa. Pão. Água. Sol. Lua. Eu. Você. Ele. Ela. Nós. Todos. Aqui. Lá. Comer. Beber. Dormir. Correr. O gato é preto. O cão é grande. A casa é bonita. Eu amo meu gato. Você ama seu cão. Nós somos amigos.'
   },
   2:{
     titulo:'Normal - Histórias Curtas',
-    dificuldade:'⭐⭐ Normal',
-    desc:'Frases completas e história simples.',
-    texto:'João acordou cedo e foi para a escola. Ele encontrou sua amiga Maria no caminho. Juntos foram correndo para não chegar atrasados. A aula começou com matemática. O professor explicou muito bem a lição. À tarde tiveram educação física e brincaram de futebol.'
+    nivel:'🟡 NORMAL',
+    dificuldade:'Palavras médias (2-3 sílabas). Frases completas. Histórias simples.',
+    ref:'Crianças de 7-8 anos',
+    texto:'João acordou cedo na segunda-feira. Ele foi correndo para a escola. Sua amiga Maria estava esperando no caminho. Juntos correram muito rápido. A professora explicou a lição de matemática. Todos os alunos escutaram com atenção. No intervalo, brincaram de futebol no pátio. À tarde tiveram educação física. As crianças saltaram, correram e dançaram. Quando o sino tocou, todos voltaram para a sala. O dia na escola foi muito divertido e cansativo.'
   },
   3:{
     titulo:'Médio - Narrativa Estruturada',
-    dificuldade:'⭐⭐⭐ Médio',
-    desc:'Palavras com 4+ sílabas, pontuação variada.',
-    texto:'A biblioteca municipal oferecia diversos livros fascinantes para os leitores apaixonados. Entre os estantes, encontravam-se obras magnificas de autores consagrados. Os frequentadores passavam horas lendo atentamente, absorvendo conhecimento e sabedoria. Às vezes, o bibliotecário recomendava leituras extraordinárias e surpreendentes. Era um local tranquilo e aconchegante para se concentrar nas páginas interessantes.'
+    nivel:'🟠 MÉDIO',
+    dificuldade:'Palavras de 4+ sílabas. Frases complexas. Textos com introdução, desenvolvimento e conclusão.',
+    ref:'Crianças de 9-10 anos',
+    texto:'A biblioteca municipal oferecia diversos livros fascinantes para os leitores apaixonados pela literatura. Entre as estantes coloridas, encontravam-se obras magníficas de autores consagrados do Brasil e do mundo. Os frequentadores pasavam horas lendo atentamente, absorvendo conhecimento e sabedoria infinita. Às vezes, o bibliotecário recomendava leituras extraordinárias e surpreendentes. Era um local tranquilo e aconchegante para se concentrar nas páginas interessantes. A iluminação natural das janelas criava uma atmosfera perfeita. Muitos estudantes preparavam seus trabalhos e pesquisas escolares naquele ambiente inspirador. A biblioteca representava um refúgio importante na comunidade.'
   },
   4:{
     titulo:'Difícil - Texto Acadêmico',
-    dificuldade:'⭐⭐⭐⭐ Difícil',
-    desc:'Linguagem técnica, palavras raras, estrutura complexa.',
-    texto:'A aquisição fonológica em crianças demonstra desenvolvimento progressivo de componentes linguísticos. Pesquisadores contemporâneos investigam mecanismos neurológicos subjacentes ao processamento cognitivo. Observações longitudinais revelaram que a plasticidade cerebral facilita reorganização sináptica durante períodos críticos. Intervenções fonoaudiológicas precoces maximizam potencialidade neuroplástica, otimizando trajetórias desenvolimentais fonético-fonológicas.'
+    nivel:'🔴 DIFÍCIL',
+    dificuldade:'Linguagem técnica. Palavras raras. Estrutura complexa. Exige concentração máxima.',
+    ref:'Adolescentes e adultos',
+    texto:'A aquisição fonológica em crianças demonstra desenvolvimento progressivo de componentes linguísticos fundamentais. Pesquisadores contemporâneos investigam mecanismos neurológicos subjacentes ao processamento cognitivo da fala. Observações longitudinais revelaram que a plasticidade cerebral facilita reorganização sináptica durante períodos críticos do desenvolvimento. Intervenções fonoaudiológicas precoces maximizam potencialidade neuroplástica, otimizando trajetórias desenvolimentais fonético-fonológicas. A precisão articulatória e a discriminação auditiva constituem elementos essenciais para a aquisição apropriada de sistemas fonêmicos. Estratégias terapêuticas baseadas em evidências demonstram eficácia significativa na remediação de transtornos articulatórios persistentes. A implementação de programas de estimulação auditiva propicia desenvolvimento linguístico equilibrado e integral.'
   },
   5:{
     titulo:'Extremo - Desafio Total',
-    dificuldade:'⚫ Extremo',
-    desc:'Prosódia exigida, palavras raríssimas, ritmo complexo!',
-    texto:'Nas profundezas insondáveis da consciência fenomenológica, desdobra-se o transcendental emaranhado de percepções obnubiladas pela nebulosidade epistemológica. Os discípulos hermenêuticos contemplativos escrutinizam os recônditos labirintos semânticos, buscando desvendar os arcanos intrincados da linguagem. Mediante análise pormenorizada das sinuosidades prosódicas, descortinam-se os véus diáfanos que encobrem a quintessência da comunicação. Eis aí o ápice da excelência: a maestria inefável do discurso multifacetado e polifônico.'
+    nivel:'⚫ EXTREMO',
+    dificuldade:'Prosódia exigida. Palavras raríssimas. Ritmo e entonação complexos. Máximo desafio!',
+    ref:'Profissionais de linguagem e especialistas',
+    texto:'Nas profundezas insondáveis da consciência fenomenológica, desdobra-se o transcendental emaranhado de percepções obnubiladas pela nebulosidade epistemológica contemporânea. Os discípulos hermenêuticos e contemplativos escrutinizam meticulosamente os recônditos labirintos semânticos, buscando inexoravelmente desvendar os arcanos intrincados da linguagem multifacetada. Mediante análise pormenorizada das sinuosidades prosódicas e melódicas da enunciação, descortinam-se gradualmente os véus diáfanos que encobrem a quintessência inefável da comunicação humana. Eis aí o ápice supremo da excelência discursiva: a maestria incomparável do discurso polifônico, sinestésico e polissemântico que transcende os limites convencionais da pragmática linguística tradicional. A concatenação erudita de vocábulos sesquipedalianos e a tessitura ornamentada do constructo semântico revelam a magnitude grandiloqüente da expressão verbal perfeccionista.'
+  },
+  6:{
+    titulo:'Ultra - Prosa Clássica',
+    nivel:'🌪️ ULTRA',
+    dificuldade:'Prosa literária clássica. Inversões sintáticas. Palavras obsoletas. Desafio linguístico superior.',
+    ref:'Especialistas em literatura',
+    texto:'Qual não foi minha surpresa ao vislumbrar, atravessando os umbráculos da floresta intocada, uma silhueta humana que parecia flutuar como espectro etéreo pelas sombras crepusculares. Naquele instante de perplexidade indizível, compreendi que os mistérios da natureza ultrapassavam sobremaneira os limites da compreensão humana vulgar. A frondosa vegetação sussurrava segredos ancestrais que apenas os iniciados podiam decifrar. Os raios do sol pontuavam a densa arborização, criando efeitos caliédoscópicos que fascinavamMinha mente exacerbada. Aquele cenário bucólico transcendia as dimensões do meramente físico, penetrando os domínios do sobrenatural e do inefável, despertando em mim sensações de atordoamento perturbador.'
+  },
+  7:{
+    titulo:'Insano - Textos Filosóficos',
+    nivel:'💀 INSANO',
+    dificuldade:'Filosofia abstrusa. Neologismos. Estruturas sinuosas. Desafio máximo da razão.',
+    ref:'Filósofos e pesquisadores',
+    texto:'A phenomenología da existência transcendental perpassa os dedalíferos caminhos da ontologia heideggeriana, reverberando através dos estratos diafanificamente estruturados da consciência fenomênica. A epochemé cartesiana, quando interseccionada com a hermenêutica gadameriana, evocifica a pluripotencialidade interpretativa inerente à intencionalidade husserliana. Destarte, a dialética negativa adorniana, em sua insurreição contra a identidade reificante, subverte as categorias sedimentadas do pensamento logocêntrico ocidental. A substituição do ser pelo nada heideggeriano propicia a manifestação veritativa da aletheia, desvelando os ocultamentos sedimentados na infraestrutura metafísica tradicional. A protuberância do devir nietzschiano transgride os confins epistemológicos da modernidade, acarretando a perspectival destituição da verdade absoluta.'
+  },
+  8:{
+    titulo:'Caótico - Prosa Experimental',
+    nivel:'🌀 CAÓTICO',
+    dificuldade:'Prosa fragmentada. Sintaxe quebrada. Palavras inventadas. Teste último da capacidade.',
+    ref:'Críticos de vanguarda',
+    texto:'Fragmentação. Descontinuidade. A palavra transcindo seu próprio significado num vórtice de significâncias plurívocas e sentidos metamorfósicos. Transcendente-imanente. Ser-não-ser. A linguagem desfaz-se nas teias do silêncio eloquente onde ecoam-reverberamNas-os ecos de ecos daquilo que nunca foi dito. Sinestesia absoluta: o gosto das sombras, o aroma da geometria, a textura do vazio. A sintaxe sucumbe ante a magnitude da significação inexprimível. Pura potencialidade de sentido cristalizando-se em cristais de incerteza. O logos transveste-se em pathos, em ethos, em puro devir semiótico. Multiplicidade fractal onde cada palavra contém infinitudes de outras palavras. Significante-significado-referente coalescem numa singularidade semiológica irredutível.'
+  },
+  9:{
+    titulo:'Absurdo - Poesia Desintegrada',
+    nivel:'👹 ABSURDO',
+    dificuldade:'Poesia avançada. Ritmo descontínuo. Palavras raríssimas inventadas. Teste da razão.',
+    ref:'Poetas experimentais',
+    texto:'Psicossamantropofágico tesselaçãoverbigeral do intersticial vácuo donde emanam-volatilizamse as formas lívidas da metamorfose quintessencial. Zeolatricidade penumbrática das substâncias quasiontológicas reverberamglissandam pelos abismos hiperbólicos da demiúrgia lacunar. Flocosidade pneumúrgia despedaçando a arque-retinalidade dos sentidos oxygenados num borbotilho prismático de cristalografias impossíveis. Vertiginosa ascensão-queda simultânea das partículas anímicas pelo vácuo siseístico. Cacofonias sinestéticas decompondo-recompondo a matéria semântica em fractais de pura nomeação autofágica. Glossolália transcendida em prototipogênese de significados ainda-não-nascidos dançando a dança da criação previa. Tanatografia luminosa sussurrando a morte da própria linguagem.'
+  },
+  10:{
+    titulo:'Apocalíptico - Máximo Desafio',
+    nivel:'☠️ APOCALÍPTICO',
+    dificuldade:'Nível impossível. Neologismos extremos. Estrutura desestruturada. Prova final absoluta.',
+    ref:'Mestres da linguagem',
+    texto:'Synchroclasmata verti-inversivas desintegrando-congregamse nos labirintos tétanós da omnipotencialidade semântica vítreas. Quasiconsciência flogísticaquântica reverberando através dos densos espessos do interstício transcategorial primordial. Noctambulísticossilenciovórtice apodícticamente irracionalizando a geometria euclidiana das significâncias verbigéricas. Anamorfoses gnomônicas da fenômenoplegia abstracionista desmoronando-recristalizamse em arquipélagos de fractais ontológicos impossíveis. Glossogênese automecânica despedaçando-amplificando-destilando a própria essência logomórfica em seus núcleos protopsíquicos incandescentes. Autofágica demiurgiacadavérica transmutando a matéria noumenal em puros atos de criação-destruição simultânea perpetuamente instantâneos. Logos em colapso superluminar sucumbindo às pressões de sua infinita densidade significativa no buraco negro linguístico da absoluta nomeação inominável.'
   }
 };
+
 
 let leiNiv=1, leiAtiva=false, leiRec=null, leiTxt='', leiPals=0, leiSecs=0, leiTmr=null, leiTempoMax=90, leiUltimaTrans='';
 
@@ -318,6 +370,10 @@ function leiNivel(n){
   document.querySelectorAll('.level-btn').forEach((b,i)=>b.classList.toggle('on',i+1===n));
   const txto=TEXTOS_LEITURA[n];
   document.getElementById('leiTexto').textContent=txto.texto;
+  document.getElementById('leiNivelTit').textContent=txto.nivel;
+  document.getElementById('leiNivelDesc').textContent=txto.dificuldade;
+  document.getElementById('leiNivelRef').textContent=txto.ref;
+  document.getElementById('leiInfoNivel').style.display='';
   document.getElementById('leiResultado').style.display='none';
   document.getElementById('leiPalCount').textContent='0';
 }
@@ -473,75 +529,134 @@ function pararLeitura(){
     acuracia=Math.min(100,Math.round((palCount/palOriginal)*100));
   }
   
-  // Pontuação
+  // Pontuação com critérios claros
   let nota='F';
   let cor='var(--red)';
-  if(acuracia>=95&&ppm>=100)nota='S', cor='var(--green)';
-  else if(acuracia>=85&&ppm>=90)nota='A', cor='var(--green)';
-  else if(acuracia>=75&&ppm>=80)nota='B', cor='var(--blue)';
-  else if(acuracia>=60&&ppm>=60)nota='C', cor='var(--amber)';
-  else if(acuracia>=50)nota='D', cor='var(--amber)';
+  let criterio='';
   
-  // Análise detalhada
-  let analise='';
+  if(acuracia>=95&&ppm>=100){
+    nota='S'; 
+    cor='var(--green)';
+    criterio='EXCELENTE: Acurácia máxima + Velocidade ótima';
+  } else if(acuracia>=85&&ppm>=90){
+    nota='A'; 
+    cor='var(--green)';
+    criterio='MUITO BOM: Ótima acurácia e velocidade';
+  } else if(acuracia>=75&&ppm>=80){
+    nota='B'; 
+    cor='var(--blue)';
+    criterio='BOM: Acurácia boa e velocidade adequada';
+  } else if(acuracia>=60&&ppm>=60){
+    nota='C'; 
+    cor='var(--amber)';
+    criterio='SATISFATÓRIO: Acurácia e velocidade mínimas';
+  } else if(acuracia>=50){
+    nota='D'; 
+    cor='var(--amber)';
+    criterio='INSUFICIENTE: Precisa melhorar acurácia';
+  } else {
+    nota='F';
+    cor='var(--red)';
+    criterio='REPROVADO: Nenhuma palavra captada ou acurácia crítica';
+  }
+  
+  // Análise EXTREMAMENTE detalhada
+  let analise='<div style="margin-bottom:10px"><strong>📊 ANÁLISE COMPLETA:</strong></div>';
+  
   if(leiTempoMax===0){
-    analise+='<div>∞ <strong>Sem limite de tempo:</strong> Leitura livre!</div>';
+    analise+='<div>∞ <strong>Modo livre:</strong> Sem limite de tempo. Foco na qualidade da leitura.</div>';
   } else if(tempoUsado===0){
-    analise+='<div>⏱️ <strong>Nenhuma palavra detectada:</strong> Fale mais perto do microfone ou mais alto!</div>';
+    analise+='<div style="color:var(--red)">⏱️ <strong>Nenhuma palavra detectada!</strong> Verifique: 1) Microfone conectado? 2) Permissão de microfone? 3) Falando perto do microfone?</div>';
   } else {
     const tempoPct=Math.round((tempoUsado/leiTempoMax)*100);
-    if(tempoPct>=90)analise+='<div>⏰ <strong>Você usou quase todo o tempo!</strong> Próxima vez tente mais rápido.</div>';
-    else if(tempoPct>=50)analise+='<div>✅ <strong>Tempo bem utilizado:</strong> '+tempoPct+'% do tempo aproveitado.</div>';
-    else analise+='<div>⚡ <strong>Você foi rápido!</strong> Terminou com tempo de sobra.</div>';
+    if(tempoPct>=90){
+      analise+='<div>⏰ <strong>Velocidade baixa:</strong> Você usou '+tempoPct+'% do tempo. Pratique ler mais rápido, mas mantendo clareza!</div>';
+    } else if(tempoPct>=60){
+      analise+='<div>✅ <strong>Tempo adequado:</strong> Você usou '+tempoPct+'% do tempo. Ótima gestão do ritmo!</div>';
+    } else {
+      analise+='<div>⚡ <strong>Muito rápido:</strong> Você terminou com '+Math.round(100-tempoPct)+'% de tempo restante. Procure manter velocidade constante.</div>';
+    }
   }
   
   if(palCount===0){
-    analise+='<div>🔄 <strong>Nenhuma palavra foi captada:</strong> Verifique o microfone e fale mais claramente!</div>';
+    analise+='<div style="color:var(--red)">🔄 <strong>Problema de captura:</strong> Nenhuma palavra foi reconhecida. Tente de novo em um local mais silencioso.</div>';
   } else {
-    if(ppm<60)analise+='<div>🐢 <strong>Velocidade baixa:</strong> Tente ler mais rápido. Objetivo: 100+ palavras/minuto.</div>';
-    else if(ppm>120)analise+='<div>⚡ <strong>Velocidade alta:</strong> Ótimo! Mantenha a clareza.</div>';
-    else analise+='<div>✅ <strong>Velocidade ótima:</strong> Leitura fluida e natural!</div>';
+    if(ppm<60){
+      analise+='<div>🐢 <strong>Velocidade muito baixa ('+ppm+' pal/min):</strong> Objetivo mínimo é 60 pal/min. Leia com mais ritmo! ➜ Pratique texto de nível anterior</div>';
+    } else if(ppm<80){
+      analise+='<div>🚶 <strong>Velocidade baixa ('+ppm+' pal/min):</strong> Abaixo do ideal. Aumente o ritmo mantendo clareza! ➜ Repita este nível</div>';
+    } else if(ppm<100){
+      analise+='<div>📚 <strong>Velocidade normal ('+ppm+' pal/min):</strong> Aceitável. Você pode aumentar um pouco! ➜ Próximo nível recomendado</div>';
+    } else if(ppm<130){
+      analise+='<div>✅ <strong>Velocidade ótima ('+ppm+' pal/min):</strong> Excelente! Ritmo natural e fluido! ➜ Desafie-se com nível maior</div>';
+    } else {
+      analise+='<div>⚡ <strong>Velocidade muito alta ('+ppm+' pal/min):</strong> Risco de perda de clareza. Mantenha velocidade, mas pronuncie bem!</div>';
+    }
   }
   
-  if(acuracia<70)analise+='<div>🔄 <strong>Acurácia baixa:</strong> O sistema não reconheceu bem. Fale mais claro e alto!</div>';
-  else if(acuracia>=95)analise+='<div>🎯 <strong>Acurácia excelente:</strong> Dição cristalina!</div>';
-  else analise+='<div>💬 <strong>Acurácia boa:</strong> Fala clara e compreensível.</div>';
+  if(acuracia===0){
+    analise+='<div style="color:var(--red)">❌ <strong>Acurácia crítica (0%):</strong> Sistema não reconheceu palavras. Problema técnico ou microfone não funciona.</div>';
+  } else if(acuracia<50){
+    analise+='<div style="color:var(--red)">🔄 <strong>Acurácia muito baixa ('+acuracia+'%):</strong> Sistema capturou poucos palavras. Fale MAIS ALTO e MAIS CLARO! ➜ Teste microfone</div>';
+  } else if(acuracia<70){
+    analise+='<div>⚠️ <strong>Acurácia baixa ('+acuracia+'%):</strong> Melhore a dição e fale mais perto do microfone! ➜ Repita com mais clareza</div>';
+  } else if(acuracia<85){
+    analise+='<div>💬 <strong>Acurácia boa ('+acuracia+'%):</strong> Fala clara e compreensível! ➜ Pequenas melhorias levarão a excelência</div>';
+  } else if(acuracia<95){
+    analise+='<div>🎯 <strong>Acurácia muito boa ('+acuracia+'%):</strong> Dição cristalina! Pratique para atingir 95%+ ➜ Quase perfeito!</div>';
+  } else {
+    analise+='<div>🏆 <strong>Acurácia excelente ('+acuracia+'%):</strong> PERFEITO! Dição impecável! ➜ Desafie-se com nível maior</div>';
+  }
   
-  if(leiNiv===5)analise+='<div>⚫ <strong>Nível Extremo conquistado!</strong> Você domina a prosódia avançada!</div>';
-  else if(leiNiv===4)analise+='<div>🔴 <strong>Texto acadêmico lido com sucesso!</strong> Próximo: nível Extremo!</div>';
+  // Recomendações por nível
+  if(leiNiv===1){
+    if(nota==='S'||nota==='A')analise+='<div style="background:var(--green-bg);padding:8px;border-radius:6px;margin-top:10px">🚀 <strong>Parabéns!</strong> Você domina o nível Fácil. ➜ Avance para o nível Normal!</div>';
+    else if(nota==='B'||nota==='C')analise+='<div style="background:var(--blue-bg);padding:8px;border-radius:6px;margin-top:10px">📖 Bom desempenho! Pratique mais neste nível ou avance para o próximo.</div>';
+    else analise+='<div style="background:var(--red-bg);padding:8px;border-radius:6px;margin-top:10px">⚠️ Pratique mais este nível antes de avançar.</div>';
+  } else if(leiNiv===5){
+    if(nota==='S'||nota==='A')analise+='<div style="background:var(--green-bg);padding:8px;border-radius:6px;margin-top:10px">👑 <strong>MÁXIMO NÍVEL!</strong> Você é um mestre da leitura! Prosódia, velocidade e precisão impecáveis!</div>';
+    else analise+='<div style="background:var(--amber-bg);padding:8px;border-radius:6px;margin-top:10px">⚫ Nível Extremo é desafiador! Continue praticando para dominar a prosódia avançada.</div>';
+  } else {
+    if(nota==='S'||nota==='A')analise+='<div style="background:var(--green-bg);padding:8px;border-radius:6px;margin-top:10px">✅ Excelente! Próximo nível aguarda. ➜ Desafie-se!</div>';
+    else if(nota==='D'||nota==='F')analise+='<div style="background:var(--red-bg);padding:8px;border-radius:6px;margin-top:10px">⚠️ Repita este nível e melhore antes de avançar.</div>';
+  }
   
   document.getElementById('leiResultado').innerHTML=`
     <div class="panel">
-      <div class="panel-head"><span>📖</span><div>Análise de Leitura — Nível ${leiNiv}</div></div>
+      <div class="panel-head"><span>📖</span><div>Resultado Final — ${TEXTOS_LEITURA[leiNiv].nivel}</div></div>
       <div class="panel-body">
         <div style="text-align:center;margin-bottom:16px">
-          <div style="font-family:Georgia,serif;font-size:2.8rem;font-weight:900;color:${cor};line-height:1">${nota}</div>
-          <div style="font-size:.75rem;color:var(--ink3);margin-top:4px">NOTA FINAL</div>
+          <div style="font-family:Georgia,serif;font-size:3.2rem;font-weight:900;color:${cor};line-height:1">${nota}</div>
+          <div style="font-size:.7rem;color:var(--ink3);margin-top:4px">${criterio}</div>
         </div>
         
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
-          <div style="background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:12px;text-align:center">
-            <div style="font-family:Georgia,serif;font-size:1.6rem;font-weight:900;color:var(--ink)">${ppm}</div>
-            <div style="font-size:.65rem;color:var(--ink3);text-transform:uppercase">Palavras/Min</div>
+        <div style="background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:12px;margin-bottom:14px;font-size:.78rem">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+            <div style="text-align:center;background:var(--blue-bg);padding:10px;border-radius:6px">
+              <div style="font-family:Georgia,serif;font-size:1.8rem;font-weight:900;color:var(--blue)">${ppm}</div>
+              <div style="font-size:.65rem;color:var(--ink3);margin-top:3px">Palavras/Min</div>
+            </div>
+            <div style="text-align:center;background:var(--green-bg);padding:10px;border-radius:6px">
+              <div style="font-family:Georgia,serif;font-size:1.8rem;font-weight:900;color:var(--green)">${acuracia}%</div>
+              <div style="font-size:.65rem;color:var(--ink3);margin-top:3px">Acurácia</div>
+            </div>
           </div>
-          <div style="background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:12px;text-align:center">
-            <div style="font-family:Georgia,serif;font-size:1.6rem;font-weight:900;color:var(--ink)">${acuracia}%</div>
-            <div style="font-size:.65rem;color:var(--ink3);text-transform:uppercase">Acurácia</div>
-          </div>
+          
+          <div style="color:var(--ink3);margin-bottom:6px"><strong>⏱️ Tempo limite:</strong> ${leiTempoMax===0?'∞':Math.floor(leiTempoMax/60)+':'+String(leiTempoMax%60).padStart(2,'0')}</div>
+          <div style="color:var(--ink3);margin-bottom:6px"><strong>⏳ Tempo usado:</strong> ${Math.floor(tempoUsado/60)}:${String(tempoUsado%60).padStart(2,'0')}</div>
+          <div style="color:var(--ink3);margin-bottom:6px"><strong>🎙️ Palavras captadas:</strong> ${palCount}</div>
+          <div style="color:var(--ink3)"><strong>📄 Esperado no texto:</strong> ${palOriginal}</div>
         </div>
         
-        <div style="background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:12px;margin-bottom:14px;font-size:.78rem;line-height:1.6">
-          <div style="color:var(--ink3);margin-bottom:8px"><strong>Tempo limite:</strong> ${leiTempoMax===0?'∞':Math.floor(leiTempoMax/60)+':'+String(leiTempoMax%60).padStart(2,'0')}</div>
-          <div style="color:var(--ink3);margin-bottom:8px"><strong>Tempo usado:</strong> ${Math.floor(tempoUsado/60)}:${String(tempoUsado%60).padStart(2,'0')}</div>
-          <div style="color:var(--ink3);margin-bottom:8px"><strong>Palavras detectadas:</strong> ${palCount}</div>
-          <div style="color:var(--ink3);margin-bottom:8px"><strong>Esperado no texto:</strong> ${palOriginal}</div>
-        </div>
-        
-        <div style="background:var(--blue-bg);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:10px 12px;font-size:.76rem;line-height:1.6;margin-bottom:12px;color:var(--ink2)">
+        <div style="background:var(--blue-bg);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:12px;font-size:.76rem;line-height:1.7;margin-bottom:14px;color:var(--ink2)">
           ${analise}
         </div>
         
-        <button class="btn btn-main" style="width:100%;justify-content:center" onclick="leiNivel(${leiNiv})">🔄 Tentar Novamente</button>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <button class="btn btn-main" style="flex:1;min-width:120px;justify-content:center" onclick="leiNivel(${leiNiv})">🔄 Repetir Nível</button>
+          <button class="btn btn-ghost" style="flex:1;min-width:120px;justify-content:center" onclick="leiNivel(${Math.max(1,leiNiv-1)})">⬅️ Nível Anterior</button>
+          <button class="btn btn-ghost" style="flex:1;min-width:120px;justify-content:center" onclick="leiNivel(${Math.min(5,leiNiv+1)})">Próximo ➜</button>
+        </div>
       </div>
     </div>
   `;
