@@ -6,37 +6,82 @@
 <title>FonoPRO — Completo Plus</title>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#f5f2ec;--paper:#fffef9;--ink:#18120a;--ink2:#4a3f30;--ink3:#9a8870;--line:#e2d8c5;--accent:#c44a00;--accent-bg:#fff0e6;--blue:#0066bb;--blue-bg:#e8f2ff;--green:#2a7a38;--green-bg:#e8f7ea;--amber:#a05a00;--amber-bg:#fff3e0;--red:#c0392b;--red-bg:#fdecea;}
+:root{
+  --bg:#f5f2ec;--paper:#fffef9;--ink:#18120a;--ink2:#4a3f30;--ink3:#9a8870;
+  --line:#e2d8c5;--accent:#c44a00;--accent-bg:#fff0e6;
+  --blue:#0066bb;--blue-bg:#e8f2ff;
+  --green:#2a7a38;--green-bg:#e8f7ea;
+  --amber:#a05a00;--amber-bg:#fff3e0;
+  --red:#c0392b;--red-bg:#fdecea;
+  --mic:#1a7aaa;--mic-bg:#e3f3ff;
+  --kara:#6b21a8;--kara-bg:#f3e8ff;
+}
 html{font-size:16px}
 body{background:var(--bg);color:var(--ink);font-family:system-ui,'Segoe UI',sans-serif;min-height:100vh}
+
 .topbar{background:var(--paper);border-bottom:2px solid var(--ink);padding:0 18px;height:50px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.brand{font-family:Georgia,serif;font-size:1.15rem;font-weight:700;letter-spacing:-.02em}
+.brand{font-family:Georgia,serif;font-size:1.15rem;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
 .brand em{color:var(--accent);font-style:italic}
 .nav{display:flex;gap:2px;background:var(--bg);border-radius:8px;padding:3px;border:1px solid var(--line);margin-left:auto;overflow-x:auto}
 .nav-btn{padding:5px 11px;border-radius:5px;font-size:.72rem;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--ink3);white-space:nowrap;transition:all .15s}
 .nav-btn.active{background:var(--ink);color:#fff}
+
 .wrap{max-width:760px;margin:0 auto;padding:20px 16px 60px}
 .page{display:none}.page.active{display:block}
+
 .panel{background:var(--paper);border:1.5px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:14px}
 .panel-head{padding:12px 16px;background:var(--bg);border-bottom:1.5px solid var(--line);display:flex;align-items:center;gap:8px}
 .panel-icon{font-size:1.2rem}
 .panel-title{font-family:Georgia,serif;font-size:.95rem;font-weight:700;flex:1}
 .panel-body{padding:16px}
+
 .display{background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:16px;text-align:center;margin-bottom:12px}
 .big-text{font-family:Georgia,serif;font-size:1.35rem;font-weight:700;line-height:1.5;color:var(--ink)}
 .dica-box{background:var(--blue-bg);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:9px 12px;font-size:.76rem;color:var(--ink2);line-height:1.5;margin-bottom:12px}
+
 .btn{font-family:inherit;font-size:.75rem;font-weight:600;padding:7px 16px;border-radius:7px;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;min-height:44px}
 .btn-main{background:var(--ink);color:#fff}.btn-main:hover{background:var(--accent)}
 .btn-ghost{background:transparent;color:var(--ink2);border:1.5px solid var(--line)}.btn-ghost:hover{border-color:var(--ink3)}
+
 .vel-row{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap}
 .vel-btn{font-size:.67rem;padding:8px 12px;border-radius:6px;border:1.5px solid var(--line);background:transparent;cursor:pointer;transition:all .15s;font-family:inherit;font-weight:600;min-height:44px}
 .vel-btn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-.chip{background:var(--bg);border:1.5px solid var(--line);border-radius:6px;padding:6px 11px;font-family:monospace;font-size:.82rem;font-weight:600}
-#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:8px;font-size:.8rem;font-weight:600;z-index:9999;transition:transform .3s}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0}
+.chip{background:var(--bg);border:1.5px solid var(--line);border-radius:6px;padding:6px 11px;font-family:monospace;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .15s}
+.chip:hover{border-color:var(--accent);background:var(--accent-bg)}
+
+.timer-big{font-family:monospace;font-size:2.4rem;font-weight:700;text-align:center;color:var(--ink);transition:color .3s}
+.timer-bar-wrap{height:7px;background:var(--line);border-radius:4px;overflow:hidden;margin:7px 0 12px}
+.timer-bar{height:100%;background:var(--green);border-radius:4px;transition:width .5s,background .5s}
+
+.result-box{background:var(--green-bg);border:1.5px solid var(--green);border-radius:9px;padding:12px;font-size:.8rem;line-height:1.7;margin-top:10px}
+.result-box.bad{background:var(--red-bg);border-color:var(--red)}
+
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:8px;font-size:.8rem;font-weight:600;z-index:9999;transition:transform .3s;white-space:nowrap}
 #toast.show{transform:translateX(-50%) translateY(0)}
-.timer-big{font-family:monospace;font-size:2.4rem;font-weight:700;text-align:center;color:var(--ink)}
-@media(max-width:768px){html{font-size:14px}.wrap{padding:16px 12px 50px}.btn{padding:10px 14px}.vel-btn{padding:8px 10px}input{font-size:16px;padding:12px}}
-@media(max-width:480px){html{font-size:13px}.wrap{padding:12px 10px 45px}.topbar{padding:0 10px;height:46px}.btn{padding:8px 12px}.panel-body{padding:12px}input{font-size:16px;padding:11px}}
+
+.level-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:12px}
+.level-btn{padding:8px;border-radius:7px;border:1.5px solid var(--line);background:var(--paper);cursor:pointer;font-size:.8rem;font-weight:600;transition:all .15s;font-family:inherit;min-height:44px}
+.level-btn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+@media(max-width:768px){
+  html{font-size:14px}
+  .wrap{padding:16px 12px 50px}
+  .btn{padding:10px 14px}
+  .vel-btn{padding:8px 10px}
+  input{font-size:16px;padding:12px}
+}
+
+@media(max-width:480px){
+  html{font-size:13px}
+  .wrap{padding:12px 10px 45px}
+  .topbar{padding:0 10px;height:46px}
+  .nav-btn{padding:4px 8px;font-size:.65rem}
+  .btn{padding:8px 12px;font-size:.75rem}
+  .panel-body{padding:12px}
+  input{font-size:16px;padding:11px}
+}
 </style>
 </head>
 <body>
@@ -44,91 +89,105 @@ body{background:var(--bg);color:var(--ink);font-family:system-ui,'Segoe UI',sans
 <div class="topbar">
   <div class="brand">FonoPRO<em>Plus</em></div>
   <div class="nav">
-    <button class="nav-btn active" onclick="goPage('inicio')">🏠 Início</button>
-    <button class="nav-btn" onclick="goPage('fluencia')">💬 Fluência</button>
+    <button class="nav-btn active" onclick="goPage('atividades')">🎯 Atividades</button>
     <button class="nav-btn" onclick="goPage('stop')">🎲 STOP</button>
     <button class="nav-btn" onclick="goPage('karaoke')">🎤 Karaokê</button>
   </div>
 </div>
 
 <div class="wrap">
-  <!-- PÁGINA INÍCIO -->
-  <div class="page active" id="page-inicio">
+  <!-- PÁGINA ATIVIDADES -->
+  <div class="page active" id="page-atividades">
     <div class="panel">
-      <div class="panel-head"><span class="panel-icon">🗣️</span><div class="panel-title">Trava-Línguas</div></div>
+      <div class="panel-head"><span class="panel-icon">📖</span><div class="panel-title">Desafio de Leitura</div></div>
       <div class="panel-body">
-        <div class="display">
-          <div class="big-text" id="travasDisplay">O rato roeu a roupa do rei de Roma.</div>
+        <div class="dica-box">Escolha o nível e leia o texto em voz alta. Análise completa de fala!</div>
+        
+        <div id="leiNivelConfig">
+          <label style="font-size:.75rem;font-weight:700;color:var(--ink2);display:block;margin-bottom:8px">Tempo Limite:</label>
+          <div class="vel-row">
+            <button class="vel-btn" onclick="leiTempo(60)">1 min</button>
+            <button class="vel-btn on" onclick="leiTempo(90)">1:30</button>
+            <button class="vel-btn" onclick="leiTempo(120)">2 min</button>
+            <button class="vel-btn" onclick="leiTempo(180)">3 min</button>
+            <button class="vel-btn" onclick="leiTempo(0)">∞</button>
+          </div>
+          
+          <label style="font-size:.75rem;font-weight:700;color:var(--ink2);display:block;margin-bottom:8px;margin-top:12px">Nível de Dificuldade:</label>
+          <div class="level-grid">
+            <button class="level-btn on" onclick="leiNivel(1)" title="Palavras simples, frases curtas">🟢 Fácil</button>
+            <button class="level-btn" onclick="leiNivel(2)" title="Palavras médias, frases normais">🟡 Normal</button>
+            <button class="level-btn" onclick="leiNivel(3)" title="Palavras com 4+ sílabas">🟠 Médio</button>
+            <button class="level-btn" onclick="leiNivel(4)" title="Textos complexos, palavras técnicas">🔴 Difícil</button>
+            <button class="level-btn" onclick="leiNivel(5)" title="Extremamente desafiador, prosódia exigida">⚫ Extremo</button>
+            <button class="level-btn" onclick="leiNivel(6)" title="Prosa clássica, inversões sintáticas">🌪️ Ultra</button>
+            <button class="level-btn" onclick="leiNivel(7)" title="Filosofia abstrusa, neologismos">💀 Insano</button>
+            <button class="level-btn" onclick="leiNivel(8)" title="Prosa fragmentada, inventada">🌀 Caótico</button>
+            <button class="level-btn" onclick="leiNivel(9)" title="Poesia desintegrada, impossível">👹 Absurdo</button>
+            <button class="level-btn" onclick="leiNivel(10)" title="Nível final absoluto, prova máxima">☠️ Apocalíptico</button>
+          </div>
         </div>
-        <div style="display:flex;gap:7px">
-          <button class="btn btn-main" onclick="falarTrava()">🔊 Ouvir</button>
-          <button class="btn btn-ghost" onclick="proximaTrava()">→ Próximo</button>
+        
+        <div id="leiTexto" style="background:var(--bg);border:2px solid var(--line);border-radius:9px;padding:16px;min-height:120px;margin:16px 0;font-size:.95rem;line-height:1.8;color:var(--ink)"></div>
+        
+        <div id="leiInfoNivel" style="background:var(--blue-bg);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:12px;margin-bottom:12px;font-size:.78rem;line-height:1.6;display:none">
+          <div style="color:var(--ink2)"><strong id="leiNivelTit">Fácil</strong></div>
+          <div style="color:var(--ink3);margin-top:4px" id="leiNivelDesc"></div>
+          <div style="color:var(--ink3);margin-top:6px;font-size:.7rem">📊 Referência: <span id="leiNivelRef"></span></div>
         </div>
+        
+        <button class="btn btn-main" id="leiBtn" style="width:100%;justify-content:center;padding:12px;font-size:.9rem;margin-bottom:10px" onclick="toggleLeitura()">
+          <span id="leiBtnIcon">▶</span>
+          <span id="leiBtnText">COMEÇAR</span>
+        </button>
+        
+        <div id="leiStatus" style="background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:10px;font-size:.78rem;color:var(--ink2);margin-bottom:10px;display:none">
+          <div>🎙️ <span id="leiStatusTxt">Gravando...</span></div>
+          <div style="margin-top:6px">Tempo: <span id="leiTempo">0:00</span> | Palavras: <span id="leiPalCount">0</span></div>
+        </div>
+        
+        <div id="leiResultado" style="display:none"></div>
       </div>
     </div>
-  </div>
 
-  <!-- PÁGINA FLUÊNCIA -->
-  <div class="page" id="page-fluencia">
     <div class="panel">
       <div class="panel-head"><span class="panel-icon">💬</span><div class="panel-title">Fluência Verbal</div></div>
       <div class="panel-body">
-        <div class="dica-box">Fale palavras diferentes da categoria. O sistema SÓ CONTA palavras NOVAS!</div>
+        <div class="dica-box">Escolha tempo e categoria. Fale o máximo de palavras que conseguir!</div>
         
         <label style="font-size:.75rem;font-weight:700;color:var(--ink2);display:block;margin-bottom:8px">Tempo:</label>
         <div class="vel-row">
-          <button class="vel-btn on" onclick="fluSetTempo(60)">1 min</button>
-          <button class="vel-btn" onclick="fluSetTempo(90)">1:30</button>
-          <button class="vel-btn" onclick="fluSetTempo(120)">2 min</button>
+          <button class="vel-btn on" onclick="fluTempo(30)">30s</button>
+          <button class="vel-btn" onclick="fluTempo(60)">1 min</button>
+          <button class="vel-btn" onclick="fluTempo(90)">1:30</button>
         </div>
         
         <label style="font-size:.75rem;font-weight:700;color:var(--ink2);display:block;margin-bottom:8px;margin-top:12px">Categoria:</label>
         <div class="vel-row">
-          <button class="vel-btn on" onclick="fluSetCat(0)">Animais</button>
-          <button class="vel-btn" onclick="fluSetCat(1)">Frutas</button>
-          <button class="vel-btn" onclick="fluSetCat(2)">Cores</button>
-          <button class="vel-btn" onclick="fluSetCat(3)">Países</button>
+          <button class="vel-btn on" id="fluCat0" onclick="fluCat(0)">Animais</button>
+          <button class="vel-btn" id="fluCat1" onclick="fluCat(1)">Frutas</button>
+          <button class="vel-btn" id="fluCat2" onclick="fluCat(2)">Cores</button>
+          <button class="vel-btn" id="fluCat3" onclick="fluCat(3)">Países</button>
         </div>
         
-        <button class="btn btn-main" style="width:100%;justify-content:center;padding:12px;margin:14px 0" id="fluBtnStart" onclick="fluStart()">▶ COMEÇAR</button>
+        <button class="btn btn-main" id="fluBtn" style="width:100%;justify-content:center;padding:12px;margin:14px 0" onclick="fluStart()">▶ COMEÇAR</button>
         
-        <div id="fluTimer" style="display:none;font-family:monospace;font-size:2rem;font-weight:900;text-align:center;margin:12px 0">1:00</div>
+        <div id="fluTimer" style="display:none;font-family:monospace;font-size:2.2rem;font-weight:900;text-align:center;color:var(--ink);margin:12px 0">1:00</div>
         
-        <div id="fluChips" style="background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:12px;min-height:80px;display:flex;flex-wrap:wrap;gap:6px"></div>
+        <div id="fluWords" style="background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:12px;min-height:80px;display:flex;flex-wrap:wrap;gap:6px"></div>
         
-        <div id="fluResult" style="display:none;margin-top:16px"></div>
+        <div id="fluRes" style="display:none;margin-top:14px"></div>
       </div>
     </div>
-  </div>
 
-  <!-- PÁGINA STOP -->
-  <div class="page" id="page-stop">
-    <div class="panel">
-      <div class="panel-head"><span class="panel-icon">🎲</span><div class="panel-title">STOP</div></div>
       <div class="panel-body">
-        <div class="dica-box">Preencha as categorias com palavras começando com a letra sorteada!</div>
-        
-        <div id="stopConfig">
-          <label style="font-size:.75rem;font-weight:700;color:var(--ink2);display:block;margin-bottom:8px">Tempo:</label>
-          <div class="vel-row">
-            <button class="vel-btn on" onclick="stopSetTempo(60)">1 min</button>
-            <button class="vel-btn" onclick="stopSetTempo(90)">1:30</button>
-            <button class="vel-btn" onclick="stopSetTempo(120)">2 min</button>
-          </div>
-          <button class="btn btn-main" style="width:100%;justify-content:center;padding:12px;margin-top:14px" onclick="stopStart()">🎲 COMEÇAR</button>
+        <div class="display">
+          <div class="big-text" id="travasDisplay">O rato roeu a roupa do rei de Roma.</div>
         </div>
-        
-        <div id="stopGame" style="display:none">
-          <div class="display">
-            <div style="font-size:.8rem;color:var(--ink3)">LETRA SORTEADA</div>
-            <div style="font-family:Georgia,serif;font-size:3rem;font-weight:900;color:var(--accent);margin:10px 0" id="stopLetra">A</div>
-            <div class="timer-big" id="stopTimer">1:00</div>
-          </div>
-          <form id="stopForm"></form>
-          <button class="btn btn-main" style="background:var(--red);width:100%;justify-content:center;padding:12px" onclick="stopEnd()">🛑 PARAR!</button>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <button class="btn btn-main" onclick="falarTrava()">🔊 Ouvir</button>
+          <button class="btn btn-ghost" onclick="proximaTrava()">→ Próximo</button>
         </div>
-        
-        <div id="stopResult" style="display:none"></div>
       </div>
     </div>
   </div>
@@ -138,8 +197,11 @@ body{background:var(--bg);color:var(--ink);font-family:system-ui,'Segoe UI',sans
     <div class="panel">
       <div class="panel-head"><span class="panel-icon">🎤</span><div class="panel-title">Karaokê</div></div>
       <div class="panel-body">
-        <div class="dica-box">Clique em uma música para ver a letra e ouvi-la!</div>
-        <div id="karaGrade" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:12px"></div>
+        <div class="dica-box">Selecione uma música e cante junto!</div>
+        
+        <div class="chips" id="karaGeneros"></div>
+        
+        <div id="karaGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:12px"></div>
       </div>
     </div>
   </div>
@@ -148,7 +210,117 @@ body{background:var(--bg);color:var(--ink);font-family:system-ui,'Segoe UI',sans
 <div id="toast"></div>
 
 <script>
-// UTILS
+// ════════════════════════════════════════════════
+// FLUÊNCIA VERBAL - SIMPLES E FUNCIONAL
+// ════════════════════════════════════════════════
+const FLUCAT=['Animais','Frutas','Cores','Países'];
+let fluTempoMax=60, fluCatIdx=0, fluAtivo=false, fluRec=null, fluList=[], fluSecs=60, fluTimer=null;
+
+function fluTempo(t){
+  fluTempoMax=t;
+  document.querySelectorAll('.vel-row button').forEach((b,i)=>{
+    if(i<3)b.classList.toggle('on',b.textContent.includes(t===30?'30':t===60?'1 min':'1:30'));
+  });
+}
+
+function fluCat(i){
+  fluCatIdx=i;
+  document.querySelectorAll('[id^="fluCat"]').forEach((b,idx)=>b.classList.toggle('on',idx===i));
+}
+
+function fluStart(){
+  try{
+    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR)throw new Error('Navegador incompatível');
+    
+    fluAtivo=true;
+    fluList=[];
+    fluSecs=fluTempoMax;
+    
+    document.getElementById('fluBtn').innerHTML='⏹ PARAR';
+    document.getElementById('fluTimer').style.display='';
+    document.getElementById('fluWords').innerHTML='';
+    document.getElementById('fluRes').style.display='none';
+    
+    fluTimer=setInterval(()=>{
+      fluSecs--;
+      const m=Math.floor(fluSecs/60);
+      const s=fluSecs%60;
+      document.getElementById('fluTimer').textContent=m+':'+(s<10?'0':'')+s;
+      if(fluSecs<=0){
+        clearInterval(fluTimer);
+        fluEnd();
+      }
+    },1000);
+    
+    fluRec=new SR();
+    fluRec.lang='pt-BR';
+    fluRec.continuous=true;
+    
+    fluRec.onresult=(e)=>{
+      for(let i=e.resultIndex;i<e.results.length;i++){
+        if(e.results[i].isFinal){
+          const words=e.results[i][0].transcript.toLowerCase().split(/\s+/).filter(p=>p.length>2);
+          words.forEach(w=>{
+            if(!fluList.includes(w)){
+              fluList.push(w);
+              const chip=document.createElement('div');
+              chip.style.cssText='background:var(--green-bg);border:2px solid var(--green);color:var(--green);border-radius:6px;padding:6px 10px;font-size:.75rem;font-weight:600';
+              chip.textContent='✓ '+w;
+              document.getElementById('fluWords').appendChild(chip);
+            }
+          });
+        }
+      }
+    };
+    
+    fluRec.onend=()=>{
+      if(fluAtivo)setTimeout(()=>fluRec.start(),300);
+    };
+    
+    toast('🎤 Fale: '+FLUCAT[fluCatIdx]);
+    fluRec.start();
+  }catch(e){
+    toast('❌ '+e.message);
+  }
+}
+
+function fluEnd(){
+  fluAtivo=false;
+  if(fluRec)fluRec.stop();
+  
+  document.getElementById('fluBtn').innerHTML='▶ COMEÇAR';
+  document.getElementById('fluTimer').style.display='none';
+  
+  const total=fluList.length;
+  const tempo=fluTempoMax-fluSecs;
+  const ppm=tempo>0?Math.round((total/tempo)*60):0;
+  
+  let html='<div class="panel"><div class="panel-head"><span>💬</span><div>Resultado</div></div><div class="panel-body">';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">';
+  html+='<div style="background:var(--blue-bg);border:1.5px solid var(--blue);border-radius:8px;padding:12px;text-align:center"><div style="font-family:Georgia,serif;font-size:1.6rem;font-weight:900;color:var(--blue)">'+total+'</div><div style="font-size:.65rem;color:var(--ink3)">Palavras</div></div>';
+  html+='<div style="background:var(--green-bg);border:1.5px solid var(--green);border-radius:8px;padding:12px;text-align:center"><div style="font-family:Georgia,serif;font-size:1.6rem;font-weight:900;color:var(--green)">'+ppm+'</div><div style="font-size:.65rem;color:var(--ink3)">Palavras/Min</div></div>';
+  html+='</div>';
+  
+  if(total===0){
+    html+='<div style="background:var(--red-bg);border:1.5px solid var(--red);border-radius:8px;padding:10px;font-size:.8rem;color:var(--red)">⚠️ Nenhuma palavra!</div>';
+  } else if(ppm<30){
+    html+='<div style="background:var(--amber-bg);border:1.5px solid var(--amber);border-radius:8px;padding:10px;font-size:.8rem;color:var(--ink2)">📊 '+total+' palavras!</div>';
+  } else {
+    html+='<div style="background:var(--green-bg);border:1.5px solid var(--green);border-radius:8px;padding:10px;font-size:.8rem;color:var(--green)">🎉 '+total+' palavras!</div>';
+  }
+  
+  html+='<button class="btn btn-main" style="width:100%;justify-content:center;margin-top:12px" onclick="fluStart()">🔄 Repetir</button></div></div>';
+  document.getElementById('fluRes').innerHTML=html;
+  document.getElementById('fluRes').style.display='';
+  toast('✅ '+total+' palavras!');
+}
+
+// ════════════════════════════════════════════════
+// STATE & UTILS
+// ════════════════════════════════════════════════
+let estadoAtual={};
+
 function goPage(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   document.getElementById('page-'+p).classList.add('active');
@@ -170,86 +342,41 @@ function speak(text,rate=0.9){
     u.lang='pt-BR';
     u.rate=rate;
     window.speechSynthesis.speak(u);
-  }catch(e){}
+  }catch(e){
+    console.error('Erro ao falar:',e);
+  }
 }
 
-// TRAVAS
-const TRAVAS=['O rato roeu a roupa do rei de Roma.','Três pratos de trigo para três tigres tristes.','Que querem que faça com as quatro queimações?','Sou seu seguro de segurança, señor sensato.'];
-let travasIdx=0;
-function falarTrava(){speak(TRAVAS[travasIdx]);}
-function proximaTrava(){travasIdx=(travasIdx+1)%TRAVAS.length;document.getElementById('travasDisplay').textContent=TRAVAS[travasIdx];}
+// ════════════════════════════════════════════════
+// FLUÊNCIA VERBAL CORRIGIDA
+// ════════════════════════════════════════════════
+const FLU_CATEGORIAS=['Animais','Frutas','Cores','Países','Cidades'];
+let fluTempoMax=60, fluCategoria=0, fluAtivo=false, fluRec=null, fluPalavras=new Set(), fluTimer=null, fluSecsLeft=60;
 
-// FLUÊNCIA
-const FLU_CATS=['Animais','Frutas','Cores','Países'];
-let fluTempo=60,fluCat=0,fluAtivo=false,fluRec=null,fluPals=new Set(),fluTmr=null,fluSecs=60;
-function fluSetTempo(t){fluTempo=t;document.querySelectorAll('[onclick*="fluSetTempo"]').forEach(b=>b.classList.remove('on'));event.target.classList.add('on');}
-function fluSetCat(i){fluCat=i;document.querySelectorAll('[onclick*="fluSetCat"]').forEach(b=>b.classList.remove('on'));event.target.classList.add('on');}
-function fluStart(){
+  
+  modal.appendChild(conteudo);
+  modal.onclick=(e)=>{
+    if(e.target===modal)modal.remove();
+  };
+  document.body.appendChild(modal);
+}
+
+function karaFalar(titulo){
+  const musica=MUSICAS.find(m=>m.titulo===titulo);
+  if(!musica)return;
+  
   try{
-    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-    if(!SR)throw new Error('Navegador incompatível');
-    fluAtivo=true;fluPals.clear();fluSecs=fluTempo;
-    document.getElementById('fluBtnStart').innerHTML='⏹ PARAR';
-    document.getElementById('fluTimer').style.display='';
-    document.getElementById('fluChips').innerHTML='';
-    document.getElementById('fluResult').style.display='none';
-    fluTmr=setInterval(()=>{fluSecs--;document.getElementById('fluTimer').textContent=Math.floor(fluSecs/60)+':'+(fluSecs%60<10?'0':'')+(fluSecs%60);if(fluSecs<=0){clearInterval(fluTmr);fluEnd();}},1000);
-    fluRec=new SR();fluRec.lang='pt-BR';fluRec.continuous=true;
-    fluRec.onresult=(e)=>{for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal){const txt=e.results[i][0].transcript.toLowerCase().split(/\s+/);txt.forEach(p=>{const norm=p.replace(/[^a-z]/g,'');if(norm.length>2&&!fluPals.has(norm)){fluPals.add(norm);const c=document.createElement('div');c.style.cssText='background:var(--green-bg);border:2px solid var(--green);color:var(--green);border-radius:6px;padding:6px 10px;font-size:.75rem;font-weight:600';c.textContent='✓ '+p;document.getElementById('fluChips').appendChild(c);}});}}};
-    fluRec.start();toast('🎤 Fale: '+FLU_CATS[fluCat]);
-  }catch(e){toast('❌ '+e.message);}
-}
-function fluEnd(){
-  fluAtivo=false;if(fluRec)fluRec.stop();if(fluTmr)clearInterval(fluTmr);
-  document.getElementById('fluBtnStart').innerHTML='▶ COMEÇAR';
-  document.getElementById('fluTimer').style.display='none';
-  const total=fluPals.size;const tempo=fluTempo-fluSecs;const ppm=tempo>0?Math.round((total/tempo)*60):0;
-  let h='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px"><div style="background:var(--blue-bg);border:1.5px solid var(--blue);border-radius:8px;padding:12px;text-align:center"><div style="font-family:Georgia,serif;font-size:1.6rem;font-weight:900;color:var(--blue)">'+total+'</div><div style="font-size:.65rem;color:var(--ink3)">Palavras Únicas</div></div><div style="background:var(--green-bg);border:1.5px solid var(--green);border-radius:8px;padding:12px;text-align:center"><div style="font-family:Georgia,serif;font-size:1.6rem;font-weight:900;color:var(--green)">'+ppm+'</div><div style="font-size:.65rem;color:var(--ink3)">Palavras/Min</div></div></div>';
-  if(total>0)h+='<div style="background:var(--green-bg);border:1.5px solid var(--green);border-radius:8px;padding:10px;font-size:.8rem;color:var(--green)">🎉 '+total+' palavras diferentes!</div>';
-  document.getElementById('fluResult').innerHTML=h;document.getElementById('fluResult').style.display='';toast('✅ '+total+' palavras!');
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(musica.titulo+'. '+musica.letra);
+    u.lang='pt-BR';
+    u.rate=0.9;
+    window.speechSynthesis.speak(u);
+    toast('🎵 Tocando: '+titulo);
+  }catch(e){
+    toast('❌ Erro ao reproduzir');
+  }
 }
 
-// STOP
-const STOP_CATS=['Nome','Animal','Cor','Fruta'];
-let stopTempo=60,stopScs=60,stopLtr='A',stopTmr=null;
-function stopSetTempo(t){stopTempo=t;document.querySelectorAll('[onclick*="stopSetTempo"]').forEach(b=>b.classList.remove('on'));event.target.classList.add('on');}
-function stopStart(){
-  const ltrs='ABCDEFGIJLMNOPQRSTUVXZ';stopLtr=ltrs[Math.floor(Math.random()*ltrs.length)];stopScs=stopTempo;
-  document.getElementById('stopConfig').style.display='none';document.getElementById('stopGame').style.display='';document.getElementById('stopResult').style.display='none';
-  document.getElementById('stopLetra').textContent=stopLtr;document.getElementById('stopTimer').textContent=Math.floor(stopScs/60)+':'+String(stopScs%60).padStart(2,'0');
-  stopTmr=setInterval(()=>{stopScs--;document.getElementById('stopTimer').textContent=Math.floor(stopScs/60)+':'+String(stopScs%60).padStart(2,'0');if(stopScs<=0){clearInterval(stopTmr);stopEnd();}},1000);
-  const form=document.getElementById('stopForm');form.innerHTML=STOP_CATS.map((c,i)=>`<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><label style="font-size:.75rem;font-weight:700;min-width:80px;text-align:right;color:var(--ink2)">${c}:</label><input type="text" placeholder="Com ${stopLtr}..." style="flex:1;border:2px solid var(--line);border-radius:7px;padding:10px 12px;font-size:16px;outline:none;background:var(--paper)" id="stop-${i}"></div>`).join('');
-  setTimeout(()=>document.getElementById('stop-0').focus(),100);
-}
-function stopEnd(){
-  clearInterval(stopTmr);document.getElementById('stopGame').style.display='none';document.getElementById('stopResult').style.display='';
-  let pts=0,html='';
-  STOP_CATS.forEach((c,i)=>{
-    const inp=document.getElementById('stop-'+i);const val=inp.value.toLowerCase().trim();
-    const ok=val.startsWith(stopLtr.toLowerCase())&&val.length>1;pts+=ok?10:0;
-    html+='<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;background:'+(ok?'var(--green-bg)':'var(--red-bg)')+';margin-bottom:5px"><span>'+(ok?'✅':'❌')+'</span><div style="flex:1"><span style="font-size:.73rem;color:var(--ink3)">${c}</span><span style="font-size:.8rem;font-weight:700;margin-left:6px">${val||'(vazio)'}</span></div></div>';
-  });
-  const max=STOP_CATS.length*10;
-  document.getElementById('stopResult').innerHTML='<div class="panel"><div class="panel-head"><span>🎲</span><div>Resultado</div></div><div class="panel-body"><div style="text-align:center;margin-bottom:16px"><div style="font-family:Georgia,serif;font-size:2.4rem;font-weight:900;color:'+(pts>=max*0.7?'var(--green)':'var(--red)')+'">'+(pts>=max*0.9?'S':pts>=max*0.8?'A':pts>=max*0.7?'B':'C')+'</div><div style="font-size:.75rem;color:var(--ink3)">'+pts+'/'+max+' pontos</div></div><div>'+html+'</div><button class="btn btn-main" style="width:100%;justify-content:center;margin-top:12px" onclick="stopStart()">🎲 Nova</button></div></div>';
-}
-
-// KARAOKÊ
-const MUSICAS=[
-  {titulo:'Garota de Ipanema',artista:'Tom Jobim',letra:'Olha que coisa mais linda,\nMais cheia de graça...\nÉ ela, menina,\nQue vem e que passa...'},
-  {titulo:'Aquarela',artista:'Toquinho',letra:'Numa folha qualquer\nEu desenho um sol amarelo\nE com cinco ou seis riscas simples\nFaço uma casa...'},
-  {titulo:'Imagine',artista:'John Lennon',letra:'Imagine all the people\nLiving life in peace\nYou, you may say I\'m a dreamer\nBut I\'m not the only one...'},
-  {titulo:'Parabéns',artista:'Diversos',letra:'Parabéns pra você,\nNesta data querida\nMuita felicidade,\nMuito sucesso na vida...'},
-];
-function initKara(){
-  document.getElementById('karaGrade').innerHTML=MUSICAS.map(m=>`<div style="border:2px solid var(--blue);border-radius:9px;padding:12px;cursor:pointer;background:var(--blue-bg);transition:all .2s" onclick="karaAbrir('${m.titulo}')" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,102,187,.2)'" onmouseout="this.style.boxShadow='none'"><div style="font-size:.65rem;color:var(--blue);font-weight:700">🎵 Música</div><div style="font-weight:700;font-size:.85rem;margin-top:4px">${m.titulo}</div><div style="font-size:.7rem;color:var(--ink3);margin-top:2px">${m.artista}</div></div>`).join('');
-}
-function karaAbrir(titulo){
-  const m=MUSICAS.find(x=>x.titulo===titulo);if(!m)return;
-  const modal=document.createElement('div');modal.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:9999';
-  const cont=document.createElement('div');cont.style.cssText='background:var(--paper);border-radius:12px;padding:24px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto';
-  cont.innerHTML=`<div style="text-align:center;margin-bottom:20px"><div style="font-size:2rem;margin-bottom:10px">🎤</div><h2 style="margin:0;font-family:Georgia,serif;font-size:1.2rem">${m.titulo}</h2><div style="color:var(--ink3);font-size:.9rem">${m.artista}</div></div><div style="background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:16px;margin-bottom:16px;font-size:.95rem;line-height:1.8;white-space:pre-wrap;color:var(--ink)">${m.letra}</div><div style="display:flex;gap:8px;justify-content:center"><button class="btn btn-main" onclick="speak('${m.titulo}. '+\`${m.letra}\`);toast('🎵 Tocando')">🔊 Ouvir</button><button class="btn btn-ghost" onclick="this.closest('div').parentElement.remove()">Fechar</button></div>`;
-  modal.appendChild(cont);modal.onclick=(e)=>{if(e.target===modal)modal.remove();};document.body.appendChild(modal);
-}
 initKara();
 </script>
 </body>
