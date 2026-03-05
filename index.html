@@ -762,7 +762,7 @@ select:focus, input[type="text"]:focus {
       <div class="field-label">Tempo restante</div>
       <div class="timer-display" id="fluTimer">1:00</div>
       <div class="progress-bar-wrap"><div class="progress-bar-fill" id="fluProg" style="width:100%;background:linear-gradient(90deg,#0891b2,#06b6d4)"></div></div>
-      <div style="margin-top:10px;color:var(--muted);font-size:.85rem">🎤 Microfone ativo — fale agora!</div>
+      <div style="margin-top:10px;font-size:.85rem" id="fluStatus">🎤 Microfone ativo — fale agora!</div>
     </div>
 
     <div class="card">
@@ -1141,70 +1141,81 @@ function toggleFlu() {
   iniciarFlu();
 }
 
+function setFluStatus(msg, cor) {
+  const el = document.getElementById('fluStatus');
+  if (el) { el.textContent = msg; el.style.color = cor||'var(--muted)'; }
+}
+
 function iniciarFlu() {
-  try {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { toast('Microfone não suportado'); return; }
-    fluPlaying = true;
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { toast('❌ Use Chrome — Firefox não suporta microfone'); return; }
 
-    fluSecsTotal = parseInt(document.getElementById('fluTempo').value);
-    fluSecsLeft = fluSecsTotal;
+  fluPlaying = true;
+  fluSecsTotal = parseInt(document.getElementById('fluTempo').value);
+  fluSecsLeft = fluSecsTotal;
 
-    document.getElementById('fluBtn').textContent = '🛑 Parar';
-    document.getElementById('fluConfig').style.display = 'none';
-    document.getElementById('fluAtivo').style.display = '';
-    document.getElementById('fluChips').innerHTML = '';
-    document.getElementById('fluCount').textContent = '0';
-    document.getElementById('fluResultado').style.display = 'none';
+  document.getElementById('fluBtn').textContent = '🛑 Parar';
+  document.getElementById('fluConfig').style.display = 'none';
+  document.getElementById('fluAtivo').style.display = '';
+  document.getElementById('fluChips').innerHTML = '';
+  document.getElementById('fluCount').textContent = '0';
+  document.getElementById('fluResultado').style.display = 'none';
 
-    const pals = new Set();
+  const pals = new Set();
 
-    clearInterval(fluTimerInt);
-    fluTimerInt = setInterval(() => {
-      fluSecsLeft--;
-      const m = Math.floor(fluSecsLeft/60);
-      const s = fluSecsLeft%60;
-      document.getElementById('fluTimer').textContent = m+':'+(s<10?'0':'')+s;
-      document.getElementById('fluProg').style.width = (fluSecsLeft/fluSecsTotal*100)+'%';
-      if (fluSecsLeft<=10) document.getElementById('fluTimer').classList.add('urgent');
-      if (fluSecsLeft<=0) { clearInterval(fluTimerInt); finalizarFlu(); }
-    }, 1000);
+  clearInterval(fluTimerInt);
+  fluTimerInt = setInterval(() => {
+    fluSecsLeft--;
+    const m = Math.floor(fluSecsLeft/60), s = fluSecsLeft%60;
+    document.getElementById('fluTimer').textContent = m+':'+(s<10?'0':'')+s;
+    document.getElementById('fluProg').style.width = (fluSecsLeft/fluSecsTotal*100)+'%';
+    if (fluSecsLeft<=10) document.getElementById('fluTimer').classList.add('urgent');
+    if (fluSecsLeft<=0) { clearInterval(fluTimerInt); finalizarFlu(); }
+  }, 1000);
 
+  function criarRec() {
+    if (!fluPlaying) return;
     const rec = new SR();
     rec.lang = 'pt-BR';
     rec.continuous = true;
-    rec.interimResults = true;
+    rec.interimResults = false;
+    rec.maxAlternatives = 1;
+
+    rec.onstart = () => setFluStatus('🔴 Ouvindo... fale!', 'var(--green)');
 
     rec.onresult = e => {
       for (let i = e.resultIndex; i < e.results.length; i++) {
-        if (e.results[i].isFinal) {
-          const words = e.results[i][0].transcript
-            .toLowerCase()
-            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-            .replace(/[^a-z\s]/g, '')
-            .split(/\s+/)
-            .filter(w => w.length >= 2);
-
-          words.forEach(w => {
-            if (!pals.has(w)) {
-              pals.add(w);
-              const chip = document.createElement('span');
-              chip.className = 'chip';
-              chip.textContent = e.results[i][0].transcript.toLowerCase().split(/\s+/).find(orig =>
-                orig.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,'') === w
-              ) || w;
-              document.getElementById('fluChips').appendChild(chip);
-              document.getElementById('fluCount').textContent = pals.size;
-            }
-          });
-        }
+        const transcript = e.results[i][0].transcript.trim().toLowerCase();
+        transcript.split(/\s+/).forEach(w => {
+          const limpa = w.replace(/[^\wÀ-ÿ]/gi, '');
+          const chave = limpa.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+          if (limpa.length >= 2 && !pals.has(chave)) {
+            pals.add(chave);
+            const chip = document.createElement('span');
+            chip.className = 'chip';
+            chip.textContent = limpa;
+            document.getElementById('fluChips').appendChild(chip);
+            document.getElementById('fluCount').textContent = pals.size;
+          }
+        });
       }
     };
-    rec.onend = () => { if (fluPlaying) rec.start(); };
-    window.fluRec = rec;
-    rec.start();
-    toast('🎤 Fale agora!');
-  } catch(e) { toast('Erro: '+e.message); }
+
+    rec.onerror = ev => {
+      if (ev.error==='not-allowed') { setFluStatus('🚫 Microfone bloqueado!','var(--red)'); fluPlaying=false; clearInterval(fluTimerInt); return; }
+      if (ev.error==='no-speech') setFluStatus('🎤 Não ouvi nada — fale mais perto','var(--accent3)');
+      else if (ev.error==='network') setFluStatus('⚠️ Erro de rede — reconectando...','var(--red)');
+      else setFluStatus('⚠️ '+ev.error+' — reconectando...','var(--accent3)');
+    };
+
+    rec.onend = () => { if (fluPlaying) setTimeout(criarRec, 150); else setFluStatus('',''); };
+
+    try { rec.start(); window.fluRec = rec; }
+    catch(e) { setTimeout(criarRec, 300); }
+  }
+
+  criarRec();
+  toast('🎤 Microfone ativo — fale!');
 }
 
 function finalizarFlu() {
