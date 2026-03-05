@@ -133,1226 +133,583 @@ body{background:var(--bg);color:var(--ink);font-family:system-ui,'Segoe UI',sans
 .transcript-box{background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:12px;min-height:70px;font-size:.88rem;line-height:1.7;color:var(--ink2);margin-bottom:12px;position:relative}
 .transcript-placeholder{color:var(--ink3);font-style:italic;font-size:.82rem}
 .w-hesit{background:#e8f0fe;color:#1a73e8;border-radius:3px;padding:0 2px}
-.w-filler{background:#ffeaea;color:var(--red);border-radius:3px;padding:0 2px;border-bottom:2px solid var(--red)}
-.w-rep{background:#fff3cd;color:#856404;border-radius:3px;padding:0 2px}
+.w-filler{background:#ffe0e0;color:#c92a2a;border-radius:3px;padding:0 2px}
 
-.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
-.metric{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;text-align:center}
-.metric-val{font-family:Georgia,serif;font-size:1.3rem;font-weight:700;display:block;margin-bottom:2px}
-.metric-label{font-size:.6rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em}
+/* ═══════════════ KARA CARDS ═══════════════ */
+.kara-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.kara-card{background:var(--kara-bg);border:2px solid var(--kara);border-radius:9px;padding:10px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
+.kara-card:hover{transform:translateY(-3px);box-shadow:0 6px 12px rgba(107,33,168,.15)}
+.kara-card.play{background:var(--kara);color:#fff;border-color:var(--kara)}
+.kara-card.play .kara-title{color:#fff}
+.kara-card.play .kara-artist{color:rgba(255,255,255,.8)}
+.kara-play-btn{position:absolute;top:0;right:0;font-size:1.2rem;background:var(--kara);color:#fff;width:32px;height:32px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;border-radius:0 9px 0 9px}
+.kara-card:hover .kara-play-btn{opacity:1}
+.kara-title{font-weight:700;font-size:.82rem;margin-bottom:3px}
+.kara-artist{font-size:.68rem;color:var(--ink3)}
+.kara-genre{position:absolute;top:6px;left:6px;font-size:.48rem;font-weight:700;padding:1px 4px;background:rgba(107,33,168,.3);color:var(--kara);border-radius:3px;text-transform:capitalize}
 
-.prob-list{display:flex;flex-direction:column;gap:7px}
-.prob-item{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-radius:8px;font-size:.82rem;line-height:1.55}
-.prob-item.success{background:var(--green-bg);border-left:3px solid var(--green)}
-.prob-item.info{background:var(--blue-bg);border-left:3px solid var(--blue)}
-.prob-item.warning{background:var(--amber-bg);border-left:3px solid var(--amber)}
-.prob-item.error{background:var(--red-bg);border-left:3px solid var(--red)}
+/* ═══════════════ KARA PLAYER ═══════════════ */
+.kara-player{background:var(--paper);border:1.5px solid var(--line);border-radius:9px;padding:14px;margin-bottom:12px;position:relative;z-index:50}
+.kara-now{font-family:Georgia,serif;font-size:.9rem;font-weight:700;color:var(--ink2);margin-bottom:8px;text-align:center}
+.kara-lyrics{background:var(--bg);border:1.5px solid var(--line);border-radius:7px;padding:12px;min-height:80px;max-height:160px;overflow-y:auto;margin-bottom:12px;font-size:.88rem;line-height:1.8;color:var(--ink2)}
+.kara-lyric-line{display:flex;align-items:center;justify-content:space-between;padding:4px;border-radius:4px;transition:background .3s}
+.kara-lyric-line.active{background:var(--accent-bg);color:var(--accent);font-weight:700}
+.kara-time{font-size:.72rem;color:var(--ink3);margin-left:8px}
+.kara-controls{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap}
+.kara-control-btn{font-size:.7rem;padding:6px 11px;border-radius:6px;border:1.5px solid var(--line);background:var(--paper);cursor:pointer;transition:all .15s;font-family:inherit;font-weight:600}
+.kara-control-btn:hover{border-color:var(--accent);background:var(--accent-bg)}
+.kara-control-btn.active{background:var(--kara);color:#fff;border-color:var(--kara)}
 
-/* BIG REC BUTTON */
-.rec-btn-wrap{text-align:center;margin-bottom:14px}
-.rec-btn{background:var(--mic);color:#fff;border:none;border-radius:12px;padding:14px 32px;font-size:1rem;font-weight:700;cursor:pointer;width:100%;font-family:inherit;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:10px}
-.rec-btn:hover{background:#1060a0}
-.rec-btn.recording{background:var(--red);animation:pulse .8s ease-in-out infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,.4)}50%{box-shadow:0 0 0 10px rgba(192,57,43,0)}}
+/* ═══════════════ SCROLL ═══════════════ */
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:var(--bg);border-radius:4px}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--ink3)}
 
-/* MODES */
-.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
-.mode-card{background:var(--paper);border:2px solid var(--line);border-radius:10px;padding:14px;cursor:pointer;transition:all .18s;text-align:center}
-.mode-card:hover{border-color:#aac8e8}
-.mode-card.on{border-color:var(--blue);background:var(--blue-bg)}
-.mode-card-icon{font-size:1.6rem;display:block;margin-bottom:5px}
-.mode-card-title{font-weight:700;font-size:.82rem;margin-bottom:3px}
-.mode-card-desc{font-size:.68rem;color:var(--ink3);line-height:1.35}
-
-/* BROWSER WARNING */
-.warn-bar{background:var(--amber-bg);border:1.5px solid var(--amber);border-radius:8px;padding:10px 14px;font-size:.76rem;color:var(--ink2);margin-bottom:12px;display:none}
-
-/* TOAST */
-.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(70px);background:var(--ink);color:#fff;padding:9px 18px;border-radius:9px;font-size:.75rem;font-weight:600;z-index:999;opacity:0;transition:all .28s;pointer-events:none;white-space:nowrap}
-.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-
-/* ═══════════════ STOP ESCRITO ═══════════════ */
-.stop-escrito-input{width:100%;border:2px solid var(--line);border-radius:9px;padding:12px;font-size:1rem;font-family:Georgia,serif;line-height:1.8;min-height:120px;resize:vertical;background:var(--paper);color:var(--ink);outline:none;transition:border-color .2s}
-.stop-escrito-input:focus{border-color:var(--blue)}
-.stop-escrito-ref{background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:12px;font-size:.9rem;line-height:1.9;color:var(--ink2);margin-bottom:12px}
-.se-word{cursor:default;border-radius:3px;padding:0 2px;transition:background .2s}
-.se-correct{background:rgba(42,122,56,.18);color:var(--green)}
-.se-wrong{background:rgba(192,57,43,.15);color:var(--red);text-decoration:line-through}
-.se-missing{background:var(--amber-bg);color:var(--amber)}
-.se-score-bar{height:10px;background:var(--line);border-radius:5px;overflow:hidden;margin:8px 0}
-.se-score-fill{height:100%;border-radius:5px;transition:width .6s}
-.se-tip-box{background:var(--amber-bg);border-left:3px solid var(--amber);border-radius:0 8px 8px 0;padding:9px 12px;font-size:.76rem;color:var(--ink2);line-height:1.5;margin-top:10px}
-
-/* ═══════════════ KARAOKÊ ═══════════════ */
-.kara-wrap{background:linear-gradient(135deg,#1a0533 0%,#0d1117 100%);border-radius:12px;overflow:hidden;margin-bottom:14px}
-.kara-header{padding:16px;text-align:center;border-bottom:1px solid rgba(255,255,255,.1)}
-.kara-title{font-family:Georgia,serif;font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:4px}
-.kara-artist{font-size:.75rem;color:#a78bfa}
-.kara-genre-badge{display:inline-block;background:rgba(107,33,168,.5);color:#c4b5fd;font-size:.6rem;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:4px;font-family:monospace}
-
-.kara-lyrics{padding:16px;min-height:180px;max-height:340px;overflow-y:auto;scroll-behavior:smooth}
-.kara-line{font-family:Georgia,serif;font-size:1rem;line-height:2;color:rgba(255,255,255,.35);text-align:center;transition:all .4s;padding:2px 0}
-.kara-line.kara-active{color:#fff;font-size:1.25rem;font-weight:700;text-shadow:0 0 20px rgba(196,181,253,.8)}
-.kara-line.kara-done{color:rgba(167,139,250,.5)}
-.kara-line.kara-next{color:rgba(255,255,255,.65)}
-
-.kara-controls{padding:12px 16px;background:rgba(0,0,0,.3);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.kara-btn{background:rgba(107,33,168,.7);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .18s;font-family:inherit}
-.kara-btn:hover{background:rgba(107,33,168,1)}
-.kara-btn.kara-play{background:#6b21a8;padding:10px 24px;font-size:.85rem}
-.kara-time{font-family:monospace;font-size:.8rem;color:#a78bfa;margin-left:auto}
-
-.kara-progress{height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin:0 16px 12px;cursor:pointer}
-.kara-progress-fill{height:100%;background:linear-gradient(90deg,#6b21a8,#c4b5fd);border-radius:2px;transition:width .5s}
-
-.song-list{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;max-height:320px;overflow-y:auto}
-.song-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--paper);border:1.5px solid var(--line);border-radius:8px;cursor:pointer;transition:all .15s}
-.song-item:hover{border-color:var(--kara);background:var(--kara-bg)}
-.song-item.active{border-color:var(--kara);background:var(--kara-bg)}
-.song-num{width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;font-size:.6rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.song-info{flex:1}
-.song-name{font-weight:700;font-size:.82rem}
-.song-by{font-size:.65rem;color:var(--ink3)}
-.song-genre{font-size:.58rem;font-weight:700;padding:2px 7px;border-radius:8px}
-.song-genre.sertanejo{background:#fff3e0;color:#a05a00}
-.song-genre.mpb{background:#e8f2ff;color:#0066bb}
-.song-genre.forro{background:#e8f7ea;color:#2a7a38}
-
-/* STOP ESCRITO TABS */
-.tab-row{display:flex;gap:6px;margin-bottom:14px}
-.tab-btn{flex:1;padding:9px;border-radius:8px;border:2px solid var(--line);background:var(--paper);cursor:pointer;font-size:.78rem;font-weight:700;text-align:center;transition:all .18s;font-family:inherit}
-.tab-btn.on{border-color:var(--ink);background:var(--ink);color:#fff}
+/* ═══════════════ TOAST ═══════════════ */
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:8px;font-size:.8rem;font-weight:600;z-index:9999;transition:transform .3s;white-space:nowrap}
+#toast.show{transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
-<div class="toast" id="toast"></div>
 
+<!-- TOPBAR -->
 <div class="topbar">
-  <div class="brand">Fono<em>PRO</em></div>
+  <div class="brand">FonoPRO<em>Plus</em></div>
   <div class="nav">
-    <button class="nav-btn active" onclick="goPage('fono',this)">🧠 Atividades</button>
-    <button class="nav-btn" onclick="goPage('stop',this)">🎤 Stop de Fala</button>
-    <button class="nav-btn" onclick="goPage('escrito',this)">✍️ Stop Escrito</button>
-    <button class="nav-btn" onclick="goPage('stopgame',this)">🎲 STOP</button>
-    <button class="nav-btn" onclick="goPage('karaoke',this)">🎵 Karaokê</button>
+    <button class="nav-btn active" onclick="selectAct('trava')" title="Trava-línguas para dicção">🗣 Trava</button>
+    <button class="nav-btn" onclick="selectAct('ritmo')" title="Ritmo, prosódia e entonação">🎵 Ritmo</button>
+    <button class="nav-btn" onclick="selectAct('copia')" title="Compreensão auditiva e cópia">📋 Cópia</button>
+    <button class="nav-btn" onclick="selectAct('fluencia')" title="Leitura fluida em tempo real">⏱ Fluência</button>
+    <button class="nav-btn" onclick="selectAct('kara')" title="Karaokê com análise de voz"><span class="badge badge-new">N</span>🎤 Kara</button>
   </div>
 </div>
 
-<!-- ════════════════════════════════════════ -->
-<!-- PAGE: ATIVIDADES FONO                    -->
-<!-- ════════════════════════════════════════ -->
-<div class="page active" id="page-fono">
+<!-- PAGES -->
 <div class="wrap">
-  <div style="margin-bottom:6px;padding-top:2px">
-    <div style="font-family:Georgia,serif;font-size:1.2rem;font-weight:700;margin-bottom:2px">Atividades Fonoaudiológicas</div>
-    <div style="font-size:.76rem;color:var(--ink3)">6 módulos clínicos com níveis expandidos</div>
-  </div>
-  <div style="margin:14px 0 18px">
-    <div class="act-grid">
-      <div class="act-card on" id="card-trava" onclick="selectAct('trava')">
-        <span class="badge">Popular</span>
-        <div class="act-icon">👅</div><div class="act-name">Trava-Língua</div>
-        <div class="act-desc">Agilidade articulatória e precisão de fonemas</div>
-      </div>
-      <div class="act-card" id="card-silabas" onclick="selectAct('silabas')">
-        <div class="act-icon">🔤</div><div class="act-name">Sílabas e Fonemas</div>
-        <div class="act-desc">Pares mínimos e sons difíceis do português</div>
-      </div>
-      <div class="act-card" id="card-respiracao" onclick="selectAct('respiracao')">
-        <div class="act-icon">🌬️</div><div class="act-name">Respiração e Voz</div>
-        <div class="act-desc">Diafragmática, fluxo de ar, projeção vocal</div>
-      </div>
-      <div class="act-card" id="card-memoria" onclick="selectAct('memoria')">
-        <div class="act-icon">🧩</div><div class="act-name">Memória Auditiva</div>
-        <div class="act-desc">Retenção e sequenciamento — 6 níveis</div>
-      </div>
-      <div class="act-card" id="card-ritmo" onclick="selectAct('ritmo')">
-        <div class="act-icon">🥁</div><div class="act-name">Ritmo e Prosódia</div>
-        <div class="act-desc">Ênfase, entonação e expressividade</div>
-      </div>
-      <div class="act-card" id="card-fluencia" onclick="selectAct('fluencia')">
-        <span class="badge">Clínico</span>
-        <div class="act-icon">💬</div><div class="act-name">Fluência Verbal</div>
-        <div class="act-desc">Evocação semântica cronometrada 30s/60s/90s</div>
-      </div>
-    </div>
-  </div>
-  <div id="actPanel"></div>
-</div>
-</div>
-
-<!-- ════════════════════════════════════════ -->
-<!-- PAGE: STOP DE FALA (falando)             -->
-<!-- ════════════════════════════════════════ -->
-<div class="page" id="page-stop">
-<div class="wrap">
-  <div style="margin-bottom:14px;padding-top:2px">
-    <div style="font-family:Georgia,serif;font-size:1.2rem;font-weight:700;margin-bottom:2px">🎤 Stop de Fala — Análise por Voz</div>
-    <div style="font-size:.76rem;color:var(--ink3)">Grave sua voz e receba análise detalhada de dicção, ritmo, hesitações e vícios</div>
-  </div>
-  <div class="warn-bar" id="warnBar">
-    ⚠️ <strong>Atenção:</strong> O reconhecimento de voz funciona apenas no <strong>Google Chrome</strong> ou <strong>Microsoft Edge</strong>.
-  </div>
-  <div class="mode-grid">
-    <div class="mode-card on" id="mcard-livre" onclick="setMode('livre')">
-      <span class="mode-card-icon">🎙️</span>
-      <div class="mode-card-title">Fala Livre</div>
-      <div class="mode-card-desc">Fale qualquer coisa. O sistema analisa ritmo, fluência, pausas e vícios.</div>
-    </div>
-    <div class="mode-card" id="mcard-leitura" onclick="setMode('leitura')">
-      <span class="mode-card-icon">📄</span>
-      <div class="mode-card-title">Leitura em Voz Alta</div>
-      <div class="mode-card-desc">Escolha um texto e leia. Detecta palavras puladas e erros de pronúncia.</div>
-    </div>
-  </div>
-  <div id="textSelectorPanel" style="display:none" class="panel">
-    <div class="panel-head"><span class="panel-icon">📚</span><div class="panel-title">Texto para Leitura</div></div>
-    <div class="panel-body">
-      <select id="readTextSelect" onchange="loadRefText()" style="width:100%;border:1.5px solid var(--line);border-radius:7px;padding:7px 10px;font-family:inherit;font-size:.82rem;background:var(--paper);outline:none;margin-bottom:10px">
-        <option value="">— selecione um texto —</option>
-        <option value="t1">Fácil: O Jardim da Vovó</option>
-        <option value="t2">Médio: A Última Livraria</option>
-        <option value="t3">Fono: Trava-língua encadeado</option>
-        <option value="t4">Clínico: Texto de Prosódia</option>
-        <option value="t5">Avançado: Discurso Político</option>
-        <option value="t6">Expert: Texto Técnico-Científico</option>
-      </select>
-      <div id="refTextBox" style="display:none;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px;font-size:.84rem;line-height:1.8;color:var(--ink2);max-height:160px;overflow-y:auto"></div>
-    </div>
-  </div>
-  <div class="panel">
-    <div class="panel-head">
-      <span class="panel-icon">⏺</span>
-      <div class="panel-title">Gravação</div>
-      <div id="stopSupport" style="font-size:.65rem;font-family:monospace;color:var(--green)">● API disponível</div>
-    </div>
-    <div class="panel-body">
-      <div class="rec-btn-wrap">
-        <button class="rec-btn" id="recBtn" onclick="toggleRec()">
-          <span id="recBtnIcon" style="font-size:1.3rem">⏺</span>
-          <span id="recBtnText">INICIAR GRAVAÇÃO</span>
-        </button>
-        <div style="font-size:.68rem;color:var(--ink3);margin-top:6px;text-align:center;font-family:monospace">▲ Clique para começar</div>
-      </div>
-      <div class="rec-status" id="recStatus">
-        <div class="rec-dot" id="recDot"></div>
-        <div id="recStatusText" style="flex:1;font-size:.78rem">Pronto para gravar.</div>
-        <div class="rec-time" id="recTime">00:00</div>
-      </div>
-      <div class="waveform-wrap">
-        <canvas id="waveCanvas"></canvas>
-        <div class="wave-idle" id="waveIdle">🎤 aguardando…</div>
-      </div>
-      <div class="transcript-box" id="transcriptBox">
-        <span class="transcript-placeholder" id="transcriptPH">A transcrição da sua fala aparecerá aqui em tempo real...</span>
-        <span id="transcriptOut" style="display:none"></span>
-      </div>
-      <div class="metrics-grid" id="metricsGrid" style="display:none">
-        <div class="metric"><span class="metric-val" id="mWPM">—</span><span class="metric-label">PPM</span></div>
-        <div class="metric"><span class="metric-val" id="mPausas">—</span><span class="metric-label">Pausas</span></div>
-        <div class="metric"><span class="metric-val" id="mHesit">—</span><span class="metric-label">Hesitações</span></div>
-        <div class="metric"><span class="metric-val" id="mScore">—</span><span class="metric-label">Score</span></div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-ghost" id="btnAnalisar" onclick="analisar()" style="display:none">🔍 Analisar Agora</button>
-        <button class="btn btn-ghost" onclick="limparStop()">🗑 Limpar</button>
-      </div>
-    </div>
-  </div>
-  <div class="panel" id="relatorioPanel" style="display:none">
-    <div class="panel-head"><span class="panel-icon">📋</span><div class="panel-title">Relatório Completo da Fala</div></div>
-    <div class="panel-body">
-      <div class="prob-list" id="probList"></div>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- ════════════════════════════════════════ -->
-<!-- PAGE: STOP ESCRITO                       -->
-<!-- ════════════════════════════════════════ -->
-<div class="page" id="page-escrito">
-<div class="wrap">
-  <div style="margin-bottom:14px;padding-top:2px">
-    <div style="font-family:Georgia,serif;font-size:1.2rem;font-weight:700;margin-bottom:2px">✍️ Stop Escrito — Análise por Digitação</div>
-    <div style="font-size:.76rem;color:var(--ink3)">Digite um texto do seu dia a dia ou copie de um texto-modelo. Receba análise de coesão, erros e estilo.</div>
-  </div>
-  <div class="tab-row">
-    <button class="tab-btn on" id="se-tab-livre" onclick="seSetTab('livre')">✍️ Escrita Livre</button>
-    <button class="tab-btn" id="se-tab-copia" onclick="seSetTab('copia')">📋 Copiar Texto-Modelo</button>
-  </div>
-
-  <!-- ESCRITA LIVRE -->
-  <div id="se-panel-livre">
+  <!-- PAGE: TRAVA-LÍNGUAS -->
+  <div class="page active" id="pageTrava">
     <div class="panel">
-      <div class="panel-head"><span class="panel-icon">✍️</span><div class="panel-title">Escreva Livremente</div><div class="panel-meta" id="se-wc">0 palavras</div></div>
+      <div class="panel-head"><span class="panel-icon">🗣</span><div class="panel-title">Trava-Línguas — Dicção Precisa</div></div>
       <div class="panel-body">
-        <div style="font-size:.78rem;color:var(--ink2);margin-bottom:8px;line-height:1.5">Escreva sobre qualquer tema: apresentação pessoal, relato de um dia, argumento, conto. Depois clique em <strong>Analisar Texto</strong>.</div>
-        <textarea class="stop-escrito-input" id="se-input-livre" placeholder="Escreva aqui o seu texto..." oninput="seCount()"></textarea>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center">
-          <select id="se-nivel" style="border:1.5px solid var(--line);border-radius:7px;padding:6px 10px;font-family:inherit;font-size:.75rem;background:var(--paper);outline:none">
-            <option value="1">🟢 Iniciante</option>
-            <option value="2" selected>🟡 Intermediário</option>
-            <option value="3">🔴 Avançado</option>
-          </select>
-          <button class="btn btn-main" onclick="seAnalisar()">🔍 Analisar Texto</button>
-          <button class="btn btn-ghost" onclick="seLimpar()">🗑 Limpar</button>
+        <div class="dica-box">
+          <strong>Técnica:</strong> Cada som deve ser claro e distinto. Não engula consoantes, não arraste vogais. Aumente a velocidade gradualmente.
         </div>
-      </div>
-    </div>
-    <div id="se-resultado" style="display:none"></div>
-  </div>
-
-  <!-- CÓPIA DE TEXTO-MODELO -->
-  <div id="se-panel-copia" style="display:none">
-    <div class="panel">
-      <div class="panel-head"><span class="panel-icon">📋</span><div class="panel-title">Texto-Modelo para Copiar</div></div>
-      <div class="panel-body">
-        <div style="font-size:.78rem;color:var(--ink2);margin-bottom:10px">Leia o texto abaixo. Depois <strong>feche o olho</strong> para o modelo e tente reescrever de memória. Compare o resultado!</div>
-        <select id="se-modelo-sel" onchange="seLoadModelo()" style="width:100%;border:1.5px solid var(--line);border-radius:7px;padding:7px 10px;font-family:inherit;font-size:.82rem;background:var(--paper);outline:none;margin-bottom:10px">
-          <option value="">— escolha um texto-modelo —</option>
-          <option value="m1">Fácil: Rotina Matinal</option>
-          <option value="m2">Médio: Liderança e Comunicação</option>
-          <option value="m3">Difícil: Trecho Literário</option>
-          <option value="m4">Expert: Artigo de Opinião</option>
-          <option value="m5">Fonoaudiológico: Texto de Prosódia</option>
-        </select>
-        <div id="se-modelo-box" style="display:none;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px;font-size:.9rem;line-height:1.9;color:var(--ink2);margin-bottom:10px"></div>
-        <div id="se-modelo-form" style="display:none">
-          <div style="font-size:.78rem;font-weight:700;margin-bottom:6px;color:var(--ink2)">Agora escreva de memória:</div>
-          <textarea class="stop-escrito-input" id="se-input-copia" placeholder="Escreva aqui sua versão de memória..."></textarea>
-          <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
-            <button class="btn btn-main" onclick="seAnalisarCopia()">🔍 Comparar com Original</button>
-            <button class="btn btn-ghost" onclick="seToggleModelo()">👁 Ver/Ocultar Modelo</button>
-          </div>
+        <div class="vel-row">
+          <button class="vel-btn on" onclick="setVel(0.5)">🐢 Lento</button>
+          <button class="vel-btn" onclick="setVel(0.7)">🚶 Normal</button>
+          <button class="vel-btn" onclick="setVel(1.0)">🏃 Rápido</button>
+          <button class="vel-btn" onclick="setVel(1.3)">🚀 Muito Rápido</button>
         </div>
-      </div>
-    </div>
-    <div id="se-resultado-copia" style="display:none"></div>
-  </div>
-</div>
-</div>
-
-<!-- ════════════════════════════════════════ -->
-<!-- PAGE: KARAOKÊ -->
-<div class="page" id="page-karaoke">
-<div class="wrap">
-  <div style="margin-bottom:14px;padding-top:2px">
-    <div style="font-family:Georgia,serif;font-size:1.2rem;font-weight:700;margin-bottom:2px">🎵 Karaokê Fonoaudiológico</div>
-    <div style="font-size:.76rem;color:var(--ink3)">Sertanejo, MPB e Forró — veja a letra, cante com o microfone e receba sua nota!</div>
-  </div>
-  <div class="panel">
-    <div class="panel-head"><span class="panel-icon">🎶</span><div class="panel-title">Escolha a música</div><div class="panel-meta">20 músicas</div></div>
-    <div class="panel-body" style="padding:12px">
-      <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
-        <button class="btn btn-main" id="kf-todas" onclick="karaFilterGenre('todas')" style="font-size:.7rem;padding:5px 10px">🎵 Todas</button>
-        <button class="btn btn-ghost" id="kf-sertanejo" onclick="karaFilterGenre('sertanejo')" style="font-size:.7rem;padding:5px 10px">🤠 Sertanejo</button>
-        <button class="btn btn-ghost" id="kf-mpb" onclick="karaFilterGenre('mpb')" style="font-size:.7rem;padding:5px 10px">🌟 MPB</button>
-        <button class="btn btn-ghost" id="kf-forro" onclick="karaFilterGenre('forro')" style="font-size:.7rem;padding:5px 10px">🪗 Forró</button>
-      </div>
-      <div class="song-list" id="songList"></div>
-    </div>
-  </div>
-  <div id="kara-player" style="display:none">
-    <div style="background:linear-gradient(160deg,#130826,#0a0f1e);border-radius:16px;overflow:hidden;margin-bottom:14px;box-shadow:0 8px 32px rgba(0,0,0,.4)">
-      <div style="padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:12px">
-        <div style="flex:1">
-          <div style="font-family:Georgia,serif;font-size:1.05rem;font-weight:700;color:#fff" id="kSongTitle">—</div>
-          <div style="font-size:.7rem;color:#a78bfa;margin-top:2px" id="kSongArtist">—</div>
+        <div id="travasDisplay" class="display">
+          <div class="big-text" id="travaBig">O rato roeu a roupa do rei de Roma.</div>
+          <div class="sub-text">Clique no ícone de som para ouvir</div>
         </div>
-        <span id="kSongGenre" style="font-size:.56rem;font-weight:700;padding:3px 9px;border-radius:10px;background:rgba(107,33,168,.5);color:#c4b5fd;font-family:monospace">—</span>
-        <div style="text-align:center;min-width:48px">
-          <div style="font-family:Georgia,serif;font-size:1.5rem;font-weight:900;color:#c4b5fd;line-height:1" id="kScoreLive">—</div>
-          <div style="font-size:.48rem;color:#7c6aad;text-transform:uppercase;letter-spacing:.05em">NOTA</div>
-        </div>
-      </div>
-      <!-- LETRA em destaque -->
-      <div id="kLyricsBox" style="padding:22px 20px;min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px">
-        <div style="font-size:.8rem;color:rgba(255,255,255,.3);text-align:center;font-style:italic">Selecione uma música e clique em CANTAR 🎤</div>
-      </div>
-      <div style="height:3px;background:rgba(255,255,255,.1);margin:0 18px 10px;border-radius:2px;cursor:pointer" onclick="karaSeek(event)" id="kProgressBar">
-        <div id="kProgressFill" style="height:100%;width:0%;background:linear-gradient(90deg,#6b21a8,#c4b5fd);border-radius:2px;transition:width .4s"></div>
-      </div>
-      <div style="padding:0 18px 8px;display:flex;align-items:center;gap:8px">
-        <div id="kMicDot" style="width:8px;height:8px;border-radius:50%;background:#555;flex-shrink:0"></div>
-        <div id="kMicText" style="font-size:.63rem;color:#666;font-family:monospace;flex:1">microfone inativo</div>
-        <div style="font-family:monospace;font-size:.7rem;color:#7c6aad" id="kTimeDisp">0:00</div>
-      </div>
-      <div style="padding:10px 18px 16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-        <button id="kBtnPlay" onclick="karaToggle()" style="background:#6b21a8;color:#fff;border:none;border-radius:10px;padding:11px 24px;font-size:.86rem;font-weight:700;cursor:pointer;font-family:inherit;flex:1;transition:all .18s">🎤 CANTAR</button>
-        <button onclick="karaRestart()" style="background:rgba(255,255,255,.08);color:#fff;border:none;border-radius:8px;padding:10px 13px;font-size:.72rem;cursor:pointer;font-family:inherit">↺</button>
-        <button onclick="karaSlower()" style="background:rgba(255,255,255,.08);color:#fff;border:none;border-radius:8px;padding:10px 12px;font-size:.72rem;cursor:pointer" title="Mais devagar">🐢</button>
-        <button onclick="karaFaster()" style="background:rgba(255,255,255,.08);color:#fff;border:none;border-radius:8px;padding:10px 12px;font-size:.72rem;cursor:pointer" title="Mais rápido">⚡</button>
-        <span id="kSpeedLabel" style="font-size:.6rem;color:#7c6aad;font-family:monospace">1.0×</span>
-      </div>
-    </div>
-    <div id="kResultBox" style="display:none"></div>
-    <div class="panel">
-      <div class="panel-head"><span class="panel-icon">💡</span><div class="panel-title">Dica Fonoaudiológica</div></div>
-      <div class="panel-body"><div id="kFonoTip" style="font-size:.82rem;line-height:1.6;color:var(--ink2)">Selecione uma música.</div></div>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- PAGE: STOP GAME -->
-<div class="page" id="page-stopgame">
-<div class="wrap">
-  <div style="margin-bottom:14px;padding-top:2px">
-    <div style="font-family:Georgia,serif;font-size:1.2rem;font-weight:700;margin-bottom:2px">🎲 Jogo STOP</div>
-    <div style="font-size:.76rem;color:var(--ink3)">Sorteie uma letra, preencha todas as categorias, grite STOP e ganhe pontos!</div>
-  </div>
-  <div class="panel" id="stopConfigPanel">
-    <div class="panel-head"><span class="panel-icon">⚙️</span><div class="panel-title">Configurar Rodada</div></div>
-    <div class="panel-body">
-      <div style="font-size:.75rem;font-weight:700;color:var(--ink2);margin-bottom:7px">⏱ Tempo por rodada:</div>
-      <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap">
-        <button class="vel-btn" id="sg-t60" onclick="sgSetTempo(60)">⚡ 60s</button>
-        <button class="vel-btn on" id="sg-t90" onclick="sgSetTempo(90)">🎯 90s</button>
-        <button class="vel-btn" id="sg-t120" onclick="sgSetTempo(120)">🏆 2min</button>
-        <button class="vel-btn" id="sg-tinf" onclick="sgSetTempo(0)">∞ Sem limite</button>
-      </div>
-      <div style="font-size:.75rem;font-weight:700;color:var(--ink2);margin-bottom:8px">📋 Categorias (selecione as que quer jogar):</div>
-      <div id="sgCatGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px"></div>
-      <div style="font-size:.75rem;font-weight:700;color:var(--ink2);margin-bottom:6px">➕ Criar categoria personalizada:</div>
-      <div style="display:flex;gap:6px;margin-bottom:16px">
-        <input id="sgCustomInput" placeholder="Ex: Personagem de desenho" style="flex:1;border:1.5px solid var(--line);border-radius:7px;padding:7px 10px;font-family:inherit;font-size:.8rem;outline:none;background:var(--paper);transition:border-color .2s" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--line)'">
-        <button class="btn btn-ghost" onclick="sgAddCustom()">+ Criar</button>
-      </div>
-      <button class="btn btn-main" style="width:100%;padding:13px;font-size:.95rem;justify-content:center;border-radius:10px" onclick="sgStart()">🎲 SORTEAR LETRA E COMEÇAR!</button>
-    </div>
-  </div>
-
-  <div id="stopGamePanel" style="display:none">
-    <div class="panel">
-      <div class="panel-head">
-        <span class="panel-icon">🎲</span>
-        <div class="panel-title">Rodada em andamento!</div>
-        <div style="font-family:monospace;font-size:.85rem;font-weight:700" id="sgTimerDisp">1:30</div>
-      </div>
-      <div class="panel-body">
-        <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
-          <div id="sgLetraBox" style="width:78px;height:78px;border-radius:50%;background:var(--ink);color:#fff;font-family:Georgia,serif;font-size:3rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 20px rgba(0,0,0,.25);animation:pop .4s cubic-bezier(.34,1.56,.64,1)">?</div>
-          <div style="flex:1">
-            <div style="font-size:.72rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em">Letra sorteada — preencha com palavras começando com:</div>
-            <div class="timer-bar-wrap" style="margin-top:10px;margin-bottom:0"><div class="timer-bar" id="sgTimerBar" style="width:100%"></div></div>
-          </div>
-        </div>
-        <div id="sgCatsForm" style="display:flex;flex-direction:column;gap:9px;margin-bottom:14px"></div>
         <div class="btn-row">
-          <button class="btn btn-main" style="background:var(--red);flex:1;justify-content:center;font-size:.9rem;padding:12px" onclick="sgStop()">🛑 S T O P !</button>
-          <button class="btn btn-ghost" onclick="sgAbort()">✕ Abandonar</button>
+          <button class="btn btn-main" onclick="speak(travas.find(t=>t.id===travasIdx).t3)">🔊 Ouvir Tudo</button>
+          <button class="btn btn-ghost" onclick="nextTrava()">→ Próximo</button>
+        </div>
+        <div style="margin-top:16px;padding:12px;background:var(--blue-bg);border-radius:7px">
+          <div style="font-size:.75rem;color:var(--ink2);line-height:1.6">
+            <div style="font-weight:700;margin-bottom:6px">📖 Sobre este trava-línguas:</div>
+            <div id="travasDesc"></div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  <div id="stopResultPanel" style="display:none"></div>
+
+  <!-- PAGE: RITMO -->
+  <div class="page" id="pageRitmo">
+    <div class="panel">
+      <div class="panel-head"><span class="panel-icon">🎵</span><div class="panel-title">Prosódia & Entonação</div></div>
+      <div class="panel-body">
+        <div class="dica-box">
+          <strong>Objetivo:</strong> Variar altura (pitch), volume e ritmo. Cada tipo de frase tem padrão de entonação diferente.
+        </div>
+        <div id="enfaseContainer"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: CÓPIA -->
+  <div class="page" id="pageCopia">
+    <div class="panel">
+      <div class="panel-head"><span class="panel-icon">📋</span><div class="panel-title">Stop de Fala — Compreensão & Cópia</div></div>
+      <div class="panel-body">
+        <div class="dica-box">
+          <strong>Modo:</strong> O áudio será reproduzido uma vez. Você ouvirá sem ler. Depois escuta novamente e copia tudo que ouviu.
+        </div>
+
+        <!-- REC STATUS -->
+        <div class="rec-status">
+          <div class="rec-dot" id="recDot"></div>
+          <span id="recStatusText">Pronto para começar</span>
+          <span class="rec-time" id="recTime">0:00</span>
+        </div>
+
+        <!-- BUTTON -->
+        <div style="display:flex;gap:7px;margin-bottom:12px">
+          <button class="btn" id="recBtn" style="flex:1;background:var(--mic);color:#fff" onclick="toggleRec()">
+            <span id="recBtnIcon">⏺</span>
+            <span id="recBtnText">COMEÇAR</span>
+          </button>
+        </div>
+
+        <!-- TRANSCRIPT -->
+        <div class="transcript-placeholder" id="transcriptPH" style="text-align:center;padding:40px 20px;font-size:.78rem">
+          Clique no botão acima para começar a gravação.<br>O áudio será reproduzido e você poderá repetir o que ouve.
+        </div>
+        <div class="transcript-box" id="transcriptOut" style="display:none"></div>
+
+        <!-- METRICS -->
+        <div id="metricsGrid" style="display:none;display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px">
+          <div style="background:var(--bg);border:1.5px solid var(--line);border-radius:7px;padding:10px;text-align:center">
+            <div style="font-size:1.4rem;font-weight:700;color:var(--ink)" id="metricWC">0</div>
+            <div style="font-size:.7rem;color:var(--ink3);text-transform:uppercase">Palavras</div>
+          </div>
+          <div style="background:var(--bg);border:1.5px solid var(--line);border-radius:7px;padding:10px;text-align:center">
+            <div style="font-size:1.4rem;font-weight:700;color:var(--ink)" id="metricF">0</div>
+            <div style="font-size:.7rem;color:var(--ink3);text-transform:uppercase">Fluência</div>
+          </div>
+        </div>
+
+        <!-- RELATÓRIO -->
+        <div id="relatorioPanel" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: FLUÊNCIA -->
+  <div class="page" id="pageFluencia">
+    <div class="panel">
+      <div class="panel-head"><span class="panel-icon">⏱</span><div class="panel-title">Leitura Cronometrada</div></div>
+      <div class="panel-body">
+        <div class="dica-box">
+          <strong>Desafio:</strong> Ler o texto em voz alta, mantendo ritmo natural. O cronômetro registra o tempo total.
+        </div>
+        <div class="display">
+          <div style="font-size:.75rem;color:var(--ink3);margin-bottom:8px">TEXTO SELECIONADO</div>
+          <select id="readTextSelect" style="width:100%;padding:8px;border:1.5px solid var(--line);border-radius:6px;font-family:inherit;font-size:.8rem;margin-bottom:12px">
+            <option value="txt1">Padrão: Leitura básica</option>
+            <option value="txt2">Narrativa: Conto infantil</option>
+            <option value="txt3">Reportagem: Notícia de jornal</option>
+          </select>
+        </div>
+
+        <!-- SEQ PALAVRAS REF -->
+        <div id="readTextDisplay" style="background:var(--bg);border:1.5px solid var(--line);border-radius:7px;padding:12px;margin-bottom:12px;font-size:.88rem;line-height:1.8;color:var(--ink2)"></div>
+
+        <!-- REC STATUS -->
+        <div class="rec-status">
+          <div class="rec-dot" id="recDot"></div>
+          <span id="recStatusText">Pronto para ler</span>
+          <span class="rec-time" id="recTime">0:00</span>
+        </div>
+
+        <button class="btn" id="recBtn" style="width:100%;background:var(--mic);color:#fff;justify-content:center;font-size:.9rem;padding:12px" onclick="toggleRec()">
+          <span id="recBtnIcon">⏺</span>
+          <span id="recBtnText">COMEÇAR LEITURA</span>
+        </button>
+
+        <!-- TRANSCRIPT -->
+        <div class="transcript-placeholder" id="transcriptPH" style="text-align:center;padding:40px 20px;margin-top:12px;font-size:.78rem">
+          Clique acima para começar. Leia o texto em voz alta com clareza e ritmo natural.
+        </div>
+        <div class="transcript-box" id="transcriptOut" style="display:none;margin-top:12px"></div>
+
+        <!-- METRICS -->
+        <div id="metricsGrid" style="display:none;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px">
+          <div style="background:var(--bg);border:1.5px solid var(--line);border-radius:7px;padding:10px;text-align:center">
+            <div style="font-size:1.2rem;font-weight:700;color:var(--ink)" id="metricWC">0</div>
+            <div style="font-size:.68rem;color:var(--ink3);text-transform:uppercase">Palavras</div>
+          </div>
+          <div style="background:var(--bg);border:1.5px solid var(--line);border-radius:7px;padding:10px;text-align:center">
+            <div style="font-size:1.2rem;font-weight:700;color:var(--ink)" id="metricWPM">0</div>
+            <div style="font-size:.68rem;color:var(--ink3);text-transform:uppercase">Palavras/min</div>
+          </div>
+          <div style="background:var(--bg);border:1.5px solid var(--line);border-radius:7px;padding:10px;text-align:center">
+            <div style="font-size:1.2rem;font-weight:700;color:var(--ink)" id="metricAcc">0%</div>
+            <div style="font-size:.68rem;color:var(--ink3);text-transform:uppercase">Precisão</div>
+          </div>
+        </div>
+
+        <!-- RELATÓRIO -->
+        <div id="relatorioPanel" style="display:none;margin-top:12px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: KARAOKÊ -->
+  <div class="page" id="pageKara">
+    <div class="panel">
+      <div class="panel-head"><span class="panel-icon">🎤</span><div class="panel-title">Karaokê com Análise de Voz</div></div>
+      <div class="panel-body">
+        <div class="dica-box">
+          <strong>Novo:</strong> Cante e tenha sua voz analisada em tempo real. Veja dicas de dicção e ressonância para cada gênero.
+        </div>
+
+        <!-- FILTER -->
+        <div style="margin-bottom:12px">
+          <div style="font-size:.75rem;font-weight:700;color:var(--ink2);margin-bottom:6px">FILTRAR POR GÊNERO:</div>
+          <div class="chips" id="karaGenreChips"></div>
+        </div>
+
+        <!-- GRID DE MÚSICAS -->
+        <div class="kara-grid" id="karaGrid"></div>
+
+        <!-- PLAYER (HIDDEN) -->
+        <div class="kara-player" id="karaPlayer" style="display:none">
+          <div class="kara-now">
+            <span id="karaTitle"></span> — <span id="karaArtist" style="color:var(--ink3)"></span>
+          </div>
+          <div class="kara-lyrics" id="karaLyricsView"></div>
+          <div class="kara-controls">
+            <button class="kara-control-btn" onclick="karaPlay()">▶ Cantar</button>
+            <button class="kara-control-btn" onclick="karaPause()">⏸ Pausa</button>
+            <button class="kara-control-btn" onclick="karaClose()">✕ Fechar</button>
+          </div>
+          <div id="karaAnalytics" style="background:var(--blue-bg);border-radius:7px;padding:10px;font-size:.78rem;line-height:1.6;color:var(--ink2)"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: STOP GAME (2ª RODADA DO STOP) -->
+  <div class="page" id="pageStop">
+    <div id="stopConfigPanel">
+      <div class="panel">
+        <div class="panel-head"><span class="panel-icon">🎲</span><div class="panel-title">STOP — Jogo de Letra & Categoria</div></div>
+        <div class="panel-body">
+          <div class="dica-box">
+            <strong>Regra:</strong> Escolha categorias e um tempo. Será sorteada uma letra. Você tem que preencher a palavra de cada categoria começando com aquela letra. Quanto mais palavras corretas, mais pontos!
+          </div>
+
+          <!-- CONFIGURAÇÃO -->
+          <div style="margin-bottom:14px">
+            <div style="font-size:.75rem;font-weight:700;color:var(--ink2);margin-bottom:8px">SELECIONE AS CATEGORIAS:</div>
+            <div id="sgCatsCheckboxes"></div>
+          </div>
+
+          <div style="margin-bottom:14px">
+            <div style="font-size:.75rem;font-weight:700;color:var(--ink2);margin-bottom:6px">TEMPO DE JOGO:</div>
+            <div class="vel-row">
+              <button class="vel-btn on" onclick="sgSetTempo(60)">1 min</button>
+              <button class="vel-btn" onclick="sgSetTempo(90)">1:30</button>
+              <button class="vel-btn" onclick="sgSetTempo(120)">2 min</button>
+              <button class="vel-btn" onclick="sgSetTempo(0)">∞ Infinito</button>
+            </div>
+          </div>
+
+          <button class="btn btn-main" style="width:100%;justify-content:center;font-size:.9rem;padding:12px" onclick="sgStart()">🎲 COMEÇAR JOGO</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="stopGamePanel" style="display:none">
+      <div class="panel">
+        <div class="panel-head"><span class="panel-icon">🎲</span><div class="panel-title">STOP — Rodada Ativa</div></div>
+        <div class="panel-body">
+          <div class="display">
+            <div style="font-size:.72rem;color:var(--ink3);margin-bottom:6px">LETRA SORTEADA</div>
+            <div style="font-family:Georgia,serif;font-size:3rem;font-weight:900;color:var(--accent);margin-bottom:12px" id="sgLetraDisp">A</div>
+            <div id="sgTimerDisp" class="timer-big">1:00</div>
+            <div class="timer-bar-wrap"><div class="timer-bar" id="sgTimerBar" style="width:100%"></div></div>
+          </div>
+
+          <form id="sgCatsForm"></form>
+
+          <button class="btn btn-main" style="background:var(--red);flex:1;justify-content:center;font-size:.9rem;padding:12px;width:100%;margin-top:8px" onclick="sgStop()">🛑 S T O P !</button>
+          <button class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:6px" onclick="sgAbort()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="stopResultPanel" style="display:none"></div>
+  </div>
 </div>
-</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
 
 <script>
 // ════════════════════════════════════════════════
-// DADOS FONO — EXPANDIDOS
+// STATE
 // ════════════════════════════════════════════════
-const TRAVA=[
-  {t:"O rato roeu a roupa do rei de Roma.",f:"R inicial e medial",d:"R forte no início, R suave no meio. Boca relaxada, língua ágil."},
-  {t:"Três pratos de trigo para três tigres tristes.",f:"TR e GR",d:"TR exige língua rápida. Não aspire o T — deve ser seco, sem sopro."},
-  {t:"Sabendo o sabiá que o sábio sabia assobiar, o sábio assoviava sabendo.",f:"S e sibilantes",d:"Controle o ar. Lábios levemente abertos, dentes próximos."},
-  {t:"Que queijo é esse? É queixada queimada com quiabo.",f:"QU e CH",d:"No QU, lábios em bico. No CH, língua arqueia levemente."},
-  {t:"Num ninho de mafagafos, cinco mafagafinhos há.",f:"Nasais M/N/NH",d:"Vibre o nariz nos nasais. Sinta a ressonância nas maçãs do rosto."},
-  {t:"Pinga pinga vai a pinga, pinga a pinga até parar.",f:"P oclusivo",d:"Cada P = sopro curto e preciso. Lábios bem fechados antes de soltar."},
-  {t:"Fui à feira, vi frutas frescas e figos fracos, futilmente.",f:"F fricativo",d:"Dentes superiores tocam o lábio inferior. Sopro contínuo e suave."},
-  {t:"Zunzum de zunzum zumbia o zum zum zum do sol.",f:"Z sonoro",d:"Z vibra a garganta. Mão no pescoço para sentir a vibração."},
-  {t:"Lá vai o lobo, leva o lixo leve, lá longe no largo.",f:"L lateral",d:"Língua nos alvéolos. Não vira U."},
-  {t:"Vivendo vim ver velas verdes voar além do vento vão.",f:"V fricativo",d:"Como F, mas garganta vibra. Lábios e dentes juntos vibrando."},
-  {t:"Chico cheiroso chutou o chão cheio de choradeira.",f:"CH palatal",d:"Língua arqueia suavemente para o palato. Lábios arredondados."},
-  {t:"Casa, casaco, cascata, casulo, casaco fino, casacão.",f:"CA/CO/CU",d:"Mude a posição da língua para cada vogal mantendo o C firme."},
-  // NOVOS NÍVEIS
-  {t:"O desequilíbrio dos equilíbrios desequilibra o equilíbrio.",f:"Avançado — equi/des",d:"Nível avançado. Foque na sílaba tônica de cada palavra."},
-  {t:"A particularidade da peculiaridade é ser particularmente peculiar.",f:"Expert — latim/culto",d:"Vocabulário culto. Articulação lenta primeiro, depois aumente a velocidade."},
-  {t:"Plínio plantou plátanos planos no planalto plano.",f:"PL — consoante cluster",d:"PL sem vogal intermediária. Língua no /l/ logo após o /p/."},
-  {t:"Fla fle fli flo flu — fra fre fri fro fru — fratura frágil.",f:"FL e FR combinados",d:"Trabalho de lábios e língua em alta demanda. Aqueça antes."},
-  {t:"Xaveco, xaxim, xilofone, xarope, xerife, xícara, xingamento.",f:"X com múltiplos sons",d:"X pode soar como CH, SS, Z ou KS. Cada palavra tem um padrão diferente."},
-  {t:"Brigadeiro brilhante briga bravamente pelo brilho da brincadeira.",f:"BR — cluster com /b/",d:"BR = oclusiva bilabial + vibrante. Não insira vogal entre eles."},
-  {t:"Estatisticamente, estrategicamente, estruturalmente, estritamente.",f:"Avançado — prefix EST",d:"Advérbios longos desafiam a memória muscular. Marque a sílaba tônica."},
-  {t:"Claro que o clérigo clínico classificou a clínica incorretamente.",f:"CL — consoante lateral",d:"CL exige língua já pronta no /l/ enquanto solta o /k/."},
-];
-
-const FONEMAS=[
-  {title:"Vogais Longas",inst:"Sustente cada vogal por 5 segundos com voz firme e constante.",items:["AAAAAA","EEEEEE","IIIIII","OOOOOO","UUUUUU"],d:"Volume estável do início ao fim = bom controle respiratório."},
-  {title:"Pares B/P",inst:"Distinga B (garganta vibra) de P (garganta não vibra). Mão no pescoço para sentir.",items:["bala / pala","bico / pico","bote / pote","barco / parco","bem / pem"],d:"B=sonoro, P=surdo. Teste com a palma a 5cm da boca — no P sente sopro."},
-  {title:"Pares D/T",inst:"Distinga D (sonoro) de T (surdo). Língua toca os alvéolos nos dois.",items:["dado / tato","dedo / teto","doca / toca","dão / tão","dente / tente"],d:"O T tem bafão de ar. Coloque a palma a 5cm da boca — no T sente o sopro."},
-  {title:"Encontros BR/PR",inst:"Sem vogal entre as consoantes. NÃO diga 'bu-ravo' — diga 'bravo'.",items:["bravo","preto","brasileiro","problema","brincadeira","aprender"],d:"Erro comum na fala informal. Para fala formal, as duas consoantes são simultâneas."},
-  {title:"R Vibrante vs Suave",inst:"R inicial (forte) vs R entre vogais (suave). Sinta a diferença.",items:["rato / caro","roda / fora","rico / piro","rua / cura","remo / pero"],d:"R inicial = mais tensão. R entre vogais = mais relaxado. Seja consistente."},
-  {title:"Sílabas Finais -AL",inst:"L final claramente. NÃO vire 'u' (não diga 'animau').",items:["real","animal","capital","hospital","digital","marginal"],d:"L final: língua nos alvéolos. Importante para clareza na fala formal."},
-  // NOVOS
-  {title:"Pares G/K",inst:"G=sonoro (garganta vibra), K=surdo. Sinta a diferença na garganta.",items:["gato / cato","gola / cola","gume / kume","gato / quato","guia / quia"],d:"Oclusivas velares. Posição da língua idêntica — só a vibração difere."},
-  {title:"Ditongos Nasais",inst:"Finalize cada ditongo nasal com a ressonância no nariz.",items:["ão / ãos","eim / eins","oin / oins","mãe / mães","bênção"],d:"Ditongos nasais são exclusivos do português. Língua e véu palatino em harmonia."},
-  {title:"Encontros GL/GR",inst:"GL e GR sem vogal intermediária. Articulação simultânea.",items:["globo","gradual","glacial","greve","glória","grande","grato"],d:"GL e GR são raros e difíceis. Treinar melhora muito a articulação geral."},
-  {title:"Vogais Átonas — Redução",inst:"Em fala formal, evite reduzir demais as vogais átonas.",items:["professor","banana","telefone","computador","educação","popular"],d:"'Prufesor' vs 'professor' — a redução vocálica muda a percepção de formalidade."},
-];
-
-const RESP=[
-  {title:"Respiração Diafragmática",icon:"🌬️",steps:["Sente-se ereto, ombros relaxados.","Uma mão no peito, outra na barriga.","Inspire pelo nariz 4s — barriga sobe, peito fica quieto.","Expire pela boca 6s, lábios levemente abertos.","Repita 8 vezes. Se o peito subiu, recomece."],d:"Base do suporte vocal. Sem isso, a voz fica tensa e cansa rápido."},
-  {title:"Controle de Fluxo — SSSS",icon:"💨",steps:["Inspire fundo pelo nariz (4s).","Expire fazendo 'sssss' contínuo e estável com lábios em bico.","Tente 15 segundos sem interrupção ou variação de volume.","Descanse 30s. Repita tentando 20s.","Meta: 25 segundos estáveis."],d:"Menos de 10s = suporte insuficiente. 15–20s = adequado. 25s+ = excelente."},
-  {title:"Aquecimento M e N",icon:"🎵",steps:["Feche os lábios: 'mmmmmm' por 5 segundos.","Sinta a vibração nos lábios e nariz — isso é ressonância frontal.","Suba o tom: 'mm-mm-mm' como concordando animado.","Repita com 'nnnnn' — vibração na ponta do nariz.","Termine com 'mmmm — AH' abrindo a boca ao final."],d:"Faça ANTES de falar muito. Aquece as cordas sem esforço."},
-  {title:"Projeção sem Gritar",icon:"📢",steps:["1 metro da parede. Diga 'hoje' normalmente.","Recue para 2m. Mesma qualidade de voz.","Recue para 3m. Frase inteira SEM gritar.","Projeção vem do apoio no abdômen, não da tensão.","Tensão no pescoço? Está gritando. Recomece."],d:"Gritar machuca as cordas. Projetar usa diafragma e ressonância do tórax."},
-  {title:"Apoio em Frases Longas",icon:"🔊",steps:["Inspire ANTES de começar — nunca comece sem ar.","Diga inteira: 'O bom fonoaudiólogo diagnostica e trata distúrbios da comunicação humana com competência.'","Repita com pausas estratégicas nos pontos de pontuação.","Observe onde o ar acabou — era onde você devia ter respirado.","Pratique planejando as respirações."],d:"Profissionais planejam respirações como pausas naturais."},
-  // NOVOS
-  {title:"Aquecimento Labial",icon:"👄",steps:["Faça 'brrrr' vibrando os lábios por 5 segundos.","Faça 'prrrr' subindo e descendo o tom como uma sirene.","Repita 'ma-me-mi-mo-mu' rápido por 10 vezes.","Massageie suavemente os lábios com os dedos.","Termine com bocejo exagerado — abre tudo!"],d:"Lábios frios travam a articulação. Aquecimento labial é essencial antes de gravar ou apresentar."},
-  {title:"Ressonância Torácica",icon:"🫀",steps:["Fique em pé, pés na largura dos ombros.","Diga 'oooo' com voz grave, mão no peito sentindo vibração.","Abaixe o queixo levemente — grave roda mais.","Suba o tom devagar até o médio e volte.","Siga com 'voooo' e 'zoom' exagerados."],d:"Ressonância torácica dá autoridade à voz. Líderes e atores usam muito."},
-  {title:"Desaceleração Vocal",icon:"⏱️",steps:["Escolha uma frase sua favorita.","Fale em velocidade normal (cronometrado pelo relógio).","Repita 30% mais devagar — articule cada sílaba.","Repita mais 30% devagar — exagere os sons.","Observe: a clareza aumenta sem perder expressão?"],d:"Treinar desaceleração fortalece o controle motor da fala. O público compreende 40% mais."},
-];
-
-const MEMORIA=[
-  {label:"Iniciante — 2",series:[["casa","porta"],["gato","peixe"],["verde","azul"],["pão","leite"]]},
-  {label:"Fácil — 3",series:[["casa","porta","janela"],["mesa","cadeira","sofá"],["gato","cachorro","peixe"],["verde","azul","vermelho"]]},
-  {label:"Médio — 5",series:[["ônibus","metrô","bicicleta","avião","trem"],["pão","leite","queijo","manteiga","café"],["Brasil","Argentina","Chile","Uruguai","Peru"]]},
-  {label:"Difícil — 7",series:[["telefone","caneta","caderno","óculos","carteira","chave","relógio"],["anatomia","fisiologia","patologia","farmacologia","semiologia","cirurgia","clínica"]]},
-  {label:"Avançado — 9",series:[["maçã","banana","uva","pera","abacaxi","manga","laranja","melão","goiaba"],["segunda","terça","quarta","quinta","sexta","sábado","domingo","feriado","véspera"]]},
-  {label:"Expert — 11",series:[["amalgama","bricolagem","crisântemo","desfibrilador","efêmero","fenotipo","gregário","heurístico","iatrogênico","jocoso","kinesioterapeuta"],["amor","ódio","alegria","tristeza","raiva","medo","surpresa","nojo","confiança","antecipação","submissão"]]},
-];
-
-const RITMO=[
-  {type:"enfase",title:"A Mesma Frase — 6 Significados",frase:"Eu não disse que ela roubou o dinheiro.",
-   enfases:[{p:"EU",s:"fui eu, não outro"},{p:"NÃO",s:"neguei, não afirmei"},{p:"DISSE",s:"disse, não escrevi"},{p:"ELA",s:"ela, não outra pessoa"},{p:"ROUBOU",s:"roubou, não perdeu"},{p:"DINHEIRO",s:"dinheiro, não outro objeto"}],
-   d:"6 significados diferentes com a mesma frase. Isso é o poder da prosódia!"},
-  {type:"pausa",title:"Pausa Dramática",frase:"A maior habilidade humana | não é falar | mas saber quando | calar.",inst:"Respeite cada | com 1 segundo de silêncio.",d:"O silêncio é parte da fala."},
-  {type:"pares",title:"Afirmação vs. Pergunta",inst:"Voz desce na afirmação ↘ Voz sobe na pergunta ↗",
-   pares:[["Você foi ao médico.","Você foi ao médico?"],["Ela terminou o projeto.","Ela terminou o projeto?"],["Ele chegou ontem.","Ele chegou ontem?"],["A reunião acabou.","A reunião acabou?"]],
-   d:"Entonação incorreta muda completamente o significado."},
-  {type:"velocidade",title:"Três Velocidades",frase:"A comunicação eficaz exige clareza, ritmo e intenção.",
-   vels:["🐢 Devagar — cada sílaba articulada","🚶 Normal — conversa natural","🏃 Rápido — sem perder inteligibilidade"],
-   d:"Varie conforme o conteúdo. Informações novas = devagar."},
-  // NOVOS
-  {type:"enfase",title:"Comando vs. Pedido — Mesma Frase",frase:"Você pode fechar a porta.",
-   enfases:[{p:"VOCÊ",s:"você especificamente"},{p:"PODE",s:"dúvida se consegue"},{p:"FECHAR",s:"fechar, não abrir"},{p:"PORTA",s:"a porta, não a janela"}],
-   d:"Tom muda o pedido em ordem ou dúvida. Fundamental na comunicação assertiva."},
-  {type:"pausa",title:"Pausa Estratégica na Apresentação",frase:"Temos apenas uma escolha | trabalhar | ou | desistir.",inst:"Cada | = 1,5s de silêncio. Olhe o ouvinte durante a pausa.",d:"Pausa + contato visual = impacto máximo em apresentações."},
-  {type:"pares",title:"Ironia vs. Sinceridade",inst:"Mude apenas o tom para inverter o sentido",
-   pares:[["Que ótimo! (sincero)","Que ótimo... (irônico)"],["Você é incrível. (sincero)","Você é incrível. (irônico)"],["Adorei a ideia! (sincero)","Adorei a ideia. (irônico)"]],
-   d:"A mesma frase com tons opostos. A prosódia é o verdadeiro significado."},
-];
-
-const FLUENCIA_CATS=[
-  {c:"Animais",ref:8},{c:"Frutas",ref:8},{c:"Profissões",ref:7},
-  {c:"Verbos de movimento",ref:6},{c:"Palavras com R",ref:6},
-  {c:"Objetos num bolso",ref:6},{c:"Palavras com 4+ sílabas",ref:5},
-  {c:"Coisas num hospital",ref:7},{c:"Ações da manhã",ref:7},
-  {c:"Cores",ref:8},{c:"Cidades brasileiras",ref:7},{c:"Instrumentos musicais",ref:6},
-  {c:"Partes do corpo",ref:9},{c:"Países da América",ref:6},
-  {c:"Alimentos com 3+ sílabas",ref:6},{c:"Verbos no infinitivo",ref:9},
-  {c:"Objetos de escritório",ref:7},{c:"Palavras com NH",ref:5},
-  {c:"Nomes femininos",ref:8},{c:"Adjetivos positivos",ref:7},
-  {c:"Meios de transporte",ref:7},{c:"Animais marinhos",ref:6},
-  {c:"Palavras com CH",ref:5},{c:"Esportes",ref:8},
-  {c:"Vegetais e legumes",ref:7},{c:"Marcas de carro",ref:6},
-  {c:"Países da Europa",ref:7},{c:"Roupas e acessórios",ref:8},
-  {c:"Verbos de comunicação",ref:6},{c:"Flores e plantas",ref:6},
-  {c:"Palavras com LH",ref:5},{c:"Bebidas",ref:7},
-  {c:"Objetos da cozinha",ref:8},{c:"Nomes masculinos",ref:8},
-  {c:"Palavras com Z",ref:5},{c:"Animais da fazenda",ref:7},
-  {c:"Emoções e sentimentos",ref:6},{c:"Materiais escolares",ref:7},
-  {c:"Coisas redondas",ref:6},{c:"Palavras com X",ref:5},
-];
-
-// ════════════════════════════════════════════════
-// TEXTOS LEITURA (voz e escrito)
-// ════════════════════════════════════════════════
-const READ_TEXTS={
-  t1:`A vovó Maria acordava todos os dias às seis da manhã para cuidar do seu jardim. Ela regava as flores com carinho, tirava o mato ruim e conversava com os passarinhos que vinham cantar nas árvores. Seu jardim era famoso em toda a rua. As rosas vermelhas eram as mais bonitas, e o jasmim perfumava o ar de um jeito que todo mundo parava para sentir.`,
-  t2:`A cidade tinha uma única livraria ainda aberta, e ela resistia com a teimosia típica das coisas velhas que recusam morrer de vez. Você entrava e dizia o que estava sentindo — não o que queria ler, mas o que estava sentindo — e o dono ia até algum canto do labirinto de prateleiras e voltava com um livro. Sempre o certo.`,
-  t3:`O rato roeu a roupa do rei de Roma. Três pratos de trigo para três tigres tristes. Sabendo o sabiá que o sábio sabia assobiar, o sábio assoviava sabendo. Pinga pinga vai a pinga, pinga a pinga até parar.`,
-  t4:`A comunicação eficaz depende de três elementos fundamentais: a clareza das palavras escolhidas, o ritmo com que são pronunciadas e a intenção por trás de cada pausa. Um profissional da voz sabe que o silêncio — usado com precisão — comunica tanto quanto as palavras mais bem elaboradas.`,
-  t5:`Senhoras e senhores, vivemos um momento de profunda transformação. As instituições que construímos ao longo de décadas exigem renovação — não ruptura, mas evolução responsável. A democracia não é destino garantido: é conquista diária, tecida no diálogo e na disposição de escutar o outro, mesmo quando discordamos profundamente.`,
-  t6:`O processo de aquisição fonológica em crianças entre dezoito e trinta e seis meses envolve a consolidação progressiva dos fonemas consonantais, especialmente os fricativos e as consoantes em posição de coda silábica. Intervenções fonoaudiológicas precoces demonstraram eficácia significativa na prevenção de transtornos articulatórios persistentes.`,
-};
-
-const SE_MODELS={
-  m1:`Hoje acordei cedo, preparei um café, revi meus compromissos do dia e saí de casa com calma. Pequenos rituais matinais fazem uma grande diferença no humor e na produtividade ao longo do dia.`,
-  m2:`A liderança eficaz não se resume a dar ordens. Ela exige escuta ativa, comunicação clara e a habilidade de inspirar pessoas a alcançar objetivos que vão além de seus próprios interesses imediatos.`,
-  m3:`As coisas findas, muito mais que a lindas, essas ficarão. As coisas lindas são transitórias, mas o que passou e ficou na memória transforma-se em algo que nunca mais pode ser tirado.`,
-  m4:`A liberdade de expressão é um direito fundamental, mas não absoluto. O discurso que incita ódio ou violência ultrapassa os limites da expressão protegida e exige respostas responsáveis do Estado e da sociedade civil.`,
-  m5:`A ressonância vocal depende diretamente do posicionamento do trato vocal. Vogais anteriores como /e/ e /i/ produzem ressonância mais aguda, enquanto vogais posteriores como /o/ e /u/ favorecem ressonância mais grave e encorpada.`,
-};
-
-// ════════════════════════════════════════════════
-// NAVIGATION
-// ════════════════════════════════════════════════
-function goPage(p,btn){
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  document.getElementById('page-'+p).classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  if(btn) btn.classList.add('active');
-  if(p==='stop') checkSpeechAPI();
-  if(p==='karaoke') karaFilterGenre('todas');
-  if(p==='stopgame') sgInit();
-}
-
-// ════════════════════════════════════════════════
-// ACTIVITY SWITCHER
-// ════════════════════════════════════════════════
-let curAct='trava', st={};
-
-function selectAct(a){
-  curAct=a; st={};
-  if(fluTimer){clearInterval(fluTimer);fluTimer=null;}
-  if(fluRec){try{fluRec.stop();}catch(e){} fluRec=null;}
-  fluActive=false;
-  document.querySelectorAll('.act-card').forEach(c=>c.classList.remove('on'));
-  document.getElementById('card-'+a).classList.add('on');
-  const panel=document.getElementById('actPanel');
-  const map={trava:buildTrava,silabas:buildSilabas,respiracao:buildResp,memoria:buildMemoria,ritmo:buildRitmo,fluencia:buildFluencia};
-  panel.innerHTML=map[a]();
-  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
-}
-
-function dots(total,cur){return Array.from({length:total},(_,i)=>`<div class="dot${i<cur?' done':i===cur?' cur':''}"></div>`).join('');}
-
-// ─── TRAVA-LÍNGUA ──────────────────────────────────
-function buildTrava(){
-  st.ti=0;st.vel=1;
-  setTimeout(renderTrava,10);
-  return`<div class="panel">
-    <div class="panel-head"><span class="panel-icon">👅</span><div class="panel-title">Trava-Língua</div><div class="panel-meta" id="tmeta">1/${TRAVA.length}</div></div>
-    <div class="panel-body">
-      <div class="dots" id="tdots"></div>
-      <div class="prog-wrap"><div class="prog-fill" id="tprog"></div></div>
-      <div class="display">
-        <div id="tfocus" class="focus-tag"></div>
-        <div class="big-text" id="ttext"></div>
-        <div class="sub-text" id="tdica"></div>
-      </div>
-      <div style="margin-bottom:10px">
-        <div style="font-size:.68rem;font-weight:600;color:var(--ink3);margin-bottom:5px">VELOCIDADE:</div>
-        <div class="vel-row">
-          <button class="vel-btn on" id="v1" onclick="setVel(1)">🐢 1× Devagar</button>
-          <button class="vel-btn" id="v2" onclick="setVel(2)">🐇 2× Médio</button>
-          <button class="vel-btn" id="v3" onclick="setVel(3)">⚡ 3× Rápido</button>
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-main" onclick="tNext()">Próximo →</button>
-        <button class="btn btn-ghost" onclick="speak(document.getElementById('ttext').textContent)">🔈 Ouvir</button>
-        <button class="btn btn-ghost" onclick="selectAct('trava')">↺ Reiniciar</button>
-      </div>
-    </div></div>`;
-}
-function renderTrava(){
-  const t=TRAVA[st.ti];
-  document.getElementById('ttext').textContent=t.t;
-  document.getElementById('tdica').textContent='💡 '+t.d;
-  document.getElementById('tfocus').textContent='FOCO: '+t.f;
-  document.getElementById('tmeta').textContent=(st.ti+1)+'/'+TRAVA.length;
-  document.getElementById('tdots').innerHTML=dots(TRAVA.length,st.ti);
-  document.getElementById('tprog').style.width=((st.ti+1)/TRAVA.length*100)+'%';
-}
-function tNext(){st.ti=(st.ti+1)%TRAVA.length;if(st.ti===0)toast('🎉 Completou todos!');renderTrava();}
-function setVel(v){st.vel=v;[1,2,3].forEach(n=>{document.getElementById('v'+n).classList.toggle('on',n===v);});toast(['','Devagar — foco em cada fonema','Médio — ritmo natural','Rápido — máxima agilidade'][v]);}
-
-// ─── SÍLABAS E FONEMAS ─────────────────────────────
-function buildSilabas(){
-  st.si=0;setTimeout(renderSilabas,10);
-  return`<div class="panel">
-    <div class="panel-head"><span class="panel-icon">🔤</span><div class="panel-title">Sílabas e Fonemas</div><div class="panel-meta" id="smeta">1/${FONEMAS.length}</div></div>
-    <div class="panel-body">
-      <div class="dots" id="sdots"></div>
-      <div class="prog-wrap"><div class="prog-fill" id="sprog"></div></div>
-      <div id="sdisplay"></div>
-      <div class="btn-row"><button class="btn btn-main" onclick="sNext()">Próximo →</button><button class="btn btn-ghost" onclick="selectAct('silabas')">↺ Reiniciar</button></div>
-    </div></div>`;
-}
-function renderSilabas(){
-  const ex=FONEMAS[st.si];
-  document.getElementById('smeta').textContent=(st.si+1)+'/'+FONEMAS.length;
-  document.getElementById('sdots').innerHTML=dots(FONEMAS.length,st.si);
-  document.getElementById('sprog').style.width=((st.si+1)/FONEMAS.length*100)+'%';
-  document.getElementById('sdisplay').innerHTML=`
-    <div class="display" style="text-align:left">
-      <div class="focus-tag" style="margin-bottom:8px">${ex.title}</div>
-      <div style="font-size:.82rem;color:var(--ink2);margin-bottom:10px;line-height:1.5">${ex.inst}</div>
-      <div class="chips">${ex.items.map(i=>`<div class="chip" onclick="speak('${i.replace(/'/g,"\\'")}')">${i} 🔈</div>`).join('')}</div>
-    </div>
-    <div class="dica-box">💡 ${ex.d}</div>`;
-}
-function sNext(){st.si=(st.si+1)%FONEMAS.length;if(st.si===0)toast('🎉 Completou todos!');renderSilabas();}
-
-// ─── RESPIRAÇÃO ────────────────────────────────────
-function buildResp(){
-  st.ri=0;setTimeout(renderResp,10);
-  return`<div class="panel">
-    <div class="panel-head"><span class="panel-icon">🌬️</span><div class="panel-title">Respiração e Voz</div><div class="panel-meta" id="rmeta">1/${RESP.length}</div></div>
-    <div class="panel-body">
-      <div class="dots" id="rdots"></div>
-      <div class="prog-wrap"><div class="prog-fill" id="rprog"></div></div>
-      <div id="rdisplay"></div>
-      <div class="btn-row"><button class="btn btn-main" onclick="rNext()">Próximo →</button><button class="btn btn-ghost" onclick="selectAct('respiracao')">↺ Reiniciar</button></div>
-    </div></div>`;
-}
-function renderResp(){
-  const ex=RESP[st.ri];
-  document.getElementById('rmeta').textContent=(st.ri+1)+'/'+RESP.length;
-  document.getElementById('rdots').innerHTML=dots(RESP.length,st.ri);
-  document.getElementById('rprog').style.width=((st.ri+1)/RESP.length*100)+'%';
-  document.getElementById('rdisplay').innerHTML=`
-    <div class="display" style="text-align:left;padding:14px">
-      <div style="font-size:1.8rem;text-align:center;margin-bottom:5px">${ex.icon}</div>
-      <div style="font-family:Georgia,serif;font-size:1rem;font-weight:700;text-align:center;margin-bottom:12px">${ex.title}</div>
-      <div class="steps">${ex.steps.map((s,i)=>`<div class="step"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></div>`).join('')}</div>
-    </div>
-    <div class="dica-box">💡 <strong>Nota clínica:</strong> ${ex.d}</div>`;
-}
-function rNext(){st.ri=(st.ri+1)%RESP.length;if(st.ri===0)toast('🎉 Completou todos!');renderResp();}
-
-// ─── MEMÓRIA AUDITIVA ──────────────────────────────
-function buildMemoria(){
-  st.mn=null;st.mi=-1;st.mseries=null;
-  return`<div class="panel">
-    <div class="panel-head"><span class="panel-icon">🧩</span><div class="panel-title">Memória Auditiva Verbal</div><div class="panel-meta" id="mmeta">Selecione o nível</div></div>
-    <div class="panel-body">
-      <div style="font-size:.8rem;color:var(--ink2);margin-bottom:10px;line-height:1.5">Memorize os itens um a um. Depois repita todos <strong>em voz alta na ordem exata</strong>.</div>
-      <div class="nivel-row">${MEMORIA.map((m,i)=>`<button class="nivel-btn" id="mn${i}" onclick="mNivel(${i})">${m.label}</button>`).join('')}</div>
-      <div class="display" style="min-height:72px" id="mdisplay"><div style="color:var(--ink3);font-size:.82rem">👆 Selecione um nível acima</div></div>
-      <div class="mem-items" id="mitems"></div>
-      <div style="font-size:.72rem;color:var(--ink3);min-height:18px;margin-bottom:10px" id="mhint"></div>
-      <div class="btn-row" id="mbtns" style="display:none">
-        <button class="btn btn-main" id="mshowbtn" onclick="mShow()">▶ Mostrar Próximo Item</button>
-        <button class="btn btn-ghost" id="mrevealbtn" style="display:none" onclick="mReveal()">✓ Revelar Resposta</button>
-      </div>
-    </div></div>`;
-}
-function mNivel(n){
-  st.mn=n;st.mi=-1;
-  const nivel=MEMORIA[n];
-  st.mseries=nivel.series[Math.floor(Math.random()*nivel.series.length)];
-  document.getElementById('mmeta').textContent=nivel.label;
-  document.querySelectorAll('.nivel-btn').forEach((b,i)=>b.classList.toggle('on',i===n));
-  document.getElementById('mitems').innerHTML='';
-  document.getElementById('mhint').textContent='Clique em "Mostrar Próximo Item" para começar.';
-  document.getElementById('mbtns').style.display='';
-  document.getElementById('mshowbtn').style.display='';
-  document.getElementById('mrevealbtn').style.display='none';
-  document.getElementById('mdisplay').innerHTML=`<div style="font-size:.8rem;color:var(--ink2)">Você verá <strong>${st.mseries.length} itens</strong> um por vez. Depois repita na ordem exata.</div>`;
-  const old=document.getElementById('mresult');if(old)old.remove();
-}
-function mShow(){
-  st.mi=(st.mi||0)+1;
-  if(st.mi>=st.mseries.length)return;
-  const shown=st.mseries.slice(0,st.mi+1);
-  document.getElementById('mitems').innerHTML=shown.map(w=>`<div class="mem-item">${w}</div>`).join('');
-  speak(shown.join(', '));
-  const hint=document.getElementById('mhint');
-  if(st.mi>=st.mseries.length-1){
-    hint.textContent='✅ Todos mostrados! Repita em voz alta na ordem.';
-    document.getElementById('mshowbtn').style.display='none';
-    document.getElementById('mrevealbtn').style.display='';
-    setTimeout(()=>{document.getElementById('mitems').innerHTML='<div style="color:var(--ink3);font-style:italic;font-size:.8rem">🙈 Itens ocultos — repita de memória!</div>';},3000);
-  } else {
-    hint.textContent=`Item ${st.mi+1} de ${st.mseries.length}`;
-  }
-}
-function mReveal(){
-  const old=document.getElementById('mresult');if(old)old.remove();
-  const div=document.createElement('div');div.id='mresult';div.className='result-box';
-  div.innerHTML=`<strong>Sequência:</strong><br>${st.mseries.map((w,i)=>`<span style="display:inline-block;background:var(--paper);border:1px solid var(--green);border-radius:4px;padding:2px 8px;margin:2px;font-size:.78rem;font-family:monospace"><b>${i+1}.</b> ${w}</span>`).join(' ')}<br><div style="margin-top:7px;font-size:.74rem;color:var(--ink3)">Acertou? Tente um nível mais difícil! 💪</div>`;
-  document.querySelector('#actPanel .panel-body').appendChild(div);
-  speak(st.mseries.join(', '));
-}
-
-// ─── RITMO E PROSÓDIA ──────────────────────────────
-function buildRitmo(){
-  st.ri2=0;setTimeout(renderRitmo,10);
-  return`<div class="panel">
-    <div class="panel-head"><span class="panel-icon">🥁</span><div class="panel-title">Ritmo e Prosódia</div><div class="panel-meta" id="ri2meta">1/${RITMO.length}</div></div>
-    <div class="panel-body">
-      <div class="dots" id="ri2dots"></div>
-      <div class="prog-wrap"><div class="prog-fill" id="ri2prog"></div></div>
-      <div id="ri2display"></div>
-      <div class="btn-row" style="margin-top:10px"><button class="btn btn-main" onclick="ri2Next()">Próximo →</button><button class="btn btn-ghost" onclick="selectAct('ritmo')">↺ Reiniciar</button></div>
-    </div></div>`;
-}
-function renderRitmo(){
-  const ex=RITMO[st.ri2||0];
-  document.getElementById('ri2meta').textContent=(st.ri2+1)+'/'+RITMO.length;
-  document.getElementById('ri2dots').innerHTML=dots(RITMO.length,st.ri2||0);
-  document.getElementById('ri2prog').style.width=((st.ri2+1)/RITMO.length*100)+'%';
-  let html=`<div style="font-family:Georgia,serif;font-size:.95rem;font-weight:700;margin-bottom:12px">${ex.title}</div>`;
-  if(ex.type==='enfase'){
-    html+=`<div class="display"><div class="big-text" style="font-size:1.1rem">"${ex.frase}"</div></div>`;
-    html+=`<div style="font-size:.76rem;color:var(--ink2);margin-bottom:8px">Clique e diga a frase enfatizando a palavra:</div>`;
-    html+=`<div class="enfase-grid">${ex.enfases.map(e=>`<div class="enfase-btn" onclick="enfatizar(this,'${ex.frase.replace(/'/g,"\\'")}','${e.p}')"><span class="enfase-palavra">${e.p}</span><span class="enfase-sentido">${e.s}</span></div>`).join('')}</div>`;
-  }else if(ex.type==='pausa'){
-    html+=`<div style="font-size:.8rem;color:var(--ink2);margin-bottom:8px">${ex.inst}</div>`;
-    const hl=ex.frase.replace(/\|/g,'<span style="color:var(--accent);font-weight:700"> | </span>');
-    html+=`<div class="display"><div class="big-text" style="font-size:1rem;line-height:1.8">${hl}</div></div>`;
-    html+=`<button class="btn btn-ghost" style="margin-bottom:8px" onclick="speak('${ex.frase.replace(/\|/g,',')}')">🔈 Ouvir</button>`;
-  }else if(ex.type==='pares'){
-    html+=`<div style="font-size:.8rem;color:var(--ink2);margin-bottom:10px">${ex.inst}</div>`;
-    html+=ex.pares.map(p=>`<div class="par-row"><div class="par-item" onclick="speak('${p[0]}')">📢 ${p[0]}</div><div class="par-item" onclick="speak('${p[1]}')">❓ ${p[1]}</div></div>`).join('');
-  }else if(ex.type==='velocidade'){
-    html+=`<div class="display"><div class="big-text" style="font-size:1rem">"${ex.frase}"</div></div>`;
-    html+=ex.vels.map(v=>`<div style="display:flex;align-items:center;gap:9px;padding:9px 11px;background:var(--bg);border-radius:7px;margin-bottom:6px;cursor:pointer;border:1.5px solid var(--line)" onclick="speak('${ex.frase}')"><span style="font-size:.82rem;flex:1">${v}</span><span style="color:var(--ink3)">▶</span></div>`).join('');
-  }
-  html+=`<div class="dica-box" style="margin-top:10px">💡 ${ex.d}</div>`;
-  document.getElementById('ri2display').innerHTML=html;
-}
-function enfatizar(el,frase,palavra){document.querySelectorAll('.enfase-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');toast('Enfatize: '+palavra);speak(frase);}
-function ri2Next(){st.ri2=((st.ri2||0)+1)%RITMO.length;if(st.ri2===0)toast('🎉 Completou todos!');renderRitmo();}
-
-// ─── FLUÊNCIA VERBAL ───────────────────────────────
-// variáveis de estado fluência
-// ════════════════════════════════════════════════
-// FLUÊNCIA VERBAL — ENGINE RIGOROSO COM VOZ
-// ════════════════════════════════════════════════
-// Estado global
-let fluRec=null, fluTimer=null, fluSecs=60, fluTotalSecs=60, fluActive=false;
-// fluEntradas: array de objetos {palavra, status}
-// status: 'ok' | 'repetida' | 'invalida'
-let fluEntradas=[];
-// palavras únicas válidas já registradas (para dedup)
-let fluValidas=new Set();
-// buffer de transcrições já processadas (evita reprocessar interims)
-let fluTranscriptBuffer='';
-
-function buildFluencia(){
-  st.fci=Math.floor(Math.random()*FLUENCIA_CATS.length);
-  fluEntradas=[]; fluValidas=new Set(); fluTranscriptBuffer=''; fluActive=false;
-  if(fluTimer){clearInterval(fluTimer);fluTimer=null;}
-  if(fluRec){try{fluRec.abort();}catch(e){} fluRec=null;}
-  setTimeout(fRenderCat,10);
-  return`<div class="panel">
-    <div class="panel-head"><span class="panel-icon">💬</span><div class="panel-title">Fluência Verbal — Avaliação por Voz</div><div class="panel-meta" id="fcatmeta">—</div></div>
-    <div class="panel-body">
-      <div style="font-size:.8rem;color:var(--ink2);margin-bottom:10px;line-height:1.6">
-        Clique em <strong>▶ Iniciar</strong> e fale todas as palavras da categoria que conseguir.<br>
-        <span style="color:var(--green);font-weight:600">✅ Verde</span> = válida &nbsp;
-        <span style="color:var(--red);font-weight:600">❌ Vermelho</span> = repetida ou inválida &nbsp;
-        <span style="font-size:.72rem;color:var(--ink3)">(Chrome/Edge)</span>
-      </div>
-      <div style="margin-bottom:12px">
-        <div style="font-size:.68rem;font-weight:600;color:var(--ink3);margin-bottom:6px">DURAÇÃO:</div>
-        <div class="vel-row">
-          <button class="vel-btn" id="ft30" onclick="fSetTempo(30)">⚡ 30s</button>
-          <button class="vel-btn on" id="ft60" onclick="fSetTempo(60)">🎯 60s</button>
-          <button class="vel-btn" id="ft90" onclick="fSetTempo(90)">🏆 90s</button>
-        </div>
-      </div>
-      <div class="display" style="margin-bottom:10px">
-        <div style="font-size:.62rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Categoria</div>
-        <div class="fluencia-cat" id="fcat" style="font-size:1.9rem"></div>
-        <div style="font-size:.7rem;color:var(--ink3);margin-top:4px" id="fref"></div>
-      </div>
-      <div class="timer-big" id="ftimer">1:00</div>
-      <div class="timer-bar-wrap"><div class="timer-bar" id="fbar" style="width:100%"></div></div>
-
-      <!-- contadores ao vivo -->
-      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
-        <div style="flex:1;background:var(--green-bg);border:1.5px solid var(--green);border-radius:8px;padding:8px 12px;text-align:center">
-          <div style="font-family:Georgia,serif;font-size:1.6rem;font-weight:900;color:var(--green);line-height:1" id="fCountOk">0</div>
-          <div style="font-size:.58rem;color:var(--green);text-transform:uppercase;font-weight:700;letter-spacing:.05em">Válidas</div>
-        </div>
-        <div style="flex:1;background:var(--red-bg);border:1.5px solid var(--red);border-radius:8px;padding:8px 12px;text-align:center">
-          <div style="font-family:Georgia,serif;font-size:1.6rem;font-weight:900;color:var(--red);line-height:1" id="fCountRep">0</div>
-          <div style="font-size:.58rem;color:var(--red);text-transform:uppercase;font-weight:700;letter-spacing:.05em">Repetidas/Erros</div>
-        </div>
-        <div style="flex:1;background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:8px 12px;text-align:center">
-          <div style="font-family:Georgia,serif;font-size:1.6rem;font-weight:900;color:var(--ink);line-height:1" id="fCountTotal">0</div>
-          <div style="font-size:.58rem;color:var(--ink3);text-transform:uppercase;font-weight:700;letter-spacing:.05em">Total ditas</div>
-        </div>
-      </div>
-
-      <!-- lista de palavras em tempo real -->
-      <div style="background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:12px;min-height:70px;margin-bottom:10px">
-        <div style="font-size:.6rem;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">🎙 PALAVRAS DETECTADAS — ao vivo</div>
-        <div id="fWordsList" style="display:flex;flex-wrap:wrap;gap:5px;align-items:center">
-          <span style="font-size:.78rem;color:var(--ink3);font-style:italic">Aguardando início...</span>
-        </div>
-      </div>
-
-      <!-- transcricao bruta interim -->
-      <div style="background:#0d1117;border-radius:8px;padding:9px 12px;margin-bottom:10px;min-height:32px">
-        <div id="fInterim" style="font-family:monospace;font-size:.72rem;color:#7dd3fc;line-height:1.5;word-break:break-word">aguardando voz...</div>
-      </div>
-
-      <div id="fMicStatus" style="font-size:.68rem;font-family:monospace;color:var(--ink3);text-align:center;margin-bottom:8px">● microfone inativo</div>
-
-      <div class="btn-row">
-        <button class="btn btn-main" id="fstartbtn" onclick="fStart()">▶ Iniciar</button>
-        <button class="btn btn-ghost" id="fstopbtn" style="display:none" onclick="fStop()">■ Parar</button>
-        <button class="btn btn-ghost" onclick="fNova()">🔀 Nova Categoria</button>
-      </div>
-      <div id="fresult" style="display:none;margin-top:12px"></div>
-    </div></div>`;
-}
-
-function fSetTempo(s){
-  if(fluActive)return;
-  fluTotalSecs=s; fluSecs=s;
-  ['30','60','90'].forEach(n=>{const b=document.getElementById('ft'+n);if(b)b.classList.toggle('on',parseInt(n)===s);});
-  const m=Math.floor(s/60),sec=s%60;
-  document.getElementById('ftimer').textContent=m+':'+(sec<10?'0':'')+sec;
-}
-
-function fRenderCat(){
-  const c=FLUENCIA_CATS[st.fci||0];
-  document.getElementById('fcat').textContent=c.c;
-  document.getElementById('fref').textContent='Referência clínica: adulto típico nomeia '+c.ref+'+ palavras em 60s';
-  document.getElementById('fcatmeta').textContent='#'+(st.fci+1)+'/'+FLUENCIA_CATS.length;
-}
-
-function fNova(){
-  if(fluActive) fStop();
-  fluEntradas=[]; fluValidas=new Set(); fluTranscriptBuffer='';
-  st.fci=Math.floor(Math.random()*FLUENCIA_CATS.length);
-  fluSecs=fluTotalSecs||60;
-  const m=Math.floor(fluSecs/60),s=fluSecs%60;
-  const timerEl=document.getElementById('ftimer');
-  if(timerEl){timerEl.textContent=m+':'+(s<10?'0':'')+s; timerEl.className='timer-big';}
-  const fbarEl=document.getElementById('fbar');
-  if(fbarEl){fbarEl.style.width='100%'; fbarEl.style.background='var(--green)';}
-  const sb=document.getElementById('fstartbtn'), sp=document.getElementById('fstopbtn');
-  if(sb)sb.style.display=''; if(sp)sp.style.display='none';
-  const fr=document.getElementById('fresult'); if(fr)fr.style.display='none';
-  const fl=document.getElementById('fWordsList'); if(fl)fl.innerHTML='<span style="font-size:.78rem;color:var(--ink3);font-style:italic">Aguardando início...</span>';
-  const fi=document.getElementById('fInterim'); if(fi)fi.textContent='aguardando voz...';
-  const fm=document.getElementById('fMicStatus'); if(fm){fm.textContent='● microfone inativo'; fm.style.color='var(--ink3)';}
-  ['fCountOk','fCountRep','fCountTotal'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='0';});
-  fRenderCat();
-}
-
-// ─── Normalização rigorosa ────────────────────────
-function fNormalizar(w){
-  return w.toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')  // tira acentos
-    .replace(/[^a-z]/g,'')                              // só letras
-    .trim();
-}
-
-// Palavras de ruído que o reconhecedor às vezes injeta
-const FLU_RUIDO=new Set(['a','o','e','um','uma','de','da','do','em','na','no','que','se','por','para','com','mais','mas','isso','esta','este','ela','ele','nos','as','os','eu','me','te','lhe','meu','minha','seu','sua','oi','né','tipo','assim','então','sabe','tá','ah','eh','uh','hm','hmm','ahn','uhm']);
-
-// ─── Processar lote de palavras do recognizer ────
-function fProcessarTexto(texto){
-  if(!fluActive) return;
-  // quebra em tokens
-  const tokens = texto.trim().split(/\s+/).filter(Boolean);
-  tokens.forEach(tok => {
-    const norm = fNormalizar(tok);
-    if(norm.length < 2) return;           // muito curta, ignora
-    if(FLU_RUIDO.has(norm)) return;       // ruído de fala
-    
-    // verifica se é repetição (exata após normalização)
-    const repetida = fluValidas.has(norm);
-    
-    const entrada = {palavra: tok.toLowerCase(), norm, status: repetida ? 'repetida' : 'ok'};
-    fluEntradas.push(entrada);
-    
-    if(!repetida){
-      fluValidas.add(norm);
-    }
-    
-    fAdicionarChip(entrada);
-    fAtualizarContadores();
-  });
-}
-
-function fAdicionarChip(entrada){
-  const lista = document.getElementById('fWordsList');
-  if(!lista) return;
-  // remove placeholder
-  const placeholder = lista.querySelector('span[style*="italic"]');
-  if(placeholder) placeholder.remove();
-  
-  const isOk = entrada.status === 'ok';
-  const chip = document.createElement('span');
-  chip.style.cssText = [
-    'display:inline-flex',
-    'align-items:center',
-    'gap:3px',
-    'padding:4px 10px',
-    'border-radius:7px',
-    'font-size:.78rem',
-    'font-weight:700',
-    'font-family:monospace',
-    'animation:pop .2s ease',
-    isOk
-      ? 'background:var(--green-bg);border:2px solid var(--green);color:var(--green)'
-      : 'background:var(--red-bg);border:2px solid var(--red);color:var(--red);text-decoration:line-through'
-  ].join(';');
-  
-  const icon = isOk ? '✓' : (entrada.status==='repetida'?'↺':'✗');
-  chip.innerHTML = `<span style="font-size:.65rem">${icon}</span>${entrada.palavra}`;
-  if(!isOk){
-    chip.title = entrada.status==='repetida' ? '⚠ Repetida!' : '⚠ Inválida!';
-  }
-  lista.appendChild(chip);
-  // scroll para o final
-  lista.scrollTop = lista.scrollHeight;
-}
-
-function fAtualizarContadores(){
-  const ok = fluEntradas.filter(e=>e.status==='ok').length;
-  const erros = fluEntradas.filter(e=>e.status!=='ok').length;
-  const total = fluEntradas.length;
-  const el1=document.getElementById('fCountOk'); if(el1)el1.textContent=ok;
-  const el2=document.getElementById('fCountRep'); if(el2)el2.textContent=erros;
-  const el3=document.getElementById('fCountTotal'); if(el3)el3.textContent=total;
-}
-
-// ─── Iniciar reconhecimento ────────────────────────
-function fStart(){
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){toast('⚠ Use Chrome ou Edge para usar o microfone!');return;}
-  
-  fluEntradas=[]; fluValidas=new Set(); fluTranscriptBuffer=''; fluActive=true; fluSecs=fluTotalSecs||60;
-  document.getElementById('fstartbtn').style.display='none';
-  document.getElementById('fstopbtn').style.display='';
-  document.getElementById('fresult').style.display='none';
-  document.getElementById('fWordsList').innerHTML='';
-  document.getElementById('fInterim').textContent='ouvindo...';
-  document.getElementById('fMicStatus').textContent='🔴 GRAVANDO — fale as palavras da categoria!';
-  document.getElementById('fMicStatus').style.color='var(--red)';
-  ['fCountOk','fCountRep','fCountTotal'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='0';});
-  
-  const cat=FLUENCIA_CATS[st.fci||0];
-  toast('🎙 Fale palavras de: '+cat.c);
-  
-  fIniciarRec(SR);
-  
-  fluTimer=setInterval(()=>{
-    fluSecs--;
-    const m=Math.floor(fluSecs/60),s=fluSecs%60;
-    const timerEl=document.getElementById('ftimer');
-    if(timerEl) timerEl.textContent=m+':'+String(s).padStart(2,'0');
-    const pct=fluSecs/(fluTotalSecs||60);
-    const fbarEl=document.getElementById('fbar');
-    if(fbarEl){
-      fbarEl.style.width=(pct*100)+'%';
-      fbarEl.style.background=pct>.5?'var(--green)':pct>.2?'#e9a000':'var(--red)';
-    }
-    if(fluSecs<=10 && timerEl) timerEl.className='timer-big urgent';
-    if(fluSecs<=0){clearInterval(fluTimer);fluTimer=null;fStop();}
-  },1000);
-}
-
-function fIniciarRec(SR){
-  if(!fluActive) return;
-  if(!SR) SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR) return;
-  
-  try{
-    fluRec=new SR();
-    fluRec.lang='pt-BR';
-    fluRec.continuous=true;
-    fluRec.interimResults=true;   // precisamos do interim para mostrar o que está sendo falado
-    fluRec.maxAlternatives=1;
-    
-    let ultimoFinalIdx=0;
-    
-    fluRec.onresult=function(e){
-      if(!fluActive) return;
-      
-      let interim='';
-      for(let i=e.resultIndex; i<e.results.length; i++){
-        const texto=e.results[i][0].transcript;
-        if(e.results[i].isFinal){
-          // Processa somente o novo trecho final
-          // (evita reprocessar o que já veio antes)
-          const novo=texto.slice(ultimoFinalIdx).trim();
-          if(novo) fProcessarTexto(novo);
-          ultimoFinalIdx=0; // cada onresult final = nova utterance
-          interim='';
-        } else {
-          interim+=texto;
-        }
-      }
-      // mostra interim na tela
-      const el=document.getElementById('fInterim');
-      if(el) el.textContent=interim||'ouvindo...';
-    };
-    
-    fluRec.onerror=function(e){
-      if(e.error==='no-speech'||e.error==='aborted') return;
-      console.warn('STT error:',e.error);
-      if(fluActive) setTimeout(()=>fIniciarRec(null),400);
-    };
-    
-    fluRec.onend=function(){
-      if(fluActive) setTimeout(()=>fIniciarRec(null),150);
-    };
-    
-    fluRec.start();
-  } catch(ex){
-    console.warn('STT start error:',ex);
-    if(fluActive) setTimeout(()=>fIniciarRec(null),600);
-  }
-}
-
-function fStop(){
-  fluActive=false;
-  if(fluTimer){clearInterval(fluTimer);fluTimer=null;}
-  if(fluRec){try{fluRec.abort();}catch(e){} fluRec=null;}
-  
-  const timerEl=document.getElementById('ftimer');
-  if(timerEl){timerEl.textContent='0:00'; timerEl.className='timer-big';}
-  const fbarEl=document.getElementById('fbar');
-  if(fbarEl) fbarEl.style.width='0%';
-  const sb=document.getElementById('fstartbtn'); if(sb)sb.style.display='';
-  const sp=document.getElementById('fstopbtn'); if(sp)sp.style.display='none';
-  const fm=document.getElementById('fMicStatus');
-  if(fm){fm.textContent='● microfone inativo'; fm.style.color='var(--ink3)';}
-  const fi=document.getElementById('fInterim'); if(fi) fi.textContent='—';
-
-  // ── RESULTADO RIGOROSO ──
-  const cat=FLUENCIA_CATS[st.fci||0];
-  const totalDitas=fluEntradas.length;
-  const validas=fluEntradas.filter(e=>e.status==='ok');
-  const invalidas=fluEntradas.filter(e=>e.status!=='ok');
-  const nVal=validas.length;
-  const nInv=invalidas.length;
-  const used=Math.max(0,(fluTotalSecs||60)-fluSecs);
-
-  // Nota rigorosa: penaliza erros
-  // score = válidas - (invalidas * 0.5), nunca negativo, sobre ref
-  const scoreBruto=Math.max(0, nVal - nInv*0.5);
-  const ratio=scoreBruto/cat.ref;
-  let grade,cor,emoji,feedbackTitulo;
-  if(ratio>=2){grade='S';cor='var(--green)';emoji='🏆';feedbackTitulo='Excepcional! Fluência verbal muito acima da referência.';}
-  else if(ratio>=1.5){grade='A+';cor='var(--green)';emoji='⭐';feedbackTitulo='Excelente! Fluência bem acima do esperado.';}
-  else if(ratio>=1){grade='A';cor='var(--green)';emoji='✅';feedbackTitulo='Boa fluência. Dentro da referência clínica.';}
-  else if(ratio>=0.75){grade='B';cor='var(--blue)';emoji='👍';feedbackTitulo='Adequado. Próximo da referência, mas pode melhorar.';}
-  else if(ratio>=0.5){grade='C';cor='var(--amber)';emoji='📈';feedbackTitulo='Abaixo do esperado. Pratique com mais categorias.';}
-  else if(ratio>=0.3){grade='D';cor='var(--amber)';emoji='⚠️';feedbackTitulo='Bem abaixo da referência. Recomenda-se acompanhamento.';}
-  else{grade='F';cor='var(--red)';emoji='📉';feedbackTitulo='Resultado muito baixo. Avaliação fonoaudiológica indicada.';}
-
-  // Lista completa de palavras ditas com status visual
-  const listaHTML=fluEntradas.length>0
-    ? fluEntradas.map((e,i)=>{
-        const ok=e.status==='ok';
-        const icon=ok?'✓':'✗';
-        const motivo=e.status==='repetida'?' (repetida)':e.status==='invalida'?' (inválida)':'';
-        return `<span style="display:inline-flex;align-items:center;gap:3px;margin:2px 3px;padding:3px 9px;border-radius:6px;font-size:.75rem;font-family:monospace;font-weight:700;
-          ${ok?'background:var(--green-bg);border:1.5px solid var(--green);color:var(--green)':'background:var(--red-bg);border:1.5px solid var(--red);color:var(--red);text-decoration:line-through'}" 
-          title="${ok?'Válida':'⚠'+motivo}">
-          <b style="font-size:.6rem">${i+1}</b>&nbsp;${icon}&nbsp;${e.palavra}${motivo?'<span style="font-size:.55rem;opacity:.7">'+motivo+'</span>':''}
-        </span>`;
-      }).join('')
-    : '<span style="color:var(--ink3);font-style:italic;font-size:.8rem">Nenhuma palavra detectada. Verifique o microfone e fale mais perto.</span>';
-
-  // Detalhes dos erros
-  let erroDetalhe='';
-  if(nInv>0){
-    const repList=invalidas.filter(e=>e.status==='repetida').map(e=>e.palavra).join(', ');
-    if(repList) erroDetalhe+=`<div style="margin-top:6px;font-size:.74rem;color:var(--red)">🔁 <strong>Repetidas:</strong> ${repList}</div>`;
-  }
-
-  const wpm=used>0?Math.round((nVal/used)*60):0;
-
-  const res=document.getElementById('fresult');
-  res.style.display='';
-  res.innerHTML=`
-    <div class="panel">
-      <div class="panel-head"><span class="panel-icon">${emoji}</span><div class="panel-title">Resultado — ${cat.c}</div></div>
-      <div class="panel-body">
-        <!-- métricas principais -->
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px">
-          <div style="text-align:center;background:var(--bg);border-radius:9px;padding:10px 6px;border:2px solid ${cor}">
-            <div style="font-family:Georgia,serif;font-size:2.4rem;font-weight:900;color:${cor};line-height:1">${grade}</div>
-            <div style="font-size:.55rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Nota</div>
-          </div>
-          <div style="text-align:center;background:var(--green-bg);border-radius:9px;padding:10px 6px;border:1.5px solid var(--green)">
-            <div style="font-family:Georgia,serif;font-size:2rem;font-weight:900;color:var(--green);line-height:1">${nVal}</div>
-            <div style="font-size:.55rem;color:var(--green);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Válidas ✓</div>
-          </div>
-          <div style="text-align:center;background:var(--red-bg);border-radius:9px;padding:10px 6px;border:1.5px solid var(--red)">
-            <div style="font-family:Georgia,serif;font-size:2rem;font-weight:900;color:var(--red);line-height:1">${nInv}</div>
-            <div style="font-size:.55rem;color:var(--red);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Erros ✗</div>
-          </div>
-          <div style="text-align:center;background:var(--bg);border-radius:9px;padding:10px 6px;border:1.5px solid var(--line)">
-            <div style="font-family:Georgia,serif;font-size:2rem;font-weight:900;color:var(--ink);line-height:1">${wpm}</div>
-            <div style="font-size:.55rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Palavras/min</div>
-          </div>
-        </div>
-
-        <!-- barra de progresso -->
-        <div style="height:10px;background:var(--line);border-radius:5px;overflow:hidden;margin-bottom:6px">
-          <div style="height:100%;width:${Math.min(100,Math.round(ratio*100))}%;background:${cor};border-radius:5px;transition:width .8s"></div>
-        </div>
-        <div style="font-size:.68rem;color:var(--ink3);margin-bottom:12px">${nVal} válidas de ${cat.ref} de referência clínica — penalidade aplicada: −${(nInv*0.5).toFixed(1)} pontos por erros/repetições</div>
-
-        <!-- avaliação -->
-        <div style="background:${ratio>=1?'var(--green-bg)':ratio>=0.5?'var(--amber-bg)':'var(--red-bg)'};border-left:4px solid ${cor};border-radius:0 9px 9px 0;padding:10px 14px;margin-bottom:12px">
-          <div style="font-weight:700;font-size:.86rem;color:${cor};margin-bottom:4px">${emoji} ${feedbackTitulo}</div>
-          <div style="font-size:.76rem;color:var(--ink2);line-height:1.6">
-            Você disse <strong>${totalDitas}</strong> palavras no total (${used}s usados).<br>
-            <strong style="color:var(--green)">${nVal} válidas</strong>${nInv>0?` e <strong style="color:var(--red)">${nInv} com erro ou repetição</strong>`:''}.<br>
-            Ritmo: <strong>${wpm}</strong> palavras/minuto.
-          </div>
-          ${erroDetalhe}
-        </div>
-
-        <!-- lista completa -->
-        <div style="font-size:.74rem;font-weight:700;color:var(--ink2);margin-bottom:8px">📋 Todas as palavras ditas (${totalDitas}):</div>
-        <div style="background:var(--bg);border-radius:9px;padding:10px;line-height:2.2;margin-bottom:12px">${listaHTML}</div>
-
-        <div style="background:var(--blue-bg);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:9px 12px;font-size:.75rem;color:var(--ink2);line-height:1.6;margin-bottom:12px">
-          <strong>💡 Dica clínica:</strong> Evite repetir e tente palavras menos comuns. Quanto mais variado o vocabulário, melhor a fluência verbal.
-          Se uma palavra que falou não apareceu, articule mais devagar e pausada próximo ao microfone.
-        </div>
-
-        <div style="display:flex;gap:7px;flex-wrap:wrap">
-          <button class="btn btn-main" onclick="fNova()">🔀 Nova Categoria</button>
-          <button class="btn btn-ghost" onclick="fStart()">↺ Repetir Esta</button>
-        </div>
-      </div>
-    </div>`;
-  res.scrollIntoView({behavior:'smooth',block:'start'});
-}
-
-// ════════════════════════════════════════════════
-// STOP DE FALA — ENGINE
-// ════════════════════════════════════════════════
-const HESIT=['ã','ê','né','tipo','assim','então','sabe','tá','é','ahn','hm','hmm','ah','uh','eh','uhm'];
-const FILLERS=['né','tipo','assim','então','sabe','literalmente','basicamente','enfim','aliás','inclusive','meio que'];
-
-let stopMode='livre';
+let vel=0.5;
+let travasIdx=0;
+let currentPage='trava';
 let recActive=false;
+let recInterval=null;
+let recSecs=0;
 let recognition=null;
-let audioCtx=null,analyser=null,animFr=null,streamRef=null;
-let recSecs=0,recInterval=null;
 let fullTranscript='';
 let wordTimestamps=[];
-let pauseCount=0,hesitCount=0,speechWC=0;
+let pauseCount=0;
+let hesitCount=0;
+let speechWC=0;
 let lastWordTime=0;
+let stopMode='copia';
 let refWords=[];
 let spokenIdx=0;
+let sgCats=[{name:'Pessoa',on:true},{name:'Lugar',on:true},{name:'Coisa',on:true},{name:'Verbo',on:true},{name:'Alimento',on:true}];
+let sgTempo=60;let sgSecs=60;let sgLetra='';let sgTimer=null;
+let karaIdx=0;let karaGenre='todas';let karaPlaying=false;let karaTime=0;
 
-function checkSpeechAPI(){
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){
-    document.getElementById('warnBar').style.display='';
-    document.getElementById('stopSupport').textContent='⚠ Use Chrome/Edge';
-    document.getElementById('stopSupport').style.color='var(--amber)';
-  }
+const HESIT=['ã','ahn','é','hã','na','né','sabe','tipo','talvez','tipo assim'];
+const FILLERS=['aham','aí','além','aliás','assim','bah','blá','cara','eba','entre','então','hã','huã','lá','meu','né','não é','obaaa','ou','pausas','pois','sabe','tal','tá','tá certo','tipo','uau','ué','viu'];
+const SEGU_SÍLABAS=['pa','pe','pi','po','pu','ba','be','bi','bo','bu','ta','te','ti','to','tu','da','de','di','do','du','ca','co','cu','ga','go','gu','fa','fe','fi','fo','fu','va','ve','vi','vo','vu','ja','je','ji','jo','ju','la','le','li','lo','lu','ma','me','mi','mo','mu','na','ne','ni','no','nu','ra','re','ri','ro','ru','sa','se','si','so','su','za','ze','zi','zo','zu','xa','xe','xi','xo','xu','cha','che','chi','cho','chu','lha','lhe','lhi','lho','lhu','nha','nhe','nhi','nho','nhu'];
+
+// ════════════════════════════════════════════════
+// TRAVA-LÍNGUAS DATA
+// ════════════════════════════════════════════════
+const travas=[
+  {id:0,t1:'O rato roeu a roupa do rei de Roma.',t2:'Três pratos de trigo para três tigres tristes.',t3:'O rato roeu a roupa do rei de Roma. Três pratos de trigo para três tigres tristes. Sabendo o sabiá que o sábio sabia assobiar, o sábio assoviava sabendo. Pinga pinga vai a pinga, pinga a pinga até parar.',focus:'R oclusivo',desc:'Cada R = vibração rápida e limpa. Língua toca o palato. Consoante pura: não engula, não araste.'},{id:1,t1:'Peça para pipoca pipa pipoco pipá pipecar!',t2:'Papai pegou pano para pendurar pedra preciosa.',t3:'Peça para pipoca pipa pipoco pipá pipecar! Papai pegou pano para pendurar pedra preciosa. Porta pode parar, pedra para parar. Peruca preta para a pupa pinha pipita pepa.',focus:'P oclusivo',desc:'Cada P = sopro curto e preciso. Lábios bem fechados antes de soltar. Volume explode.'},{id:2,t1:'Que querem que faça com as quatro queimações?',t2:'Quero que qualquer um queira quilo de queijo.',t3:'Que querem que faça com as quatro queimações? Quero que qualquer um queira quilo de queijo. Questão da química quântica no quarto. Quede o quassoar quezelância?',focus:'QU gutural',desc:'Sons de garganta. Vena do pescoço vibra. Ressonância profunda e grave.'},{id:3,t1:'Sou seu seguro de segurança, señor sensato.',t2:'Seis serras serradores serrando serraria.',t3:'Sou seu seguro de segurança, señor sensato. Seis serras serradores serrando serraria. Sertão seco sem seresta. Sílaba seca separada, segura.',focus:'S fricativo',desc:'Fricção entre dentes. Ar constante. Língua não toca nada — fio de ar passa pelos dentes.'},{id:4,t1:'Foguete feio faz fuinha furando fio fino.',t2:'Floresta florida floresce feliz flores frescas.',t3:'Foguete feio faz fuinha furando fio fino. Floresta florida floresce feliz flores frescas. Figura feia feita com ferro fino. Féfefe fufu fififi fofo fufufa.',focus:'F fricativo',desc:'Fricção lábio-dentes. Ar constante mas suave. Sem explosão — apenas atrito.'}
+];
+
+const READ_TEXTS={
+  txt1:'O rato roeu a roupa do rei de Roma. Três pratos de trigo para três tigres tristes. Sabendo o sabiá que o sábio sabia assobiar, o sábio assoviava sabendo.',
+  txt2:'Era uma vez uma menina que morava numa casa vermelha no meio da floresta. Ela tinha uma avó muito querida que vivia sozinha do outro lado do bosque. Todo dia a menina caminhava entre as árvores para visitá-la.',
+  txt3:'Os cientistas descobriram uma nova espécie de ave na Amazônia. A descoberta foi feita durante uma expedição de pesquisa que durou três meses. Os pesquisadores acreditam que ainda existem muitas espécies desconhecidas naquela região.'
+};
+
+// ════════════════════════════════════════════════
+// KARAOKÊ — ENGINE COM LETRA + NOTA POR VOZ
+// ════════════════════════════════════════════════
+const SONGS=[
+  {id:1,title:"Evidências",artist:"Chitãozinho & Xororó",genre:"sertanejo",tip:"Vogais prolongadas do sertanejo: sustente o som sem apertar a garganta. Use o apoio abdominal para os agudos.",
+   lyrics:[
+    {t:3,w:"O impossível do amor"},
+    {t:7,w:"É o que nos faz querer mais"},
+    {t:11,w:"A saudade que dói"},
+    {t:15,w:"E a dor que nos faz feliz"},
+    {t:20,w:"Evidências que me dizem"},
+    {t:24,w:"Que você ainda me quer"},
+    {t:28,w:"Mas orgulho não deixa"},
+    {t:32,w:"Você me dizer que me quer"},
+    {t:37,w:"Não aguento mais fingir"},
+    {t:41,w:"Que já me esqueci de você"},
+    {t:45,w:"Nem consigo mais mentir"},
+    {t:49,w:"Que já não penso mais em você"},
+  ]},
+  {id:2,title:"Tocando em Frente",artist:"Almir Sater / Renato Teixeira",genre:"mpb",tip:"MPB contemplativa: dicção limpa e ritmo interno. Cada consoante final deve ser articulada com precisão.",
+   lyrics:[
+    {t:3,w:"Ando devagar porque já tive pressa"},
+    {t:8,w:"E levo esse sorriso porque já chorei demais"},
+    {t:14,w:"Hoje me sinto mais forte, mais feliz"},
+    {t:18,w:"Quem sabe, só levo a certeza"},
+    {t:22,w:"De que muito pouco eu sei"},
+    {t:26,w:"Ou que nada sei"},
+    {t:30,w:"Cada um de nós compõe a sua história"},
+    {t:35,w:"Cada ser em si carrega o dom de ser capaz"},
+    {t:40,w:"E ser feliz"},
+  ]},
+  {id:3,title:"Asa Branca",artist:"Luiz Gonzaga",genre:"forró",tip:"Forró nordestino: vogais abertas e bem projetadas. O sotaque regional é parte da expressão — abra bem a boca!",
+   lyrics:[
+    {t:3,w:"Quando o verde dos teus olhos"},
+    {t:7,w:"Se espalhar na plantação"},
+    {t:11,w:"Eu te asseguro não chores não"},
+    {t:16,w:"Que eu voltarei meu coração"},
+    {t:21,w:"Hoje longe muitas léguas"},
+    {t:25,w:"Numa triste solidão"},
+    {t:29,w:"Espero a chuva cair de novo"},
+    {t:33,w:"Pra mim voltar pro meu sertão"},
+  ]},
+  {id:4,title:"Aquarela",artist:"Toquinho",genre:"infantil",tip:"Clássico infantil MPB: articulação perfeita. Cada consoante é uma pincelada — não engula nenhuma!",
+   lyrics:[
+    {t:3,w:"Numa folha qualquer eu desenho um sol amarelo"},
+    {t:8,w:"E com cinco ou seis retas é fácil fazer um castelo"},
+    {t:13,w:"Corro o lápis em torno da mão"},
+    {t:17,w:"E me dou uma luva"},
+    {t:21,w:"E se faço chover com dois riscos"},
+    {t:25,w:"Tenho um guarda-chuva"},
+    {t:29,w:"Se um pinguinho de tinta cai num pedaço de papel"},
+    {t:34,w:"Num instante imagino uma linda tarde de sol"},
+  ]},
+  {id:5,title:"Garota de Ipanema",artist:"Tom Jobim / Vinícius de Moraes",genre:"mpb",tip:"Bossa Nova: precisão rítmica acima de tudo. Cada sílaba tem lugar exato no tempo — não antecipe nem atrase.",
+   lyrics:[
+    {t:3,w:"Olha que coisa mais linda"},
+    {t:7,w:"Mais cheia de graça"},
+    {t:10,w:"É ela menina que vem e que passa"},
+    {t:15,w:"Num doce balanço a caminho do mar"},
+    {t:20,w:"Moça do corpo dourado"},
+    {t:24,w:"Do sol de Ipanema"},
+    {t:27,w:"O seu balançado é mais que um poema"},
+    {t:32,w:"É a coisa mais linda que eu já vi passar"},
+  ]},
+  {id:6,title:"O Leãozinho",artist:"Caetano Veloso",genre:"mpb",tip:"Tropicalismo suave: voz de câmara, volume baixo mas dicção perfeita. Murmúrio bem articulado.",
+   lyrics:[
+    {t:3,w:"Hoje eu quero a rosa mais linda"},
+    {t:7,w:"Que existe no jardim"},
+    {t:10,w:"Pra dar ao meu leãozinho"},
+    {t:14,w:"Que mora em mim"},
+    {t:17,w:"Hoje eu quero entrar no mar"},
+    {t:21,w:"E mergulhar fundo"},
+    {t:24,w:"Pra ver meu leãozinho"},
+    {t:28,w:"No fundo do mundo"},
+  ]},
+  {id:7,title:"Luar do Sertão",artist:"Catulo da Paixão Cearense",genre:"sertanejo",tip:"Raízes do sertanejo: vogais abertas e ressonância nasal. Sinta a vibração nas maçãs do rosto.",
+   lyrics:[
+    {t:3,w:"Não há, ó gente, ó não"},
+    {t:7,w:"Luar como esse do sertão"},
+    {t:11,w:"Não há, ó gente, ó não"},
+    {t:15,w:"Luar como esse do sertão"},
+    {t:19,w:"Oh que saudade do luar da minha terra"},
+    {t:24,w:"Lá na serra branquejando folhas secas pelo chão"},
+    {t:30,w:"Este luar cá da cidade tão escuro"},
+    {t:35,w:"Não tem a saudade do luar lá do sertão"},
+  ]},
+  {id:8,title:"Trem Bala",artist:"Ana Vilela",genre:"mpb",tip:"Pop MPB contemporâneo: respire antes de cada verso longo. Nunca comece uma frase sem ter ar suficiente.",
+   lyrics:[
+    {t:3,w:"Não é sobre ter toda riqueza do mundo"},
+    {t:8,w:"É sobre ter paz onde a alegria cabe"},
+    {t:13,w:"É sobre ter a certeza de que vale a pena"},
+    {t:18,w:"Lutar pelo que se ama"},
+    {t:22,w:"É sobre ser completo"},
+    {t:25,w:"E não depender de nada"},
+    {t:28,w:"Pra sentir que a vida tem sentido"},
+    {t:33,w:"É sobre acordar sorrindo"},
+  ]},
+  {id:9,title:"Como Nossos Pais",artist:"Elis Regina",genre:"mpb",tip:"Clássico MPB: atenção às consoantes nasais 'ã', 'em', 'im'. A ressonância nasal deve vibrar no nariz.",
+   lyrics:[
+    {t:3,w:"Não quero lembrar"},
+    {t:6,w:"Não quero falar"},
+    {t:9,w:"De tempo passado"},
+    {t:13,w:"Meu pai me dizia"},
+    {t:16,w:"Que a gente esquecia"},
+    {t:19,w:"O que não foi dado"},
+    {t:23,w:"Deixa isso pra lá"},
+    {t:26,w:"Já deu, já passou"},
+    {t:29,w:"Já vai ser diferente"},
+  ]},
+  {id:10,title:"Construção",artist:"Chico Buarque",genre:"mpb",tip:"Poesia musical: cada palavra aguda no final do verso é intencional. Sustente a última sílaba tônica com força.",
+   lyrics:[
+    {t:3,w:"Amou daquela vez como se fosse a última"},
+    {t:8,w:"Beijou sua mulher como se fosse a última"},
+    {t:13,w:"E cada filho seu como se fosse o único"},
+    {t:18,w:"E atravessou a rua com seu passo bêbado"},
+    {t:23,w:"Subiu a construção como se fosse máquina"},
+    {t:28,w:"Ergueu no patamar quatro paredes sólidas"},
+    {t:33,w:"Tijolo com tijolo num desenho mágico"},
+  ]},
+  {id:11,title:"O Que É, O Que É",artist:"Gonzaguinha",genre:"mpb",tip:"MPB filosófico: cada palavra carrega peso emocional. Articule com intensidade crescente do início ao fim do verso.",
+   lyrics:[
+    {t:3,w:"O que é, o que é"},
+    {t:6,w:"A vida meu irmão"},
+    {t:9,w:"É a arte do encontro"},
+    {t:13,w:"Embora haja tanto desencontro pela vida"},
+    {t:18,w:"É a promessa de amor"},
+    {t:22,w:"Na vida e na sorte"},
+    {t:26,w:"É o beijo da vida"},
+    {t:30,w:"No rosto da morte"},
+  ]},
+  {id:12,title:"Pais e Filhos",artist:"Legião Urbana",genre:"rock",tip:"Rock MPB: dicção próxima da fala natural. Cada palavra deve ser compreensível mesmo no ritmo rock.",
+   lyrics:[
+    {t:3,w:"Deixa eu dizer que te amei"},
+    {t:7,w:"E que hoje me arrependo"},
+    {t:11,w:"Pois foi você que partiu"},
+    {t:15,w:"E agora eu me perco"},
+    {t:19,w:"Mas toda criança tem direito"},
+    {t:23,w:"Ao amor que merece"},
+    {t:27,w:"E um dia a vida cresce"},
+    {t:31,w:"E esse amor permanece"},
+  ]},
+  {id:13,title:"Viola Caipira",artist:"Renato Teixeira",genre:"sertanejo",tip:"Sertanejo raiz: valorize a última sílaba de cada verso. Essa cadência é a identidade da moda de viola.",
+   lyrics:[
+    {t:3,w:"Minha terra tem palmeiras"},
+    {t:7,w:"Onde canta o sabiá"},
+    {t:11,w:"As aves que aqui gorjeiam"},
+    {t:15,w:"Não gorjeiam como lá"},
+    {t:19,w:"Não permita Deus que eu morra"},
+    {t:23,w:"Sem que eu volte para lá"},
+    {t:27,w:"Sem que desfrute os primores"},
+    {t:31,w:"Que não encontro por cá"},
+  ]},
+  {id:14,title:"Sanfoneiro Maluquinho",artist:"Luiz Gonzaga",genre:"forró",tip:"Forró pé-de-serra: ritmo binário forte. Bata o pé para manter o tempo e não arrastar o andamento.",
+   lyrics:[
+    {t:3,w:"Sanfoneiro maluquinho"},
+    {t:6,w:"Que tocava noite e dia"},
+    {t:10,w:"No xaxado na valsinha"},
+    {t:14,w:"E no baião de alegria"},
+    {t:18,w:"Ei toca forró"},
+    {t:21,w:"Toca baião"},
+    {t:24,w:"Que eu quero dançar"},
+    {t:27,w:"Com meu coração"},
+  ]},
+  {id:15,title:"Corcovado",artist:"Tom Jobim",genre:"mpb",tip:"Bossa Nova íntima: voz de câmara. Pense em sussurrar com perfeita articulação — menos é mais.",
+   lyrics:[
+    {t:3,w:"Um cantinho e um violão"},
+    {t:7,w:"Este amor uma canção"},
+    {t:11,w:"Pra fazer feliz a quem se ama"},
+    {t:16,w:"Muita calma pra pensar"},
+    {t:20,w:"E ter tempo pra sonhar"},
+    {t:24,w:"Da janela vê-se o Corcovado"},
+    {t:29,w:"O Redentor que lindo"},
+    {t:33,w:"Quero a vida sempre assim"},
+  ]},
+  {id:16,title:"Asas da Liberdade",artist:"João Paulo e Daniel",genre:"sertanejo",tip:"Dueto sertanejo: imagine duas vozes alternando. Varie levemente o timbre entre as estrofes.",
+   lyrics:[
+    {t:3,w:"Eu quero ter asas"},
+    {t:6,w:"Para poder voar"},
+    {t:9,w:"Subir muito alto"},
+    {t:12,w:"E nunca mais parar"},
+    {t:16,w:"Liberdade é o bem maior"},
+    {t:20,w:"Que Deus nos deu"},
+    {t:23,w:"Asas da liberdade"},
+    {t:27,w:"É o que eu sou"},
+  ]},
+  {id:17,title:"Interior de Minas",artist:"Sérgio Reis",genre:"sertanejo",tip:"Sertanejo narrativo: conta uma história. Use variação de volume para marcar os momentos dramáticos.",
+   lyrics:[
+    {t:3,w:"Lá no interior de Minas"},
+    {t:7,w:"Numa cidadezinha"},
+    {t:10,w:"Existe uma saudade"},
+    {t:14,w:"Que me persegue fresquinha"},
+    {t:18,w:"Do cheiro do café"},
+    {t:21,w:"Da fogueira na varanda"},
+    {t:25,w:"Da voz da minha mãe"},
+    {t:29,w:"Que ainda me chama"},
+  ]}
+];
+
+// ════════════════════════════════════════════════
+// UI CONTROLS
+// ════════════════════════════════════════════════
+function selectAct(act){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page'+act.charAt(0).toUpperCase()+act.slice(1)).classList.add('active');
+  document.querySelector(`[onclick="selectAct('${act}')"]`).classList.add('active');
+  currentPage=act;
+  if(act==='copia'||act==='fluencia')stopMode=act==='copia'?'copia':'leitura';
+  if(act==='kara')karaInit();
+  if(act==='stop')sgInit();
 }
 
-function setMode(m){
-  stopMode=m;
-  document.getElementById('mcard-livre').classList.toggle('on',m==='livre');
-  document.getElementById('mcard-leitura').classList.toggle('on',m==='leitura');
-  document.getElementById('textSelectorPanel').style.display=m==='leitura'?'':'none';
-}
+// ════════════════════════════════════════════════
+// TRAVA-LÍNGUAS
+// ════════════════════════════════════════════════
+function nextTrava(){travasIdx=(travasIdx+1)%travas.length;updateTravasDisplay();}
+function setVel(v){vel=v;document.querySelectorAll('.vel-btn').forEach((b,i)=>b.classList.toggle('on',i===[0.5,0.7,1.0,1.3].indexOf(v)));}
+function updateTravasDisplay(){const t=travas[travasIdx];document.getElementById('travaBig').textContent=t.t1;document.getElementById('travasDesc').innerHTML=`<strong>${t.focus}:</strong> ${t.desc}`;}
+window.addEventListener('load',()=>updateTravasDisplay());
 
-function loadRefText(){
-  const id=document.getElementById('readTextSelect').value;
-  const box=document.getElementById('refTextBox');
-  if(!id){box.style.display='none';return;}
-  const txt=READ_TEXTS[id]||'';
-  refWords=txt.trim().split(/\s+/);
-  spokenIdx=0;
-  box.style.display='';
-  box.innerHTML=refWords.map((w,i)=>`<span id="rw${i}" style="${i===0?'background:var(--accent);color:#fff;border-radius:3px;padding:0 2px':''}">${w}</span> `).join('');
-}
+// ════════════════════════════════════════════════
+// PROSÓDIA
+// ════════════════════════════════════════════════
+const ENFASE=[
+  {palavra:'Você',sentido:'Afirmação simples',tipo:'decl'},{palavra:'Você?',sentido:'Interrogação: dúvida',tipo:'interr'},{palavra:'Você!',sentido:'Exclamação: surpresa/ênfase',tipo:'excl'},{palavra:'Voc...ê...',sentido:'Stretching: suspense, espera',tipo:'stretch'}
+];
+function initEnfase(){const html=ENFASE.map((e,i)=>`<button class="enfase-btn ${i===0?'on':''}" onclick="toggleEnfase(this)"><div class="enfase-palavra">${e.palavra}</div><div class="enfase-sentido">${e.sentido}</div></button>`).join('');document.getElementById('enfaseContainer').innerHTML=`<div class="enfase-grid">${html}</div>`;}
+function toggleEnfase(el){document.querySelectorAll('.enfase-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');const i=[...document.querySelectorAll('.enfase-btn')].indexOf(el);const e=ENFASE[i];speak(e.palavra);}
+window.addEventListener('load',initEnfase);
+
+// ════════════════════════════════════════════════
+// REC & TRANSCRIPTION
+// ════════════════════════════════════════════════
+let waveCanvas,waveCtx,analyser,dataArray;
+function startWave(){if(!navigator.mediaDevices)return;navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{const ctx=new(window.AudioContext||window.webkitAudioContext)();const src=ctx.createMediaStreamSource(stream);analyser=ctx.createAnalyser();src.connect(analyser);analyser.fftSize=256;dataArray=new Uint8Array(analyser.frequencyBinCount);waveCanvas=document.getElementById('waveCanvas');if(!waveCanvas)return;waveCtx=waveCanvas.getContext('2d');function draw(){requestAnimationFrame(draw);if(!recActive)return;analyser.getByteFrequencyData(dataArray);waveCtx.fillStyle='#0d1117';waveCtx.fillRect(0,0,waveCanvas.width,waveCanvas.height);waveCtx.strokeStyle='#00ff00';waveCtx.lineWidth=2;waveCtx.beginPath();const sliceWidth=waveCanvas.width/dataArray.length;let x=0;for(let i=0;i<dataArray.length;i++){const v=dataArray[i]/128.0;const y=(v*waveCanvas.height)/2;if(i===0)waveCtx.moveTo(x,y);else waveCtx.lineTo(x,y);x+=sliceWidth;}waveCtx.lineTo(waveCanvas.width,waveCanvas.height/2);waveCtx.stroke();}draw();}).catch(e=>{console.log('Mic access denied');});}
+function stopWave(){analyser=null;dataArray=null;}
+function checkPause(){if(Date.now()-lastWordTime>3000)pauseCount++;}
 
 function toggleRec(){if(recActive)stopRec();else startRec();}
 
@@ -1449,768 +806,145 @@ function processWords(text){
   fullTranscript+=' '+text;
 }
 
-function checkPause(){if(!recActive||!speechWC)return;if((Date.now()-lastWordTime)/1000>3)pauseCount++;}
+function loadRefText(){
+  const id=document.getElementById('readTextSelect').value;
+  const t=READ_TEXTS[id];
+  if(!t)return;
+  const words=t.split(/\s+/);
+  const html=words.map((w,i)=>`<span id="rw${i}" style="transition:all .15s">${w}</span>`).join(' ');
+  document.getElementById('readTextDisplay').innerHTML=html;
+  document.getElementById('rw0').style.cssText='background:var(--accent);color:#fff;border-radius:3px;padding:0 2px';
+}
 
 function analisar(){
-  if(!fullTranscript.trim()){toast('Grave algo primeiro!');return;}
-  const words=fullTranscript.trim().split(/\s+/).filter(Boolean);
-  const wpm=recSecs>0?Math.round((words.length/recSecs)*60):0;
-  const fillerMap={};
-  words.forEach(w=>{const c=w.toLowerCase().replace(/[.,!?;:]/g,'');if(FILLERS.includes(c))fillerMap[c]=(fillerMap[c]||0)+1;});
-  const repMap={};
-  for(let i=0;i<words.length-1;i++){const a=words[i].toLowerCase().replace(/[.,!?;:]/g,''),b=words[i+1].toLowerCase().replace(/[.,!?;:]/g,'');if(a===b&&a.length>2)repMap[a]=(repMap[a]||0)+1;}
-  const fillerTotal=Object.values(fillerMap).reduce((a,b)=>a+b,0);
-  const repTotal=Object.values(repMap).reduce((a,b)=>a+b,0);
-  let score=100;
-  if(wpm<60)score-=25;else if(wpm<80)score-=15;else if(wpm>220)score-=25;else if(wpm>180)score-=10;
-  score-=Math.min(30,fillerTotal*5);
-  score-=Math.min(20,hesitCount*3);
-  score-=Math.min(15,pauseCount*3);
-  score-=Math.min(10,repTotal*4);
-  score=Math.max(0,Math.min(100,score));
-  const grade=score>=90?'S':score>=80?'A':score>=70?'B':score>=60?'C':score>=50?'D':'F';
-  document.getElementById('mWPM').textContent=wpm;
-  document.getElementById('mPausas').textContent=pauseCount;
-  document.getElementById('mHesit').textContent=hesitCount;
-  document.getElementById('mScore').textContent=score;
-  document.getElementById('mWPM').style.color=wpm>=100&&wpm<=160?'var(--green)':wpm<80||wpm>200?'var(--red)':'var(--amber)';
-  document.getElementById('mScore').style.color=score>=80?'var(--green)':score>=60?'var(--amber)':'var(--red)';
-  document.getElementById('metricsGrid').style.display='';
-  const probs=[];
-  const scoreType=score>=80?'success':score>=60?'info':'error';
-  probs.push({t:scoreType,i:score>=80?'🏆':score>=60?'📈':'📉',title:`Score: ${score}/100 — Nota ${grade}`,desc:`${words.length} palavras em ${Math.floor(recSecs/60)}m${recSecs%60}s. ${score>=80?'Ótima performance!':score>=60?'Desempenho satisfatório.':'Vários pontos precisam de atenção.'}`});
-  let spColor,spLabel,spDesc;
-  if(wpm<60){spColor='error';spLabel='MUITO LENTA';spDesc='Extremamente lenta. Treine leitura em voz alta diariamente.';}
-  else if(wpm<80){spColor='warning';spLabel='LENTA';spDesc='Abaixo do ideal. Insegurança deixa a fala arrastada. Respire fundo e mantenha o ritmo.';}
-  else if(wpm<=100){spColor='info';spLabel='MODERADA';spDesc='Levemente abaixo do ideal. Boa para explicações técnicas ou conteúdo denso.';}
-  else if(wpm<=160){spColor='success';spLabel='✅ IDEAL';spDesc='Velocidade ideal para comunicação clara e profissional. Mantenha!';}
-  else if(wpm<=180){spColor='info';spLabel='ANIMADA';spDesc='Um pouco acima do ideal. Respire nas pausas e enfatize palavras importantes.';}
-  else if(wpm<=220){spColor='warning';spLabel='RÁPIDA';spDesc='Falando rápido demais. Desacelere conscientemente.';}
-  else{spColor='error';spLabel='MUITO RÁPIDA';spDesc='Velocidade extrema. Faça exercícios de respiração e pratique falar mais devagar.';}
-  probs.push({t:spColor,i:'🎙️',title:`Velocidade: ${wpm} PPM — ${spLabel}`,desc:spDesc+' Referência ideal: 100–160 PPM.'});
-  if(hesitCount===0)probs.push({t:'success',i:'🎯',title:'Zero hesitações — fala fluente',desc:'Nenhum "ã", "ê", "hm", "ah". Demonstra domínio do conteúdo e segurança.'});
-  else if(hesitCount<=2)probs.push({t:'info',i:'💬',title:`${hesitCount} hesitação(ões) — nível leve`,desc:'Ocorrência leve — normal em fala espontânea. Substitua por pausa silenciosa.'});
-  else if(hesitCount<=5)probs.push({t:'warning',i:'😐',title:`${hesitCount} hesitações — nível moderado`,desc:'Hesitações frequentes indicam falta de familiaridade com o conteúdo. Grave mais vezes até fluir.'});
-  else probs.push({t:'error',i:'😬',title:`${hesitCount} hesitações — nível alto`,desc:`Alta taxa de "ã", "ê", "hm". Pratique pausas em silêncio — o silêncio é mais profissional.`});
-  if(fillerTotal===0)probs.push({t:'success',i:'✨',title:'Nenhum vício de linguagem',desc:'Não usou "né", "tipo", "assim", "basicamente" etc. Vocabulário limpo e comunicação direta.'});
-  else{const list=Object.entries(fillerMap).sort((a,b)=>b[1]-a[1]).map(([w,c])=>`"${w}" ${c}×`).join(' · ');probs.push({t:fillerTotal>5?'error':'warning',i:'🔁',title:`${fillerTotal} vícios de linguagem`,desc:`Encontrados: ${list}. Substitua por pausa silenciosa.`});}
-  if(repTotal>0){const list=Object.keys(repMap).map(w=>`"${w}"`).join(', ');probs.push({t:'warning',i:'🔄',title:`${repTotal} repetição(ões) de palavras consecutivas`,desc:`Palavras repetidas: ${list}. Organize o raciocínio antes de falar.`});}
-  if(pauseCount===0)probs.push({t:'success',i:'▶️',title:'Fala contínua sem pausas excessivas',desc:'Fluxo contínuo. Demonstra domínio do conteúdo e boa preparação.'});
-  else if(pauseCount<=2)probs.push({t:'info',i:'⏸️',title:`${pauseCount} pausa(s) longa(s) — aceitável`,desc:'Pausas ocasionais são normais.'});
-  else if(pauseCount<=4)probs.push({t:'warning',i:'⏸️',title:`${pauseCount} pausas longas detectadas`,desc:'Muitas pausas quebram o ritmo.'});
-  else probs.push({t:'error',i:'🛑',title:`${pauseCount} pausas longas — impacto alto`,desc:`${pauseCount} interrupções (>3s) prejudicam muito a experiência do ouvinte.`});
-  if(stopMode==='leitura'&&refWords.length>0){
-    const cov=Math.min(100,Math.round((spokenIdx/refWords.length)*100));
-    if(cov<70)probs.push({t:'error',i:'📄',title:`Apenas ${cov}% do texto coberto`,desc:'Fale mais claramente e devagar para o reconhecimento captar melhor.'});
-    else if(cov<90)probs.push({t:'warning',i:'📄',title:`${cov}% do texto coberto — bom!`,desc:'Quase lá! Trabalhe a dicção especialmente em palavras difíceis.'});
-    else probs.push({t:'success',i:'📄',title:`${cov}% do texto coberto — excelente!`,desc:'Leu praticamente todo o texto com clareza suficiente. Ótima dicção!'});
-  }
-  const foco=score<60?'hesitações e vícios':hesitCount>3?'hesitações':fillerTotal>3?'vícios de linguagem':pauseCount>3?'pausas longas':'ritmo';
-  probs.push({t:'info',i:'💡',title:'Dica personalizada',desc:`Foco principal: <strong>${foco}</strong>. Grave-se 5 minutos todo dia lendo em voz alta. Consistência > duração.`});
-  const list=document.getElementById('probList');
-  list.innerHTML='';
-  probs.forEach(p=>{
-    const d=document.createElement('div');
-    d.className='prob-item '+p.t;
-    d.innerHTML=`<span style="font-size:1.1rem;flex-shrink:0">${p.i}</span><div><strong style="font-size:.84rem">${p.title}</strong><br><span style="font-size:.78rem">${p.desc}</span></div>`;
-    list.appendChild(d);
-  });
-  document.getElementById('relatorioPanel').style.display='';
-  document.getElementById('relatorioPanel').scrollIntoView({behavior:'smooth',block:'start'});
-}
-
-function limparStop(){
-  fullTranscript='';speechWC=0;hesitCount=0;pauseCount=0;recSecs=0;
-  document.getElementById('transcriptOut').innerHTML='';
-  document.getElementById('transcriptPH').style.display='';
-  document.getElementById('transcriptOut').style.display='none';
-  document.getElementById('metricsGrid').style.display='none';
-  document.getElementById('relatorioPanel').style.display='none';
-  document.getElementById('btnAnalisar').style.display='none';
-  document.getElementById('recTime').textContent='00:00';
-  document.getElementById('recStatusText').textContent='Pronto para gravar.';
-  document.getElementById('recDot').className='rec-dot';
-  if(stopMode==='leitura')loadRefText();
-}
-
-// ─── WAVEFORM ──────────────────────────────────────
-function startWave(){
-  navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
-    streamRef=stream;
-    audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-    const src=audioCtx.createMediaStreamSource(stream);
-    analyser=audioCtx.createAnalyser();analyser.fftSize=256;
-    src.connect(analyser);drawWave();
-  }).catch(()=>{document.getElementById('waveIdle').textContent='🔇 Microfone não autorizado';document.getElementById('waveIdle').style.display='';});
-}
-function drawWave(){
-  const cv=document.getElementById('waveCanvas');
-  const ctx=cv.getContext('2d');
-  cv.width=cv.offsetWidth;cv.height=72;
-  const buf=new Uint8Array(analyser.frequencyBinCount);
-  function frame(){
-    animFr=requestAnimationFrame(frame);
-    analyser.getByteFrequencyData(buf);
-    ctx.clearRect(0,0,cv.width,cv.height);
-    ctx.fillStyle='#0d1117';ctx.fillRect(0,0,cv.width,cv.height);
-    const bw=cv.width/buf.length;
-    buf.forEach((v,i)=>{const h=(v/255)*cv.height;ctx.fillStyle=`hsl(${200+i*.5},75%,${38+v*.13}%)`;ctx.fillRect(i*bw,cv.height-h,bw-1,h);});
-  }
-  frame();
-}
-function stopWave(){
-  if(animFr)cancelAnimationFrame(animFr);
-  if(streamRef)streamRef.getTracks().forEach(t=>t.stop());
-  if(audioCtx)audioCtx.close().catch(()=>{});
-  const cv=document.getElementById('waveCanvas');
-  const ctx=cv.getContext('2d');
-  ctx.fillStyle='#0d1117';ctx.fillRect(0,0,cv.width,cv.height);
-  document.getElementById('waveIdle').style.display='';
-  document.getElementById('waveIdle').textContent='🎤 aguardando…';
-}
-
-// ════════════════════════════════════════════════
-// STOP ESCRITO — ENGINE
-// ════════════════════════════════════════════════
-let seModeloVisible=false;
-
-function seSetTab(t){
-  document.getElementById('se-tab-livre').classList.toggle('on',t==='livre');
-  document.getElementById('se-tab-copia').classList.toggle('on',t==='copia');
-  document.getElementById('se-panel-livre').style.display=t==='livre'?'':'none';
-  document.getElementById('se-panel-copia').style.display=t==='copia'?'':'none';
-}
-
-function seCount(){
-  const w=document.getElementById('se-input-livre').value.trim().split(/\s+/).filter(Boolean).length;
-  document.getElementById('se-wc').textContent=w+' palavras';
-}
-
-function seAnalisar(){
-  const text=document.getElementById('se-input-livre').value.trim();
-  if(!text){toast('Escreva algo primeiro!');return;}
-  const nivel=parseInt(document.getElementById('se-nivel').value)||2;
-  const result=seProcessar(text,nivel,null);
-  document.getElementById('se-resultado').style.display='';
-  document.getElementById('se-resultado').innerHTML=result;
-  document.getElementById('se-resultado').scrollIntoView({behavior:'smooth',block:'start'});
-}
-
-function seLimpar(){
-  document.getElementById('se-input-livre').value='';
-  document.getElementById('se-wc').textContent='0 palavras';
-  document.getElementById('se-resultado').style.display='none';
-}
-
-function seLoadModelo(){
-  const id=document.getElementById('se-modelo-sel').value;
-  const box=document.getElementById('se-modelo-box');
-  const form=document.getElementById('se-modelo-form');
-  if(!id){box.style.display='none';form.style.display='none';return;}
-  box.textContent=SE_MODELS[id];
-  box.style.display='';
-  form.style.display='';
-  seModeloVisible=true;
-  document.getElementById('se-resultado-copia').style.display='none';
-}
-
-function seToggleModelo(){
-  seModeloVisible=!seModeloVisible;
-  document.getElementById('se-modelo-box').style.display=seModeloVisible?'':'none';
-  toast(seModeloVisible?'Modelo visível':'Modelo oculto — escreva de memória!');
+  if(stopMode==='copia')seAnalisarCopia();
+  else seAnalisarLeitura();
 }
 
 function seAnalisarCopia(){
-  const id=document.getElementById('se-modelo-sel').value;
-  if(!id){toast('Selecione um modelo primeiro!');return;}
-  const original=SE_MODELS[id]||'';
-  const escrito=document.getElementById('se-input-copia').value.trim();
-  if(!escrito){toast('Escreva sua versão primeiro!');return;}
-  const result=seCompararTextos(original,escrito);
-  document.getElementById('se-resultado-copia').style.display='';
-  document.getElementById('se-resultado-copia').innerHTML=result;
-  document.getElementById('se-resultado-copia').scrollIntoView({behavior:'smooth',block:'start'});
+  const metrics={wc:speechWC,frate:(speechWC/(recSecs||1)*60).toFixed(1),pauses:pauseCount,hesits:hesitCount,filler:0};
+  document.getElementById('metricsGrid').style.display='grid';
+  document.getElementById('metricWC').textContent=metrics.wc;
+  document.getElementById('metricF').textContent=metrics.frate;
+  const report=gerarRelatorio(metrics);
+  document.getElementById('relatorioPanel').style.display='';
+  document.getElementById('relatorioPanel').innerHTML=report;
 }
 
-function seProcessar(text, nivel, referencia){
-  const words=text.trim().split(/\s+/).filter(Boolean);
-  const wc=words.length;
-  const sentences=text.split(/[.!?]+/).filter(s=>s.trim().length>3);
-  const sc=sentences.length;
-  const avgWPS=sc>0?(wc/sc).toFixed(1):wc;
-
-  // vícios
-  const FILLERS_SE=['né','tipo','assim','então','sabe','literalmente','basicamente','enfim','aliás','inclusive','meio que','daí','aí'];
-  const fillerMap={};
-  words.forEach(w=>{const c=w.toLowerCase().replace(/[.,!?;:]/g,'');if(FILLERS_SE.includes(c))fillerMap[c]=(fillerMap[c]||0)+1;});
-  const fillerTotal=Object.values(fillerMap).reduce((a,b)=>a+b,0);
-
-  // repetição
-  const repMap={};
-  for(let i=0;i<words.length-1;i++){
-    const a=words[i].toLowerCase().replace(/[.,!?;:]/g,''),b=words[i+1].toLowerCase().replace(/[.,!?;:]/g,'');
-    if(a===b&&a.length>3)repMap[a]=(repMap[a]||0)+1;
-  }
-
-  // pontuação
-  const temVirgula=text.includes(',');
-  const temPonto=text.includes('.');
-
-  // score
-  let score=100;
-  if(wc<20)score-=20;else if(wc<50)score-=10;
-  score-=Math.min(30,fillerTotal*7);
-  score-=Object.keys(repMap).length*5;
-  if(!temPonto)score-=10;
-  score=Math.max(0,Math.min(100,score));
-  const grade=score>=90?'S':score>=80?'A':score>=70?'B':score>=60?'C':score>=50?'D':'F';
-
-  const itens=[];
-  itens.push({t:score>=80?'success':score>=60?'info':'error',i:score>=80?'🏆':score>=60?'📈':'📉',
-    title:`Score: ${score}/100 — Nota ${grade}`,
-    desc:`${wc} palavras, ${sc} frase(s), média de ${avgWPS} palavras/frase.`});
-  if(wc<20)itens.push({t:'warning',i:'📏',title:'Texto muito curto',desc:'Textos muito curtos dificultam a análise. Escreva pelo menos 50 palavras para uma avaliação completa.'});
-  else if(wc>200)itens.push({t:'success',i:'📜',title:'Texto extenso — ótimo!',desc:`${wc} palavras. Capacidade de desenvolver ideias com profundidade.`});
-  if(fillerTotal===0)itens.push({t:'success',i:'✨',title:'Nenhum vício de escrita',desc:'Texto limpo, sem palavras de preenchimento. Ótimo!'});
-  else{const list=Object.entries(fillerMap).map(([w,c])=>`"${w}" ${c}×`).join(', ');itens.push({t:fillerTotal>3?'error':'warning',i:'🔁',title:`${fillerTotal} vício(s) de linguagem no texto`,desc:`Encontrados: ${list}. Evite-os na escrita formal.`});}
-  if(Object.keys(repMap).length>0)itens.push({t:'warning',i:'🔄',title:'Palavras repetidas consecutivamente',desc:`Palavras: ${Object.keys(repMap).join(', ')}. Use sinônimos ou restructure a frase.`});
-  if(!temPonto)itens.push({t:'warning',i:'.',title:'Atenção à pontuação',desc:'O texto parece não ter pontos finais. Pontuação estrutura o raciocínio do leitor.'});
-  if(!temVirgula&&wc>30)itens.push({t:'info',i:',',title:'Poucas vírgulas',desc:'Vírgulas organizam a leitura. Frases longas sem vírgula podem ser difíceis de compreender.'});
-  const nivelDicas=['','Iniciante: escreva frases curtas e diretas. Uma ideia por frase.','Intermediário: use conectivos (porém, entretanto, logo, pois) para ligar ideias.','Avançado: varie o tamanho das frases. Combine curtas (impacto) com longas (desenvolvimento).'];
-  itens.push({t:'info',i:'💡',title:'Dica do nível selecionado',desc:nivelDicas[nivel]||nivelDicas[2]});
-
-  return `<div class="panel"><div class="panel-head"><span class="panel-icon">📊</span><div class="panel-title">Análise da Escrita</div></div><div class="panel-body"><div class="prob-list">${itens.map(p=>`<div class="prob-item ${p.t}"><span style="font-size:1.1rem;flex-shrink:0">${p.i}</span><div><strong style="font-size:.84rem">${p.title}</strong><br><span style="font-size:.78rem">${p.desc}</span></div></div>`).join('')}</div></div></div>`;
+function seAnalisarLeitura(){
+  const refWC=refWords.length;
+  const spokenWC=spokenIdx;
+  const wpm=(spokenWC/(recSecs/60)).toFixed(0);
+  const acc=((spokenWC/refWC)*100).toFixed(0);
+  document.getElementById('metricsGrid').style.display='grid';
+  document.getElementById('metricWC').textContent=spokenWC+'/'+refWC;
+  document.getElementById('metricWPM').textContent=wpm;
+  document.getElementById('metricAcc').textContent=acc+'%';
+  document.getElementById('relatorioPanel').style.display='';
+  document.getElementById('relatorioPanel').innerHTML=seCompararTextos(refWords.join(' '),fullTranscript);
 }
 
-function seCompararTextos(original, escrito){
-  const oriWords=original.toLowerCase().replace(/[.,!?;:]/g,'').trim().split(/\s+/).filter(Boolean);
-  const escWords=escrito.toLowerCase().replace(/[.,!?;:]/g,'').trim().split(/\s+/).filter(Boolean);
-  let acertos=0;
-  const minLen=Math.min(oriWords.length,escWords.length);
-  for(let i=0;i<minLen;i++){if(oriWords[i]===escWords[i]||lev(oriWords[i],escWords[i])<=1)acertos++;}
-  const cob=Math.round((acertos/oriWords.length)*100);
-  const score=Math.min(100,cob);
-  const grade=score>=90?'S':score>=80?'A':score>=70?'B':score>=60?'C':score>=50?'D':'F';
+function gerarRelatorio(m){
+  let itens=[];
+  if(m.frate>160)itens.push({t:'good',i:'🚀',title:'Ótima velocidade!',desc:'Você fala numa velocidade natural e fluida.'});
+  else if(m.frate<80)itens.push({t:'warning',i:'🐢',title:'Aumente a velocidade',desc:'A fala está lenta demais. Tente manter ritmo natural: 120-150 palavras por minuto.'});
+  if(m.hesits===0)itens.push({t:'good',i:'✨',title:'Sem hesitações!',desc:'Você manteve a fluência sem pausas longas. Excelente!.'});
+  else itens.push({t:'warning',i:'🤔',title:m.hesits+' hesitações detectadas',desc:'Hesitações ("ã", "ahn") quebram o ritmo. Pause em vez de hesitar.'});
+  if(m.pauses<=2)itens.push({t:'good',i:'🎯',title:'Bom controle de pausas',desc:'Você pausou naturalmente sem exageros.'});
+  else itens.push({t:'warning',i:'⏸',title:'Muitas pausas',desc:'Você fez '+m.pauses+' pausas longas (3+ segundos). Pratique fluidez contínua.'});
+  return itens.map(p=>`<div style="background:${p.t==='good'?'var(--green-bg)':p.t==='warning'?'var(--amber-bg)':'var(--red-bg)'};border:1.5px solid ${p.t==='good'?'var(--green)':p.t==='warning'?'var(--amber)':'var(--red)'};border-radius:9px;padding:12px;margin-bottom:10px"><span style="font-size:1.2rem;display:block;margin-bottom:4px">${p.i}</span><strong style="font-size:.85rem">${p.title}</strong><br><span style="font-size:.78rem;color:var(--ink2)">${p.desc}</span></div>`).join('');
+}
+
+function seCompararTextos(original,escrito){
+  const oriWords=original.toLowerCase().trim().split(/\s+/);
+  const escWords=escrito.toLowerCase().trim().split(/\s+/).filter(Boolean);
+  let correct=0;
+  escWords.forEach((w,i)=>{if(oriWords[i]&&(oriWords[i]===w||lev(oriWords[i],w)<=1))correct++;});
+  const score=Math.round((correct/oriWords.length)*100);
   const itens=[];
-  itens.push({t:score>=80?'success':score>=60?'info':'error',i:score>=80?'🏆':score>=60?'📝':'📉',
-    title:`Semelhança com o original: ${score}% — Nota ${grade}`,
-    desc:`Você reproduziu ${acertos} de ${oriWords.length} palavras do original.`});
-  if(cob>=95)itens.push({t:'success',i:'⭐',title:'Reprodução quase perfeita!',desc:'Memória auditiva e atenção visual excelentes. Tente um texto mais difícil!'});
-  else if(cob>=70)itens.push({t:'info',i:'👍',title:'Boa reprodução!',desc:'Você reteve a maior parte do conteúdo. Releia o modelo e identifique o que faltou.'});
-  else itens.push({t:'warning',i:'💪',title:'Continue praticando!',desc:'Leia o modelo mais uma vez devagar. Divida em partes e memorize por blocos.'});
+  if(score>=90)itens.push({t:'good',i:'⭐',title:'Excelente compreensão!',desc:'Você ouviu e repetiu com alta precisão. Continue assim!'});
+  else if(score>=70)itens.push({t:'info',i:'✅',title:'Boa compreensão',desc:'Você capturou a maior parte do texto. Revise as palavras que errou.'});
+  else itens.push({t:'warning',i:'🔄',title:'Compreensão abaixo da meta',desc:'Continue praticando. Ouça novamente devagar e repita palavra por palavra.'});
+  if(escWords.length>oriWords.length*1.2)itens.push({t:'warning',i:'➕',title:'Você adicionou muitas palavras',desc:'Não invent palavras que não ouviu. Ouça com atenção total.'});
   if(escWords.length<oriWords.length*0.5)itens.push({t:'warning',i:'📏',title:'Texto muito mais curto que o original',desc:'Você escreveu menos da metade. Tente desenvolver mais as ideias que lembrou.'});
   itens.push({t:'info',i:'💡',title:'Técnica de Cópia Diferenciada',desc:'Leia o texto 3 vezes. Na 3ª vez, feche os olhos e visualize o conteúdo. Depois escreva sem olhar. Repita semanalmente para desenvolver memória verbal.'});
   return `<div class="panel"><div class="panel-head"><span class="panel-icon">🔍</span><div class="panel-title">Comparação com o Original</div></div><div class="panel-body"><div class="se-score-bar"><div class="se-score-fill" style="width:${score}%;background:${score>=80?'var(--green)':score>=60?'#e9a000':'var(--red)'}"></div></div><div class="prob-list">${itens.map(p=>`<div class="prob-item ${p.t}"><span style="font-size:1.1rem;flex-shrink:0">${p.i}</span><div><strong style="font-size:.84rem">${p.title}</strong><br><span style="font-size:.78rem">${p.desc}</span></div></div>`).join('')}</div></div></div>`;
 }
 
 // ════════════════════════════════════════════════
-// KARAOKÊ — ENGINE COM LETRA + NOTA POR VOZ
+// KARAOKÊ
 // ════════════════════════════════════════════════
-const SONGS=[
-  {id:1,title:"Evidências",artist:"Chitãozinho & Xororó",genre:"sertanejo",tip:"Vogais prolongadas do sertanejo: sustente o som sem apertar a garganta. Use o apoio abdominal para os agudos.",
-   lyrics:[
-    {t:3,w:"O impossível do amor"},
-    {t:7,w:"É o que nos faz querer mais"},
-    {t:11,w:"A saudade que dói"},
-    {t:15,w:"E a dor que nos faz feliz"},
-    {t:20,w:"Evidências que me dizem"},
-    {t:24,w:"Que você ainda me quer"},
-    {t:28,w:"Mas orgulho não deixa"},
-    {t:32,w:"Você me dizer que me quer"},
-    {t:37,w:"Não aguento mais fingir"},
-    {t:41,w:"Que já me esqueci de você"},
-    {t:45,w:"Nem consigo mais mentir"},
-    {t:49,w:"Que já não penso mais em você"},
-  ]},
-  {id:2,title:"Tocando em Frente",artist:"Almir Sater / Renato Teixeira",genre:"mpb",tip:"MPB contemplativa: dicção limpa e ritmo interno. Cada consoante final deve ser articulada com precisão.",
-   lyrics:[
-    {t:3,w:"Ando devagar porque já tive pressa"},
-    {t:8,w:"E levo esse sorriso porque já chorei demais"},
-    {t:14,w:"Hoje me sinto mais forte, mais feliz"},
-    {t:18,w:"Quem sabe, só levo a certeza"},
-    {t:22,w:"De que muito pouco eu sei"},
-    {t:26,w:"Ou que nada sei"},
-    {t:30,w:"Cada um de nós compõe a sua história"},
-    {t:35,w:"Cada ser em si carrega o dom de ser capaz"},
-    {t:40,w:"E ser feliz"},
-  ]},
-  {id:3,title:"Asa Branca",artist:"Luiz Gonzaga",genre:"forro",tip:"Forró nordestino: vogais abertas e bem projetadas. O sotaque regional é parte da expressão — abra bem a boca!",
-   lyrics:[
-    {t:3,w:"Quando o verde dos teus olhos"},
-    {t:7,w:"Se espalhar na plantação"},
-    {t:11,w:"Eu te asseguro não chores não"},
-    {t:16,w:"Que eu voltarei meu coração"},
-    {t:21,w:"Hoje longe muitas léguas"},
-    {t:25,w:"Numa triste solidão"},
-    {t:29,w:"Espero a chuva cair de novo"},
-    {t:33,w:"Pra mim voltar pro meu sertão"},
-  ]},
-  {id:4,title:"Aquarela",artist:"Toquinho",genre:"mpb",tip:"Clássico infantil MPB: articulação perfeita. Cada consoante é uma pincelada — não engula nenhuma!",
-   lyrics:[
-    {t:3,w:"Numa folha qualquer eu desenho um sol amarelo"},
-    {t:8,w:"E com cinco ou seis retas é fácil fazer um castelo"},
-    {t:13,w:"Corro o lápis em torno da mão"},
-    {t:17,w:"E me dou uma luva"},
-    {t:21,w:"E se faço chover com dois riscos"},
-    {t:25,w:"Tenho um guarda-chuva"},
-    {t:29,w:"Se um pinguinho de tinta cai num pedaço de papel"},
-    {t:34,w:"Num instante imagino uma linda tarde de sol"},
-  ]},
-  {id:5,title:"Garota de Ipanema",artist:"Tom Jobim / Vinícius de Moraes",genre:"mpb",tip:"Bossa Nova: precisão rítmica acima de tudo. Cada sílaba tem lugar exato no tempo — não antecipe nem atrase.",
-   lyrics:[
-    {t:3,w:"Olha que coisa mais linda"},
-    {t:7,w:"Mais cheia de graça"},
-    {t:10,w:"É ela menina que vem e que passa"},
-    {t:15,w:"Num doce balanço a caminho do mar"},
-    {t:20,w:"Moça do corpo dourado"},
-    {t:24,w:"Do sol de Ipanema"},
-    {t:27,w:"O seu balançado é mais que um poema"},
-    {t:32,w:"É a coisa mais linda que eu já vi passar"},
-  ]},
-  {id:6,title:"O Leãozinho",artist:"Caetano Veloso",genre:"mpb",tip:"Tropicalismo suave: voz de câmara, volume baixo mas dicção perfeita. Murmúrio bem articulado.",
-   lyrics:[
-    {t:3,w:"Hoje eu quero a rosa mais linda"},
-    {t:7,w:"Que existe no jardim"},
-    {t:10,w:"Pra dar ao meu leãozinho"},
-    {t:14,w:"Que mora em mim"},
-    {t:17,w:"Hoje eu quero entrar no mar"},
-    {t:21,w:"E mergulhar fundo"},
-    {t:24,w:"Pra ver meu leãozinho"},
-    {t:28,w:"No fundo do mundo"},
-  ]},
-  {id:7,title:"Luar do Sertão",artist:"Catulo da Paixão Cearense",genre:"sertanejo",tip:"Raízes do sertanejo: vogais abertas e ressonância nasal. Sinta a vibração nas maçãs do rosto.",
-   lyrics:[
-    {t:3,w:"Não há, ó gente, ó não"},
-    {t:7,w:"Luar como esse do sertão"},
-    {t:11,w:"Não há, ó gente, ó não"},
-    {t:15,w:"Luar como esse do sertão"},
-    {t:19,w:"Oh que saudade do luar da minha terra"},
-    {t:24,w:"Lá na serra branquejando folhas secas pelo chão"},
-    {t:30,w:"Este luar cá da cidade tão escuro"},
-    {t:35,w:"Não tem a saudade do luar lá do sertão"},
-  ]},
-  {id:8,title:"Trem Bala",artist:"Ana Vilela",genre:"mpb",tip:"Pop MPB contemporâneo: respire antes de cada verso longo. Nunca comece uma frase sem ter ar suficiente.",
-   lyrics:[
-    {t:3,w:"Não é sobre ter toda riqueza do mundo"},
-    {t:8,w:"É sobre ter paz onde a alegria cabe"},
-    {t:13,w:"É sobre ter a certeza de que vale a pena"},
-    {t:18,w:"Lutar pelo que se ama"},
-    {t:22,w:"É sobre ser completo"},
-    {t:25,w:"E não depender de nada"},
-    {t:28,w:"Pra sentir que a vida tem sentido"},
-    {t:33,w:"É sobre acordar sorrindo"},
-  ]},
-  {id:9,title:"Como Nossos Pais",artist:"Elis Regina",genre:"mpb",tip:"Clássico MPB: atenção às consoantes nasais 'ã', 'em', 'im'. A ressonância nasal deve vibrar no nariz.",
-   lyrics:[
-    {t:3,w:"Não quero lembrar"},
-    {t:6,w:"Não quero falar"},
-    {t:9,w:"De tempo passado"},
-    {t:13,w:"Meu pai me dizia"},
-    {t:16,w:"Que a gente esquecia"},
-    {t:19,w:"O que não foi dado"},
-    {t:23,w:"Deixa isso pra lá"},
-    {t:26,w:"Já deu, já passou"},
-    {t:29,w:"Já vai ser diferente"},
-  ]},
-  {id:10,title:"Construção",artist:"Chico Buarque",genre:"mpb",tip:"Poesia musical: cada palavra aguda no final do verso é intencional. Sustente a última sílaba tônica com força.",
-   lyrics:[
-    {t:3,w:"Amou daquela vez como se fosse a última"},
-    {t:8,w:"Beijou sua mulher como se fosse a última"},
-    {t:13,w:"E cada filho seu como se fosse o único"},
-    {t:18,w:"E atravessou a rua com seu passo bêbado"},
-    {t:23,w:"Subiu a construção como se fosse máquina"},
-    {t:28,w:"Ergueu no patamar quatro paredes sólidas"},
-    {t:33,w:"Tijolo com tijolo num desenho mágico"},
-  ]},
-  {id:11,title:"O Que É, O Que É",artist:"Gonzaguinha",genre:"mpb",tip:"MPB filosófico: cada palavra carrega peso emocional. Articule com intensidade crescente do início ao fim do verso.",
-   lyrics:[
-    {t:3,w:"O que é, o que é"},
-    {t:6,w:"A vida meu irmão"},
-    {t:9,w:"É a arte do encontro"},
-    {t:13,w:"Embora haja tanto desencontro pela vida"},
-    {t:18,w:"É a promessa de amor"},
-    {t:22,w:"Na vida e na sorte"},
-    {t:26,w:"É o beijo da vida"},
-    {t:30,w:"No rosto da morte"},
-  ]},
-  {id:12,title:"Pais e Filhos",artist:"Legião Urbana",genre:"mpb",tip:"Rock MPB: dicção próxima da fala natural. Cada palavra deve ser compreensível mesmo no ritmo rock.",
-   lyrics:[
-    {t:3,w:"Deixa eu dizer que te amei"},
-    {t:7,w:"E que hoje me arrependo"},
-    {t:11,w:"Pois foi você que partiu"},
-    {t:15,w:"E agora eu me perco"},
-    {t:19,w:"Mas toda criança tem direito"},
-    {t:23,w:"Ao amor que merece"},
-    {t:27,w:"E um dia a vida cresce"},
-    {t:31,w:"E esse amor permanece"},
-  ]},
-  {id:13,title:"Viola Caipira",artist:"Renato Teixeira",genre:"sertanejo",tip:"Sertanejo raiz: valorize a última sílaba de cada verso. Essa cadência é a identidade da moda de viola.",
-   lyrics:[
-    {t:3,w:"Minha terra tem palmeiras"},
-    {t:7,w:"Onde canta o sabiá"},
-    {t:11,w:"As aves que aqui gorjeiam"},
-    {t:15,w:"Não gorjeiam como lá"},
-    {t:19,w:"Não permita Deus que eu morra"},
-    {t:23,w:"Sem que eu volte para lá"},
-    {t:27,w:"Sem que desfrute os primores"},
-    {t:31,w:"Que não encontro por cá"},
-  ]},
-  {id:14,title:"Sanfoneiro Maluquinho",artist:"Luiz Gonzaga",genre:"forro",tip:"Forró pé-de-serra: ritmo binário forte. Bata o pé para manter o tempo e não arrastar o andamento.",
-   lyrics:[
-    {t:3,w:"Sanfoneiro maluquinho"},
-    {t:6,w:"Que tocava noite e dia"},
-    {t:10,w:"No xaxado na valsinha"},
-    {t:14,w:"E no baião de alegria"},
-    {t:18,w:"Ei toca forró"},
-    {t:21,w:"Toca baião"},
-    {t:24,w:"Que eu quero dançar"},
-    {t:27,w:"Com meu coração"},
-  ]},
-  {id:15,title:"Corcovado",artist:"Tom Jobim",genre:"mpb",tip:"Bossa Nova íntima: voz de câmara. Pense em sussurrar com perfeita articulação — menos é mais.",
-   lyrics:[
-    {t:3,w:"Um cantinho e um violão"},
-    {t:7,w:"Este amor uma canção"},
-    {t:11,w:"Pra fazer feliz a quem se ama"},
-    {t:16,w:"Muita calma pra pensar"},
-    {t:20,w:"E ter tempo pra sonhar"},
-    {t:24,w:"Da janela vê-se o Corcovado"},
-    {t:29,w:"O Redentor que lindo"},
-    {t:33,w:"Quero a vida sempre assim"},
-  ]},
-  {id:16,title:"Asas da Liberdade",artist:"João Paulo e Daniel",genre:"sertanejo",tip:"Dueto sertanejo: imagine duas vozes alternando. Varie levemente o timbre entre as estrofes.",
-   lyrics:[
-    {t:3,w:"Eu quero ter asas"},
-    {t:6,w:"Para poder voar"},
-    {t:9,w:"Subir muito alto"},
-    {t:12,w:"E nunca mais parar"},
-    {t:16,w:"Liberdade é o bem maior"},
-    {t:20,w:"Que Deus nos deu"},
-    {t:23,w:"Asas da liberdade"},
-    {t:27,w:"É o que eu sou"},
-  ]},
-  {id:17,title:"Interior de Minas",artist:"Sérgio Reis",genre:"sertanejo",tip:"Sertanejo narrativo: conta uma história. Use variação de volume para marcar os momentos dramáticos.",
-   lyrics:[
-    {t:3,w:"Lá no interior de Minas"},
-    {t:7,w:"Numa cidadezinha"},
-    {t:10,w:"Existe uma saudade"},
-    {t:14,w:"Que me persegue fresquinha"},
-    {t:18,w:"Do cheiro do café"},
-    {t:21,w:"Da fogueira na varanda"},
-    {t:25,w:"Da voz da minha mãe"},
-    {t:29,w:"Que ainda me chama"},
-  ]},
-  {id:18,title:"Xote das Meninas",artist:"Luiz Gonzaga",genre:"forro",tip:"Xote animado: consoantes oclusivas (B, P, D, T) devem ser precisas e ritmadas. Sinta o repique!",
-   lyrics:[
-    {t:3,w:"Moça bonita do interior"},
-    {t:7,w:"De olhos verdes cor de anil"},
-    {t:11,w:"Pele morena coração de flor"},
-    {t:15,w:"A mais bonita do Brasil"},
-    {t:19,w:"Dança comigo meu bem"},
-    {t:22,w:"Vem dançar o xote"},
-    {t:25,w:"Que a sanfona toca"},
-    {t:28,w:"E o coração bate forte"},
-  ]},
-  {id:19,title:"Terra Seca",artist:"Zé Ramalho",genre:"mpb",tip:"MPB nordestina: mistura de rock e sertanejo. Dicção forte nas consoantes e vogais bem abertas.",
-   lyrics:[
-    {t:3,w:"Terra seca nordestina"},
-    {t:7,w:"Castigada pelo sol"},
-    {t:10,w:"Mas que guarda uma força"},
-    {t:14,w:"Que supera a dor"},
-    {t:18,w:"No inverno que não vem"},
-    {t:22,w:"Na espera interminável"},
-    {t:26,w:"O povo do sertão"},
-    {t:30,w:"Resiste incontornável"},
-  ]},
-  {id:20,title:"Quem Me Dera",artist:"Almir Sater",genre:"mpb",tip:"Viola caipira MPB: equilíbrio entre emoção e técnica. A voz pode ter vibração emocional sem perder a dicção.",
-   lyrics:[
-    {t:3,w:"Quem me dera ao menos uma vez"},
-    {t:8,w:"Ter de volta todo o ouro que entreguei"},
-    {t:13,w:"A quem de mim não quis"},
-    {t:17,w:"Mas que eu assim mesmo amei"},
-    {t:22,w:"Quem me dera ao menos uma vez"},
-    {t:27,w:"Provar que quem tem mais amor"},
-    {t:32,w:"É quem sofre mais"},
-    {t:36,w:"E chora mais também"},
-  ]},
-];
-
-// estado karaokê
-let kSong=null, kTimer=null, kElapsed=0, kPlaying=false, kSpeed=1, kTotal=0;
-let kRec=null, kRecActive=false, kSpokenWords=[], kScoreWords=0, kTotalWords=0;
+function karaInit(){
+  const genres=[...new Set(SONGS.map(s=>s.genre))];
+  document.getElementById('karaGenreChips').innerHTML=`<button class="chip" onclick="karaFilterGenre('todas')">⭐ Todas</button>` + genres.map(g=>`<button class="chip" onclick="karaFilterGenre('${g}')">${g.charAt(0).toUpperCase()}${g.slice(1)}</button>`).join('');
+  karaFilterGenre('todas');
+}
 
 function karaFilterGenre(g){
-  ['todas','sertanejo','mpb','forro'].forEach(id=>{
-    const b=document.getElementById('kf-'+id);
-    if(!b)return;
-    b.className=id===g?'btn btn-main':'btn btn-ghost';
-    b.style.fontSize='.7rem'; b.style.padding='5px 10px';
-  });
-  const list=document.getElementById('songList');
-  const songs=g==='todas'?SONGS:SONGS.filter(s=>s.genre===g);
-  list.innerHTML=songs.map((s,i)=>`
-    <div style="display:flex;align-items:center;gap:9px;padding:9px 11px;background:var(--paper);border:1.5px solid ${kSong&&kSong.id===s.id?'var(--kara)':'var(--line)'};border-radius:8px;cursor:pointer;transition:all .15s" onclick="karaLoad(${s.id})" onmouseover="this.style.borderColor='var(--kara)'" onmouseout="this.style.borderColor='${kSong&&kSong.id===s.id?'var(--kara)':'var(--line)'}'">
-      <div style="width:20px;height:20px;border-radius:50%;background:var(--ink);color:#fff;font-size:.58rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</div>
-      <div style="flex:1"><div style="font-weight:700;font-size:.8rem">${s.title}</div><div style="font-size:.63rem;color:var(--ink3)">${s.artist}</div></div>
-      <span style="font-size:.56rem;font-weight:700;padding:2px 7px;border-radius:8px;${s.genre==='sertanejo'?'background:#fff3e0;color:#a05a00':s.genre==='mpb'?'background:#e8f2ff;color:#0066bb':'background:#e8f7ea;color:#2a7a38'}">${s.genre==='sertanejo'?'🤠 Sertanejo':s.genre==='mpb'?'🌟 MPB':'🪗 Forró'}</span>
-    </div>`).join('');
+  karaGenre=g;
+  const filtered=g==='todas'?SONGS:SONGS.filter(s=>s.genre===g);
+  document.getElementById('karaGrid').innerHTML=filtered.map(s=>`<div class="kara-card" onclick="karaSelect(${s.id})"><div class="kara-genre">${s.genre}</div><div class="kara-title">${s.title}</div><div class="kara-artist">${s.artist}</div><div class="kara-play-btn">▶</div></div>`).join('');
 }
 
-function karaLoad(id){
-  if(kTimer){clearInterval(kTimer);kTimer=null;}
-  if(kRec){try{kRec.stop();}catch(e){} kRec=null;}
-  kPlaying=false; kElapsed=0; kRecActive=false; kSpokenWords=[]; kScoreWords=0;
-  kSong=SONGS.find(s=>s.id===id);
-  if(!kSong)return;
-  kTotal=(kSong.lyrics[kSong.lyrics.length-1].t||60)+6;
-  kTotalWords=kSong.lyrics.reduce((a,l)=>a+l.w.split(/\s+/).length,0);
-
-  document.getElementById('kara-player').style.display='';
-  document.getElementById('kSongTitle').textContent=kSong.title;
-  document.getElementById('kSongArtist').textContent=kSong.artist;
-  const gLabel={sertanejo:'🤠 Sertanejo',mpb:'🌟 MPB',forro:'🪗 Forró'};
-  document.getElementById('kSongGenre').textContent=gLabel[kSong.genre]||kSong.genre;
-  document.getElementById('kFonoTip').textContent=kSong.tip;
-  document.getElementById('kScoreLive').textContent='—';
-  document.getElementById('kBtnPlay').textContent='🎤 CANTAR';
-  document.getElementById('kProgressFill').style.width='0%';
-  document.getElementById('kTimeDisp').textContent='0:00';
-  document.getElementById('kResultBox').style.display='none';
-  document.getElementById('kMicDot').style.background='#555';
-  document.getElementById('kMicText').textContent='microfone inativo';
-  kRenderLyrics();
-  karaFilterGenre('todas');
-  document.getElementById('kara-player').scrollIntoView({behavior:'smooth',block:'start'});
-  toast('🎵 '+kSong.title+' — '+kSong.artist);
+function karaSelect(id){
+  const s=SONGS.find(x=>x.id===id);
+  if(!s)return;
+  document.getElementById('karaTitle').textContent=s.title;
+  document.getElementById('karaArtist').textContent=s.artist;
+  document.getElementById('karaLyricsView').innerHTML=s.lyrics.map((l,i)=>`<div class="kara-lyric-line" id="klyric${i}"><span>${l.w}</span><span class="kara-time">${Math.floor(l.t/60)}:${String(l.t%60).padStart(2,'0')}</span></div>`).join('');
+  document.getElementById('karaAnalytics').innerHTML=`<strong>Dica para ${s.genre}:</strong> ${s.tip}`;
+  document.getElementById('karaPlayer').style.display='';
+  karaIdx=id;
 }
 
-function kRenderLyrics(){
-  const box=document.getElementById('kLyricsBox');
-  if(!kSong){box.innerHTML='<div style="color:rgba(255,255,255,.3);font-style:italic;font-size:.8rem;text-align:center">Selecione uma música</div>';return;}
-  box.innerHTML=kSong.lyrics.map((l,i)=>`<div id="kl${i}" style="font-family:Georgia,serif;font-size:${i===0?'1.3rem':'.9rem'};font-weight:${i===0?700:400};color:${i===0?'#fff':'rgba(255,255,255,.25)'};text-align:center;line-height:1.6;transition:all .3s;padding:2px 0">${l.w}</div>`).join('');
+function karaPlay(){
+  toast('▶ Karaokê iniciado! Cante junto com a letra.');
+  karaPlaying=true;
 }
 
-function karaToggle(){
-  if(!kSong){toast('Escolha uma música primeiro!');return;}
-  if(kPlaying){
-    kPlaying=false; kRecActive=false;
-    clearInterval(kTimer);
-    if(kRec){try{kRec.stop();}catch(e){}}
-    document.getElementById('kBtnPlay').textContent='▶ CONTINUAR';
-    document.getElementById('kMicDot').style.background='#555';
-    document.getElementById('kMicText').textContent='pausado';
-  } else {
-    kPlaying=true; kRecActive=true;
-    document.getElementById('kBtnPlay').textContent='⏸ PAUSAR';
-    document.getElementById('kMicDot').style.background='#ef4444';
-    document.getElementById('kMicText').textContent='🔴 ouvindo sua voz...';
-    kStartRec();
-    kTimer=setInterval(kStep, 1000/kSpeed);
-  }
+function karaPause(){
+  karaPlaying=false;
+  toast('⏸ Pausado');
 }
 
-function kStep(){
-  kElapsed++;
-  // progress
-  const pct=Math.min(100,(kElapsed/kTotal)*100);
-  document.getElementById('kProgressFill').style.width=pct+'%';
-  const m=Math.floor(kElapsed/60),s=kElapsed%60;
-  document.getElementById('kTimeDisp').textContent=m+':'+String(s).padStart(2,'0');
-  // highlight lyrics
-  const L=kSong.lyrics;
-  L.forEach((l,i)=>{
-    const el=document.getElementById('kl'+i);
-    if(!el)return;
-    const nextT=L[i+1]?L[i+1].t:kTotal;
-    if(kElapsed>=l.t && kElapsed<nextT){
-      el.style.fontSize='1.35rem'; el.style.fontWeight='700';
-      el.style.color='#fff'; el.style.textShadow='0 0 20px rgba(196,181,253,.9)';
-      el.scrollIntoView({behavior:'smooth',block:'center'});
-    } else if(kElapsed>=nextT){
-      el.style.fontSize='.82rem'; el.style.fontWeight='400';
-      el.style.color='rgba(196,181,253,.4)'; el.style.textShadow='none';
-    } else {
-      el.style.fontSize='.9rem'; el.style.fontWeight='400';
-      el.style.color='rgba(255,255,255,.22)'; el.style.textShadow='none';
-    }
-  });
-  // live score
-  if(kTotalWords>0){
-    const sc=Math.round((kScoreWords/kTotalWords)*100);
-    const g=sc>=90?'S':sc>=80?'A':sc>=70?'B':sc>=60?'C':sc>=50?'D':'F';
-    document.getElementById('kScoreLive').textContent=g;
-  }
-  if(kElapsed>=kTotal){
-    clearInterval(kTimer); kTimer=null; kPlaying=false; kRecActive=false;
-    if(kRec){try{kRec.stop();}catch(e){}}
-    document.getElementById('kBtnPlay').textContent='🔁 CANTAR NOVAMENTE';
-    document.getElementById('kMicDot').style.background='#22c55e';
-    document.getElementById('kMicText').textContent='✅ música concluída!';
-    kShowResult();
-    toast('🎉 Parabéns! Veja sua nota!');
-  }
-}
-
-function kStartRec(){
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR)return;
-  try{
-    kRec=new SR(); kRec.lang='pt-BR'; kRec.continuous=true; kRec.interimResults=false;
-    kRec.onresult=e=>{
-      for(let i=e.resultIndex;i<e.results.length;i++){
-        if(e.results[i].isFinal){
-          const txt=e.results[i][0].transcript.toLowerCase();
-          txt.split(/\s+/).forEach(w=>{
-            const clean=w.replace(/[^a-záàâãéèêíïóôõúüç]/gi,'');
-            if(clean.length>1){kSpokenWords.push(clean); kCheckWord(clean);}
-          });
-        }
-      }
-    };
-    kRec.onerror=e=>{if(e.error==='no-speech')return; if(kRecActive)setTimeout(kStartRec,300);};
-    kRec.onend=()=>{if(kRecActive)setTimeout(kStartRec,200);};
-    kRec.start();
-  }catch(e){}
-}
-
-function kCheckWord(spoken){
-  if(!kSong)return;
-  // busca qual verso está ativo
-  const L=kSong.lyrics;
-  let activeVerse=null;
-  for(let i=0;i<L.length;i++){
-    const nextT=L[i+1]?L[i+1].t:kTotal;
-    if(kElapsed>=L[i].t && kElapsed<nextT){activeVerse=L[i].w;break;}
-  }
-  if(!activeVerse)return;
-  const verseWords=activeVerse.toLowerCase().replace(/[^a-záàâãéèêíïóôõúüç\s]/gi,'').split(/\s+/).filter(Boolean);
-  for(const vw of verseWords){
-    if(lev(spoken,vw)<=Math.max(1,Math.floor(vw.length/4))){kScoreWords++;break;}
-  }
-}
-
-function kShowResult(){
-  const sc=kTotalWords>0?Math.round((kScoreWords/kTotalWords)*100):0;
-  const grade=sc>=90?'S':sc>=80?'A+':sc>=70?'A':sc>=60?'B':sc>=50?'C':sc>=35?'D':'F';
-  const cor=sc>=70?'var(--green)':sc>=50?'var(--amber)':'var(--red)';
-  const msgs={S:'🏆 PERFEITO! Dicção impecável!',A:'⭐ Excelente! Quase perfeito!',"A+":'⭐ Muito bem! Ótima dicção!',B:'👍 Bom! Continue praticando!',C:'📈 Razoável. Tente mais uma vez!',D:'💪 Continue! Articulação precisa melhorar.',F:'🎯 Use o microfone e articule bem cada palavra!'};
-  const box=document.getElementById('kResultBox');
-  box.style.display='';
-  box.innerHTML=`<div style="background:linear-gradient(135deg,#130826,#0a0f1e);border-radius:12px;padding:20px;text-align:center;margin-bottom:14px">
-    <div style="font-size:.7rem;color:#a78bfa;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Sua Performance em ${kSong.title}</div>
-    <div style="font-family:Georgia,serif;font-size:4rem;font-weight:900;color:#c4b5fd;line-height:1;margin-bottom:4px">${grade}</div>
-    <div style="font-size:.9rem;color:#fff;margin-bottom:12px">${msgs[grade]||msgs.F}</div>
-    <div style="height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;margin:0 auto 8px;max-width:260px">
-      <div style="height:100%;width:${sc}%;background:linear-gradient(90deg,#6b21a8,#c4b5fd);border-radius:4px;transition:width .8s"></div>
-    </div>
-    <div style="font-size:.72rem;color:#a78bfa;margin-bottom:16px">${kScoreWords} de ${kTotalWords} palavras reconhecidas (${sc}%)</div>
-    <div style="font-size:.72rem;color:rgba(255,255,255,.5);margin-bottom:16px">🎤 Use Chrome/Edge com microfone para a nota funcionar</div>
-    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-      <button onclick="karaRestart()" style="background:#6b21a8;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit">↺ Tentar Novamente</button>
-      <button onclick="document.getElementById('kara-player').scrollIntoView({block:'start'})" style="background:rgba(255,255,255,.1);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit">🎵 Outra Música</button>
-    </div>
-  </div>`;
-}
-
-function karaRestart(){
-  if(kTimer){clearInterval(kTimer);kTimer=null;}
-  if(kRec){try{kRec.stop();}catch(e){} kRec=null;}
-  kPlaying=false; kElapsed=0; kRecActive=false; kSpokenWords=[]; kScoreWords=0;
-  document.getElementById('kBtnPlay').textContent='🎤 CANTAR';
-  document.getElementById('kProgressFill').style.width='0%';
-  document.getElementById('kTimeDisp').textContent='0:00';
-  document.getElementById('kScoreLive').textContent='—';
-  document.getElementById('kResultBox').style.display='none';
-  document.getElementById('kMicDot').style.background='#555';
-  document.getElementById('kMicText').textContent='microfone inativo';
-  kRenderLyrics();
-}
-
-function karaFaster(){
-  kSpeed=Math.min(2.0,parseFloat((kSpeed+0.25).toFixed(2)));
-  if(kPlaying){clearInterval(kTimer);kTimer=setInterval(kStep,1000/kSpeed);}
-  document.getElementById('kSpeedLabel').textContent=kSpeed.toFixed(2)+'×';
-  toast('Velocidade: '+kSpeed.toFixed(2)+'×');
-}
-function karaSlower(){
-  kSpeed=Math.max(0.5,parseFloat((kSpeed-0.25).toFixed(2)));
-  if(kPlaying){clearInterval(kTimer);kTimer=setInterval(kStep,1000/kSpeed);}
-  document.getElementById('kSpeedLabel').textContent=kSpeed.toFixed(2)+'×';
-  toast('Velocidade: '+kSpeed.toFixed(2)+'×');
-}
-function karaSeek(ev){
-  if(!kSong)return;
-  const bar=document.getElementById('kProgressBar');
-  const ratio=ev.offsetX/bar.offsetWidth;
-  kElapsed=Math.floor(ratio*kTotal);
-  kStep();
+function karaClose(){
+  document.getElementById('karaPlayer').style.display='none';
+  karaIdx=0;
+  karaPlaying=false;
 }
 
 // ════════════════════════════════════════════════
-// JOGO STOP — ENGINE
+// STOP GAME (STOP DE LETRA)
 // ════════════════════════════════════════════════
-const SG_CATS_DEFAULT=[
-  {name:'Nome',on:true},{name:'Fruta',on:true},{name:'Cor',on:true},
-  {name:'Animal',on:true},{name:'País',on:true},{name:'Cidade',on:true},
-  {name:'Marca de carro',on:true},{name:'Time de futebol',on:false},
-  {name:'Comida',on:true},{name:'Profissão',on:false},
-  {name:'Objeto da casa',on:false},{name:'Roupa',on:false},
-  {name:'Artista/Cantor',on:false},{name:'Filme',on:false},
-  {name:'Personagem famoso',on:false},{name:'Planta/Flor',on:false},
-];
-let sgCats=[...SG_CATS_DEFAULT.map(c=>({...c}))];
-let sgTempo=90, sgLetra='', sgTimer=null, sgSecs=0;
-
 function sgInit(){
-  const grid=document.getElementById('sgCatGrid');
-  if(!grid)return;
-  grid.innerHTML=sgCats.map((c,i)=>`
-    <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;border:1.5px solid ${c.on?'var(--ink)':'var(--line)'};border-radius:7px;cursor:pointer;background:${c.on?'var(--ink)':'var(--paper)'};color:${c.on?'#fff':'var(--ink2)'};font-size:.76rem;font-weight:600;transition:all .15s;user-select:none" onclick="sgToggleCat(${i},this)">
-      <span>${c.on?'✓':''}</span>${c.name}
-    </label>`).join('');
+  const allCats=[{name:'Pessoa',on:true},{name:'Lugar',on:true},{name:'Coisa',on:true},{name:'Verbo',on:true},{name:'Alimento',on:true},{name:'País',on:false},{name:'Animal',on:false}];
+  sgCats=allCats;
+  const html=sgCats.map((c,i)=>`<div style="margin-bottom:8px"><label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" ${c.on?'checked':''} onchange="sgToggleCat(${i})" style="width:18px;height:18px;cursor:pointer"><span style="font-size:.82rem;font-weight:600;color:var(--ink2)">${c.name}</span></label></div>`).join('');
+  document.getElementById('sgCatsCheckboxes').innerHTML=html;
+  document.getElementById('stopConfigPanel').style.display='';
+  document.getElementById('stopGamePanel').style.display='none';
+  document.getElementById('stopResultPanel').style.display='none';
+  sgTempo=60;sgSecs=60;
 }
 
-function sgToggleCat(i,el){
-  sgCats[i].on=!sgCats[i].on;
-  el.style.background=sgCats[i].on?'var(--ink)':'var(--paper)';
-  el.style.color=sgCats[i].on?'#fff':'var(--ink2)';
-  el.style.borderColor=sgCats[i].on?'var(--ink)':'var(--line)';
-  el.querySelector('span').textContent=sgCats[i].on?'✓':'';
-}
+function sgToggleCat(i){sgCats[i].on=!sgCats[i].on;}
 
 function sgSetTempo(t){
-  sgTempo=t;
-  ['60','90','120','inf'].forEach(n=>{
-    const b=document.getElementById('sg-t'+n);
-    if(b)b.classList.toggle('on',String(t)===(n==='inf'?'0':n));
-  });
-}
-
-function sgAddCustom(){
-  const inp=document.getElementById('sgCustomInput');
-  const val=inp.value.trim();
-  if(!val){toast('Digite o nome da categoria!');return;}
-  sgCats.push({name:val,on:true});
-  inp.value='';
-  sgInit();
-  toast('✅ Categoria "'+val+'" adicionada!');
+  sgTempo=t;sgSecs=t;
+  document.querySelectorAll('.vel-row:nth-of-type(2) .vel-btn').forEach((b,i)=>b.classList.toggle('on',i===[60,90,120,0].indexOf(t)));
 }
 
 function sgStart(){
   const ativas=sgCats.filter(c=>c.on);
-  if(ativas.length<2){toast('Selecione ao menos 2 categorias!');return;}
-  // sorteia letra (sem K, W, Y, H — raras em pt-BR)
-  const letras='ABCDEFGIJLMNOPQRSTUVXZ'.split('');
+  if(ativas.length===0){toast('⚠ Selecione pelo menos 1 categoria!');return;}
+  const letras='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   sgLetra=letras[Math.floor(Math.random()*letras.length)];
-  sgSecs=sgTempo||999;
-
+  document.getElementById('sgLetraDisp').textContent=sgLetra;
   document.getElementById('stopConfigPanel').style.display='none';
   document.getElementById('stopGamePanel').style.display='';
   document.getElementById('stopResultPanel').style.display='none';
-  document.getElementById('sgLetraBox').textContent=sgLetra;
-  document.getElementById('sgLetraBox').style.animation='none';
-  setTimeout(()=>document.getElementById('sgLetraBox').style.animation='',10);
+  sgSecs=sgTempo;
 
-  // timer display
   if(sgTempo>0){
     const m=Math.floor(sgSecs/60),s=sgSecs%60;
     document.getElementById('sgTimerDisp').textContent=m+':'+String(s).padStart(2,'0');
@@ -2311,6 +1045,7 @@ function sgAbort(){
   if(sgTimer){clearInterval(sgTimer);sgTimer=null;}
   sgBackConfig();
 }
+
 function sgBackConfig(){
   document.getElementById('stopConfigPanel').style.display='';
   document.getElementById('stopGamePanel').style.display='none';
@@ -2318,6 +1053,7 @@ function sgBackConfig(){
   document.getElementById('sgTimerDisp').style.color='';
   sgInit();
 }
+
 function sgNewRound(){
   document.getElementById('stopResultPanel').style.display='none';
   document.getElementById('stopConfigPanel').style.display='';
@@ -2341,8 +1077,7 @@ function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t
 // INIT
 selectAct('trava');
 checkSpeechAPI();
-sgInit();
-karaFilterGenre('todas');
+karaInit();
 </script>
 </body>
 </html>
