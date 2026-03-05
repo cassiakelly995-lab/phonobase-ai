@@ -222,6 +222,109 @@ body{background:var(--bg);color:var(--ink);font-family:system-ui,'Segoe UI',sans
 .tab-row{display:flex;gap:6px;margin-bottom:14px}
 .tab-btn{flex:1;padding:9px;border-radius:8px;border:2px solid var(--line);background:var(--paper);cursor:pointer;font-size:.78rem;font-weight:700;text-align:center;transition:all .18s;font-family:inherit}
 .tab-btn.on{border-color:var(--ink);background:var(--ink);color:#fff}
+
+/* RESPONSIVIDADE MOBILE */
+@media(max-width:768px){
+  html{font-size:14px}
+  .wrap{padding:16px 12px 50px}
+  .topbar{padding:0 12px;height:48px}
+  .brand{font-size:1rem}
+  
+  .btn{padding:10px 14px;min-height:44px;font-size:.8rem}
+  .rec-btn{padding:16px 20px;font-size:.95rem;min-height:48px}
+  
+  .vel-row{gap:8px}
+  .vel-btn{padding:8px 12px;min-height:44px}
+  
+  .panel{margin-bottom:12px;border-radius:10px}
+  .panel-body{padding:14px}
+  
+  .big-text{font-size:1.2rem}
+  .display{padding:14px}
+  
+  .mode-grid{grid-template-columns:1fr}
+  .metric{padding:12px;min-height:60px}
+  
+  .act-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+  
+  .chips{gap:8px;margin:10px 0}
+  .chip{padding:8px 12px;font-size:.8rem}
+  
+  input,textarea,.stop-escrito-input{font-size:16px;padding:12px}
+  
+  .song-card{min-height:120px}
+  .song-title{font-size:.9rem}
+  .song-by{font-size:.7rem}
+  
+  .timer-big{font-size:2rem}
+  
+  .proc{font-size:.85rem;padding:8px 12px;min-height:40px}
+  
+  .tab-btn{padding:10px 8px;font-size:.8rem}
+}
+
+@media(max-width:480px){
+  html{font-size:13px}
+  .wrap{padding:12px 10px 45px}
+  .topbar{padding:0 10px;height:46px;gap:6px}
+  .brand{font-size:.95rem}
+  .nav{gap:0;padding:2px}
+  .nav-btn{padding:4px 8px;font-size:.65rem}
+  
+  .btn{padding:8px 12px;min-height:44px;font-size:.75rem;gap:3px}
+  .rec-btn{padding:14px 16px;font-size:.9rem;min-height:44px}
+  
+  .vel-row{gap:6px;margin-bottom:10px}
+  .vel-btn{padding:6px 10px;min-height:44px;font-size:.65rem}
+  
+  .panel{margin-bottom:10px;border-radius:9px;border:1.5px solid var(--line)}
+  .panel-head{padding:10px 12px}
+  .panel-body{padding:12px}
+  .panel-title{font-size:.85rem}
+  
+  .big-text{font-size:1.1rem;line-height:1.4}
+  .display{padding:12px;margin-bottom:10px}
+  
+  .dica-box{padding:8px 10px;font-size:.72rem;margin-bottom:10px}
+  
+  .mode-grid{grid-template-columns:1fr;gap:8px}
+  .mode-card{padding:12px;border-radius:9px}
+  .mode-card-icon{font-size:1.4rem;margin-bottom:4px}
+  .mode-card-title{font-size:.75rem;margin-bottom:2px}
+  .mode-card-desc{font-size:.65rem}
+  
+  .act-grid{grid-template-columns:repeat(2,1fr);gap:6px}
+  .act-card{padding:10px 6px}
+  
+  .chips{gap:6px;margin:8px 0}
+  .chip{padding:6px 10px;font-size:.75rem}
+  
+  .chips.genre-pills .chip{padding:4px 8px;font-size:.7rem}
+  
+  input,textarea,.stop-escrito-input{font-size:16px;padding:11px;border-radius:7px}
+  
+  .song-card{min-height:100px;padding:10px}
+  .song-title{font-size:.8rem;margin-bottom:2px}
+  .song-by{font-size:.65rem}
+  .song-genre{font-size:.55rem;padding:1px 5px}
+  
+  .timer-big{font-size:1.8rem;font-weight:700}
+  .timer-bar-wrap{height:5px}
+  
+  .metric{padding:10px;min-height:50px}
+  .metric-val{font-size:1.1rem;margin-bottom:1px}
+  .metric-label{font-size:.55rem}
+  
+  .proc{font-size:.8rem;padding:7px 10px;min-height:40px;border-radius:7px}
+  
+  .tab-row{gap:4px;margin-bottom:12px}
+  .tab-btn{padding:8px 6px;font-size:.75rem;border-radius:7px}
+  
+  .prob-item{padding:9px 10px;font-size:.75rem;gap:8px;border-radius:7px}
+  
+  .rec-btn-wrap{margin-bottom:12px}
+}
+
 </style>
 </head>
 <body>
@@ -654,6 +757,19 @@ const FLUENCIA_CATS=[
   {c:"Palavras com Z",ref:5},{c:"Animais da fazenda",ref:7},
   {c:"Emoções e sentimentos",ref:6},{c:"Materiais escolares",ref:7},
   {c:"Coisas redondas",ref:6},{c:"Palavras com X",ref:5},
+  {c:"Fenômenos da natureza",ref:6},{c:"Peças de roupa",ref:7},
+  {c:"Alimentos saudáveis",ref:7},{c:"Móveis e decoração",ref:6},
+  {c:"Artistas famosos",ref:6},{c:"Doenças e sintomas",ref:5},
+  {c:"Palavras que rimam com -ão",ref:6},{c:"Adjetivos negativos",ref:6},
+  {c:"Desserts e sobremesas",ref:6},{c:"Elementos químicos",ref:5},
+  {c:"Lugares turísticos",ref:6},{c:"Profissões de saúde",ref:6},
+  {c:"Palavras com QU",ref:5},{c:"Ações de esporte",ref:7},
+  {c:"Seres mitológicos",ref:5},{c:"Objetos de banheiro",ref:7},
+  {c:"Marcas de produtos",ref:6},{c:"Verbos de sentimento",ref:6},
+  {c:"Cidades do mundo",ref:6},{c:"Documentos pessoais",ref:5},
+  {c:"Adjetivos com A",ref:6},{c:"Animais com 4+ letras",ref:7},
+  {c:"Ações cotidianas",ref:8},{c:"Frutas tropicais",ref:6},
+  {c:"Palavras com S seguido de consoante",ref:5},{c:"Nomes de filmes",ref:5},
 ];
 
 // ════════════════════════════════════════════════
@@ -913,6 +1029,10 @@ let fluEntradas=[];
 let fluValidas=new Set();
 // buffer de transcrições já processadas (evita reprocessar interims)
 let fluTranscriptBuffer='';
+// Modo: 'cat' (categoria) ou 'stop' (Stop Falado com letra)
+let fluMode='cat';
+let fluStopLetra='A';
+let fluStopCats=[{name:'Pessoa',on:true},{name:'Lugar',on:true},{name:'Coisa',on:true}];
 
 function buildFluencia(){
   st.fci=Math.floor(Math.random()*FLUENCIA_CATS.length);
@@ -929,6 +1049,15 @@ function buildFluencia(){
         <span style="color:var(--red);font-weight:600">❌ Vermelho</span> = repetida ou inválida &nbsp;
         <span style="font-size:.72rem;color:var(--ink3)">(Chrome/Edge)</span>
       </div>
+      
+      <!-- MODO: Categoria ou Stop Falado -->
+      <div style="margin-bottom:12px">
+        <label style="font-size:.68rem;font-weight:600;color:var(--ink3);display:block;margin-bottom:6px">MODO:</label>
+        <div class="vel-row">
+          <button class="vel-btn on" id="fmodeCat" onclick="fSetMode('cat')">📋 Por Categoria</button>
+          <button class="vel-btn" id="fmodeStop" onclick="fSetMode('stop')">🎲 Stop Falado</button>
+        </div>
+      </div>
       <div style="margin-bottom:12px">
         <div style="font-size:.68rem;font-weight:600;color:var(--ink3);margin-bottom:6px">DURAÇÃO:</div>
         <div class="vel-row">
@@ -941,6 +1070,9 @@ function buildFluencia(){
         <div style="font-size:.62rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Categoria</div>
         <div class="fluencia-cat" id="fcat" style="font-size:1.9rem"></div>
         <div style="font-size:.7rem;color:var(--ink3);margin-top:4px" id="fref"></div>
+        <div style="font-size:.65rem;color:var(--ink3);margin-top:6px;font-weight:600;display:none" id="fStopLetraBox">
+          Letra sorteada: <span style="font-family:Georgia,serif;font-size:1.4rem;color:var(--accent);font-weight:900" id="fStopLetra">—</span>
+        </div>
       </div>
       <div class="timer-big" id="ftimer">1:00</div>
       <div class="timer-bar-wrap"><div class="timer-bar" id="fbar" style="width:100%"></div></div>
@@ -1020,6 +1152,33 @@ function fNova(){
   fRenderCat();
 }
 
+// ─── Trocar entre modo Categoria e Stop Falado ────────────────────────
+function fSetMode(mode){
+  if(fluActive) fStop();
+  fluMode=mode;
+  document.getElementById('fmodeCat').classList.toggle('on',mode==='cat');
+  document.getElementById('fmodeStop').classList.toggle('on',mode==='stop');
+  
+  const letraBox=document.getElementById('fStopLetraBox');
+  const ref=document.getElementById('fref');
+  const catDisplay=document.getElementById('fcat');
+  
+  if(mode==='stop'){
+    // Stop Falado: sorteia letra
+    const letras='ABCDEFGIJLMNOPQRSTUVXZ';
+    fluStopLetra=letras[Math.floor(Math.random()*letras.length)];
+    document.getElementById('fStopLetra').textContent=fluStopLetra;
+    letraBox.style.display='';
+    ref.innerHTML=`<strong>Comece as palavras com ${fluStopLetra}</strong> das categorias abaixo em 60s`;
+    catDisplay.innerHTML=fluStopCats.map(c=>`<div style="font-size:.7rem;color:var(--ink3)">${c.name}</div>`).join('');
+  }else{
+    // Modo categoria
+    letraBox.style.display='none';
+    st.fci=Math.floor(Math.random()*FLUENCIA_CATS.length);
+    fRenderCat();
+  }
+}
+
 // ─── Normalização rigorosa ────────────────────────
 function fNormalizar(w){
   return w.toLowerCase()
@@ -1041,19 +1200,61 @@ function fProcessarTexto(texto){
     if(norm.length < 2) return;           // muito curta, ignora
     if(FLU_RUIDO.has(norm)) return;       // ruído de fala
     
+    // DETECÇÃO CRÍTICA DE ALUCINAÇÕES:
+    // Palavras muito similares mas não exatas = possível alucinação
+    let alucinacao = false;
+    for(let p of fluValidas){
+      const dist = fDistanciaEdicao(norm, p);
+      if(dist <= 1 && norm !== p) {
+        // Mudança de 1 caractere = alucinação provável (digitação do ASR)
+        alucinacao = true;
+        break;
+      }
+    }
+    
+    // NO MODO STOP FALADO: valida se começa com letra sorteada
+    if(fluMode==='stop'){
+      if(!norm.startsWith(fluStopLetra.toLowerCase())){
+        const entrada = {palavra: tok.toLowerCase(), norm, status: 'invalida', motivo: 'não começa com '+fluStopLetra};
+        fluEntradas.push(entrada);
+        fAdicionarChip(entrada);
+        fAtualizarContadores();
+        return;
+      }
+    }
+    
     // verifica se é repetição (exata após normalização)
     const repetida = fluValidas.has(norm);
     
-    const entrada = {palavra: tok.toLowerCase(), norm, status: repetida ? 'repetida' : 'ok'};
+    let status = 'ok';
+    if(repetida) status = 'repetida';
+    else if(alucinacao) status = 'invalida';
+    
+    const entrada = {palavra: tok.toLowerCase(), norm, status, motivo: alucinacao ? 'alucinação' : undefined};
     fluEntradas.push(entrada);
     
-    if(!repetida){
+    if(!repetida && !alucinacao){
       fluValidas.add(norm);
     }
     
     fAdicionarChip(entrada);
     fAtualizarContadores();
   });
+}
+
+// ─── Distância de Edição (Levenshtein) ────────────────────────
+function fDistanciaEdicao(a,b){
+  const m=a.length, n=b.length;
+  const dp=Array(m+1).fill(null).map(()=>Array(n+1).fill(0));
+  for(let i=0;i<=m;i++)dp[i][0]=i;
+  for(let j=0;j<=n;j++)dp[0][j]=j;
+  for(let i=1;i<=m;i++){
+    for(let j=1;j<=n;j++){
+      if(a[i-1]===b[j-1]) dp[i][j]=dp[i-1][j-1];
+      else dp[i][j]=1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+    }
+  }
+  return dp[m][n];
 }
 
 function fAdicionarChip(entrada){
@@ -1080,10 +1281,16 @@ function fAdicionarChip(entrada){
       : 'background:var(--red-bg);border:2px solid var(--red);color:var(--red);text-decoration:line-through'
   ].join(';');
   
-  const icon = isOk ? '✓' : (entrada.status==='repetida'?'↺':'✗');
+  const icon = isOk ? '✓' : (entrada.status==='repetida'?'↺':entrada.status==='invalida'?'✗':'?');
   chip.innerHTML = `<span style="font-size:.65rem">${icon}</span>${entrada.palavra}`;
+  
   if(!isOk){
-    chip.title = entrada.status==='repetida' ? '⚠ Repetida!' : '⚠ Inválida!';
+    let tooltip = '';
+    if(entrada.status==='repetida') tooltip = '⚠ Repetida!';
+    else if(entrada.motivo==='alucinação') tooltip = '⚠ Alucinação (muito similar)';
+    else if(entrada.motivo && entrada.motivo.includes('não começa')) tooltip = '⚠ '+entrada.motivo;
+    else tooltip = '⚠ Inválida!';
+    chip.title = tooltip;
   }
   lista.appendChild(chip);
   // scroll para o final
@@ -1734,7 +1941,7 @@ const SONGS=[
     {t:35,w:"Cada ser em si carrega o dom de ser capaz"},
     {t:40,w:"E ser feliz"},
   ]},
-  {id:3,title:"Asa Branca",artist:"Luiz Gonzaga",genre:"forró",tip:"Forró nordestino: vogais abertas e bem projetadas. O sotaque regional é parte da expressão — abra bem a boca!",
+  {id:3,title:"Asa Branca",artist:"Luiz Gonzaga",genre:"forro",tip:"Forró nordestino: vogais abertas e bem projetadas. O sotaque regional é parte da expressão — abra bem a boca!",
    lyrics:[
     {t:3,w:"Quando o verde dos teus olhos"},
     {t:7,w:"Se espalhar na plantação"},
@@ -1745,7 +1952,7 @@ const SONGS=[
     {t:29,w:"Espero a chuva cair de novo"},
     {t:33,w:"Pra mim voltar pro meu sertão"},
   ]},
-  {id:4,title:"Aquarela",artist:"Toquinho",genre:"infantil",tip:"Clássico infantil MPB: articulação perfeita. Cada consoante é uma pincelada — não engula nenhuma!",
+  {id:4,title:"Aquarela",artist:"Toquinho",genre:"mpb",tip:"Clássico infantil MPB: articulação perfeita. Cada consoante é uma pincelada — não engula nenhuma!",
    lyrics:[
     {t:3,w:"Numa folha qualquer eu desenho um sol amarelo"},
     {t:8,w:"E com cinco ou seis retas é fácil fazer um castelo"},
@@ -1833,7 +2040,7 @@ const SONGS=[
     {t:26,w:"É o beijo da vida"},
     {t:30,w:"No rosto da morte"},
   ]},
-  {id:12,title:"Pais e Filhos",artist:"Legião Urbana",genre:"rock",tip:"Rock MPB: dicção próxima da fala natural. Cada palavra deve ser compreensível mesmo no ritmo rock.",
+  {id:12,title:"Pais e Filhos",artist:"Legião Urbana",genre:"mpb",tip:"Rock MPB: dicção próxima da fala natural. Cada palavra deve ser compreensível mesmo no ritmo rock.",
    lyrics:[
     {t:3,w:"Deixa eu dizer que te amei"},
     {t:7,w:"E que hoje me arrependo"},
@@ -1855,7 +2062,7 @@ const SONGS=[
     {t:27,w:"Sem que desfrute os primores"},
     {t:31,w:"Que não encontro por cá"},
   ]},
-  {id:14,title:"Sanfoneiro Maluquinho",artist:"Luiz Gonzaga",genre:"forró",tip:"Forró pé-de-serra: ritmo binário forte. Bata o pé para manter o tempo e não arrastar o andamento.",
+  {id:14,title:"Sanfoneiro Maluquinho",artist:"Luiz Gonzaga",genre:"forro",tip:"Forró pé-de-serra: ritmo binário forte. Bata o pé para manter o tempo e não arrastar o andamento.",
    lyrics:[
     {t:3,w:"Sanfoneiro maluquinho"},
     {t:6,w:"Que tocava noite e dia"},
@@ -2158,7 +2365,7 @@ const SG_CATS_DEFAULT=[
   {name:'Personagem famoso',on:false},{name:'Planta/Flor',on:false},
 ];
 let sgCats=[...SG_CATS_DEFAULT.map(c=>({...c}))];
-let sgTempo=90, sgLetra='', sgTimer=null, sgSecs=0;
+let sgTempo=90, sgLetra='A', sgTimer=null, sgSecs=0;
 
 function sgInit(){
   const grid=document.getElementById('sgCatGrid');
@@ -2340,7 +2547,6 @@ function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t
 
 // INIT
 selectAct('trava');
-checkSpeechAPI();
 sgInit();
 karaFilterGenre('todas');
 </script>
