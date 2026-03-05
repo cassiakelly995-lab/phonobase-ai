@@ -5,50 +5,59 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FonoPRO</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-html{font-size:16px}
-body{background:#f5f2ec;color:#18120a;font-family:system-ui,sans-serif;padding:20px}
-.container{max-width:700px;margin:0 auto}
-h1{margin-bottom:20px;text-align:center}
-.buttons{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
-.btn{padding:12px 20px;border:none;cursor:pointer;border-radius:8px;font-weight:700;font-size:1rem;min-height:50px}
-.btn-main{background:#18120a;color:#fff}
-.btn-main:hover{background:#0d0804}
-.btn-sec{background:#e8f2ff;border:2px solid #0066bb;color:#0066bb}
-.panel{background:#fffef9;border:2px solid #ddd;border-radius:10px;padding:20px;margin-bottom:20px}
-.select{width:100%;padding:12px;font-size:1rem;border:2px solid #ddd;border-radius:8px;margin-bottom:10px;font-family:inherit}
-.text-display{background:#f5f2ec;padding:15px;border-radius:8px;font-size:1.1rem;line-height:1.8;margin:15px 0;min-height:100px}
-.timer{font-family:monospace;font-size:3rem;font-weight:900;text-align:center;margin:20px 0}
-.words-display{background:#f5f2ec;padding:15px;border-radius:8px;min-height:80px;display:flex;flex-wrap:wrap;gap:10px}
-.word-chip{background:#e8f7ea;border:2px solid #2a7a38;color:#2a7a38;padding:8px 12px;border-radius:8px;font-weight:600}
-.result{background:#e8f7ea;border:2px solid #2a7a38;padding:20px;border-radius:8px;text-align:center;font-size:1.3rem;font-weight:700}
-.result.bad{background:#fdecea;border-color:#c0392b;color:#c0392b}
-#toast{position:fixed;bottom:20px;left:20px;background:#18120a;color:#fff;padding:15px 20px;border-radius:8px;font-size:1.1rem;min-width:200px;z-index:999}
-@media(max-width:600px){html{font-size:14px}.buttons{flex-direction:column}.btn{width:100%}input{font-size:16px!important;padding:12px!important}}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 16px; }
+body { background: #f5f2ec; color: #18120a; font-family: system-ui, sans-serif; }
+.container { max-width: 700px; margin: 0 auto; padding: 15px; }
+.top { background: #fffef9; border-bottom: 2px solid #18120a; padding: 15px; display: flex; gap: 10px; margin-bottom: 20px; border-radius: 8px; }
+.brand { font-size: 1.2rem; font-weight: 700; margin-right: auto; }
+.btn-tab { padding: 10px 15px; border: none; background: transparent; cursor: pointer; font-weight: 600; border-radius: 6px; min-height: 44px; font-family: inherit; font-size: .9rem; }
+.btn-tab.active { background: #18120a; color: #fff; }
+.panel { background: #fffef9; border: 2px solid #ddd; border-radius: 10px; padding: 20px; margin-bottom: 20px; display: none; }
+.panel.active { display: block; }
+h2 { font-size: 1.3rem; margin-bottom: 15px; }
+label { display: block; font-weight: 700; margin: 15px 0 8px 0; }
+select, input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 1rem; font-family: inherit; margin-bottom: 10px; }
+.btn { width: 100%; padding: 15px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 1.1rem; font-family: inherit; min-height: 50px; }
+.btn-main { background: #18120a; color: #fff; }
+.btn-main:active { background: #0d0804; }
+.btn-parar { background: #c0392b; color: #fff; }
+.texto { background: #f5f2ec; padding: 15px; border-radius: 8px; min-height: 100px; line-height: 1.8; margin: 15px 0; border: 2px solid #ddd; }
+.timer { font-family: monospace; font-size: 3.5rem; font-weight: 900; text-align: center; margin: 20px 0; }
+.chips { background: #f5f2ec; padding: 15px; border-radius: 8px; min-height: 80px; display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0; border: 2px solid #ddd; }
+.chip { background: #e8f7ea; border: 2px solid #2a7a38; color: #2a7a38; padding: 8px 12px; border-radius: 6px; font-weight: 600; font-size: .9rem; }
+.resultado { background: #e8f7ea; border: 2px solid #2a7a38; padding: 20px; border-radius: 8px; text-align: center; margin-top: 20px; }
+.resultado.bad { background: #fdecea; border-color: #c0392b; color: #c0392b; }
+.info { background: #e8f2ff; border: 2px solid #0066bb; padding: 12px; border-radius: 6px; margin: 10px 0; font-size: .95rem; }
+.form-group { margin-bottom: 15px; }
+.form-line { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; }
+.form-line label { margin: 0; flex: 1; font-size: .95rem; }
+.form-line input { flex: 2; margin: 0; }
+#toast { position: fixed; bottom: 20px; right: 20px; background: #18120a; color: #fff; padding: 15px 20px; border-radius: 8px; font-weight: 700; z-index: 999; display: none; }
+@media(max-width: 600px) { html { font-size: 14px; } .form-line { flex-direction: column; } .form-line input { flex: 1; } }
 </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>🎙️ FonoPRO</h1>
-  
-  <div class="buttons">
-    <button class="btn btn-main" onclick="mostrarStop()">🎲 STOP</button>
-    <button class="btn btn-main" onclick="mostrarFlu()">💬 FLUÊNCIA</button>
-    <button class="btn btn-main" onclick="mostrarLer()">📖 LEITURA</button>
+  <div class="top">
+    <div class="brand">FonoPRO</div>
+    <button class="btn-tab active" onclick="mudarAba('stop')">🎲 STOP</button>
+    <button class="btn-tab" onclick="mudarAba('flu')">💬 Fluência</button>
+    <button class="btn-tab" onclick="mudarAba('ler')">📖 Leitura</button>
   </div>
 
   <!-- STOP -->
-  <div id="stopPanel" class="panel" style="display:none">
+  <div class="panel active" id="stop">
     <h2>🎲 STOP</h2>
-    <p>Preencha as categorias com a letra sorteada!</p>
+    <p style="margin-bottom: 15px;">Preencha as categorias com a letra sorteada!</p>
     
     <label>Dificuldade:</label>
-    <select id="stopDif" onchange="atualizarStopCats()">
-      <option value="1">🟢 Fácil - 5 categorias</option>
-      <option value="2">🟡 Médio - 8 categorias</option>
-      <option value="3">🔴 Difícil - 12 categorias</option>
-      <option value="4">⚫ Extremo - 15 categorias</option>
+    <select id="stopDif" onchange="atualizarStopDados()">
+      <option value="1">🟢 Fácil (5 cat)</option>
+      <option value="2" selected>🟡 Médio (8 cat)</option>
+      <option value="3">🔴 Difícil (12 cat)</option>
+      <option value="4">⚫ Extremo (15 cat)</option>
     </select>
     
     <label>Tempo:</label>
@@ -59,32 +68,30 @@ h1{margin-bottom:20px;text-align:center}
       <option value="0">Sem tempo</option>
     </select>
     
-    <button class="btn btn-main" onclick="comecaStop()" style="width:100%;margin-top:10px">COMEÇAR</button>
+    <button class="btn btn-main" onclick="iniciarStop()">COMEÇAR</button>
     
-    <div id="stopGame" style="display:none;margin-top:20px">
-      <div style="text-align:center">
-        <div style="font-size:0.9rem;color:#666">LETRA</div>
-        <div style="font-family:Georgia,serif;font-size:5rem;font-weight:900" id="stopLetra">A</div>
+    <div id="stopGame" style="display: none; margin-top: 20px;">
+      <div style="text-align: center;">
+        <div style="font-size: .9rem; color: #666;">LETRA</div>
+        <div style="font-size: 5rem; font-weight: 900; font-family: Georgia, serif;" id="stopLetra">A</div>
         <div class="timer" id="stopTimer">1:30</div>
       </div>
-      
       <div id="stopForm"></div>
-      
-      <button class="btn btn-main" onclick="terminaStop()" style="width:100%;background:#c0392b;margin-top:20px">PARAR</button>
+      <button class="btn btn-parar" onclick="finalizarStop()" style="margin-top: 15px;">🛑 PARAR</button>
     </div>
     
-    <div id="stopResult" style="display:none;margin-top:20px"></div>
+    <div id="stopResultado" style="display: none;"></div>
   </div>
 
   <!-- FLUÊNCIA -->
-  <div id="fluPanel" class="panel" style="display:none">
-    <h2>💬 FLUÊNCIA</h2>
-    <p>Fale palavras diferentes da categoria!</p>
+  <div class="panel" id="flu">
+    <h2>💬 FLUÊNCIA VERBAL</h2>
+    <p style="margin-bottom: 15px;">Fale palavras diferentes da categoria escolhida!</p>
     
     <label>Dificuldade:</label>
     <select id="fluDif">
       <option value="1">🟢 Fácil</option>
-      <option value="2">🟡 Médio</option>
+      <option value="2" selected>🟡 Médio</option>
       <option value="3">🔴 Difícil</option>
       <option value="4">⚫ Extremo</option>
     </select>
@@ -99,160 +106,83 @@ h1{margin-bottom:20px;text-align:center}
       <option value="5">Profissões</option>
     </select>
     
-    <button class="btn btn-main" id="fluBtn" onclick="comecaFlu()" style="width:100%;margin-top:10px">COMEÇAR</button>
+    <button class="btn btn-main" id="fluBtn" onclick="iniciarFlu()">COMEÇAR</button>
     
-    <div class="timer" id="fluTimer" style="display:none">1:00</div>
+    <div class="timer" id="fluTimer" style="display: none;">1:00</div>
     
-    <div id="fluWords" class="words-display"></div>
+    <div id="fluChips" class="chips"></div>
     
-    <div id="fluResult" style="display:none;margin-top:20px"></div>
+    <div id="fluResultado" style="display: none;"></div>
   </div>
 
   <!-- LEITURA -->
-  <div id="lerPanel" class="panel" style="display:none">
-    <h2>📖 LEITURA</h2>
-    <p>Leia em voz alta!</p>
+  <div class="panel" id="ler">
+    <h2>📖 DESAFIO DE LEITURA</h2>
+    <p style="margin-bottom: 15px;">Leia em voz alta!</p>
     
     <label>Nível:</label>
-    <select id="lerNivel">
-      <option value="1">🟢 Nível 1 - Fácil</option>
-      <option value="2">🟡 Nível 2 - Normal</option>
-      <option value="3">🟠 Nível 3 - Médio</option>
-      <option value="4">🔴 Nível 4 - Difícil</option>
-      <option value="5">⚫ Nível 5 - Extremo</option>
-      <option value="6">🌪️ Nível 6 - Ultra</option>
-      <option value="7">💀 Nível 7 - Insano</option>
-      <option value="8">🌀 Nível 8 - Caótico</option>
+    <select id="lerNivel" onchange="atualizarTextoLeitura()">
+      <option value="1">🟢 1 - Fácil</option>
+      <option value="2" selected>🟡 2 - Normal</option>
+      <option value="3">🟠 3 - Médio</option>
+      <option value="4">🔴 4 - Difícil</option>
+      <option value="5">⚫ 5 - Extremo</option>
+      <option value="6">🌪️ 6 - Ultra</option>
+      <option value="7">💀 7 - Insano</option>
+      <option value="8">🌀 8 - Caótico</option>
     </select>
     
-    <div id="lerTexto" class="text-display"></div>
+    <div id="lerTexto" class="texto"></div>
     
-    <button class="btn btn-main" id="lerBtn" onclick="comecaLer()" style="width:100%">COMEÇAR</button>
+    <button class="btn btn-main" id="lerBtn" onclick="iniciarLer()">COMEÇAR</button>
     
-    <div id="lerStatus" style="display:none;margin-top:10px;font-size:1rem">
-      Tempo: <strong id="lerTempo">0:00</strong> | Palavras: <strong id="lerPalavras">0</strong>
+    <div id="lerStatus" class="info" style="display: none;">
+      Tempo: <strong id="lerTempo">0:00</strong> | Palavras: <strong id="lerPals">0</strong>
     </div>
     
-    <div id="lerResult" style="display:none;margin-top:20px"></div>
+    <div id="lerResultado" style="display: none;"></div>
   </div>
 </div>
 
 <div id="toast"></div>
 
 <script>
-// DADOS DE STOP
+// ===== DADOS STOP =====
 const STOP_DADOS = {
-  1: {
-    cats: ['Nome', 'Animal', 'Cor', 'Fruta', 'País'],
-    pals: {
-      'nome': ['joão','maria','josé','pedro','ana','carlos','bruno','alice','bianca','diego','rafael','fernando','isabel','jessica','lucas'],
-      'animal': ['burro','gato','cachorro','peixe','cobra','leão','tigre','elefante','girafa','zebra','pato','galinha','porco','vaca','cavalo'],
-      'cor': ['branco','azul','vermelho','verde','amarelo','rosa','roxo','preto','cinza','laranja','marrom','bege','azul-claro','azul-escuro','rosa-claro'],
-      'fruta': ['banana','maçã','laranja','morango','melancia','uva','abacaxi','pêssego','kiwi','manga','goiaba','melão','cereja','ameixa','framboesa'],
-      'país': ['brasil','argentina','méxico','japão','alemanha','frança','itália','espanha','canadá','china','índia','austrália','rússia','turquia','grécia']
-    }
-  },
-  2: {
-    cats: ['Nome', 'Animal', 'Cor', 'Fruta', 'País', 'Cidade', 'Marca', 'Profissão'],
-    pals: {
-      'nome': ['joão','maria','josé','pedro','ana','carlos','bruno','alice','bianca','diego','rafael','fernando','isabel','jessica','lucas','beatriz','gabriel','henrique','lucas','natália'],
-      'animal': ['burro','gato','cachorro','peixe','cobra','leão','tigre','elefante','girafa','zebra','pato','galinha','porco','vaca','cavalo','coelho','hamster','esquilo','coruja','águia'],
-      'cor': ['branco','azul','vermelho','verde','amarelo','rosa','roxo','preto','cinza','laranja','marrom','bege','azul-claro','azul-escuro','rosa-claro','verde-escuro','amarelo-claro','violeta','turquesa','magenta'],
-      'fruta': ['banana','maçã','laranja','morango','melancia','uva','abacaxi','pêssego','kiwi','manga','goiaba','melão','cereja','ameixa','framboesa','amora','blueberry','coco','damasco','figo'],
-      'país': ['brasil','argentina','méxico','japão','alemanha','frança','itália','espanha','canadá','china','índia','austrália','rússia','turquia','grécia','portugal','suécia','noruega','finlândia','dinamarca'],
-      'cidade': ['barueri','sãopaulo','riodejaneiro','brasília','salvador','recife','manaus','curitiba','portoalegre','belém','goiânia','cuiabá','macapá','palmas','teresina'],
-      'marca': ['bmw','ford','chevrolet','fiat','vw','toyota','honda','hyundai','renault','peugeot','nissan','kia','mazda','subaru','volvo'],
-      'profissão': ['barber','chef','doctor','teacher','engenheiro','psicólogo','advogado','contador','encanador','eletricista','pedreiro','carpinteiro','jardineiro','babá','motorista']
-    }
-  },
-  3: {
-    cats: ['Nome', 'Animal', 'Cor', 'Fruta', 'País', 'Cidade', 'Marca', 'Profissão', 'Verbo', 'Objeto', 'Comida', 'Bebida'],
-    pals: {
-      'nome': ['joão','maria','josé','pedro','ana','carlos','bruno','alice','bianca','diego','rafael','fernando','isabel','jessica','lucas','beatriz','gabriel','henrique','natália','vittória'],
-      'animal': ['burro','gato','cachorro','peixe','cobra','leão','tigre','elefante','girafa','zebra','pato','galinha','porco','vaca','cavalo','coelho','hamster','esquilo','coruja','águia'],
-      'cor': ['branco','azul','vermelho','verde','amarelo','rosa','roxo','preto','cinza','laranja','marrom','bege','azul-claro','verde-escuro','amarelo-claro','violeta','turquesa','magenta','escarlate','carmesim'],
-      'fruta': ['banana','maçã','laranja','morango','melancia','uva','abacaxi','pêssego','kiwi','manga','goiaba','melão','cereja','ameixa','framboesa','amora','blueberry','coco','damasco','figo'],
-      'país': ['brasil','argentina','méxico','japão','alemanha','frança','itália','espanha','canadá','china','índia','austrália','rússia','turquia','grécia','portugal','suécia','noruega','finlândia','dinamarca'],
-      'cidade': ['barueri','sãopaulo','riodejaneiro','brasília','salvador','recife','manaus','curitiba','portoalegre','belém','goiânia','cuiabá','macapá','palmas','teresina'],
-      'marca': ['bmw','ford','chevrolet','fiat','vw','toyota','honda','hyundai','renault','peugeot','nissan','kia','mazda','subaru','volvo'],
-      'profissão': ['barber','chef','doctor','teacher','engenheiro','psicólogo','advogado','contador','encanador','eletricista','pedreiro','carpinteiro','jardineiro','babá','motorista'],
-      'verbo': ['correr','pular','comer','beber','dormir','acordar','andar','falar','ouvir','ver','tocar','escrever','ler','pensar','sentir'],
-      'objeto': ['mesa','cadeira','cama','porta','janela','espelho','relógio','lâmpada','tapete','sofá','geladeira','fogão','pia','copo','prato'],
-      'comida': ['biscoito','pão','arroz','feijão','macarrão','pizza','hambúrguer','frango','carne','peixe','salada','sopa','ovo','queijo','leite'],
-      'bebida': ['água','café','suco','leite','chá','refrigerante','vinho','cerveja','suco-natural','iogurte','achocolatado','suco-artificial','vinho-branco','vinho-tinto','chá-gelado']
-    }
-  },
-  4: {
-    cats: ['Nome', 'Animal', 'Cor', 'Fruta', 'País', 'Cidade', 'Marca', 'Profissão', 'Verbo', 'Objeto', 'Comida', 'Bebida', 'Flor', 'Esporte', 'Instrumento'],
-    pals: {
-      'nome': ['joão','maria','josé','pedro','ana','carlos','bruno','alice','bianca','diego','rafael','fernando','isabel','jessica','lucas','beatriz','gabriel','henrique','natália','vittória'],
-      'animal': ['burro','gato','cachorro','peixe','cobra','leão','tigre','elefante','girafa','zebra','pato','galinha','porco','vaca','cavalo'],
-      'cor': ['branco','azul','vermelho','verde','amarelo','rosa','roxo','preto','cinza','laranja','marrom','bege','azul-claro','verde-escuro','amarelo-claro'],
-      'fruta': ['banana','maçã','laranja','morango','melancia','uva','abacaxi','pêssego','kiwi','manga','goiaba','melão','cereja','ameixa','framboesa'],
-      'país': ['brasil','argentina','méxico','japão','alemanha','frança','itália','espanha','canadá','china','índia','austrália','rússia','turquia','grécia'],
-      'cidade': ['barueri','sãopaulo','riodejaneiro','brasília','salvador','recife','manaus','curitiba','portoalegre','belém','goiânia','cuiabá','macapá','palmas','teresina'],
-      'marca': ['bmw','ford','chevrolet','fiat','vw','toyota','honda','hyundai','renault','peugeot','nissan','kia','mazda','subaru','volvo'],
-      'profissão': ['barber','chef','doctor','teacher','engenheiro','psicólogo','advogado','contador','encanador','eletricista','pedreiro','carpinteiro','jardineiro','babá','motorista'],
-      'verbo': ['correr','pular','comer','beber','dormir','acordar','andar','falar','ouvir','ver','tocar','escrever','ler','pensar','sentir'],
-      'objeto': ['mesa','cadeira','cama','porta','janela','espelho','relógio','lâmpada','tapete','sofá','geladeira','fogão','pia','copo','prato'],
-      'comida': ['biscoito','pão','arroz','feijão','macarrão','pizza','hambúrguer','frango','carne','peixe','salada','sopa','ovo','queijo','leite'],
-      'bebida': ['água','café','suco','leite','chá','refrigerante','vinho','cerveja','suco-natural','iogurte','achocolatado','suco-artificial','vinho-branco','vinho-tinto','chá-gelado'],
-      'flor': ['rosa','tulipa','girassol','margarida','orquídea','lótus','azaleia','íris','peônia','gérbera','narciso','cravo','begônia','papoula','jasmim'],
-      'esporte': ['futebol','basquete','tênis','natação','atletismo','vôlei','hóquei','surfe','ski','patinação','boxe','judô','karatê','ginástica','dança'],
-      'instrumento': ['violão','piano','flauta','tambor','trompete','saxofone','violino','harpa','gaita','sanfona','trombone','clarineta','oboé','flauta-doce','pandeiro']
-    }
-  }
+  1: { cats: ['Nome','Animal','Cor','Fruta','País'], pals: {'nome':['joão','maria','josé','pedro','ana','carlos','bruno','alice','bianca'],'animal':['gato','cão','rato','pato','cobra','leão','tigre','elefante','girafa'],'cor':['branco','azul','vermelho','verde','amarelo','rosa','roxo','preto','cinza'],'fruta':['banana','maçã','laranja','morango','melancia','uva','abacaxi','pêssego','kiwi'],'país':['brasil','argentina','méxico','japão','alemanha','frança','itália','espanha','canadá']} },
+  2: { cats: ['Nome','Animal','Cor','Fruta','País','Cidade','Marca','Profissão'], pals: {'nome':['joão','maria','josé','pedro','ana','carlos','bruno','alice','bianca','diego','rafael','fernando','isabel','jessica','lucas'],'animal':['gato','cão','rato','pato','cobra','leão','tigre','elefante','girafa','zebra','coelho','galinha','porco','vaca','cavalo'],'cor':['branco','azul','vermelho','verde','amarelo','rosa','roxo','preto','cinza','laranja','marrom','bege','pink','navy','gold'],'fruta':['banana','maçã','laranja','morango','melancia','uva','abacaxi','pêssego','kiwi','manga','goiaba','melão','cereja','ameixa','framboesa'],'país':['brasil','argentina','méxico','japão','alemanha','frança','itália','espanha','canadá','china','índia','austrália','rússia','turquia','grécia'],'cidade':['barueri','sãopaulo','riodejaneiro','brasília','salvador','recife','manaus','curitiba','portoalegre','belém','goiânia','cuiabá'],'marca':['bmw','ford','chevrolet','fiat','vw','toyota','honda','hyundai','renault','peugeot','nissan','kia','mazda','subaru','volvo'],'profissão':['barber','chef','doctor','teacher','engenheiro','psicólogo','advogado','contador','encanador','eletricista','pedreiro','carpinteiro','jardineiro','babá','motorista']} },
+  3: { cats: ['Nome','Animal','Cor','Fruta','País','Cidade','Marca','Profissão','Verbo','Objeto','Comida','Bebida'], pals: {'nome':['joão','maria','josé','pedro','ana','carlos','bruno','alice','bianca','diego','rafael','fernando','isabel','jessica','lucas'],'animal':['gato','cão','rato','pato','cobra','leão','tigre','elefante','girafa','zebra','coelho','galinha','porco','vaca','cavalo'],'cor':['branco','azul','vermelho','verde','amarelo','rosa','roxo','preto','cinza','laranja','marrom','bege','pink','navy','gold'],'fruta':['banana','maçã','laranja','morango','melancia','uva','abacaxi','pêssego','kiwi','manga','goiaba','melão','cereja','ameixa','framboesa'],'país':['brasil','argentina','méxico','japão','alemanha','frança','itália','espanha','canadá','china','índia','austrália','rússia','turquia','grécia'],'cidade':['barueri','sãopaulo','riodejaneiro','brasília','salvador','recife','manaus','curitiba','portoalegre','belém','goiânia','cuiabá'],'marca':['bmw','ford','chevrolet','fiat','vw','toyota','honda','hyundai','renault','peugeot','nissan','kia','mazda','subaru','volvo'],'profissão':['barber','chef','doctor','teacher','engenheiro','psicólogo','advogado','contador','encanador','eletricista','pedreiro','carpinteiro','jardineiro','babá','motorista'],'verbo':['correr','pular','comer','beber','dormir','acordar','andar','falar','ouvir','ver','tocar','escrever','ler','pensar','sentir'],'objeto':['mesa','cadeira','cama','porta','janela','espelho','relógio','lâmpada','tapete','sofá','geladeira','fogão','pia','copo','prato'],'comida':['biscoito','pão','arroz','feijão','macarrão','pizza','hambúrguer','frango','carne','peixe','salada','sopa','ovo','queijo','leite'],'bebida':['água','café','suco','leite','chá','refrigerante','vinho','cerveja','iogurte','achocolatado','suco-artificial','vinho-branco','vinho-tinto','chá-gelado','suco-natural']} },
+  4: { cats: ['Nome','Animal','Cor','Fruta','País','Cidade','Marca','Profissão','Verbo','Objeto','Comida','Bebida','Flor','Esporte','Instrumento'], pals: {'nome':['joão','maria','josé','pedro','ana','carlos','bruno','alice','bianca','diego','rafael','fernando','isabel','jessica','lucas'],'animal':['gato','cão','rato','pato','cobra','leão','tigre','elefante','girafa','zebra','coelho','galinha','porco','vaca','cavalo'],'cor':['branco','azul','vermelho','verde','amarelo','rosa','roxo','preto','cinza','laranja','marrom','bege','pink','navy','gold'],'fruta':['banana','maçã','laranja','morango','melancia','uva','abacaxi','pêssego','kiwi','manga','goiaba','melão','cereja','ameixa','framboesa'],'país':['brasil','argentina','méxico','japão','alemanha','frança','itália','espanha','canadá','china','índia','austrália','rússia','turquia','grécia'],'cidade':['barueri','sãopaulo','riodejaneiro','brasília','salvador','recife','manaus','curitiba','portoalegre','belém','goiânia','cuiabá'],'marca':['bmw','ford','chevrolet','fiat','vw','toyota','honda','hyundai','renault','peugeot','nissan','kia','mazda','subaru','volvo'],'profissão':['barber','chef','doctor','teacher','engenheiro','psicólogo','advogado','contador','encanador','eletricista','pedreiro','carpinteiro','jardineiro','babá','motorista'],'verbo':['correr','pular','comer','beber','dormir','acordar','andar','falar','ouvir','ver','tocar','escrever','ler','pensar','sentir'],'objeto':['mesa','cadeira','cama','porta','janela','espelho','relógio','lâmpada','tapete','sofá','geladeira','fogão','pia','copo','prato'],'comida':['biscoito','pão','arroz','feijão','macarrão','pizza','hambúrguer','frango','carne','peixe','salada','sopa','ovo','queijo','leite'],'bebida':['água','café','suco','leite','chá','refrigerante','vinho','cerveja','iogurte','achocolatado','suco-artificial','vinho-branco','vinho-tinto','chá-gelado','suco-natural'],'flor':['rosa','tulipa','girassol','margarida','orquídea','lótus','azaleia','íris','peônia','gérbera','narciso','cravo','begônia','papoula','jasmim'],'esporte':['futebol','basquete','tênis','natação','atletismo','vôlei','hóquei','surfe','ski','patinação','boxe','judô','karatê','ginástica','dança'],'instrumento':['violão','piano','flauta','tambor','trompete','saxofone','violino','harpa','gaita','sanfona','trombone','clarineta','oboé','flauta-doce','pandeiro']} }
 };
 
-// DADOS FLUÊNCIA
+// ===== DADOS FLUÊNCIA =====
 const FLU_DADOS = {
-  1: {
-    0: ['gato','cão','rato','pato','peixe','galinha','porco','vaca','cavalo','coelho'],
-    1: ['maçã','banana','laranja','morango','uva','melancia','pêssego','kiwi','manga','goiaba'],
-    2: ['branco','azul','vermelho','verde','amarelo','rosa','roxo','preto','cinza','laranja'],
-    3: ['brasil','argentina','méxico','japão','alemanha','frança','itália','espanha','canadá','china'],
-    4: ['barueri','sãopaulo','riodejaneiro','brasília','salvador','recife','manaus','curitiba','portoalegre','belém'],
-    5: ['professor','médico','engenheiro','advogado','chef','carpinteiro','eletricista','encanador','dentista','psicólogo']
-  },
-  2: {
-    0: ['elefante','girafa','tigre','leão','zebra','crocodilo','hiena','avestruz','leopardo','pantera'],
-    1: ['melancia','abacaxi','pêssego','kiwi','manga','goiaba','melão','cereja','ameixa','framboesa'],
-    2: ['rosa','roxo','cinza','marrom','bege','turquesa','magenta','escarlate','carmesim','chartreuse'],
-    3: ['tailândia','vietnã','indonésia','filipinas','malásia','singapura','camboja','laos','mianmar','brunei'],
-    4: ['florianópolis','goiânia','fortaleza','natal','teresina','joão pessoa','maceió','aracaju','são luís','campo grande'],
-    5: ['cardiologista','neurocirurgião','oftalmologista','dermatologista','gastroenterologista','pneumologista','nefrologista','hepatologista','endocrinologista','reumatologista']
-  },
-  3: {
-    0: ['ornitorrinco','equidna','pangolim','quoll','numbat','vombate','coalá','canguru','diabo-da-tasmânia','échidna'],
-    1: ['carambola','fruta-do-conde','cupuaçu','jaca','romã','pitaia','graviola','acerola','tamarindo','amora'],
-    2: ['ultravioleta','periquito','alaúde','tumbaga','púrpura','vermelhão','índigo','âmbar','escuro','opalescente'],
-    3: ['timor-leste','moçambique','macedônia','azerbaijão','líbano','iraque','síria','irã','iêmen','oman'],
-    4: ['governador valadares','divinópolis','montes claros','uberaba','uberlândia','araraquara','ribeirão preto','franca','ituverava','bauru'],
-    5: ['pneumologista','fisiologista','oncologista','nefrologista','hepatologista','otorrinolaringologista','proctologista','coloproctologista','anestesiologista','radiologista']
-  },
-  4: {
-    0: ['tarântula','escorpião','centopeia','louva-deus','barata','gafanhoto','grilo','cigarra','libélula','vespa'],
-    1: ['melão-cantaloupe','melão-honeydew','melão-gália','melão-charentais','melão-piel-de-sapo','melão-cantaloupe-orange','melão-cantaloupe-verde','melão-cantaloupe-anelado','melão-amarelo','melão-jacaru'],
-    2: ['chartreuse','ultravioleta','periquito','tumbaga','púrpura-ultravioleta','púrpura-açafrão','púrpura-fúcsia','púrpura-héliotropo','púrpura-magnolia','púrpura-mauve'],
-    3: ['república democrática do congo','república centro-africana','costa do marfim','burkina faso','mauritânia','níger','djibouti','comores','são cristóvão e neves','dominica'],
-    4: ['governador valadares','divinópolis','montes claros','uberaba','uberlândia','araraquara','ribeirão preto','franca','ituverava','bauru'],
-    5: ['otorrinolaringologista','gastroenterologista-cirurgião','pneumologista-intensivista','dermatologista-oncologista','oftalmologista-patologista','nefrologista-transplantólogo','hepatologista-gastroenterologista','oncologista-hematologista','cardiologista-eletrofisiologista','neurocirurgião-especialista']
-  }
+  1: { 0:['gato','cão','rato','pato','cobra'], 1:['maçã','banana','laranja','morango','uva'], 2:['branco','azul','vermelho','verde','amarelo'], 3:['brasil','argentina','méxico','japão','canadá'], 4:['barueri','sãopaulo','riodejaneiro','brasília','salvador'], 5:['professor','médico','engenheiro','advogado','chef'] },
+  2: { 0:['elefante','girafa','tigre','leão','zebra'], 1:['melancia','abacaxi','pêssego','kiwi','manga'], 2:['rosa','roxo','cinza','marrom','bege'], 3:['tailândia','vietnã','indonésia','filipinas','malásia'], 4:['florianópolis','goiânia','fortaleza','natal','teresina'], 5:['cardiologista','dentista','psicólogo','fisioterapeuta','nutricionista'] },
+  3: { 0:['coelho','galinha','porco','vaca','cavalo'], 1:['cereja','ameixa','framboesa','goiaba','melão'], 2:['turquesa','magenta','escarlate','carmesim','violeta'], 3:['tailândia','vietnã','indonésia','filipinas','singapura'], 4:['uberaba','uberlândia','araraquara','ribeirão preto','franca'], 5:['oftalmologista','dermatologista','gastroenterologista','pneumologista','nefrologista'] },
+  4: { 0:['ornitorrinco','equidna','pangolim','quoll','numbat'], 1:['carambola','fruta-do-conde','cupuaçu','jaca','romã'], 2:['ultravioleta','periquito','alaúde','tumbaga','púrpura'], 3:['timor-leste','moçambique','macedônia','azerbaijão','líbano'], 4:['governador valadares','divinópolis','montes claros','uberaba','uberlândia'], 5:['pneumologista','fisiologista','oncologista','hepatologista','endocrinologista'] }
 };
 
-// DADOS LEITURA
+// ===== DADOS LEITURA =====
 const LER_TXTS = {
-  1: 'Gato. Cão. Rato. Casa. Pão. Água.',
+  1: 'Gato. Cão. Casa. Pão. Água.',
   2: 'João acordou cedo. Ele foi à escola. Maria estava esperando.',
-  3: 'A biblioteca municipal oferecia diversos livros fascinantes. Os frequentadores liam atentamente.',
-  4: 'A aquisição fonológica em crianças demonstra desenvolvimento progressivo. Pesquisadores investigam mecanismos neurológicos subjacentes.',
-  5: 'Nas profundezas insondáveis da consciência fenomenológica desdobra-se o transcendental emaranhado de percepções obnubiladas.',
+  3: 'A biblioteca municipal oferecia diversos livros fascinantes. Os frequentadores liam atentamente durante horas.',
+  4: 'A aquisição fonológica em crianças demonstra desenvolvimento progressivo. Pesquisadores investigam mecanismos neurológicos subjacentes ao processamento cognitivo.',
+  5: 'Nas profundezas insondáveis da consciência fenomenológica desdobra-se o transcendental emaranhado de percepções obnubiladas pela nebulosidade epistemológica.',
   6: 'Qual não foi minha surpresa ao vislumbrar através dos umbráculos da floresta intocada uma silhueta humana que parecia flutuar como espectro etéreo.',
   7: 'A phenomenología da existência transcendental perpassa os dedalíferos caminhos da ontologia heideggeriana reverberando através dos estratos diafanificamente estruturados.',
   8: 'Synchroclasmata verti-inversivas desintegrando-congregamse nos labirintos tétanós da omnipotencialidade semântica vítreas quasiconsciência flogística reverberando.'
 };
 
-// FUNÇÕES
+// ===== FUNÇÕES GLOBAIS =====
+function mudarAba(aba) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(aba).classList.add('active');
+  document.querySelectorAll('.btn-tab').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
 function toast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -260,57 +190,39 @@ function toast(msg) {
   setTimeout(() => { t.style.display = 'none'; }, 2500);
 }
 
-function mostrarStop() {
-  document.getElementById('stopPanel').style.display = '';
-  document.getElementById('fluPanel').style.display = 'none';
-  document.getElementById('lerPanel').style.display = 'none';
-  atualizarStopCats();
+function atualizarStopDados() {
+  // Apenas para mostrar que selecionou
 }
 
-function mostrarFlu() {
-  document.getElementById('stopPanel').style.display = 'none';
-  document.getElementById('fluPanel').style.display = '';
-  document.getElementById('lerPanel').style.display = 'none';
-}
-
-function mostrarLer() {
-  document.getElementById('stopPanel').style.display = 'none';
-  document.getElementById('fluPanel').style.display = 'none';
-  document.getElementById('lerPanel').style.display = '';
-  atualizarLeitura();
-}
-
-function atualizarStopCats() {
-  const dif = document.getElementById('stopDif').value;
-  const dados = STOP_DADOS[dif];
-  // Apenas atualiza quando começa
-}
-
-function atualizarLeitura() {
+function atualizarTextoLeitura() {
   const niv = document.getElementById('lerNivel').value;
   document.getElementById('lerTexto').textContent = LER_TXTS[niv];
 }
 
-function comecaStop() {
+// ===== STOP =====
+function iniciarStop() {
   const dif = document.getElementById('stopDif').value;
   const dados = STOP_DADOS[dif];
   const ltrs = 'ABCDEFGIJLMNOPQRSTUVXZ';
   const letra = ltrs[Math.floor(Math.random() * ltrs.length)];
+  const tempo = parseInt(document.getElementById('stopTempo').value);
   
-  let tempo = parseInt(document.getElementById('stopTempo').value);
   let secs = tempo;
   
   document.getElementById('stopLetra').textContent = letra;
   document.getElementById('stopGame').style.display = '';
-  document.getElementById('stopResult').style.display = 'none';
+  document.getElementById('stopResultado').style.display = 'none';
   
   const form = document.getElementById('stopForm');
-  form.innerHTML = dados.cats.map((cat, i) => `
-    <div style="margin-bottom:12px">
-      <label style="font-weight:600;margin-bottom:5px;display:block">${cat}:</label>
-      <input type="text" placeholder="Com ${letra}..." data-cat="${cat.toLowerCase()}" style="width:100%;padding:10px;border:2px solid #ddd;border-radius:6px;font-size:1rem;font-family:inherit">
-    </div>
-  `).join('');
+  form.innerHTML = '';
+  dados.cats.forEach((cat, i) => {
+    const line = document.createElement('div');
+    line.className = 'form-line';
+    line.innerHTML = `<label>${cat}:</label><input type="text" id="stopInp${i}" placeholder="Com ${letra}..." data-cat="${cat.toLowerCase()}">`;
+    form.appendChild(line);
+  });
+  
+  document.getElementById('stopInp0').focus();
   
   const timer = setInterval(() => {
     secs--;
@@ -319,16 +231,15 @@ function comecaStop() {
     document.getElementById('stopTimer').textContent = m + ':' + (s < 10 ? '0' : '') + s;
     if (secs <= 0) {
       clearInterval(timer);
-      terminaStop();
+      finalizarStop();
     }
   }, 1000);
   
   window.stopTimer = timer;
 }
 
-function terminaStop() {
+function finalizarStop() {
   clearInterval(window.stopTimer);
-  
   const dif = document.getElementById('stopDif').value;
   const dados = STOP_DADOS[dif];
   const letra = document.getElementById('stopLetra').textContent.toLowerCase();
@@ -336,53 +247,57 @@ function terminaStop() {
   document.getElementById('stopGame').style.display = 'none';
   
   let pts = 0, html = '';
-  document.querySelectorAll('#stopForm input').forEach(inp => {
+  const inputs = document.querySelectorAll('#stopForm input');
+  inputs.forEach((inp, i) => {
     const cat = inp.getAttribute('data-cat');
     const val = inp.value.toLowerCase().trim();
     const ok = val.startsWith(letra) && dados.pals[cat] && dados.pals[cat].includes(val);
     pts += ok ? 10 : 0;
-    html += `<div style="margin:10px 0;padding:10px;border-radius:6px;background:${ok ? '#e8f7ea' : '#fdecea'};border:2px solid ${ok ? '#2a7a38' : '#c0392b'}">
-      ${ok ? '✅' : '❌'} <strong>${cat.toUpperCase()}</strong>: ${val || '(vazio)'}
+    html += `<div class="form-line" style="background: ${ok ? '#e8f7ea' : '#fdecea'}; padding: 10px; border-radius: 6px; border: 2px solid ${ok ? '#2a7a38' : '#c0392b'};">
+      <span style="font-size: 1.3rem;">${ok ? '✅' : '❌'}</span>
+      <strong style="flex: 1;">${cat.toUpperCase()}</strong>
+      <span>${val || '(vazio)'}</span>
     </div>`;
   });
   
   const max = dados.cats.length * 10;
   const pct = Math.round((pts / max) * 100);
-  document.getElementById('stopResult').innerHTML = `
-    <div class="result">
-      <div>${pts}/${max} PONTOS</div>
-      <div style="font-size:2rem;margin:10px 0">${pct}%</div>
-      ${html}
-      <button class="btn btn-main" onclick="comecaStop()" style="width:100%;margin-top:10px">TENTAR NOVAMENTE</button>
+  
+  document.getElementById('stopResultado').innerHTML = `
+    <div class="resultado">
+      <div style="font-size: 2rem; font-weight: 900;">${pts}/${max}</div>
+      <div style="font-size: 1.5rem; margin: 10px 0;">${pct}%</div>
+      <div style="margin: 15px 0;">${html}</div>
+      <button class="btn btn-main" onclick="iniciarStop()" style="margin-top: 15px;">TENTAR NOVAMENTE</button>
     </div>
   `;
-  document.getElementById('stopResult').style.display = '';
+  document.getElementById('stopResultado').style.display = '';
   toast('✅ ' + pts + ' pontos!');
 }
 
-function comecaFlu() {
+// ===== FLUÊNCIA =====
+function iniciarFlu() {
   try {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) throw new Error('Navegador incompatível');
+    if (!SR) { toast('Navegador incompatível'); return; }
     
     const dif = document.getElementById('fluDif').value;
     const cat = parseInt(document.getElementById('fluCat').value);
-    const palavrasEsperadas = FLU_DADOS[dif][cat];
     
     let secs = 60;
-    let palavrasFaladas = [];
+    let pals = [];
     
     document.getElementById('fluBtn').textContent = 'PARAR';
     document.getElementById('fluTimer').style.display = '';
-    document.getElementById('fluWords').innerHTML = '';
-    document.getElementById('fluResult').style.display = 'none';
+    document.getElementById('fluChips').innerHTML = '';
+    document.getElementById('fluResultado').style.display = 'none';
     
     const timer = setInterval(() => {
       secs--;
       document.getElementById('fluTimer').textContent = Math.floor(secs / 60) + ':' + (secs % 60 < 10 ? '0' : '') + (secs % 60);
       if (secs <= 0) {
         clearInterval(timer);
-        terminaFlu();
+        finalizarFlu();
       }
     }, 1000);
     
@@ -395,14 +310,14 @@ function comecaFlu() {
     rec.onresult = (e) => {
       for (let i = e.resultIndex; i < e.results.length; i++) {
         if (e.results[i].isFinal) {
-          const pals = e.results[i][0].transcript.toLowerCase().split(/\s+/);
-          pals.forEach(p => {
-            if (p.length > 2 && !palavrasFaladas.includes(p)) {
-              palavrasFaladas.push(p);
+          const words = e.results[i][0].transcript.toLowerCase().split(/\s+/);
+          words.forEach(w => {
+            if (w.length > 2 && !pals.includes(w)) {
+              pals.push(w);
               const chip = document.createElement('span');
-              chip.className = 'word-chip';
-              chip.textContent = '✓ ' + p;
-              document.getElementById('fluWords').appendChild(chip);
+              chip.className = 'chip';
+              chip.textContent = '✓ ' + w;
+              document.getElementById('fluChips').appendChild(chip);
             }
           });
         }
@@ -415,40 +330,42 @@ function comecaFlu() {
     rec.start();
     toast('Fale agora!');
   } catch (e) {
-    toast('❌ Erro: ' + e.message);
+    toast('Erro: ' + e.message);
   }
 }
 
-function terminaFlu() {
+function finalizarFlu() {
   if (window.fluRec) window.fluRec.stop();
   if (window.fluTimer) clearInterval(window.fluTimer);
   
   document.getElementById('fluBtn').textContent = 'COMEÇAR';
   document.getElementById('fluTimer').style.display = 'none';
   
-  const total = document.querySelectorAll('#fluWords .word-chip').length;
-  document.getElementById('fluResult').innerHTML = `
-    <div class="result" style="font-size:1.5rem">
-      <div>${total}</div>
-      <div style="font-size:1rem;margin-top:10px">PALAVRAS DIFERENTES</div>
-      <button class="btn btn-main" onclick="comecaFlu()" style="width:100%;margin-top:10px">REPETIR</button>
+  const total = document.querySelectorAll('#fluChips .chip').length;
+  document.getElementById('fluResultado').innerHTML = `
+    <div class="resultado">
+      <div style="font-size: 2rem; font-weight: 900;">${total}</div>
+      <div style="font-size: 1rem; margin-top: 10px;">PALAVRAS DIFERENTES</div>
+      <button class="btn btn-main" onclick="iniciarFlu()" style="margin-top: 15px;">REPETIR</button>
     </div>
   `;
-  document.getElementById('fluResult').style.display = '';
+  document.getElementById('fluResultado').style.display = '';
   toast('✅ ' + total + ' palavras!');
 }
 
-function comecaLer() {
+// ===== LEITURA =====
+function iniciarLer() {
   try {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) throw new Error('Navegador incompatível');
+    if (!SR) { toast('Navegador incompatível'); return; }
     
     let secs = 90;
     let palavras = 0;
     
     document.getElementById('lerBtn').textContent = 'PARAR';
     document.getElementById('lerStatus').style.display = '';
-    document.getElementById('lerResult').style.display = 'none';
+    document.getElementById('lerResultado').style.display = 'none';
+    document.getElementById('lerPals').textContent = '0';
     
     const timer = setInterval(() => {
       secs--;
@@ -457,7 +374,7 @@ function comecaLer() {
       document.getElementById('lerTempo').textContent = m + ':' + (s < 10 ? '0' : '') + s;
       if (secs <= 0) {
         clearInterval(timer);
-        terminaLer();
+        finalizarLer();
       }
     }, 1000);
     
@@ -472,7 +389,7 @@ function comecaLer() {
         if (e.results[i].isFinal) {
           const pals = e.results[i][0].transcript.split(/\s+/).length;
           palavras += pals;
-          document.getElementById('lerPalavras').textContent = palavras;
+          document.getElementById('lerPals').textContent = palavras;
         }
       }
     };
@@ -483,36 +400,36 @@ function comecaLer() {
     rec.start();
     toast('Comece a ler!');
   } catch (e) {
-    toast('❌ Erro: ' + e.message);
+    toast('Erro: ' + e.message);
   }
 }
 
-function terminaLer() {
+function finalizarLer() {
   if (window.lerRec) window.lerRec.stop();
   if (window.lerTimer) clearInterval(window.lerTimer);
   
   document.getElementById('lerBtn').textContent = 'COMEÇAR';
   document.getElementById('lerStatus').style.display = 'none';
   
-  const palavras = parseInt(document.getElementById('lerPalavras').textContent);
+  const palavras = parseInt(document.getElementById('lerPals').textContent);
   const ppm = Math.round((palavras / 90) * 60);
-  const nota = ppm >= 100 ? 'S' : ppm >= 90 ? 'A' : ppm >= 80 ? 'B' : 'C';
+  const nota = ppm >= 100 ? 'S' : ppm >= 90 ? 'A' : ppm >= 80 ? 'B' : ppm >= 60 ? 'C' : 'D';
   
-  document.getElementById('lerResult').innerHTML = `
-    <div class="result">
-      <div>${ppm}</div>
-      <div style="font-size:1rem;margin:10px 0">PALAVRAS POR MINUTO</div>
-      <div style="font-size:1.5rem;margin:10px 0">NOTA: ${nota}</div>
-      <div style="font-size:0.9rem">Total: ${palavras} palavras</div>
-      <button class="btn btn-main" onclick="comecaLer()" style="width:100%;margin-top:10px">REPETIR</button>
+  document.getElementById('lerResultado').innerHTML = `
+    <div class="resultado">
+      <div style="font-size: 2rem; font-weight: 900;">${ppm}</div>
+      <div style="font-size: 1rem; margin: 10px 0;">PALAVRAS/MIN</div>
+      <div style="font-size: 1.5rem; margin: 10px 0;">NOTA: ${nota}</div>
+      <div style="font-size: .9rem;">Total: ${palavras} palavras</div>
+      <button class="btn btn-main" onclick="iniciarLer()" style="margin-top: 15px;">REPETIR</button>
     </div>
   `;
-  document.getElementById('lerResult').style.display = '';
+  document.getElementById('lerResultado').style.display = '';
   toast('✅ ' + ppm + ' pal/min!');
 }
 
 // Init
-mostrarStop();
+atualizarTextoLeitura();
 </script>
 </body>
 </html>
