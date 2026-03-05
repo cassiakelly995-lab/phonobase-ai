@@ -162,31 +162,6 @@ body{background:var(--bg);color:var(--ink);font-family:system-ui,'Segoe UI',sans
         </div>
       </div>
     </div>
-
-    <div class="panel">
-      <div class="panel-head"><span class="panel-icon">💬</span><div class="panel-title">Fluência Verbal</div></div>
-      <div class="panel-body">
-        <div class="dica-box">Clique em <strong>▶ Iniciar</strong> e fale todas as palavras que conseguir da categoria.</div>
-        <div style="margin-bottom:12px">
-          <div style="font-size:.68rem;font-weight:600;color:var(--ink3);margin-bottom:6px">TEMPO:</div>
-          <div class="vel-row">
-            <button class="vel-btn" id="ft30" onclick="fluTempo(30)">30s</button>
-            <button class="vel-btn on" id="ft60" onclick="fluTempo(60)">60s</button>
-            <button class="vel-btn" id="ft90" onclick="fluTempo(90)">90s</button>
-          </div>
-        </div>
-        <div class="display" style="margin-bottom:10px">
-          <div style="font-size:.7rem;color:var(--ink3);margin-bottom:4px">CATEGORIA</div>
-          <div id="fluCategoria" class="big-text">Animais</div>
-        </div>
-        <div class="timer-big" id="fluTimer" style="display:none">1:00</div>
-        <button class="btn btn-main" id="fluBtn" style="width:100%;justify-content:center;padding:12px;font-size:.9rem;margin-bottom:10px" onclick="toggleFluencia()">
-          <span id="fluBtnIcon">▶</span>
-          <span id="fluBtnText">COMEÇAR</span>
-        </button>
-        <div id="fluPalavras" style="background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:12px;min-height:60px;display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start"></div>
-      </div>
-    </div>
   </div>
 
   <!-- PÁGINA STOP -->
@@ -355,6 +330,35 @@ const TEXTOS_LEITURA={
 
 let leiNiv=1, leiAtiva=false, leiRec=null, leiTxt='', leiPals=0, leiSecs=0, leiTmr=null, leiTempoMax=90, leiUltimaTrans='';
 
+// Função para calcular distância de edição (Levenshtein)
+function calcularDistancia(a, b) {
+  const m = a.length;
+  const n = b.length;
+  const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
+  
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (a[i - 1] === b[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1];
+      } else {
+        dp[i][j] = 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+      }
+    }
+  }
+  return dp[m][n];
+}
+
+// Normalizar palavra
+function normalizarPalavra(p) {
+  return p.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z]/g, '')
+    .trim();
+}
+
 function leiTempo(t){
   if(leiAtiva)return;
   leiTempoMax=t;
@@ -409,7 +413,6 @@ function comecaLeitura(){
       const display=m+':'+(s<10?'0':'')+s;
       document.getElementById('leiTempo').textContent=display;
       
-      // Cores do cronômetro
       const statusEl=document.getElementById('leiStatusTxt');
       if(leiSecs<=10){
         statusEl.textContent='⏰ Tempo acabando... ('+leiPals+' palavras)';
@@ -418,11 +421,10 @@ function comecaLeitura(){
         statusEl.textContent='🔔 Metade do tempo! ('+leiPals+' palavras)';
         statusEl.style.color='var(--amber)';
       } else {
-        statusEl.textContent='🎙️ Gravando... ('+leiPals+' palavras)';
+        statusEl.textContent='🎙️ Ouvindo... ('+leiPals+' palavras)';
         statusEl.style.color='var(--ink2)';
       }
       
-      // Fim do tempo
       if(leiSecs<=0){
         clearInterval(timer);
         pararLeitura();
@@ -442,48 +444,66 @@ function comecaLeitura(){
     };
     
     leiRec.onresult=(e)=>{
-      // Processa APENAS resultados finais
       for(let i=e.resultIndex;i<e.results.length;i++){
         if(e.results[i].isFinal){
           const transcript=e.results[i][0].transcript.trim();
           
           if(transcript.length>0){
-            // Conta palavras APENAS se for diferente da última
+            // IMPORTANTE: Só processa se for DIFERENTE do último
             if(transcript !== leiUltimaTrans){
+              // Split em palavras e normaliza cada uma
               const palavras=transcript.split(/\s+/).filter(p=>p.length>0);
-              leiPals+=palavras.length;
+              
+              // Conta apenas palavras NOVAS (não iguais às anteriores)
+              let novasPalavras=0;
+              for(let p of palavras){
+                const norm=normalizarPalavra(p);
+                
+                // Verifica se é muito similar a alguma anterior
+                let ehRepetida=false;
+                for(let anterior of leiTxt.split(/\s+/)){
+                  const normAnterior=normalizarPalavra(anterior);
+                  const distancia=calcularDistancia(norm, normAnterior);
+                  
+                  // Se distância é 0 ou 1, é repetição
+                  if(distancia<=1 && norm.length>2){
+                    ehRepetida=true;
+                    break;
+                  }
+                }
+                
+                // Só conta se for NOVA
+                if(!ehRepetida && norm.length>2){
+                  novasPalavras++;
+                }
+              }
+              
+              leiPals+=novasPalavras;
               leiUltimaTrans=transcript;
               leiTxt+=transcript+' ';
               
-              // Log para debug
-              console.log('Capturou:',transcript,'=',palavras.length,'palavras. Total:',leiPals);
+              console.log('Capturou:',transcript,'=',novasPalavras,'palavras novas. Total:',leiPals);
             }
-            // Atualiza display
+            
             document.getElementById('leiPalCount').textContent=leiPals;
-            document.getElementById('leiStatusTxt').textContent='🎙️ Ouvindo... fale mais! ('+leiPals+' palavras)';
           }
         }
       }
     };
     
     leiRec.onerror=(e)=>{
-      console.error('Erro Speech Recognition:',e.error);
+      console.error('Erro:',e.error);
       if(e.error==='no-speech'){
-        document.getElementById('leiStatusTxt').textContent='⚠️ Nenhuma voz detectada! Fale mais alto!';
-      } else if(e.error==='network'){
-        document.getElementById('leiStatusTxt').textContent='⚠️ Erro de rede. Tente novamente!';
-      } else {
+        document.getElementById('leiStatusTxt').textContent='⚠️ Nenhuma voz! Fale mais alto!';
+      } else if(e.error!=='network'){
         document.getElementById('leiStatusTxt').textContent='⚠️ Erro: '+e.error;
       }
     };
     
     leiRec.onend=()=>{
-      console.log('Reconhecimento encerrado');
       if(leiAtiva){
-        // Reinicia automaticamente se ainda está ativo
         setTimeout(()=>{
           if(leiAtiva){
-            console.log('Reiniciando reconhecimento...');
             try{
               leiRec.start();
             }catch(e){
@@ -494,11 +514,11 @@ function comecaLeitura(){
       }
     };
     
-    toast('🎤 Microfone ativo! Fale em voz alta e clara.');
+    toast('🎤 Microfone ativo! Fale claro e sem repetir!');
     leiRec.start();
   }catch(e){
     toast('❌ '+e.message);
-    console.error('Erro comecaLeitura:',e);
+    console.error('Erro:',e);
   }
 }
 
@@ -685,76 +705,6 @@ function proximaTrava(){
 // ════════════════════════════════════════════════
 const FLUENCIA_CATS=['Animais','Frutas','Cores','Países','Cidades','Verbos','Alimentos','Objetos'];
 let fluIdx=0,fluTem=60,fluAtiva=false,fluRec=null,fluSecs=60,fluWords=[];
-
-function fluTempo(t){
-  fluTem=t;
-  document.querySelectorAll('#ft30,#ft60,#ft90').forEach(b=>b.classList.remove('on'));
-  document.getElementById('ft'+t).classList.add('on');
-}
-
-function toggleFluencia(){
-  if(fluAtiva)stopFluencia();
-  else comecaFluencia();
-}
-
-function comecaFluencia(){
-  try{
-    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-    if(!SR)throw new Error('Navegador não suporta reconhecimento de voz');
-    
-    fluAtiva=true;
-    fluSecs=fluTem;
-    fluWords=[];
-    fluIdx=Math.floor(Math.random()*FLUENCIA_CATS.length);
-    
-    document.getElementById('fluCategoria').textContent=FLUENCIA_CATS[fluIdx];
-    document.getElementById('fluTimer').style.display='';
-    document.getElementById('fluBtn').innerHTML='<span>⏹</span><span>PARAR</span>';
-    document.getElementById('fluPalavras').innerHTML='';
-    
-    const timer=setInterval(()=>{
-      fluSecs--;
-      document.getElementById('fluTimer').textContent=Math.floor(fluSecs/60)+':'+(fluSecs%60<10?'0':'')+(fluSecs%60);
-      if(fluSecs<=0){
-        clearInterval(timer);
-        stopFluencia();
-      }
-    },1000);
-    
-    fluRec=new SR();
-    fluRec.lang='pt-BR';
-    fluRec.continuous=true;
-    
-    fluRec.onresult=(e)=>{
-      for(let i=e.resultIndex;i<e.results.length;i++){
-        if(e.results[i].isFinal){
-          const palavras=e.results[i][0].transcript.trim().toLowerCase().split(/\s+/);
-          palavras.forEach(p=>{
-            if(p.length>2&&!fluWords.includes(p)){
-              fluWords.push(p);
-              const chip=document.createElement('div');
-              chip.style.cssText='background:var(--green-bg);border:2px solid var(--green);color:var(--green);border-radius:7px;padding:4px 8px;font-size:.75rem;font-weight:600';
-              chip.textContent='✓ '+p;
-              document.getElementById('fluPalavras').appendChild(chip);
-            }
-          });
-        }
-      }
-    };
-    
-    fluRec.start();
-  }catch(e){
-    toast('❌ '+e.message);
-  }
-}
-
-function stopFluencia(){
-  fluAtiva=false;
-  if(fluRec)fluRec.stop();
-  document.getElementById('fluBtn').innerHTML='<span>▶</span><span>COMEÇAR</span>';
-  document.getElementById('fluTimer').style.display='none';
-  toast('✅ '+fluWords.length+' palavras captadas!');
-}
 
 // ════════════════════════════════════════════════
 // STOP
