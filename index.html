@@ -1,231 +1,518 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>FonoPRO Plus</title>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FonoPRO</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#f5f2ec;--paper:#fffef9;--ink:#18120a;--ink2:#4a3f30;--blue:#0066bb;--blue-bg:#e8f2ff;--green:#2a7a38;--green-bg:#e8f7ea;--amber:#a05a00;--amber-bg:#fff3e0;--red:#c0392b;--red-bg:#fdecea}
-html{font-size:16px}body{background:var(--bg);color:var(--ink);font-family:system-ui,sans-serif}
-.top{background:var(--paper);border-bottom:2px solid var(--ink);padding:12px 18px;display:flex;align-items:center;gap:10px;position:sticky;top:0}
-.brand{font-size:1.1rem;font-weight:700;margin-right:auto}
-.nav{display:flex;gap:8px}
-.btn{padding:8px 14px;border-radius:6px;border:none;cursor:pointer;font-weight:600;font-size:.85rem;min-height:44px}
-.btn-nav{background:transparent;border:1px solid #ccc}.btn-nav.active{background:var(--ink);color:#fff}
-.btn-main{background:var(--ink);color:#fff;border:none;width:100%}
-.wrap{max-width:700px;margin:0 auto;padding:20px 16px 80px}
-.page{display:none}.page.active{display:block}
-.panel{background:var(--paper);border:1.5px solid #ddd;border-radius:10px;padding:16px;margin-bottom:14px}
-.dica{background:var(--blue-bg);border-left:3px solid var(--blue);padding:10px 12px;border-radius:0 6px 6px 0;font-size:.8rem;margin-bottom:12px}
-.texto{background:var(--bg);border:1px solid #ddd;border-radius:8px;padding:12px;margin:12px 0;min-height:100px;line-height:1.6;font-size:.95rem}
-.timer{font-family:monospace;font-size:2rem;font-weight:900;text-align:center;margin:12px 0}
-.grid{display:grid;gap:8px;margin:10px 0}
-.grid2{grid-template-columns:repeat(2,1fr)}
-.grid3{grid-template-columns:repeat(3,1fr)}
-.grid5{grid-template-columns:repeat(5,1fr)}
-.chips{display:flex;flex-wrap:wrap;gap:6px;background:var(--bg);padding:12px;border-radius:8px;min-height:60px}
-.chip{background:var(--green-bg);border:1px solid var(--green);color:var(--green);padding:4px 8px;border-radius:4px;font-size:.75rem;font-weight:600}
-.btn-grid{background:transparent;border:1px solid #ddd;padding:8px;cursor:pointer;font-size:.8rem;font-weight:600;border-radius:6px}
-.btn-grid.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--ink);color:#fff;padding:12px 16px;border-radius:6px;z-index:999;transition:transform .3s}
-#toast.show{transform:translateX(-50%) translateY(0)}
-.musica-card{border:1px solid #ddd;border-radius:8px;padding:12px;cursor:pointer;background:#f9f9f9;text-align:center;transition:all .2s}
-.musica-card:hover{background:#efefef;transform:translateY(-2px)}
-@media(max-width:600px){html{font-size:14px}input{font-size:16px!important;padding:12px!important}.grid2{grid-template-columns:1fr}.grid5{grid-template-columns:repeat(3,1fr)}}
+html{font-size:16px}
+body{background:#f5f2ec;color:#18120a;font-family:system-ui,sans-serif;padding:20px}
+.container{max-width:700px;margin:0 auto}
+h1{margin-bottom:20px;text-align:center}
+.buttons{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.btn{padding:12px 20px;border:none;cursor:pointer;border-radius:8px;font-weight:700;font-size:1rem;min-height:50px}
+.btn-main{background:#18120a;color:#fff}
+.btn-main:hover{background:#0d0804}
+.btn-sec{background:#e8f2ff;border:2px solid #0066bb;color:#0066bb}
+.panel{background:#fffef9;border:2px solid #ddd;border-radius:10px;padding:20px;margin-bottom:20px}
+.select{width:100%;padding:12px;font-size:1rem;border:2px solid #ddd;border-radius:8px;margin-bottom:10px;font-family:inherit}
+.text-display{background:#f5f2ec;padding:15px;border-radius:8px;font-size:1.1rem;line-height:1.8;margin:15px 0;min-height:100px}
+.timer{font-family:monospace;font-size:3rem;font-weight:900;text-align:center;margin:20px 0}
+.words-display{background:#f5f2ec;padding:15px;border-radius:8px;min-height:80px;display:flex;flex-wrap:wrap;gap:10px}
+.word-chip{background:#e8f7ea;border:2px solid #2a7a38;color:#2a7a38;padding:8px 12px;border-radius:8px;font-weight:600}
+.result{background:#e8f7ea;border:2px solid #2a7a38;padding:20px;border-radius:8px;text-align:center;font-size:1.3rem;font-weight:700}
+.result.bad{background:#fdecea;border-color:#c0392b;color:#c0392b}
+#toast{position:fixed;bottom:20px;left:20px;background:#18120a;color:#fff;padding:15px 20px;border-radius:8px;font-size:1.1rem;min-width:200px;z-index:999}
+@media(max-width:600px){html{font-size:14px}.buttons{flex-direction:column}.btn{width:100%}input{font-size:16px!important;padding:12px!important}}
 </style>
 </head>
 <body>
 
-<div class="top">
-  <div class="brand">FonoPRO Plus</div>
-  <div class="nav">
-    <button class="btn btn-nav active" onclick="go('ler')">📖</button>
-    <button class="btn btn-nav" onclick="go('flu')">💬</button>
-    <button class="btn btn-nav" onclick="go('stop')">🎲</button>
-    <button class="btn btn-nav" onclick="go('kar')">🎤</button>
+<div class="container">
+  <h1>🎙️ FonoPRO</h1>
+  
+  <div class="buttons">
+    <button class="btn btn-main" onclick="mostrarStop()">🎲 STOP</button>
+    <button class="btn btn-main" onclick="mostrarFlu()">💬 FLUÊNCIA</button>
+    <button class="btn btn-main" onclick="mostrarLer()">📖 LEITURA</button>
   </div>
-</div>
 
-<div class="wrap">
-
-<!-- LEITURA -->
-<div class="page active" id="page-ler">
-  <div class="panel">
-    <h2>📖 Desafio de Leitura</h2>
-    <p style="font-size:.9rem;color:#666;margin:8px 0">Escolha nível e leia em voz alta!</p>
-    
-    <label style="font-weight:700">Nível (1-10):</label>
-    <div class="grid grid5">
-      <button class="btn-grid on" id="lv1" onclick="leiNv(1)">🟢 1</button>
-      <button class="btn-grid" id="lv2" onclick="leiNv(2)">🟡 2</button>
-      <button class="btn-grid" id="lv3" onclick="leiNv(3)">🟠 3</button>
-      <button class="btn-grid" id="lv4" onclick="leiNv(4)">🔴 4</button>
-      <button class="btn-grid" id="lv5" onclick="leiNv(5)">⚫ 5</button>
-      <button class="btn-grid" id="lv6" onclick="leiNv(6)">🌪️ 6</button>
-      <button class="btn-grid" id="lv7" onclick="leiNv(7)">💀 7</button>
-      <button class="btn-grid" id="lv8" onclick="leiNv(8)">🌀 8</button>
-      <button class="btn-grid" id="lv9" onclick="leiNv(9)">👹 9</button>
-      <button class="btn-grid" id="lv10" onclick="leiNv(10)">☠️ 10</button>
-    </div>
-    
-    <div id="leiTxt" class="texto"></div>
-    
-    <button class="btn btn-main" id="leiBtn" onclick="leiGo()" style="padding:12px">▶ COMEÇAR</button>
-    
-    <div id="leiSta" style="display:none;background:#f0f0f0;padding:10px;border-radius:6px;margin-top:10px;font-size:.85rem">
-      Tempo: <span id="leiTm">0:00</span> | Palavras: <span id="leiPc">0</span>
-    </div>
-    
-    <div id="leiRes" style="display:none;margin-top:12px"></div>
-  </div>
-</div>
-
-<!-- FLUÊNCIA -->
-<div class="page" id="page-flu">
-  <div class="panel">
-    <h2>💬 Fluência Verbal</h2>
-    <p style="font-size:.9rem;color:#666;margin:8px 0">Fale palavras diferentes!</p>
-    
-    <label style="font-weight:700">Categoria:</label>
-    <div class="grid grid2">
-      <button class="btn-grid on" id="fc0" onclick="fluCat(0)">Animais</button>
-      <button class="btn-grid" id="fc1" onclick="fluCat(1)">Frutas</button>
-      <button class="btn-grid" id="fc2" onclick="fluCat(2)">Cores</button>
-      <button class="btn-grid" id="fc3" onclick="fluCat(3)">Países</button>
-      <button class="btn-grid" id="fc4" onclick="fluCat(4)">Cidades</button>
-      <button class="btn-grid" id="fc5" onclick="fluCat(5)">Profissões</button>
-      <button class="btn-grid" id="fc6" onclick="fluCat(6)">Verbos</button>
-      <button class="btn-grid" id="fc7" onclick="fluCat(7)">Comidas</button>
-    </div>
-    
-    <button class="btn btn-main" id="fluBtn" onclick="fluGo()" style="padding:12px;margin-top:12px">▶ COMEÇAR</button>
-    
-    <div id="fluTm" class="timer" style="display:none">1:00</div>
-    
-    <div id="fluWds" class="chips"></div>
-    
-    <div id="fluRes" style="display:none;margin-top:12px"></div>
-  </div>
-</div>
-
-<!-- STOP -->
-<div class="page" id="page-stop">
-  <div class="panel">
+  <!-- STOP -->
+  <div id="stopPanel" class="panel" style="display:none">
     <h2>🎲 STOP</h2>
-    <p style="font-size:.9rem;color:#666;margin:8px 0">Preencha as categorias com a letra sorteada!</p>
+    <p>Preencha as categorias com a letra sorteada!</p>
     
-    <div id="stopConfig">
-      <label style="font-weight:700">Tempo:</label>
-      <div class="grid grid2" style="margin-bottom:14px">
-        <button class="btn-grid on" id="stopT1" onclick="stopTime(60)">1 min</button>
-        <button class="btn-grid" id="stopT2" onclick="stopTime(90)">1:30</button>
-        <button class="btn-grid" id="stopT3" onclick="stopTime(120)">2 min</button>
-        <button class="btn-grid" id="stopT4" onclick="stopTime(0)">∞</button>
-      </div>
-      <button class="btn btn-main" onclick="stopStart()" style="padding:12px">🎲 COMEÇAR</button>
-    </div>
+    <label>Dificuldade:</label>
+    <select id="stopDif" onchange="atualizarStopCats()">
+      <option value="1">🟢 Fácil - 5 categorias</option>
+      <option value="2">🟡 Médio - 8 categorias</option>
+      <option value="3">🔴 Difícil - 12 categorias</option>
+      <option value="4">⚫ Extremo - 15 categorias</option>
+    </select>
     
-    <div id="stopGame" style="display:none">
-      <div style="text-align:center;margin-bottom:20px">
-        <div style="font-size:.8rem;color:#666">LETRA</div>
-        <div style="font-family:Georgia,serif;font-size:3rem;font-weight:900;color:var(--ink)" id="stopLtr">A</div>
-        <div class="timer" id="stopTm">1:00</div>
+    <label>Tempo:</label>
+    <select id="stopTempo">
+      <option value="60">1 minuto</option>
+      <option value="90" selected>1:30</option>
+      <option value="120">2 minutos</option>
+      <option value="0">Sem tempo</option>
+    </select>
+    
+    <button class="btn btn-main" onclick="comecaStop()" style="width:100%;margin-top:10px">COMEÇAR</button>
+    
+    <div id="stopGame" style="display:none;margin-top:20px">
+      <div style="text-align:center">
+        <div style="font-size:0.9rem;color:#666">LETRA</div>
+        <div style="font-family:Georgia,serif;font-size:5rem;font-weight:900" id="stopLetra">A</div>
+        <div class="timer" id="stopTimer">1:30</div>
       </div>
+      
       <div id="stopForm"></div>
-      <button class="btn" onclick="stopEnd()" style="background:var(--red);color:#fff;padding:12px;width:100%;margin-top:12px">🛑 PARAR!</button>
+      
+      <button class="btn btn-main" onclick="terminaStop()" style="width:100%;background:#c0392b;margin-top:20px">PARAR</button>
     </div>
     
-    <div id="stopRes" style="display:none;margin-top:12px"></div>
+    <div id="stopResult" style="display:none;margin-top:20px"></div>
   </div>
-</div>
 
-<!-- KARAOKÊ -->
-<div class="page" id="page-kar">
-  <div class="panel">
-    <h2>🎤 Karaokê</h2>
-    <p style="font-size:.9rem;color:#666;margin:8px 0">Clique em uma música para ver a letra!</p>
-    <div id="karGd" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:12px"></div>
+  <!-- FLUÊNCIA -->
+  <div id="fluPanel" class="panel" style="display:none">
+    <h2>💬 FLUÊNCIA</h2>
+    <p>Fale palavras diferentes da categoria!</p>
+    
+    <label>Dificuldade:</label>
+    <select id="fluDif">
+      <option value="1">🟢 Fácil</option>
+      <option value="2">🟡 Médio</option>
+      <option value="3">🔴 Difícil</option>
+      <option value="4">⚫ Extremo</option>
+    </select>
+    
+    <label>Categoria:</label>
+    <select id="fluCat">
+      <option value="0">Animais</option>
+      <option value="1">Frutas</option>
+      <option value="2">Cores</option>
+      <option value="3">Países</option>
+      <option value="4">Cidades</option>
+      <option value="5">Profissões</option>
+    </select>
+    
+    <button class="btn btn-main" id="fluBtn" onclick="comecaFlu()" style="width:100%;margin-top:10px">COMEÇAR</button>
+    
+    <div class="timer" id="fluTimer" style="display:none">1:00</div>
+    
+    <div id="fluWords" class="words-display"></div>
+    
+    <div id="fluResult" style="display:none;margin-top:20px"></div>
   </div>
-</div>
 
+  <!-- LEITURA -->
+  <div id="lerPanel" class="panel" style="display:none">
+    <h2>📖 LEITURA</h2>
+    <p>Leia em voz alta!</p>
+    
+    <label>Nível:</label>
+    <select id="lerNivel">
+      <option value="1">🟢 Nível 1 - Fácil</option>
+      <option value="2">🟡 Nível 2 - Normal</option>
+      <option value="3">🟠 Nível 3 - Médio</option>
+      <option value="4">🔴 Nível 4 - Difícil</option>
+      <option value="5">⚫ Nível 5 - Extremo</option>
+      <option value="6">🌪️ Nível 6 - Ultra</option>
+      <option value="7">💀 Nível 7 - Insano</option>
+      <option value="8">🌀 Nível 8 - Caótico</option>
+    </select>
+    
+    <div id="lerTexto" class="text-display"></div>
+    
+    <button class="btn btn-main" id="lerBtn" onclick="comecaLer()" style="width:100%">COMEÇAR</button>
+    
+    <div id="lerStatus" style="display:none;margin-top:10px;font-size:1rem">
+      Tempo: <strong id="lerTempo">0:00</strong> | Palavras: <strong id="lerPalavras">0</strong>
+    </div>
+    
+    <div id="lerResult" style="display:none;margin-top:20px"></div>
+  </div>
 </div>
 
 <div id="toast"></div>
 
 <script>
-// GLOBAL
-function go(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');document.querySelectorAll('.btn-nav').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');}
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
-function speak(t){try{window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='pt-BR';u.rate=0.9;window.speechSynthesis.speak(u);}catch(e){}}
-
-// LEITURA - 10 NÍVEIS COM TEXTOS EXTREMOS
-const TXTS={
-  1:'Gato. Cão. Rato. Casa. Pão. Água. Sol. Lua. Eu. Você.',
-  2:'João acordou cedo. Ele foi à escola. Maria estava esperando. Eles são amigos.',
-  3:'A biblioteca municipal oferecia diversos livros fascinantes. Os frequentadores liam atentamente durante horas.',
-  4:'A aquisição fonológica em crianças demonstra desenvolvimento progressivo. Pesquisadores investigam mecanismos neurológicos subjacentes ao processamento cognitivo.',
-  5:'Nas profundezas insondáveis da consciência fenomenológica, desdobra-se o transcendental emaranhado de percepções obnubiladas pela nebulosidade epistemológica contemporânea.',
-  6:'Qual não foi minha surpresa ao vislumbrar, atravessando os umbráculos da floresta intocada, uma silhueta humana que parecia flutuar como espectro etéreo.',
-  7:'A phenomenología da existência transcendental perpassa os dedalíferos caminhos da ontologia heideggeriana, reverberando através dos estratos diafanificamente estruturados.',
-  8:'Fragmentação. Descontinuidade. A palavra transcindo seu próprio significado num vórtice de significâncias plurívocas e sentidos metamorfósicos. Ser-não-ser.',
-  9:'Psicossamantropofágico tesselaçãoverbigeral do intersticial vácuo donde emanam-volatilizamse as formas lívidas da metamorfose quintessencial.',
-  10:'Synchroclasmata verti-inversivas desintegrando-congregamse nos labirintos tétanós da omnipotencialidade semântica vítreas, quasiconsciência flogística reverberando.'
+// DADOS DE STOP
+const STOP_DADOS = {
+  1: {
+    cats: ['Nome', 'Animal', 'Cor', 'Fruta', 'País'],
+    pals: {
+      'nome': ['joão','maria','josé','pedro','ana','carlos','bruno','alice','bianca','diego','rafael','fernando','isabel','jessica','lucas'],
+      'animal': ['burro','gato','cachorro','peixe','cobra','leão','tigre','elefante','girafa','zebra','pato','galinha','porco','vaca','cavalo'],
+      'cor': ['branco','azul','vermelho','verde','amarelo','rosa','roxo','preto','cinza','laranja','marrom','bege','azul-claro','azul-escuro','rosa-claro'],
+      'fruta': ['banana','maçã','laranja','morango','melancia','uva','abacaxi','pêssego','kiwi','manga','goiaba','melão','cereja','ameixa','framboesa'],
+      'país': ['brasil','argentina','méxico','japão','alemanha','frança','itália','espanha','canadá','china','índia','austrália','rússia','turquia','grécia']
+    }
+  },
+  2: {
+    cats: ['Nome', 'Animal', 'Cor', 'Fruta', 'País', 'Cidade', 'Marca', 'Profissão'],
+    pals: {
+      'nome': ['joão','maria','josé','pedro','ana','carlos','bruno','alice','bianca','diego','rafael','fernando','isabel','jessica','lucas','beatriz','gabriel','henrique','lucas','natália'],
+      'animal': ['burro','gato','cachorro','peixe','cobra','leão','tigre','elefante','girafa','zebra','pato','galinha','porco','vaca','cavalo','coelho','hamster','esquilo','coruja','águia'],
+      'cor': ['branco','azul','vermelho','verde','amarelo','rosa','roxo','preto','cinza','laranja','marrom','bege','azul-claro','azul-escuro','rosa-claro','verde-escuro','amarelo-claro','violeta','turquesa','magenta'],
+      'fruta': ['banana','maçã','laranja','morango','melancia','uva','abacaxi','pêssego','kiwi','manga','goiaba','melão','cereja','ameixa','framboesa','amora','blueberry','coco','damasco','figo'],
+      'país': ['brasil','argentina','méxico','japão','alemanha','frança','itália','espanha','canadá','china','índia','austrália','rússia','turquia','grécia','portugal','suécia','noruega','finlândia','dinamarca'],
+      'cidade': ['barueri','sãopaulo','riodejaneiro','brasília','salvador','recife','manaus','curitiba','portoalegre','belém','goiânia','cuiabá','macapá','palmas','teresina'],
+      'marca': ['bmw','ford','chevrolet','fiat','vw','toyota','honda','hyundai','renault','peugeot','nissan','kia','mazda','subaru','volvo'],
+      'profissão': ['barber','chef','doctor','teacher','engenheiro','psicólogo','advogado','contador','encanador','eletricista','pedreiro','carpinteiro','jardineiro','babá','motorista']
+    }
+  },
+  3: {
+    cats: ['Nome', 'Animal', 'Cor', 'Fruta', 'País', 'Cidade', 'Marca', 'Profissão', 'Verbo', 'Objeto', 'Comida', 'Bebida'],
+    pals: {
+      'nome': ['joão','maria','josé','pedro','ana','carlos','bruno','alice','bianca','diego','rafael','fernando','isabel','jessica','lucas','beatriz','gabriel','henrique','natália','vittória'],
+      'animal': ['burro','gato','cachorro','peixe','cobra','leão','tigre','elefante','girafa','zebra','pato','galinha','porco','vaca','cavalo','coelho','hamster','esquilo','coruja','águia'],
+      'cor': ['branco','azul','vermelho','verde','amarelo','rosa','roxo','preto','cinza','laranja','marrom','bege','azul-claro','verde-escuro','amarelo-claro','violeta','turquesa','magenta','escarlate','carmesim'],
+      'fruta': ['banana','maçã','laranja','morango','melancia','uva','abacaxi','pêssego','kiwi','manga','goiaba','melão','cereja','ameixa','framboesa','amora','blueberry','coco','damasco','figo'],
+      'país': ['brasil','argentina','méxico','japão','alemanha','frança','itália','espanha','canadá','china','índia','austrália','rússia','turquia','grécia','portugal','suécia','noruega','finlândia','dinamarca'],
+      'cidade': ['barueri','sãopaulo','riodejaneiro','brasília','salvador','recife','manaus','curitiba','portoalegre','belém','goiânia','cuiabá','macapá','palmas','teresina'],
+      'marca': ['bmw','ford','chevrolet','fiat','vw','toyota','honda','hyundai','renault','peugeot','nissan','kia','mazda','subaru','volvo'],
+      'profissão': ['barber','chef','doctor','teacher','engenheiro','psicólogo','advogado','contador','encanador','eletricista','pedreiro','carpinteiro','jardineiro','babá','motorista'],
+      'verbo': ['correr','pular','comer','beber','dormir','acordar','andar','falar','ouvir','ver','tocar','escrever','ler','pensar','sentir'],
+      'objeto': ['mesa','cadeira','cama','porta','janela','espelho','relógio','lâmpada','tapete','sofá','geladeira','fogão','pia','copo','prato'],
+      'comida': ['biscoito','pão','arroz','feijão','macarrão','pizza','hambúrguer','frango','carne','peixe','salada','sopa','ovo','queijo','leite'],
+      'bebida': ['água','café','suco','leite','chá','refrigerante','vinho','cerveja','suco-natural','iogurte','achocolatado','suco-artificial','vinho-branco','vinho-tinto','chá-gelado']
+    }
+  },
+  4: {
+    cats: ['Nome', 'Animal', 'Cor', 'Fruta', 'País', 'Cidade', 'Marca', 'Profissão', 'Verbo', 'Objeto', 'Comida', 'Bebida', 'Flor', 'Esporte', 'Instrumento'],
+    pals: {
+      'nome': ['joão','maria','josé','pedro','ana','carlos','bruno','alice','bianca','diego','rafael','fernando','isabel','jessica','lucas','beatriz','gabriel','henrique','natália','vittória'],
+      'animal': ['burro','gato','cachorro','peixe','cobra','leão','tigre','elefante','girafa','zebra','pato','galinha','porco','vaca','cavalo'],
+      'cor': ['branco','azul','vermelho','verde','amarelo','rosa','roxo','preto','cinza','laranja','marrom','bege','azul-claro','verde-escuro','amarelo-claro'],
+      'fruta': ['banana','maçã','laranja','morango','melancia','uva','abacaxi','pêssego','kiwi','manga','goiaba','melão','cereja','ameixa','framboesa'],
+      'país': ['brasil','argentina','méxico','japão','alemanha','frança','itália','espanha','canadá','china','índia','austrália','rússia','turquia','grécia'],
+      'cidade': ['barueri','sãopaulo','riodejaneiro','brasília','salvador','recife','manaus','curitiba','portoalegre','belém','goiânia','cuiabá','macapá','palmas','teresina'],
+      'marca': ['bmw','ford','chevrolet','fiat','vw','toyota','honda','hyundai','renault','peugeot','nissan','kia','mazda','subaru','volvo'],
+      'profissão': ['barber','chef','doctor','teacher','engenheiro','psicólogo','advogado','contador','encanador','eletricista','pedreiro','carpinteiro','jardineiro','babá','motorista'],
+      'verbo': ['correr','pular','comer','beber','dormir','acordar','andar','falar','ouvir','ver','tocar','escrever','ler','pensar','sentir'],
+      'objeto': ['mesa','cadeira','cama','porta','janela','espelho','relógio','lâmpada','tapete','sofá','geladeira','fogão','pia','copo','prato'],
+      'comida': ['biscoito','pão','arroz','feijão','macarrão','pizza','hambúrguer','frango','carne','peixe','salada','sopa','ovo','queijo','leite'],
+      'bebida': ['água','café','suco','leite','chá','refrigerante','vinho','cerveja','suco-natural','iogurte','achocolatado','suco-artificial','vinho-branco','vinho-tinto','chá-gelado'],
+      'flor': ['rosa','tulipa','girassol','margarida','orquídea','lótus','azaleia','íris','peônia','gérbera','narciso','cravo','begônia','papoula','jasmim'],
+      'esporte': ['futebol','basquete','tênis','natação','atletismo','vôlei','hóquei','surfe','ski','patinação','boxe','judô','karatê','ginástica','dança'],
+      'instrumento': ['violão','piano','flauta','tambor','trompete','saxofone','violino','harpa','gaita','sanfona','trombone','clarineta','oboé','flauta-doce','pandeiro']
+    }
+  }
 };
-let leiNvl=1,leiAct=false,leiRec=null,leiPw=0,leiSc=90,leiTr=null;
-function leiNv(n){leiNvl=n;document.querySelectorAll('[id^="lv"]').forEach(b=>b.classList.remove('on'));document.getElementById('lv'+n).classList.add('on');document.getElementById('leiTxt').textContent=TXTS[n]||'Texto';}
-function leiGo(){try{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('Navegador incompatível');return;}leiAct=true;leiPw=0;leiSc=90;document.getElementById('leiBtn').textContent='⏹ PARAR';document.getElementById('leiSta').style.display='';document.getElementById('leiRes').style.display='none';leiTr=setInterval(()=>{leiSc--;const m=Math.floor(leiSc/60);const s=leiSc%60;document.getElementById('leiTm').textContent=m+':'+(s<10?'0':'')+s;if(leiSc<=0){clearInterval(leiTr);leiEnd();}},1000);leiRec=new SR();leiRec.lang='pt-BR';leiRec.continuous=true;leiRec.onresult=(e)=>{for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal){const n=e.results[i][0].transcript.split(/\s+/).length;leiPw+=n;document.getElementById('leiPc').textContent=leiPw;}}};leiRec.onend=()=>{if(leiAct)setTimeout(()=>leiRec.start(),300);};toast('Comece!');leiRec.start();}catch(e){toast('Erro: '+e.message);}}
-function leiEnd(){leiAct=false;if(leiRec)leiRec.stop();if(leiTr)clearInterval(leiTr);document.getElementById('leiBtn').textContent='▶ COMEÇAR';document.getElementById('leiSta').style.display='none';const ppm=Math.round((leiPw/90)*60);const nota=ppm>=100?'S':ppm>=90?'A':ppm>=80?'B':ppm>=60?'C':'D';document.getElementById('leiRes').innerHTML='<div style="background:var(--green-bg);border:1px solid var(--green);padding:12px;border-radius:8px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px"><div style="text-align:center"><div style="font-size:1.4rem;font-weight:900;color:var(--green)">'+ppm+'</div><div style="font-size:.8rem">Pal/min</div></div><div style="text-align:center"><div style="font-size:1.4rem;font-weight:900;color:var(--green)">'+nota+'</div><div style="font-size:.8rem">Nota</div></div></div><div style="font-size:.85rem">'+leiPw+' palavras em 1:30</div></div>';document.getElementById('leiRes').style.display='';toast('✅ '+leiPw+' palavras!');}
 
-// FLUÊNCIA - 8 CATEGORIAS
-const CATS=['Animais','Frutas','Cores','Países','Cidades','Profissões','Verbos','Comidas'];
-let fluCt=0,fluAct=false,fluRec=null,fluWds=[],fluSc=60,fluTr=null;
-function fluCat(i){fluCt=i;document.querySelectorAll('[id^="fc"]').forEach(b=>b.classList.remove('on'));document.getElementById('fc'+i).classList.add('on');}
-function fluGo(){try{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('Incompatível');return;}fluAct=true;fluWds=[];fluSc=60;document.getElementById('fluBtn').textContent='⏹ PARAR';document.getElementById('fluTm').style.display='';document.getElementById('fluWds').innerHTML='';document.getElementById('fluRes').style.display='none';fluTr=setInterval(()=>{fluSc--;const m=Math.floor(fluSc/60);const s=fluSc%60;document.getElementById('fluTm').textContent=m+':'+(s<10?'0':'')+s;if(fluSc<=0){clearInterval(fluTr);fluEnd();}},1000);fluRec=new SR();fluRec.lang='pt-BR';fluRec.continuous=true;fluRec.onresult=(e)=>{for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal){const ws=e.results[i][0].transcript.toLowerCase().split(/\s+/).filter(p=>p.length>2);ws.forEach(w=>{if(!fluWds.includes(w)){fluWds.push(w);const c=document.createElement('span');c.className='chip';c.textContent='✓ '+w;document.getElementById('fluWds').appendChild(c);}});}}};fluRec.onend=()=>{if(fluAct)setTimeout(()=>fluRec.start(),300);};toast('Fale: '+CATS[fluCt]);fluRec.start();}catch(e){toast('Erro: '+e.message);}}
-function fluEnd(){fluAct=false;if(fluRec)fluRec.stop();if(fluTr)clearInterval(fluTr);document.getElementById('fluBtn').textContent='▶ COMEÇAR';document.getElementById('fluTm').style.display='none';const tot=fluWds.length;document.getElementById('fluRes').innerHTML='<div style="background:var(--green-bg);border:1px solid var(--green);padding:12px;border-radius:8px;text-align:center"><div style="font-size:1.4rem;font-weight:900;color:var(--green)">'+tot+'</div><div style="font-size:.8rem">Palavras diferentes!</div></div>';document.getElementById('fluRes').style.display='';toast('✅ '+tot+'!');}
+// DADOS FLUÊNCIA
+const FLU_DADOS = {
+  1: {
+    0: ['gato','cão','rato','pato','peixe','galinha','porco','vaca','cavalo','coelho'],
+    1: ['maçã','banana','laranja','morango','uva','melancia','pêssego','kiwi','manga','goiaba'],
+    2: ['branco','azul','vermelho','verde','amarelo','rosa','roxo','preto','cinza','laranja'],
+    3: ['brasil','argentina','méxico','japão','alemanha','frança','itália','espanha','canadá','china'],
+    4: ['barueri','sãopaulo','riodejaneiro','brasília','salvador','recife','manaus','curitiba','portoalegre','belém'],
+    5: ['professor','médico','engenheiro','advogado','chef','carpinteiro','eletricista','encanador','dentista','psicólogo']
+  },
+  2: {
+    0: ['elefante','girafa','tigre','leão','zebra','crocodilo','hiena','avestruz','leopardo','pantera'],
+    1: ['melancia','abacaxi','pêssego','kiwi','manga','goiaba','melão','cereja','ameixa','framboesa'],
+    2: ['rosa','roxo','cinza','marrom','bege','turquesa','magenta','escarlate','carmesim','chartreuse'],
+    3: ['tailândia','vietnã','indonésia','filipinas','malásia','singapura','camboja','laos','mianmar','brunei'],
+    4: ['florianópolis','goiânia','fortaleza','natal','teresina','joão pessoa','maceió','aracaju','são luís','campo grande'],
+    5: ['cardiologista','neurocirurgião','oftalmologista','dermatologista','gastroenterologista','pneumologista','nefrologista','hepatologista','endocrinologista','reumatologista']
+  },
+  3: {
+    0: ['ornitorrinco','equidna','pangolim','quoll','numbat','vombate','coalá','canguru','diabo-da-tasmânia','échidna'],
+    1: ['carambola','fruta-do-conde','cupuaçu','jaca','romã','pitaia','graviola','acerola','tamarindo','amora'],
+    2: ['ultravioleta','periquito','alaúde','tumbaga','púrpura','vermelhão','índigo','âmbar','escuro','opalescente'],
+    3: ['timor-leste','moçambique','macedônia','azerbaijão','líbano','iraque','síria','irã','iêmen','oman'],
+    4: ['governador valadares','divinópolis','montes claros','uberaba','uberlândia','araraquara','ribeirão preto','franca','ituverava','bauru'],
+    5: ['pneumologista','fisiologista','oncologista','nefrologista','hepatologista','otorrinolaringologista','proctologista','coloproctologista','anestesiologista','radiologista']
+  },
+  4: {
+    0: ['tarântula','escorpião','centopeia','louva-deus','barata','gafanhoto','grilo','cigarra','libélula','vespa'],
+    1: ['melão-cantaloupe','melão-honeydew','melão-gália','melão-charentais','melão-piel-de-sapo','melão-cantaloupe-orange','melão-cantaloupe-verde','melão-cantaloupe-anelado','melão-amarelo','melão-jacaru'],
+    2: ['chartreuse','ultravioleta','periquito','tumbaga','púrpura-ultravioleta','púrpura-açafrão','púrpura-fúcsia','púrpura-héliotropo','púrpura-magnolia','púrpura-mauve'],
+    3: ['república democrática do congo','república centro-africana','costa do marfim','burkina faso','mauritânia','níger','djibouti','comores','são cristóvão e neves','dominica'],
+    4: ['governador valadares','divinópolis','montes claros','uberaba','uberlândia','araraquara','ribeirão preto','franca','ituverava','bauru'],
+    5: ['otorrinolaringologista','gastroenterologista-cirurgião','pneumologista-intensivista','dermatologista-oncologista','oftalmologista-patologista','nefrologista-transplantólogo','hepatologista-gastroenterologista','oncologista-hematologista','cardiologista-eletrofisiologista','neurocirurgião-especialista']
+  }
+};
 
-// STOP - 15 CATEGORIAS
-const STOP_CATS=['Nome','Animal','Cor','Fruta','País','Cidade','Marca Carro','Profissão','Objeto','Comida','Bebida','Verbo','Adjetivo','Flor','Instrumento'];
-const STOP_PALAVRAS={'nome':['joão','maria','josé','pedro','ana','carlos','bruno','alice','bianca','diego','rafael'],'animal':['burro','gato','cachorro','peixe','cobra','leão','tigre','elefante','girafa','zebra'],'cor':['branco','azul','vermelho','verde','amarelo','rosa','roxo','preto','cinza','laranja'],'fruta':['banana','maçã','laranja','morango','melancia','uva','pêssego','abacaxi','melão','kiwi'],'país':['brasil','argentina','méxico','japão','alemanha','frança','itália','espanha','portugal','canada'],'cidade':['barueri','sãopaulo','riodejaneiro','brasilia','salvador','recife','manaus','curitiba','portoalegre','belém'],'marca carro':['bmw','ford','chevrolet','fiat','vw','toyota','honda','hyundai','renault','peugeot'],'profissão':['barber','chef','doctor','teacher','engenheiro','psicólogo','advogado','contador','encanador','eletricista'],'objeto':['mesa','cadeira','cama','porta','janela','espelho','relógio','lâmpada','tapete','cortina'],'comida':['biscoito','pão','arroz','feijão','macarrão','pizza','hambúrguer','frango','carne','peixe'],'bebida':['água','café','suco','leite','chá','refrigerante','vinho','cerveja','suco','leite'],'verbo':['correr','pular','comer','beber','dormir','acordar','andar','falar','ouvir','ver'],'adjetivo':['bonito','feio','grande','pequeno','claro','escuro','quente','frio','rápido','lento'],'flor':['rosa','tulipa','girassol','margarida','orquídea','lótus','azaleia','íris','peônia','gérbera'],'instrumento':['violão','piano','flauta','tambor','trompete','saxofone','violino','harpa','gaita','xilofone']};
-let stopTm=60,stopLtr='A',stopAct=false,stopSc=60,stopTr=null;
-function stopTime(t){stopTm=t;document.querySelectorAll('[id^="stopT"]').forEach(b=>b.classList.remove('on'));for(let i=1;i<=4;i++){if(t===60&&i===1||t===90&&i===2||t===120&&i===3||t===0&&i===4){document.getElementById('stopT'+i).classList.add('on');}}}
-function stopStart(){const ltrs='ABCDEFGIJLMNOPQRSTUVXZ';stopLtr=ltrs[Math.floor(Math.random()*ltrs.length)];stopSc=stopTm;stopAct=true;document.getElementById('stopConfig').style.display='none';document.getElementById('stopGame').style.display='';document.getElementById('stopRes').style.display='none';document.getElementById('stopLtr').textContent=stopLtr;stopTr=setInterval(()=>{stopSc--;const m=Math.floor(stopSc/60);const s=stopSc%60;document.getElementById('stopTm').textContent=m+':'+(s<10?'0':'')+s;if(stopSc<=0){clearInterval(stopTr);stopEnd();}},1000);const f=document.getElementById('stopForm');f.innerHTML=STOP_CATS.map((c,i)=>'<div style="display:flex;gap:8px;margin-bottom:10px;align-items:center"><label style="flex:1;font-size:.85rem;font-weight:600">'+c+':</label><input type="text" id="stopInp'+i+'" style="flex:2;padding:8px;border:1px solid #ddd;border-radius:6px;font-size:.9rem"></div>').join('');setTimeout(()=>document.getElementById('stopInp0').focus(),200);}
-function stopEnd(){stopAct=false;if(stopTr)clearInterval(stopTr);document.getElementById('stopGame').style.display='none';document.getElementById('stopRes').style.display='';let pts=0,html='';STOP_CATS.forEach((c,i)=>{const inp=document.getElementById('stopInp'+i);const val=inp.value.toLowerCase().trim();const ok=val.startsWith(stopLtr.toLowerCase())&&val.length>0&&STOP_PALAVRAS[c.toLowerCase().replace(' ','')]?.includes(val);pts+=ok?10:0;html+='<div style="display:flex;align-items:center;gap:10px;padding:8px;background:'+(ok?'var(--green-bg)':'var(--red-bg)')+';border-radius:6px;margin-bottom:6px"><span style="font-size:1.2rem">'+(ok?'✅':'❌')+'</span><div style="flex:1;font-size:.8rem"><strong>'+c+'</strong><br>'+val+'</div></div>';});const max=STOP_CATS.length*10;const nota=pts>=max*0.9?'S':pts>=max*0.8?'A':pts>=max*0.7?'B':pts>=max*0.5?'C':'D';document.getElementById('stopRes').innerHTML='<div style="background:var(--green-bg);border:1px solid var(--green);padding:12px;border-radius:8px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;text-align:center"><div><div style="font-size:1.4rem;font-weight:900;color:var(--green)">'+nota+'</div><div style="font-size:.8rem">NOTA</div></div><div><div style="font-size:1.4rem;font-weight:900;color:var(--green)">'+pts+'/'+max+'</div><div style="font-size:.8rem">PONTOS</div></div></div>'+html+'<button class="btn btn-main" onclick="stopStart()" style="padding:10px;margin-top:10px">🔄 Nova</button></div>';toast('✅ '+pts+' pontos!');}
+// DADOS LEITURA
+const LER_TXTS = {
+  1: 'Gato. Cão. Rato. Casa. Pão. Água.',
+  2: 'João acordou cedo. Ele foi à escola. Maria estava esperando.',
+  3: 'A biblioteca municipal oferecia diversos livros fascinantes. Os frequentadores liam atentamente.',
+  4: 'A aquisição fonológica em crianças demonstra desenvolvimento progressivo. Pesquisadores investigam mecanismos neurológicos subjacentes.',
+  5: 'Nas profundezas insondáveis da consciência fenomenológica desdobra-se o transcendental emaranhado de percepções obnubiladas.',
+  6: 'Qual não foi minha surpresa ao vislumbrar através dos umbráculos da floresta intocada uma silhueta humana que parecia flutuar como espectro etéreo.',
+  7: 'A phenomenología da existência transcendental perpassa os dedalíferos caminhos da ontologia heideggeriana reverberando através dos estratos diafanificamente estruturados.',
+  8: 'Synchroclasmata verti-inversivas desintegrando-congregamse nos labirintos tétanós da omnipotencialidade semântica vítreas quasiconsciência flogística reverberando.'
+};
 
-// KARAOKÊ - 30+ MÚSICAS
-const MUS=[
-  {t:'Garota de Ipanema',a:'Tom Jobim',l:'Olha que coisa mais linda,\nMais cheia de graça\nÉ ela, menina,\nQue vem e que passa\nNo meu coração'},
-  {t:'Aquarela',a:'Toquinho',l:'Numa folha qualquer\nEu desenho um sol amarelo\nE com cinco ou seis riscas simples\nFaço uma casa\nCom uma porta e um telhado'},
-  {t:'Asa Branca',a:'Luiz Gonzaga',l:'Quando o verde dos teus olhos\nSe mistura com o verde do mar\nA gente fica verde\nDe esperança de se abraçar'},
-  {t:'Parabéns',a:'Diversos',l:'Parabéns pra você\nNesta data querida\nMuita felicidade\nMuito sucesso na vida\nToda saúde e riqueza'},
-  {t:'Imagine',a:'John Lennon',l:'Imagine all the people\nLiving life in peace\nYou, you may say I\'m a dreamer\nBut I\'m not the only one'},
-  {t:'Hallelujah',a:'Leonard Cohen',l:'Now I\'ve heard there was a secret chord\nThat David played and it pleased the Lord\nBut you don\'t really care for music, do you?'},
-  {t:'Bohemian Rhapsody',a:'Queen',l:'Is this the real life? Is this just fantasy?\nCaught in a landslide, no escape from reality\nOpen your eyes, look up to the skies and see'},
-  {t:'Imagine',a:'John Lennon',l:'Imagine there\'s no countries\nIt isn\'t hard to do\nNothing to kill or die for\nAnd no religion too'},
-  {t:'Sweet Home Chicago',a:'Willie Dixon',l:'Come on, now, take me home\nTake me home\nI\'m a stranger here\nJust blew into your town\nTake me home tonight'},
-  {t:'House of the Rising Sun',a:'The Animals',l:'There is a house in New Orleans\nThey call the Rising Sun\nAnd it\'s been the ruin\nOf many a poor boy'},
-  {t:'Wonderwall',a:'Oasis',l:'Today is gonna be the day\nThat they\'re gonna throw it back to you\nBy now you should\'ve somehow\nRealized what you gotta do'},
-  {t:'Hey Jude',a:'The Beatles',l:'Hey Jude, don\'t make it bad\nTake a sad song and make it better\nRemember to let her under your skin\nThen you\'ll begin to make it better'},
-  {t:'Let It Be',a:'The Beatles',l:'And when the broken-hearted people\nLiving in the world agree\nThere will be an answer\nLet it be, let it be'},
-  {t:'Stairway to Heaven',a:'Led Zeppelin',l:'There\'s a lady who\'s sure all that glitters is gold\nAnd she\'s buying a stairway to heaven\nWhen she gets there she knows, if the stores are all closed'},
-  {t:'Hotel California',a:'Eagles',l:'On a dark desert highway\nCool wind in your hair\nWarm smell of colitas\nRising up through the air'},
-  {t:'Under Pressure',a:'Queen & David Bowie',l:'Mm, mm, yeah\nIt\'s the terror of knowing\nWhat the world is about\nWatching some good friends\nScreaming let me out'},
-  {t:'Another One Bites the Dust',a:'Queen',l:'Out of the doorway the bullets rip\nTo the sound of the beat\nAnother one bites the dust\nAnother one bites the dust'},
-  {t:'We Will Rock You',a:'Queen',l:'Buddy you\'re a boy make a big noise\nPlaying in the street gonna be a big man one day\nYou got mud on your face\nYou big disgrace'},
-  {t:'Superstition',a:'Stevie Wonder',l:'Very superstitious\nWriting\'s on the wall\nVery superstitious\nLadders about to fall\nThirteen month old baby'},
-  {t:'Boogie Wonderland',a:'Earth, Wind & Fire',l:'Dance, boogie wonderland\nDance, boogie wonderland\nAll the love in the world can\'t hold you back\nIf one little voice calls you'},
-  {t:'September',a:'Earth, Wind & Fire',l:'Do you remember?\nTwenty-first night of September\nLove was changing the minds of pretenders\nWhile chasing the clouds away'},
-  {t:'Good as Hell',a:'Lizzo',l:'If you\'re having a bad day\nYou take a seat in the waiting room\nYou\'re not crazy, it\'s not your fault\nYou came in this place of your own'},
-  {t:'Can\'t Stop The Feeling',a:'Justin Timberlake',l:'I got this feeling on a summer day\nWhen you were standing there with me\nI got that sunshine in my pocket\nGot that good song in my mind'},
-  {t:'Levitating',a:'Dua Lipa',l:'If you wanna run away with me\nI know a galaxy\nAnd I can take you for a ride\nI had a premonition\nThat we would be together'},
-  {t:'Blinding Lights',a:'The Weeknd',l:'I can\'t sleep until I feel your touch\nAnd we\'re enemies on the border\nBut if I got you, I got the upper hand'},
-  {t:'Uptown Funk',a:'Mark Ronson ft Bruno Mars',l:'This hit, that ice cold\nMichelle Pfeiffer, that white gold\nThis one for them hood girls\nTrying to get that disbursement'},
-  {t:'Billie Jean',a:'Michael Jackson',l:'She was more like a beauty queen from a movie scene\nI said don\'t mind, but what do you mean I am the one\nWho will dance on the floor in the round?'},
-  {t:'Thriller',a:'Michael Jackson',l:'It\'s close to midnight\nAnd something evil\'s lurking in the dark\nUnder the moonlight\nYou see a sight that almost stops your heart'},
-  {t:'King of Pop',a:'Michael Jackson',l:'I\'m the King of Pop\nAnd I\'ll show you how\nI can dance around\nAnd never touch the ground'},
-  {t:'Bad',a:'Michael Jackson',l:'Your butt is on my mind\nI give you a dime if you turn around\nLick it before I stick it\nI\'m a sexual chocolate'}
-];
-function karInit(){document.getElementById('karGd').innerHTML=MUS.map(m=>'<div class="musica-card" onclick="karOpen(\''+m.t+'\')"><div style="font-size:1.5rem">🎵</div><div style="font-weight:700;font-size:.8rem;margin-top:4px;line-height:1.2">'+m.t+'</div><div style="font-size:.65rem;color:#666">'+m.a+'</div></div>').join('');}
-function karOpen(tt){const m=MUS.find(x=>x.t===tt);if(!m)return;const d=document.createElement('div');d.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;z-index:9999;overflow-y:auto;padding:10px';const c=document.createElement('div');c.style.cssText='background:var(--paper);border-radius:10px;padding:20px;width:100%;max-width:400px';c.innerHTML='<h3 style="margin-bottom:5px">'+m.t+'</h3><p style="font-size:.8rem;color:#666;margin-bottom:10px">'+m.a+'</p><div style="background:var(--bg);padding:10px;border-radius:6px;margin:10px 0;white-space:pre-wrap;max-height:250px;overflow-y:auto;font-size:.85rem">'+m.l+'</div><div style="display:flex;gap:8px"><button class="btn" onclick="speak(\''+m.t+'. '+m.l+'\');toast(\'🎵\')" style="background:var(--ink);color:#fff;flex:1;padding:10px;border-radius:6px;border:none;cursor:pointer;font-weight:600">🔊 Ouvir</button><button class="btn" onclick="this.parentElement.parentElement.parentElement.remove()" style="background:transparent;border:1px solid #ddd;flex:1;padding:10px;border-radius:6px;cursor:pointer;font-weight:600">Fechar</button></div>';d.appendChild(c);d.onclick=(e)=>{if(e.target===d)d.remove();};document.body.appendChild(d);}
+// FUNÇÕES
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 2500);
+}
 
-leiNv(1);fluCat(0);stopTime(60);karInit();
+function mostrarStop() {
+  document.getElementById('stopPanel').style.display = '';
+  document.getElementById('fluPanel').style.display = 'none';
+  document.getElementById('lerPanel').style.display = 'none';
+  atualizarStopCats();
+}
+
+function mostrarFlu() {
+  document.getElementById('stopPanel').style.display = 'none';
+  document.getElementById('fluPanel').style.display = '';
+  document.getElementById('lerPanel').style.display = 'none';
+}
+
+function mostrarLer() {
+  document.getElementById('stopPanel').style.display = 'none';
+  document.getElementById('fluPanel').style.display = 'none';
+  document.getElementById('lerPanel').style.display = '';
+  atualizarLeitura();
+}
+
+function atualizarStopCats() {
+  const dif = document.getElementById('stopDif').value;
+  const dados = STOP_DADOS[dif];
+  // Apenas atualiza quando começa
+}
+
+function atualizarLeitura() {
+  const niv = document.getElementById('lerNivel').value;
+  document.getElementById('lerTexto').textContent = LER_TXTS[niv];
+}
+
+function comecaStop() {
+  const dif = document.getElementById('stopDif').value;
+  const dados = STOP_DADOS[dif];
+  const ltrs = 'ABCDEFGIJLMNOPQRSTUVXZ';
+  const letra = ltrs[Math.floor(Math.random() * ltrs.length)];
+  
+  let tempo = parseInt(document.getElementById('stopTempo').value);
+  let secs = tempo;
+  
+  document.getElementById('stopLetra').textContent = letra;
+  document.getElementById('stopGame').style.display = '';
+  document.getElementById('stopResult').style.display = 'none';
+  
+  const form = document.getElementById('stopForm');
+  form.innerHTML = dados.cats.map((cat, i) => `
+    <div style="margin-bottom:12px">
+      <label style="font-weight:600;margin-bottom:5px;display:block">${cat}:</label>
+      <input type="text" placeholder="Com ${letra}..." data-cat="${cat.toLowerCase()}" style="width:100%;padding:10px;border:2px solid #ddd;border-radius:6px;font-size:1rem;font-family:inherit">
+    </div>
+  `).join('');
+  
+  const timer = setInterval(() => {
+    secs--;
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    document.getElementById('stopTimer').textContent = m + ':' + (s < 10 ? '0' : '') + s;
+    if (secs <= 0) {
+      clearInterval(timer);
+      terminaStop();
+    }
+  }, 1000);
+  
+  window.stopTimer = timer;
+}
+
+function terminaStop() {
+  clearInterval(window.stopTimer);
+  
+  const dif = document.getElementById('stopDif').value;
+  const dados = STOP_DADOS[dif];
+  const letra = document.getElementById('stopLetra').textContent.toLowerCase();
+  
+  document.getElementById('stopGame').style.display = 'none';
+  
+  let pts = 0, html = '';
+  document.querySelectorAll('#stopForm input').forEach(inp => {
+    const cat = inp.getAttribute('data-cat');
+    const val = inp.value.toLowerCase().trim();
+    const ok = val.startsWith(letra) && dados.pals[cat] && dados.pals[cat].includes(val);
+    pts += ok ? 10 : 0;
+    html += `<div style="margin:10px 0;padding:10px;border-radius:6px;background:${ok ? '#e8f7ea' : '#fdecea'};border:2px solid ${ok ? '#2a7a38' : '#c0392b'}">
+      ${ok ? '✅' : '❌'} <strong>${cat.toUpperCase()}</strong>: ${val || '(vazio)'}
+    </div>`;
+  });
+  
+  const max = dados.cats.length * 10;
+  const pct = Math.round((pts / max) * 100);
+  document.getElementById('stopResult').innerHTML = `
+    <div class="result">
+      <div>${pts}/${max} PONTOS</div>
+      <div style="font-size:2rem;margin:10px 0">${pct}%</div>
+      ${html}
+      <button class="btn btn-main" onclick="comecaStop()" style="width:100%;margin-top:10px">TENTAR NOVAMENTE</button>
+    </div>
+  `;
+  document.getElementById('stopResult').style.display = '';
+  toast('✅ ' + pts + ' pontos!');
+}
+
+function comecaFlu() {
+  try {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) throw new Error('Navegador incompatível');
+    
+    const dif = document.getElementById('fluDif').value;
+    const cat = parseInt(document.getElementById('fluCat').value);
+    const palavrasEsperadas = FLU_DADOS[dif][cat];
+    
+    let secs = 60;
+    let palavrasFaladas = [];
+    
+    document.getElementById('fluBtn').textContent = 'PARAR';
+    document.getElementById('fluTimer').style.display = '';
+    document.getElementById('fluWords').innerHTML = '';
+    document.getElementById('fluResult').style.display = 'none';
+    
+    const timer = setInterval(() => {
+      secs--;
+      document.getElementById('fluTimer').textContent = Math.floor(secs / 60) + ':' + (secs % 60 < 10 ? '0' : '') + (secs % 60);
+      if (secs <= 0) {
+        clearInterval(timer);
+        terminaFlu();
+      }
+    }, 1000);
+    
+    window.fluTimer = timer;
+    
+    const rec = new SR();
+    rec.lang = 'pt-BR';
+    rec.continuous = true;
+    
+    rec.onresult = (e) => {
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) {
+          const pals = e.results[i][0].transcript.toLowerCase().split(/\s+/);
+          pals.forEach(p => {
+            if (p.length > 2 && !palavrasFaladas.includes(p)) {
+              palavrasFaladas.push(p);
+              const chip = document.createElement('span');
+              chip.className = 'word-chip';
+              chip.textContent = '✓ ' + p;
+              document.getElementById('fluWords').appendChild(chip);
+            }
+          });
+        }
+      }
+    };
+    
+    rec.onend = () => { if (secs > 0) rec.start(); };
+    
+    window.fluRec = rec;
+    rec.start();
+    toast('Fale agora!');
+  } catch (e) {
+    toast('❌ Erro: ' + e.message);
+  }
+}
+
+function terminaFlu() {
+  if (window.fluRec) window.fluRec.stop();
+  if (window.fluTimer) clearInterval(window.fluTimer);
+  
+  document.getElementById('fluBtn').textContent = 'COMEÇAR';
+  document.getElementById('fluTimer').style.display = 'none';
+  
+  const total = document.querySelectorAll('#fluWords .word-chip').length;
+  document.getElementById('fluResult').innerHTML = `
+    <div class="result" style="font-size:1.5rem">
+      <div>${total}</div>
+      <div style="font-size:1rem;margin-top:10px">PALAVRAS DIFERENTES</div>
+      <button class="btn btn-main" onclick="comecaFlu()" style="width:100%;margin-top:10px">REPETIR</button>
+    </div>
+  `;
+  document.getElementById('fluResult').style.display = '';
+  toast('✅ ' + total + ' palavras!');
+}
+
+function comecaLer() {
+  try {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) throw new Error('Navegador incompatível');
+    
+    let secs = 90;
+    let palavras = 0;
+    
+    document.getElementById('lerBtn').textContent = 'PARAR';
+    document.getElementById('lerStatus').style.display = '';
+    document.getElementById('lerResult').style.display = 'none';
+    
+    const timer = setInterval(() => {
+      secs--;
+      const m = Math.floor(secs / 60);
+      const s = secs % 60;
+      document.getElementById('lerTempo').textContent = m + ':' + (s < 10 ? '0' : '') + s;
+      if (secs <= 0) {
+        clearInterval(timer);
+        terminaLer();
+      }
+    }, 1000);
+    
+    window.lerTimer = timer;
+    
+    const rec = new SR();
+    rec.lang = 'pt-BR';
+    rec.continuous = true;
+    
+    rec.onresult = (e) => {
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) {
+          const pals = e.results[i][0].transcript.split(/\s+/).length;
+          palavras += pals;
+          document.getElementById('lerPalavras').textContent = palavras;
+        }
+      }
+    };
+    
+    rec.onend = () => { if (secs > 0) rec.start(); };
+    
+    window.lerRec = rec;
+    rec.start();
+    toast('Comece a ler!');
+  } catch (e) {
+    toast('❌ Erro: ' + e.message);
+  }
+}
+
+function terminaLer() {
+  if (window.lerRec) window.lerRec.stop();
+  if (window.lerTimer) clearInterval(window.lerTimer);
+  
+  document.getElementById('lerBtn').textContent = 'COMEÇAR';
+  document.getElementById('lerStatus').style.display = 'none';
+  
+  const palavras = parseInt(document.getElementById('lerPalavras').textContent);
+  const ppm = Math.round((palavras / 90) * 60);
+  const nota = ppm >= 100 ? 'S' : ppm >= 90 ? 'A' : ppm >= 80 ? 'B' : 'C';
+  
+  document.getElementById('lerResult').innerHTML = `
+    <div class="result">
+      <div>${ppm}</div>
+      <div style="font-size:1rem;margin:10px 0">PALAVRAS POR MINUTO</div>
+      <div style="font-size:1.5rem;margin:10px 0">NOTA: ${nota}</div>
+      <div style="font-size:0.9rem">Total: ${palavras} palavras</div>
+      <button class="btn btn-main" onclick="comecaLer()" style="width:100%;margin-top:10px">REPETIR</button>
+    </div>
+  `;
+  document.getElementById('lerResult').style.display = '';
+  toast('✅ ' + ppm + ' pal/min!');
+}
+
+// Init
+mostrarStop();
 </script>
 </body>
 </html>
