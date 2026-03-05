@@ -4,636 +4,117 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FonoPRO — Treino de Linguagem</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;700&display=swap');
 
 :root {
-  --bg: #0a0a0f;
-  --surface: #111118;
-  --surface2: #18181f;
-  --border: #2a2a35;
-  --accent: #7c3aed;
-  --accent2: #06b6d4;
-  --accent3: #f59e0b;
-  --green: #10b981;
-  --red: #ef4444;
-  --text: #f0f0f8;
-  --muted: #6b6b80;
-  --radius: 14px;
-  --font: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-display: 'Syne', ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', 'Consolas', monospace;
+  --bg:#0a0a0f; --surface:#111118; --surface2:#18181f; --border:#2a2a35;
+  --accent:#7c3aed; --accent2:#06b6d4; --accent3:#f59e0b;
+  --green:#10b981; --red:#ef4444; --text:#f0f0f8; --muted:#6b6b80;
+  --radius:14px;
+  --font:'Space Grotesk',ui-sans-serif,system-ui,sans-serif;
+  --font-display:'Syne',ui-sans-serif,system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
 }
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font);
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-/* Noise texture overlay */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 0;
-  opacity: .4;
-}
-
-/* Glow orbs */
-.orb {
-  position: fixed;
-  border-radius: 50%;
-  filter: blur(80px);
-  pointer-events: none;
-  z-index: 0;
-  opacity: .18;
-}
-.orb-1 { width: 500px; height: 500px; background: var(--accent); top: -200px; right: -100px; }
-.orb-2 { width: 400px; height: 400px; background: var(--accent2); bottom: -100px; left: -100px; }
-.orb-3 { width: 300px; height: 300px; background: var(--accent3); top: 40%; left: 40%; }
-
-/* Header */
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: rgba(10,10,15,.85);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
-  padding: 0 20px;
-}
-
-.header-inner {
-  max-width: 780px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  height: 64px;
-}
-
-.brand {
-  font-family: var(--font-display);
-  font-size: 1.4rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, #fff 30%, var(--accent));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-right: auto;
-  letter-spacing: -.02em;
-}
-
-.brand span {
-  font-weight: 300;
-  opacity: .6;
-}
-
-.nav-tabs {
-  display: flex;
-  gap: 4px;
-  background: var(--surface2);
-  border-radius: 10px;
-  padding: 4px;
-  border: 1px solid var(--border);
-}
-
-.tab {
-  padding: 8px 14px;
-  border: none;
-  background: transparent;
-  color: var(--muted);
-  font-family: var(--font);
-  font-size: .85rem;
-  font-weight: 600;
-  cursor: pointer;
-  border-radius: 7px;
-  transition: all .2s;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.tab.active {
-  background: var(--accent);
-  color: #fff;
-  box-shadow: 0 0 20px rgba(124,58,237,.4);
-}
-
-.tab:hover:not(.active) { color: var(--text); background: var(--surface); }
-
-/* Main */
-.main {
-  max-width: 780px;
-  margin: 0 auto;
-  padding: 24px 20px 80px;
-  position: relative;
-  z-index: 1;
-}
-
-/* Panels */
-.panel { display: none; animation: fadeUp .35s ease; }
-.panel.active { display: block; }
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* Panel hero */
-.panel-hero {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 28px;
-}
-
-.panel-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.6rem;
-  flex-shrink: 0;
-}
-
-.icon-stop  { background: linear-gradient(135deg, #7c3aed, #a855f7); box-shadow: 0 8px 24px rgba(124,58,237,.35); }
-.icon-flu   { background: linear-gradient(135deg, #0891b2, #06b6d4); box-shadow: 0 8px 24px rgba(6,182,212,.35); }
-.icon-ler   { background: linear-gradient(135deg, #d97706, #f59e0b); box-shadow: 0 8px 24px rgba(245,158,11,.35); }
-.icon-mem   { background: linear-gradient(135deg, #7c3aed, #e11d48); box-shadow: 0 8px 24px rgba(200,50,100,.35); }
-.icon-aud   { background: linear-gradient(135deg, #e11d48, #f43f5e); box-shadow: 0 8px 24px rgba(244,63,94,.35); }
-
-.panel-title { font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; line-height: 1.1; }
-.panel-desc  { color: var(--muted); font-size: .9rem; margin-top: 4px; line-height: 1.5; }
-
-/* Cards */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-  margin-bottom: 16px;
-  transition: border-color .2s;
-}
-
-.card:hover { border-color: #3a3a4a; }
-
-/* Config grid */
-.config-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-@media(max-width: 500px) { .config-grid { grid-template-columns: 1fr; } }
-
-.field-label {
-  font-size: .75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  color: var(--muted);
-  margin-bottom: 8px;
-}
-
-select, input[type="text"] {
-  width: 100%;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
-  font-family: var(--font);
-  font-size: .95rem;
-  padding: 10px 12px;
-  cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-  outline: none;
-  transition: border-color .2s, box-shadow .2s;
-}
-
-select:focus, input[type="text"]:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(124,58,237,.15);
-}
-
-/* Buttons */
-.btn-primary {
-  width: 100%;
-  padding: 15px;
-  border: none;
-  border-radius: 10px;
-  font-family: var(--font);
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-  position: relative;
-  overflow: hidden;
-  transition: all .2s;
-  background: linear-gradient(135deg, var(--accent), #a855f7);
-  color: #fff;
-  box-shadow: 0 4px 20px rgba(124,58,237,.4);
-}
-
-.btn-primary::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(255,255,255,0);
-  transition: background .15s;
-}
-
-.btn-primary:hover::before { background: rgba(255,255,255,.08); }
-.btn-primary:active { transform: scale(.98); }
-
-.btn-stop {
-  background: linear-gradient(135deg, var(--red), #f97316);
-  box-shadow: 0 4px 20px rgba(239,68,68,.35);
-}
-
-.btn-cyan  { background: linear-gradient(135deg, #0891b2, #06b6d4); box-shadow: 0 4px 20px rgba(6,182,212,.35); }
-.btn-amber { background: linear-gradient(135deg, #d97706, #f59e0b); box-shadow: 0 4px 20px rgba(245,158,11,.35); }
-.btn-green { background: linear-gradient(135deg, #059669, #10b981); box-shadow: 0 4px 20px rgba(16,185,129,.35); }
-.btn-rose  { background: linear-gradient(135deg, #e11d48, #f43f5e); box-shadow: 0 4px 20px rgba(244,63,94,.35); }
-
-.btn-sm {
-  padding: 10px 18px;
-  width: auto;
-  font-size: .85rem;
-}
-
-.btn-outline {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text);
-  box-shadow: none;
-}
-.btn-outline:hover::before { background: rgba(255,255,255,.04); }
-
-/* Timer */
-.timer-display {
-  font-family: var(--font-mono);
-  font-size: 4rem;
-  font-weight: 700;
-  text-align: center;
-  padding: 20px 0;
-  background: linear-gradient(135deg, var(--text), var(--muted));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  line-height: 1;
-}
-
-.timer-display.urgent { background: linear-gradient(135deg, #ef4444, #f97316); -webkit-background-clip: text; }
-
-/* Letter display */
-.letter-display {
-  text-align: center;
-  padding: 16px 0 8px;
-}
-
-.letter-label { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
-
-.letter-big {
-  font-family: var(--font-display);
-  font-size: 6rem;
-  font-weight: 800;
-  line-height: 1;
-  background: linear-gradient(135deg, #fff 20%, var(--accent));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: popIn .4s cubic-bezier(.34,1.56,.64,1);
-}
-
-@keyframes popIn {
-  from { transform: scale(.5); opacity: 0; }
-  to   { transform: scale(1); opacity: 1; }
-}
-
-/* Stop form */
-.stop-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin: 16px 0;
-}
-
-@media(max-width: 500px) { .stop-grid { grid-template-columns: 1fr; } }
-
-.stop-field { position: relative; }
-.stop-field-label {
-  font-size: .7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  color: var(--muted);
-  margin-bottom: 5px;
-}
-
-.stop-field input {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
-  font-family: var(--font);
-  font-size: .95rem;
-  padding: 10px 12px;
-  width: 100%;
-  outline: none;
-  transition: border-color .2s, box-shadow .2s;
-}
-
-.stop-field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,58,237,.15); }
-.stop-field input.correct { border-color: var(--green); background: rgba(16,185,129,.08); }
-.stop-field input.wrong   { border-color: var(--red); background: rgba(239,68,68,.08); }
-
-/* Resultado rows */
-.result-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  border-radius: 8px;
-  margin-bottom: 8px;
-  border: 1px solid transparent;
-}
-
-.result-row.ok  { background: rgba(16,185,129,.1);  border-color: rgba(16,185,129,.3); }
-.result-row.bad { background: rgba(239,68,68,.1);   border-color: rgba(239,68,68,.3); }
-.result-icon { font-size: 1.2rem; }
-.result-cat  { font-weight: 700; font-size: .85rem; text-transform: uppercase; letter-spacing: .05em; flex: 1; }
-.result-val  { font-family: var(--font-mono); font-size: .9rem; color: var(--muted); }
-
-/* Score display */
-.score-card {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 28px;
-  text-align: center;
-  margin-top: 20px;
-}
-
-.score-big {
-  font-family: var(--font-display);
-  font-size: 4rem;
-  font-weight: 800;
-  line-height: 1;
-  background: linear-gradient(135deg, var(--green), var(--accent2));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.score-label { color: var(--muted); font-size: .85rem; margin-top: 6px; text-transform: uppercase; letter-spacing: .08em; }
-
-.grade-badge {
-  display: inline-block;
-  font-family: var(--font-display);
-  font-size: 3rem;
-  font-weight: 800;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 16px auto;
-}
-
-.grade-S { background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #000; }
-.grade-A { background: linear-gradient(135deg, #10b981, #34d399); color: #000; }
-.grade-B { background: linear-gradient(135deg, #06b6d4, #67e8f9); color: #000; }
-.grade-C { background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff; }
-.grade-D { background: linear-gradient(135deg, #ef4444, #f97316); color: #fff; }
-
-/* Chips */
-.chips-area {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  min-height: 70px;
-  padding: 14px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  margin: 14px 0;
-}
-
-.chip {
-  background: rgba(16,185,129,.15);
-  border: 1px solid rgba(16,185,129,.4);
-  color: #34d399;
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: .85rem;
-  font-weight: 600;
-  animation: chipIn .2s cubic-bezier(.34,1.56,.64,1);
-}
-
-@keyframes chipIn {
-  from { transform: scale(0); opacity: 0; }
-  to   { transform: scale(1); opacity: 1; }
-}
-
-/* Texto leitura */
-.reading-text {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 20px;
-  line-height: 2;
-  font-size: 1.1rem;
-  margin: 14px 0;
-  min-height: 90px;
-  color: var(--text);
-  letter-spacing: .01em;
-}
-
-/* Info bar */
-.info-bar {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 18px;
-  margin: 14px 0;
-}
-
-.info-stat { text-align: center; flex: 1; }
-.info-stat-val { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; }
-.info-stat-label { font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
-
-/* Memória visual */
-.memory-grid {
-  display: grid;
-  gap: 10px;
-  margin: 14px 0;
-}
-
-.mem-card {
-  aspect-ratio: 1;
-  background: var(--surface2);
-  border: 2px solid var(--border);
-  border-radius: 10px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.8rem;
-  transition: all .2s;
-  position: relative;
-  overflow: hidden;
-}
-
-.mem-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--accent);
-  opacity: 0;
-  transition: opacity .2s;
-}
-
-.mem-card.face-down { font-size: 0; }
-.mem-card.face-down:hover { border-color: var(--accent); }
-.mem-card.face-up { border-color: var(--accent); background: rgba(124,58,237,.15); }
-.mem-card.matched { border-color: var(--green); background: rgba(16,185,129,.15); animation: matched .4s ease; }
-
-@keyframes matched {
-  0%,100% { transform: scale(1); }
-  50% { transform: scale(1.08); }
-}
-
-/* Auditivo */
-.word-display {
-  text-align: center;
-  padding: 30px 20px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  margin: 14px 0;
-}
-
-.word-big {
-  font-family: var(--font-display);
-  font-size: 3rem;
-  font-weight: 800;
-  letter-spacing: -.02em;
-}
-
-.word-blur .word-big { filter: blur(8px); }
-
-.syllable-display {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 12px;
-}
-
-.syllable {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 6px 14px;
-  font-family: var(--font-mono);
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--accent2);
-}
-
-/* Progress */
-.progress-bar-wrap {
-  height: 4px;
-  background: var(--border);
-  border-radius: 2px;
-  overflow: hidden;
-  margin: 10px 0;
-}
-
-.progress-bar-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
-  border-radius: 2px;
-  transition: width .3s ease;
-}
-
-/* Toast */
-#toast {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%) translateY(80px);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--text);
-  padding: 12px 24px;
-  border-radius: 30px;
-  font-size: .9rem;
-  font-weight: 600;
-  z-index: 999;
-  transition: transform .3s cubic-bezier(.34,1.56,.64,1);
-  white-space: nowrap;
-  box-shadow: 0 8px 32px rgba(0,0,0,.5);
-}
-
-#toast.show { transform: translateX(-50%) translateY(0); }
-
-/* Divider */
-.divider {
-  height: 1px;
-  background: var(--border);
-  margin: 20px 0;
-}
-
-/* Stats row */
-.stats-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.stat-box {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px;
-  text-align: center;
-}
-
-.stat-val { font-family: var(--font-mono); font-size: 1.6rem; font-weight: 700; }
-.stat-lbl { font-size: .7rem; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin-top: 3px; }
-
-/* Responsive small */
-@media(max-width: 500px) {
-  .tab { padding: 7px 10px; font-size: .75rem; }
-  .brand { font-size: 1.1rem; }
-  .panel-title { font-size: 1.3rem; }
-  .letter-big { font-size: 4.5rem; }
-  .timer-display { font-size: 3rem; }
-  .score-big { font-size: 3rem; }
-  .stats-row { grid-template-columns: 1fr 1fr; }
-}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4}
+.orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0;opacity:.15}
+.orb-1{width:500px;height:500px;background:var(--accent);top:-200px;right:-100px}
+.orb-2{width:400px;height:400px;background:var(--accent2);bottom:-100px;left:-100px}
+.orb-3{width:300px;height:300px;background:var(--accent3);top:40%;left:40%}
+.header{position:sticky;top:0;z-index:100;background:rgba(10,10,15,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 20px}
+.header-inner{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:6px;height:64px}
+.brand{font-family:var(--font-display);font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#fff 30%,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-right:auto;letter-spacing:-.02em}
+.brand span{font-weight:300;opacity:.6}
+.nav-tabs{display:flex;gap:4px;background:var(--surface2);border-radius:10px;padding:4px;border:1px solid var(--border)}
+.tab{padding:8px 14px;border:none;background:transparent;color:var(--muted);font-family:var(--font);font-size:.85rem;font-weight:600;cursor:pointer;border-radius:7px;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:5px}
+.tab.active{background:var(--accent);color:#fff;box-shadow:0 0 20px rgba(124,58,237,.4)}
+.tab:hover:not(.active){color:var(--text);background:var(--surface)}
+.main{max-width:780px;margin:0 auto;padding:24px 20px 80px;position:relative;z-index:1}
+.panel{display:none;animation:fadeUp .35s ease}.panel.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.panel-hero{display:flex;align-items:flex-start;gap:16px;margin-bottom:28px}
+.panel-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0}
+.icon-stop{background:linear-gradient(135deg,#7c3aed,#a855f7);box-shadow:0 8px 24px rgba(124,58,237,.35)}
+.icon-flu{background:linear-gradient(135deg,#0891b2,#06b6d4);box-shadow:0 8px 24px rgba(6,182,212,.35)}
+.icon-ler{background:linear-gradient(135deg,#d97706,#f59e0b);box-shadow:0 8px 24px rgba(245,158,11,.35)}
+.icon-des{background:linear-gradient(135deg,#7c3aed,#e11d48);box-shadow:0 8px 24px rgba(200,50,100,.35)}
+.icon-aud{background:linear-gradient(135deg,#e11d48,#f43f5e);box-shadow:0 8px 24px rgba(244,63,94,.35)}
+.panel-title{font-family:var(--font-display);font-size:1.6rem;font-weight:800;line-height:1.1}
+.panel-desc{color:var(--muted);font-size:.9rem;margin-top:4px;line-height:1.5}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;transition:border-color .2s}
+.card:hover{border-color:#3a3a4a}
+.config-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+@media(max-width:500px){.config-grid{grid-template-columns:1fr}}
+.field-label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:8px}
+select,input[type="text"]{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font);font-size:.95rem;padding:10px 12px;cursor:pointer;appearance:none;-webkit-appearance:none;outline:none;transition:border-color .2s,box-shadow .2s}
+select:focus,input[type="text"]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,58,237,.15)}
+.btn{display:block;width:100%;padding:15px;border:none;border-radius:10px;font-family:var(--font);font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:.04em;text-transform:uppercase;position:relative;overflow:hidden;transition:all .2s;color:#fff;text-align:center}
+.btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,0);transition:background .15s}
+.btn:hover::before{background:rgba(255,255,255,.08)}
+.btn:active{transform:scale(.98)}
+.btn-purple{background:linear-gradient(135deg,#7c3aed,#a855f7);box-shadow:0 4px 20px rgba(124,58,237,.4)}
+.btn-red{background:linear-gradient(135deg,#ef4444,#f97316);box-shadow:0 4px 20px rgba(239,68,68,.35)}
+.btn-cyan{background:linear-gradient(135deg,#0891b2,#06b6d4);box-shadow:0 4px 20px rgba(6,182,212,.35)}
+.btn-amber{background:linear-gradient(135deg,#d97706,#f59e0b);box-shadow:0 4px 20px rgba(245,158,11,.35)}
+.btn-green{background:linear-gradient(135deg,#059669,#10b981);box-shadow:0 4px 20px rgba(16,185,129,.35)}
+.btn-rose{background:linear-gradient(135deg,#e11d48,#f43f5e);box-shadow:0 4px 20px rgba(244,63,94,.35)}
+.btn-fire{background:linear-gradient(135deg,#7c3aed,#e11d48);box-shadow:0 4px 20px rgba(124,58,237,.4)}
+.btn-outline{background:transparent!important;border:1px solid var(--border)!important;color:var(--text)!important;box-shadow:none!important}
+.btn-sm{padding:10px 18px;width:auto;display:inline-block;font-size:.85rem}
+.timer-display{font-family:var(--font-mono);font-size:4rem;font-weight:700;text-align:center;padding:20px 0;background:linear-gradient(135deg,var(--text),var(--muted));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.timer-display.urgent{background:linear-gradient(135deg,#ef4444,#f97316);-webkit-background-clip:text}
+.letter-display{text-align:center;padding:16px 0 8px}
+.letter-label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.letter-big{font-family:var(--font-display);font-size:6rem;font-weight:800;line-height:1;background:linear-gradient(135deg,#fff 20%,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+.stop-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+@media(max-width:500px){.stop-grid{grid-template-columns:1fr}}
+.stop-field-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:5px}
+.stop-field input{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font);font-size:.95rem;padding:10px 12px;width:100%;outline:none;transition:border-color .2s}
+.stop-field input:focus{border-color:var(--accent)}
+.result-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:8px;margin-bottom:8px;border:1px solid transparent}
+.result-row.ok{background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3)}
+.result-row.bad{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3)}
+.result-cat{font-weight:700;font-size:.85rem;text-transform:uppercase;letter-spacing:.05em;flex:1}
+.result-val{font-family:var(--font-mono);font-size:.9rem;color:var(--muted)}
+.score-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:28px;text-align:center;margin-top:20px}
+.score-big{font-family:var(--font-display);font-size:4rem;font-weight:800;line-height:1;background:linear-gradient(135deg,var(--green),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.score-label{color:var(--muted);font-size:.85rem;margin-top:6px;text-transform:uppercase;letter-spacing:.08em}
+.grade-badge{font-family:var(--font-display);font-size:3rem;font-weight:800;width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:16px auto}
+.grade-S{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#000}
+.grade-A{background:linear-gradient(135deg,#10b981,#34d399);color:#000}
+.grade-B{background:linear-gradient(135deg,#06b6d4,#67e8f9);color:#000}
+.grade-C{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff}
+.grade-D{background:linear-gradient(135deg,#ef4444,#f97316);color:#fff}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px}
+.stat-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.stat-val{font-family:var(--font-mono);font-size:1.6rem;font-weight:700}
+.stat-lbl{font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-top:3px}
+.chips-area{display:flex;flex-wrap:wrap;gap:8px;min-height:70px;padding:14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;margin:14px 0}
+.chip{background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.4);color:#34d399;padding:5px 12px;border-radius:20px;font-size:.85rem;font-weight:600;animation:chipIn .2s cubic-bezier(.34,1.56,.64,1)}
+.chip.interim{opacity:.4;border-style:dashed}
+@keyframes chipIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.reading-text{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:20px;line-height:2;font-size:1.1rem;margin:14px 0;min-height:90px;color:var(--text);letter-spacing:.01em}
+.info-bar{display:flex;gap:20px;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 18px;margin:14px 0}
+.info-stat{text-align:center;flex:1}
+.info-stat-val{font-family:var(--font-mono);font-size:1.4rem;font-weight:700}
+.info-stat-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.word-display{text-align:center;padding:30px 20px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);margin:14px 0}
+.word-big{font-family:var(--font-display);font-size:3rem;font-weight:800;letter-spacing:-.02em}
+.word-blur .word-big{filter:blur(8px);transition:filter .3s}
+.progress-bar-wrap{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin:10px 0}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;transition:width .3s ease}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface);border:1px solid var(--border);color:var(--text);padding:12px 24px;border-radius:30px;font-size:.9rem;font-weight:600;z-index:999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+#toast.show{transform:translateX(-50%) translateY(0)}
+.mic-banner{padding:10px 14px;border-radius:8px;font-size:.85rem;font-weight:600;text-align:center;margin-bottom:12px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);color:#34d399;transition:all .3s}
+.mic-banner.warn{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:#fbbf24}
+.mic-banner.err{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:#f87171}
+@media(max-width:500px){.tab{padding:7px 10px;font-size:.75rem}.brand{font-size:1.1rem}.panel-title{font-size:1.3rem}.letter-big{font-size:4.5rem}.timer-display{font-size:3rem}.score-big{font-size:3rem}.stats-row{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
-
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
 <div class="orb orb-3"></div>
@@ -645,7 +126,7 @@ select:focus, input[type="text"]:focus {
       <button class="tab active" onclick="mudarAba('stop',this)">🎲 STOP</button>
       <button class="tab" onclick="mudarAba('flu',this)">💬 Fluência</button>
       <button class="tab" onclick="mudarAba('ler',this)">📖 Leitura</button>
-      <button class="tab" onclick="mudarAba('mem',this)">🔥 Desafios</button>
+      <button class="tab" onclick="mudarAba('des',this)">🔥 Desafios</button>
       <button class="tab" onclick="mudarAba('aud',this)">👂 Auditivo</button>
     </nav>
   </div>
@@ -653,20 +134,15 @@ select:focus, input[type="text"]:focus {
 
 <main class="main">
 
-<!-- ===== STOP ===== -->
+<!-- STOP -->
 <div class="panel active" id="stop">
   <div class="panel-hero">
     <div class="panel-icon icon-stop">🎲</div>
-    <div>
-      <div class="panel-title">Jogo STOP</div>
-      <div class="panel-desc">15 categorias. 45 segundos. Sem moleza — cada campo vazio é ponto perdido.</div>
-    </div>
+    <div><div class="panel-title">Jogo STOP</div><div class="panel-desc">Até 15 categorias. Cada campo vazio é ponto perdido.</div></div>
   </div>
-
   <div class="card" id="stopConfig">
     <div class="config-grid">
-      <div>
-        <div class="field-label">Dificuldade</div>
+      <div><div class="field-label">Dificuldade</div>
         <select id="stopDif">
           <option value="1">🟢 Fácil — 5 categorias</option>
           <option value="2">🟡 Médio — 8 categorias</option>
@@ -674,8 +150,7 @@ select:focus, input[type="text"]:focus {
           <option value="4" selected>⚫ Extremo — 15 categorias</option>
         </select>
       </div>
-      <div>
-        <div class="field-label">Tempo</div>
+      <div><div class="field-label">Tempo</div>
         <select id="stopTempo">
           <option value="30">30 segundos 🔥</option>
           <option value="45" selected>45 segundos ⚡</option>
@@ -685,52 +160,35 @@ select:focus, input[type="text"]:focus {
         </select>
       </div>
     </div>
-    <button class="btn-primary" onclick="iniciarStop()">▶ COMEÇAR STOP</button>
+    <button class="btn btn-purple" onclick="iniciarStop()">▶ COMEÇAR STOP</button>
   </div>
-
   <div id="stopGame" style="display:none">
     <div class="card">
       <div class="letter-display">
         <div class="letter-label">Letra da rodada</div>
         <div class="letter-big" id="stopLetra">A</div>
       </div>
-      <div class="timer-display" id="stopTimer">1:30</div>
+      <div class="timer-display" id="stopTimer">0:45</div>
       <div class="progress-bar-wrap"><div class="progress-bar-fill" id="stopProg" style="width:100%"></div></div>
     </div>
-
     <div class="card">
-      <div class="field-label" style="margin-bottom:14px;">Categorias — use a letra <span id="stopLetraRef" style="color:var(--accent)">A</span></div>
+      <div class="field-label" style="margin-bottom:14px">Categorias — letra <span id="stopLetraRef" style="color:var(--accent)">A</span></div>
       <div class="stop-grid" id="stopForm"></div>
-      <button class="btn-primary btn-stop" onclick="finalizarStop()" style="margin-top:8px">🛑 PARAR & PONTUAR</button>
+      <button class="btn btn-red" onclick="finalizarStop()" style="margin-top:8px">🛑 PARAR &amp; PONTUAR</button>
     </div>
   </div>
-
   <div id="stopResultado" style="display:none"></div>
 </div>
 
-<!-- ===== FLUÊNCIA ===== -->
+<!-- FLUÊNCIA -->
 <div class="panel" id="flu">
   <div class="panel-hero">
     <div class="panel-icon icon-flu">💬</div>
-    <div>
-      <div class="panel-title">Fluência Verbal</div>
-      <div class="panel-desc">Nível extremo. 45 segundos. Palavras raras e obscuras — quanto você realmente sabe?</div>
-    </div>
+    <div><div class="panel-title">Fluência Verbal</div><div class="panel-desc">Fale o máximo de palavras em voz alta. Cada palavra única conta.</div></div>
   </div>
-
   <div class="card" id="fluConfig">
     <div class="config-grid">
-      <div>
-        <div class="field-label">Dificuldade</div>
-        <select id="fluDif">
-          <option value="1">🟢 Fácil</option>
-          <option value="2">🟡 Médio</option>
-          <option value="3">🔴 Difícil</option>
-          <option value="4" selected>⚫ Extremo</option>
-        </select>
-      </div>
-      <div>
-        <div class="field-label">Categoria</div>
+      <div><div class="field-label">Categoria</div>
         <select id="fluCat">
           <option value="0">🐾 Animais</option>
           <option value="1">🍓 Frutas</option>
@@ -742,59 +200,45 @@ select:focus, input[type="text"]:focus {
           <option value="7">⚽ Esportes</option>
         </select>
       </div>
+      <div><div class="field-label">Duração</div>
+        <select id="fluTempo">
+          <option value="30">30 segundos 🔥</option>
+          <option value="45" selected>45 segundos ⚡</option>
+          <option value="60">1 minuto</option>
+          <option value="90">1 min 30 seg</option>
+        </select>
+      </div>
     </div>
-    <div>
-      <div class="field-label">Duração</div>
-      <select id="fluTempo">
-        <option value="30">30 segundos 🔥</option>
-        <option value="45" selected>45 segundos ⚡</option>
-        <option value="60">1 minuto</option>
-        <option value="90">1 min 30 seg</option>
-      </select>
-    </div>
-    <div style="margin-top:14px">
-      <button class="btn-primary btn-cyan" id="fluBtn" onclick="toggleFlu()">🎤 COMEÇAR</button>
-    </div>
+    <button class="btn btn-cyan" id="fluBtn" onclick="iniciarFlu()">🎤 COMEÇAR</button>
   </div>
-
   <div id="fluAtivo" style="display:none">
     <div class="card" style="text-align:center">
       <div class="field-label">Tempo restante</div>
-      <div class="timer-display" id="fluTimer">1:00</div>
+      <div class="timer-display" id="fluTimer">0:45</div>
       <div class="progress-bar-wrap"><div class="progress-bar-fill" id="fluProg" style="width:100%;background:linear-gradient(90deg,#0891b2,#06b6d4)"></div></div>
-      <div style="margin-top:10px;font-size:.85rem" id="fluStatus">🎤 Microfone ativo — fale agora!</div>
+      <div id="fluBanner" class="mic-banner">🔴 Aguardando microfone...</div>
     </div>
-
     <div class="card">
-      <div class="field-label">Palavras reconhecidas</div>
-      <div class="chips-area" id="fluChips"></div>
-      <div class="info-bar" style="margin-top:10px">
-        <div class="info-stat">
-          <div class="info-stat-val" id="fluCount">0</div>
-          <div class="info-stat-label">Palavras</div>
-        </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div class="field-label" style="margin:0">Palavras capturadas</div>
+        <div style="font-family:var(--font-mono);font-size:1.5rem;font-weight:700;color:var(--accent2)" id="fluCount">0</div>
       </div>
-      <button class="btn-primary btn-stop" onclick="finalizarFlu()" style="margin-top:12px">🛑 ENCERRAR</button>
+      <div class="chips-area" id="fluChips"></div>
+      <button class="btn btn-red" onclick="finalizarFlu()" style="margin-top:12px">🛑 ENCERRAR</button>
     </div>
   </div>
-
   <div id="fluResultado" style="display:none"></div>
 </div>
 
-<!-- ===== LEITURA ===== -->
+<!-- LEITURA -->
 <div class="panel" id="ler">
   <div class="panel-hero">
     <div class="panel-icon icon-ler">📖</div>
-    <div>
-      <div class="panel-title">Desafio de Leitura</div>
-      <div class="panel-desc">Textos de nível insano. 45 segundos. Pronuncie cada palavra corretamente — cada tropeço conta.</div>
-    </div>
+    <div><div class="panel-title">Desafio de Leitura</div><div class="panel-desc">Textos de nível insano. Pronuncie cada palavra — cada tropeço conta.</div></div>
   </div>
-
   <div class="card">
     <div class="config-grid">
-      <div>
-        <div class="field-label">Nível de dificuldade</div>
+      <div><div class="field-label">Nível</div>
         <select id="lerNivel" onchange="atualizarTextoLeitura()">
           <option value="1">🟢 1 — Iniciante</option>
           <option value="2">🟡 2 — Básico</option>
@@ -806,8 +250,7 @@ select:focus, input[type="text"]:focus {
           <option value="8">🌀 8 — Caótico</option>
         </select>
       </div>
-      <div>
-        <div class="field-label">Tempo de leitura</div>
+      <div><div class="field-label">Tempo</div>
         <select id="lerTempoCfg">
           <option value="30">30 segundos 🔥</option>
           <option value="45" selected>45 segundos ⚡</option>
@@ -816,60 +259,43 @@ select:focus, input[type="text"]:focus {
         </select>
       </div>
     </div>
-
     <div class="field-label" style="margin-top:4px">Texto para leitura</div>
     <div id="lerTexto" class="reading-text"></div>
-    <button class="btn-primary btn-amber" id="lerBtn" onclick="toggleLer()">▶ COMEÇAR LEITURA</button>
-
+    <button class="btn btn-amber" id="lerBtn" onclick="toggleLer()">▶ COMEÇAR LEITURA</button>
     <div id="lerAtivo" style="display:none;margin-top:16px">
+      <div id="lerBanner" class="mic-banner">🔴 Aguardando microfone...</div>
       <div class="info-bar">
-        <div class="info-stat">
-          <div class="info-stat-val" id="lerTempo">0:00</div>
-          <div class="info-stat-label">Tempo</div>
-        </div>
-        <div class="info-stat">
-          <div class="info-stat-val" id="lerPals">0</div>
-          <div class="info-stat-label">Palavras</div>
-        </div>
-        <div class="info-stat">
-          <div class="info-stat-val" id="lerPPM">—</div>
-          <div class="info-stat-label">Pal/min</div>
-        </div>
+        <div class="info-stat"><div class="info-stat-val" id="lerTempo">0:00</div><div class="info-stat-label">Tempo</div></div>
+        <div class="info-stat"><div class="info-stat-val" id="lerPals">0</div><div class="info-stat-label">Palavras</div></div>
+        <div class="info-stat"><div class="info-stat-val" id="lerPPM">—</div><div class="info-stat-label">Pal/min</div></div>
       </div>
-      <button class="btn-primary btn-stop" onclick="finalizarLer()" style="margin-top:10px">🛑 ENCERRAR</button>
+      <button class="btn btn-red" onclick="finalizarLer()" style="margin-top:10px">🛑 ENCERRAR</button>
     </div>
   </div>
-
   <div id="lerResultado" style="display:none"></div>
 </div>
 
-<!-- ===== DESAFIOS EXTREMOS ===== -->
-<div class="panel" id="mem">
+<!-- DESAFIOS -->
+<div class="panel" id="des">
   <div class="panel-hero">
-    <div class="panel-icon icon-mem">🔥</div>
-    <div>
-      <div class="panel-title">Desafios Extremos</div>
-      <div class="panel-desc">Textos projetados para travar a língua. Trava-línguas, acumulativos, ritmo forçado e textos impossíveis — escolha seu sofrimento.</div>
-    </div>
+    <div class="panel-icon icon-des">🔥</div>
+    <div><div class="panel-title">Desafios Extremos</div><div class="panel-desc">Trava-línguas, acumulativos, ritmo forçado — escolha seu sofrimento.</div></div>
   </div>
-
-  <div class="card" id="memConfig">
+  <div class="card" id="desConfig">
     <div class="config-grid">
-      <div>
-        <div class="field-label">Tipo de desafio</div>
-        <select id="desafioTipo" onchange="atualizarDesafio()">
-          <option value="travlingua">👅 Trava-língua clássico</option>
-          <option value="acumulativo">🔺 Acumulativo (frase cresce)</option>
-          <option value="inversao">🔄 Inversão — leia ao contrário</option>
+      <div><div class="field-label">Tipo de desafio</div>
+        <select id="desTipo" onchange="atualizarDesafio()">
+          <option value="travlingua">👅 Trava-língua</option>
+          <option value="acumulativo">🔺 Acumulativo</option>
+          <option value="inversao">🔄 Inversão</option>
           <option value="ritmo">🥁 Ritmo forçado</option>
-          <option value="homofono">🔊 Homófonos e parônimos</option>
-          <option value="cientifico">🔬 Científico impronunciável</option>
+          <option value="homofono">🔊 Homófonos</option>
+          <option value="cientifico">🔬 Científico</option>
           <option value="caos">💀 CAOS TOTAL</option>
         </select>
       </div>
-      <div>
-        <div class="field-label">Dificuldade</div>
-        <select id="desafioDif" onchange="atualizarDesafio()">
+      <div><div class="field-label">Dificuldade</div>
+        <select id="desDif" onchange="atualizarDesafio()">
           <option value="1">🟢 Iniciante</option>
           <option value="2">🟡 Médio</option>
           <option value="3">🔴 Difícil</option>
@@ -877,76 +303,58 @@ select:focus, input[type="text"]:focus {
         </select>
       </div>
     </div>
-    <div style="margin-top:12px">
-      <div class="field-label">Tempo</div>
-      <select id="desafioTempo">
+    <div style="margin-top:12px"><div class="field-label">Tempo</div>
+      <select id="desTempo">
         <option value="30">30 segundos 🔥</option>
         <option value="45" selected>45 segundos ⚡</option>
         <option value="60">1 minuto</option>
         <option value="90">1 min 30 seg</option>
       </select>
     </div>
-    <div class="field-label" style="margin-top:14px">Texto do desafio</div>
-    <div id="desafioTexto" class="reading-text" style="font-size:1.05rem;line-height:1.9"></div>
-    <button class="btn-primary" style="margin-top:14px;background:linear-gradient(135deg,#7c3aed,#e11d48);box-shadow:0 4px 20px rgba(124,58,237,.4)" id="desafioBtn" onclick="toggleDesafio()">🔥 COMEÇAR DESAFIO</button>
+    <div class="field-label" style="margin-top:14px">Prévia</div>
+    <div id="desPrevia" class="reading-text" style="font-size:1rem;line-height:1.8;min-height:70px"></div>
+    <button class="btn btn-fire" style="margin-top:14px" onclick="iniciarDesafio()">🔥 COMEÇAR DESAFIO</button>
   </div>
-
-  <div id="memGame" style="display:none">
+  <div id="desGame" style="display:none">
     <div class="card">
       <div class="info-bar">
-        <div class="info-stat">
-          <div class="info-stat-val" id="memTimer">0:45</div>
-          <div class="info-stat-label">⏱ Tempo</div>
-        </div>
-        <div class="info-stat">
-          <div class="info-stat-val" id="desafioRodada">1</div>
-          <div class="info-stat-label">Rodada</div>
-        </div>
-        <div class="info-stat">
-          <div class="info-stat-val" id="desafioErros">0</div>
-          <div class="info-stat-label">❌ Erros</div>
-        </div>
+        <div class="info-stat"><div class="info-stat-val" id="desTimer">0:45</div><div class="info-stat-label">⏱ Tempo</div></div>
+        <div class="info-stat"><div class="info-stat-val" id="desRodada">1</div><div class="info-stat-label">Rodada</div></div>
+        <div class="info-stat"><div class="info-stat-val" id="desErros">0</div><div class="info-stat-label">❌ Erros</div></div>
       </div>
-      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="memProg" style="width:100%;background:linear-gradient(90deg,#7c3aed,#e11d48)"></div></div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="desProg" style="width:100%;background:linear-gradient(90deg,#7c3aed,#e11d48)"></div></div>
     </div>
-
     <div class="card">
-      <div class="field-label" id="desafioGameLabel">Leia em voz alta com clareza</div>
-      <div id="desafioGameTexto" class="reading-text" style="font-size:1.1rem;line-height:2;min-height:110px"></div>
-      <div id="desafioFeedback" style="margin-top:10px;display:none"></div>
+      <div class="field-label" id="desInstrucao">Leia em voz alta com clareza</div>
+      <div id="desTextoGame" class="reading-text" style="font-size:1.1rem;line-height:2;min-height:110px"></div>
+      <div id="desFeedback" style="margin-top:10px;display:none"></div>
       <div style="display:flex;gap:10px;margin-top:14px">
-        <button class="btn-primary btn-outline btn-sm" onclick="marcarErro()">❌ Errei</button>
-        <button class="btn-primary btn-sm" style="background:linear-gradient(135deg,#059669,#10b981);box-shadow:0 4px 16px rgba(16,185,129,.35)" onclick="proximoDesafio()">✅ Consegui!</button>
+        <button class="btn btn-outline btn-sm" onclick="desMarcarErro()">❌ Errei</button>
+        <button class="btn btn-green btn-sm" onclick="desProximo()">✅ Consegui!</button>
       </div>
     </div>
+    <button class="btn btn-outline btn-sm" onclick="finalizarDesafio()" style="margin-top:4px">🛑 Encerrar</button>
   </div>
-
-  <div id="memResultado" style="display:none"></div>
+  <div id="desResultado" style="display:none"></div>
 </div>
 
-<!-- ===== AUDITIVO ===== -->
+<!-- AUDITIVO -->
 <div class="panel" id="aud">
   <div class="panel-hero">
     <div class="panel-icon icon-aud">👂</div>
-    <div>
-      <div class="panel-title">Treino Auditivo</div>
-      <div class="panel-desc">20 questões. Dificuldade máxima. A palavra toca uma vez — não tem replay.</div>
-    </div>
+    <div><div class="panel-title">Treino Auditivo</div><div class="panel-desc">A palavra toca uma vez. Identifique sílabas, letras ou a palavra inteira.</div></div>
   </div>
-
   <div class="card" id="audConfig">
     <div class="config-grid">
-      <div>
-        <div class="field-label">Modo</div>
+      <div><div class="field-label">Modo</div>
         <select id="audModo">
           <option value="sil">Contar sílabas</option>
           <option value="ini">Letra inicial</option>
           <option value="fim">Letra final</option>
-          <option value="pal" selected>Identidade de palavra 💀</option>
+          <option value="pal" selected>Identidade 💀</option>
         </select>
       </div>
-      <div>
-        <div class="field-label">Dificuldade</div>
+      <div><div class="field-label">Dificuldade</div>
         <select id="audDif">
           <option value="1">🟢 Fácil</option>
           <option value="2">🟡 Médio</option>
@@ -954,73 +362,109 @@ select:focus, input[type="text"]:focus {
         </select>
       </div>
     </div>
-    <div style="margin-top:12px">
-      <div class="field-label">Número de questões</div>
+    <div style="margin-top:12px"><div class="field-label">Número de questões</div>
       <select id="audQtd">
         <option value="5">5 questões</option>
         <option value="10">10 questões</option>
         <option value="20" selected>20 questões 🔥</option>
       </select>
     </div>
-    <button class="btn-primary btn-rose" onclick="iniciarAud()" style="margin-top:14px">▶ COMEÇAR TREINO</button>
+    <button class="btn btn-rose" onclick="iniciarAud()" style="margin-top:14px">▶ COMEÇAR TREINO</button>
   </div>
-
   <div id="audGame" style="display:none">
     <div class="card">
       <div class="info-bar">
-        <div class="info-stat">
-          <div class="info-stat-val" id="audQ">1/10</div>
-          <div class="info-stat-label">Questão</div>
-        </div>
-        <div class="info-stat">
-          <div class="info-stat-val" id="audAcertos">0</div>
-          <div class="info-stat-label">Acertos</div>
-        </div>
-        <div class="info-stat">
-          <div class="info-stat-val" id="audTimer">0:00</div>
-          <div class="info-stat-label">Tempo</div>
-        </div>
+        <div class="info-stat"><div class="info-stat-val" id="audQ">1/20</div><div class="info-stat-label">Questão</div></div>
+        <div class="info-stat"><div class="info-stat-val" id="audAcertos">0</div><div class="info-stat-label">Acertos</div></div>
+        <div class="info-stat"><div class="info-stat-val" id="audTimer">0:00</div><div class="info-stat-label">Tempo</div></div>
       </div>
       <div class="progress-bar-wrap"><div class="progress-bar-fill" id="audProg" style="width:0%;background:linear-gradient(90deg,#e11d48,#f43f5e)"></div></div>
     </div>
-
     <div class="card">
       <div class="field-label" id="audPergunta">Quantas sílabas tem a palavra?</div>
       <div class="word-display" id="audWordDisplay">
         <div class="word-big" id="audPalavra">—</div>
-        <button class="btn-primary btn-outline btn-sm" style="margin-top:14px;width:auto;padding:8px 20px" onclick="repetirPalavraAud()">🔊 Repetir palavra</button>
+        <button class="btn btn-outline btn-sm" style="margin-top:14px" onclick="repetirPalavraAud()">🔊 Repetir</button>
       </div>
-      <div class="syllable-display" id="audSilabas" style="display:none"></div>
       <div id="audOpcoes" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px"></div>
       <div id="audFeedback" style="margin-top:12px;display:none"></div>
     </div>
   </div>
-
   <div id="audResultado" style="display:none"></div>
 </div>
 
 </main>
-
 <div id="toast"></div>
 
 <script>
-// ==================== DADOS ====================
+'use strict';
 
-const STOP_DADOS = {
-  1:{cats:['Nome','Animal','Cor','Fruta','País'],pals:{nome:['joão','maria','josé','pedro','ana','carlos','bruno','alice','bianca','rafael','lucas','sofia','gabriel','valentina','laura'],animal:['gato','cão','rato','pato','cobra','leão','tigre','elefante','girafa','zebra','coelho','galinha','porco','vaca','cavalo'],cor:['branco','azul','vermelho','verde','amarelo','rosa','roxo','preto','cinza','laranja','marrom','bege','dourado','prata','lilás'],fruta:['banana','maçã','laranja','morango','melancia','uva','abacaxi','pêssego','kiwi','manga','goiaba','melão','cereja','ameixa','limão'],país:['brasil','argentina','méxico','japão','alemanha','frança','itália','espanha','canadá','china','índia','austrália','rússia','turquia','grécia']}},
-  2:{cats:['Nome','Animal','Cor','Fruta','País','Cidade','Marca','Profissão'],pals:{nome:['joão','maria','josé','pedro','ana','carlos','bruno','alice','bianca','diego','rafael','fernando','isabel','jessica','lucas'],animal:['gato','cão','rato','pato','cobra','leão','tigre','elefante','girafa','zebra','coelho','galinha','porco','vaca','cavalo'],cor:['branco','azul','vermelho','verde','amarelo','rosa','roxo','preto','cinza','laranja','marrom','bege','pink','navy','gold'],fruta:['banana','maçã','laranja','morango','melancia','uva','abacaxi','pêssego','kiwi','manga','goiaba','melão','cereja','ameixa','framboesa'],país:['brasil','argentina','méxico','japão','alemanha','frança','itália','espanha','canadá','china','índia','austrália','rússia','turquia','grécia'],cidade:['barueri','sãopaulo','riodejaneiro','brasília','salvador','recife','manaus','curitiba','portoalegre','belém','goiânia','cuiabá'],marca:['bmw','ford','chevrolet','fiat','volkswagen','toyota','honda','hyundai','renault','peugeot','nissan','kia','mazda','subaru','volvo'],profissão:['barbeiro','chef','doutor','professor','engenheiro','psicólogo','advogado','contador','encanador','eletricista','pedreiro','carpinteiro','jardineiro','motorista','médico']}},
-  3:{cats:['Nome','Animal','Cor','Fruta','País','Cidade','Marca','Profissão','Verbo','Objeto','Comida','Bebida'],pals:{nome:['joão','maria','josé','pedro','ana','carlos','bruno','alice','bianca','diego'],animal:['gato','cão','cobra','leão','tigre','elefante','girafa','zebra','coelho','cavalo'],cor:['branco','azul','vermelho','verde','amarelo','rosa','roxo','preto','cinza','laranja'],fruta:['banana','maçã','laranja','morango','melancia','uva','abacaxi','kiwi','manga','goiaba'],país:['brasil','argentina','méxico','japão','alemanha','frança','itália','espanha','canadá','china'],cidade:['barueri','sãopaulo','riodejaneiro','brasília','salvador','recife','manaus','curitiba','portoalegre','belém'],marca:['bmw','ford','chevrolet','fiat','volkswagen','toyota','honda','hyundai','renault','peugeot'],profissão:['barbeiro','chef','doutor','professor','engenheiro','psicólogo','advogado','contador','encanador','eletricista'],verbo:['correr','pular','comer','beber','dormir','acordar','andar','falar','ouvir','escrever'],objeto:['mesa','cadeira','cama','porta','janela','espelho','relógio','lâmpada','tapete','sofá'],comida:['biscoito','pão','arroz','feijão','macarrão','pizza','hambúrguer','frango','salada','sopa'],bebida:['água','café','suco','leite','chá','refrigerante','vinho','cerveja','iogurte','achocolatado']}},
-  4:{cats:['Nome','Animal','Cor','Fruta','País','Cidade','Marca','Profissão','Verbo','Objeto','Comida','Bebida','Flor','Esporte','Instrumento'],pals:{nome:['joão','maria','josé','pedro','ana','carlos','bruno','alice','bianca','diego'],animal:['gato','cão','cobra','leão','tigre','elefante','girafa','zebra','coelho','cavalo'],cor:['branco','azul','vermelho','verde','amarelo','rosa','roxo','preto','cinza','laranja'],fruta:['banana','maçã','laranja','morango','melancia','uva','abacaxi','kiwi','manga','goiaba'],país:['brasil','argentina','méxico','japão','alemanha','frança','itália','espanha','canadá','china'],cidade:['barueri','sãopaulo','riodejaneiro','brasília','salvador','recife','manaus','curitiba','portoalegre','belém'],marca:['bmw','ford','chevrolet','fiat','volkswagen','toyota','honda','hyundai','renault','peugeot'],profissão:['barbeiro','chef','doutor','professor','engenheiro','psicólogo','advogado','contador','encanador','eletricista'],verbo:['correr','pular','comer','beber','dormir','acordar','andar','falar','ouvir','escrever'],objeto:['mesa','cadeira','cama','porta','janela','espelho','relógio','lâmpada','tapete','sofá'],comida:['biscoito','pão','arroz','feijão','macarrão','pizza','hambúrguer','frango','salada','sopa'],bebida:['água','café','suco','leite','chá','refrigerante','vinho','cerveja','iogurte','achocolatado'],flor:['rosa','tulipa','girassol','margarida','orquídea','lótus','azaleia','íris','peônia','gérbera'],esporte:['futebol','basquete','tênis','natação','atletismo','vôlei','surfe','boxe','judô','ginástica'],instrumento:['violão','piano','flauta','tambor','trompete','saxofone','violino','harpa','gaita','sanfona']}}
+// ── Utils ──────────────────────────────────────────────────
+function norm(s){return String(s).toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'')}
+let _tt;
+function toast(msg){const e=document.getElementById('toast');e.textContent=msg;e.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>e.classList.remove('show'),2800)}
+function mudarAba(id,el){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active')}
+function $show(id){const e=document.getElementById(id);if(e)e.style.display=''}
+function $hide(id){const e=document.getElementById(id);if(e)e.style.display='none'}
+function $set(id,v){const e=document.getElementById(id);if(e)e.textContent=v}
+function setBanner(id,msg,type){const e=document.getElementById(id);if(!e)return;e.textContent=msg;e.className='mic-banner'+(type&&type!=='ok'?' '+type:'')}
+
+// ── MicEngine ──────────────────────────────────────────────
+// Single robust class used by Fluência and Leitura
+class MicEngine{
+  constructor(onWord,onStatus){
+    this.onWord=onWord;      // fn(word,isFinal)
+    this.onStatus=onStatus;  // fn(msg,type)
+    this.active=false;this.rec=null;this._t=null;
+    this.SR=window.SpeechRecognition||window.webkitSpeechRecognition||null;
+  }
+  get ok(){return!!this.SR}
+  start(){
+    if(!this.SR){this.onStatus('❌ Use Chrome — microfone não suportado','err');return false}
+    this.active=true;this._spawn();return true;
+  }
+  stop(){
+    this.active=false;clearTimeout(this._t);
+    if(this.rec){try{this.rec.onend=null;this.rec.onerror=null;this.rec.abort()}catch(e){}this.rec=null}
+  }
+  _spawn(){
+    if(!this.active)return;
+    if(this.rec){try{this.rec.onend=null;this.rec.onerror=null;this.rec.abort()}catch(e){}this.rec=null}
+    const rec=new this.SR();
+    rec.lang='pt-BR';rec.continuous=true;rec.interimResults=true;rec.maxAlternatives=1;
+    this.rec=rec;
+    rec.onstart=()=>this.onStatus('🔴 Ouvindo — fale agora!','ok');
+    rec.onresult=(e)=>{
+      for(let i=e.resultIndex;i<e.results.length;i++){
+        const t=e.results[i][0].transcript.trim().toLowerCase();
+        const fin=e.results[i].isFinal;
+        t.split(/\s+/).forEach(w=>{const c=w.replace(/[^\wÀ-ÿ]/gi,'');if(c.length>=2)this.onWord(c,fin)});
+      }
+    };
+    rec.onerror=(ev)=>{
+      if(!this.active)return;
+      if(ev.error==='not-allowed'||ev.error==='service-not-allowed'){this.onStatus('🚫 Microfone bloqueado — libere a permissão','err');this.active=false;return}
+      if(ev.error==='no-speech'){this.onStatus('🎤 Continue falando...','warn');return}
+      this.onStatus('↺ Reconectando...','warn');
+    };
+    rec.onend=()=>{
+      if(!this.active)return;
+      this.onStatus('↺ Reconectando...','warn');
+      clearTimeout(this._t);this._t=setTimeout(()=>this._spawn(),250);
+    };
+    try{rec.start()}catch(e){clearTimeout(this._t);this._t=setTimeout(()=>this._spawn(),500)}
+  }
+}
+
+// ── DATA ───────────────────────────────────────────────────
+const STOP_DADOS={
+  1:{cats:['Nome','Animal','Cor','Fruta','País'],pals:{nome:['joao','maria','jose','pedro','ana','carlos','bruno','alice','bianca','rafael','lucas','sofia','gabriel','valentina','laura'],animal:['gato','cao','rato','pato','cobra','leao','tigre','elefante','girafa','zebra','coelho','galinha','porco','vaca','cavalo'],cor:['branco','azul','vermelho','verde','amarelo','rosa','roxo','preto','cinza','laranja','marrom','bege','dourado','prata','lilas'],fruta:['banana','maca','laranja','morango','melancia','uva','abacaxi','pessego','kiwi','manga','goiaba','melao','cereja','ameixa','limao'],pais:['brasil','argentina','mexico','japao','alemanha','franca','italia','espanha','canada','china','india','australia','russia','turquia','grecia']}},
+  2:{cats:['Nome','Animal','Cor','Fruta','País','Cidade','Marca','Profissão'],pals:{nome:['joao','maria','jose','pedro','ana','carlos','bruno','alice','bianca','diego'],animal:['gato','cao','rato','pato','cobra','leao','tigre','elefante','girafa','zebra'],cor:['branco','azul','vermelho','verde','amarelo','rosa','roxo','preto','cinza','laranja'],fruta:['banana','maca','laranja','morango','melancia','uva','abacaxi','pessego','kiwi','manga'],pais:['brasil','argentina','mexico','japao','alemanha','franca','italia','espanha','canada','china'],cidade:['barueri','saopaulo','riodejaneiro','brasilia','salvador','recife','manaus','curitiba','portoalegre','belem'],marca:['bmw','ford','chevrolet','fiat','volkswagen','toyota','honda','hyundai','renault','peugeot'],profissao:['barbeiro','chef','doutor','professor','engenheiro','psicologo','advogado','contador','encanador','eletricista']}},
+  3:{cats:['Nome','Animal','Cor','Fruta','País','Cidade','Marca','Profissão','Verbo','Objeto','Comida','Bebida'],pals:{nome:['joao','maria','jose','pedro','ana','carlos','bruno','alice','bianca','diego'],animal:['gato','cao','cobra','leao','tigre','elefante','girafa','zebra','coelho','cavalo'],cor:['branco','azul','vermelho','verde','amarelo','rosa','roxo','preto','cinza','laranja'],fruta:['banana','maca','laranja','morango','melancia','uva','abacaxi','kiwi','manga','goiaba'],pais:['brasil','argentina','mexico','japao','alemanha','franca','italia','espanha','canada','china'],cidade:['barueri','saopaulo','riodejaneiro','brasilia','salvador','recife','manaus','curitiba','portoalegre','belem'],marca:['bmw','ford','chevrolet','fiat','volkswagen','toyota','honda','hyundai','renault','peugeot'],profissao:['barbeiro','chef','doutor','professor','engenheiro','psicologo','advogado','contador','encanador','eletricista'],verbo:['correr','pular','comer','beber','dormir','acordar','andar','falar','ouvir','escrever'],objeto:['mesa','cadeira','cama','porta','janela','espelho','relogio','lampada','tapete','sofa'],comida:['biscoito','pao','arroz','feijao','macarrao','pizza','hamburguer','frango','salada','sopa'],bebida:['agua','cafe','suco','leite','cha','refrigerante','vinho','cerveja','iogurte','achocolatado']}},
+  4:{cats:['Nome','Animal','Cor','Fruta','País','Cidade','Marca','Profissão','Verbo','Objeto','Comida','Bebida','Flor','Esporte','Instrumento'],pals:{nome:['joao','maria','jose','pedro','ana','carlos','bruno','alice','bianca','diego'],animal:['gato','cao','cobra','leao','tigre','elefante','girafa','zebra','coelho','cavalo'],cor:['branco','azul','vermelho','verde','amarelo','rosa','roxo','preto','cinza','laranja'],fruta:['banana','maca','laranja','morango','melancia','uva','abacaxi','kiwi','manga','goiaba'],pais:['brasil','argentina','mexico','japao','alemanha','franca','italia','espanha','canada','china'],cidade:['barueri','saopaulo','riodejaneiro','brasilia','salvador','recife','manaus','curitiba','portoalegre','belem'],marca:['bmw','ford','chevrolet','fiat','volkswagen','toyota','honda','hyundai','renault','peugeot'],profissao:['barbeiro','chef','doutor','professor','engenheiro','psicologo','advogado','contador','encanador','eletricista'],verbo:['correr','pular','comer','beber','dormir','acordar','andar','falar','ouvir','escrever'],objeto:['mesa','cadeira','cama','porta','janela','espelho','relogio','lampada','tapete','sofa'],comida:['biscoito','pao','arroz','feijao','macarrao','pizza','hamburguer','frango','salada','sopa'],bebida:['agua','cafe','suco','leite','cha','refrigerante','vinho','cerveja','iogurte','achocolatado'],flor:['rosa','tulipa','girassol','margarida','orquidea','lotus','azaleia','iris','peonia','gerbera'],esporte:['futebol','basquete','tenis','natacao','atletismo','volei','surfe','boxe','judo','ginastica'],instrumento:['violao','piano','flauta','tambor','trompete','saxofone','violino','harpa','gaita','sanfona']}}
 };
 
-const FLU_DADOS = {
-  1:{0:['gato','cão','rato','pato','cobra'],1:['maçã','banana','laranja','morango','uva'],2:['branco','azul','vermelho','verde','amarelo'],3:['brasil','argentina','méxico','japão','canadá'],4:['barueri','sãopaulo','riodejaneiro','brasília','salvador'],5:['professor','médico','engenheiro','advogado','chef'],6:['pizza','arroz','macarrão','frango','pão'],7:['futebol','basquete','tênis','natação','vôlei']},
-  2:{0:['elefante','girafa','tigre','leão','zebra'],1:['melancia','abacaxi','pêssego','kiwi','manga'],2:['rosa','roxo','cinza','marrom','bege'],3:['tailândia','vietnã','indonésia','filipinas','malásia'],4:['florianópolis','goiânia','fortaleza','natal','teresina'],5:['cardiologista','dentista','psicólogo','fisioterapeuta','nutricionista'],6:['hambúrguer','sushi','lasanha','risoto','churrasco'],7:['atletismo','ciclismo','esqui','surfe','ginástica']},
-  3:{0:['ornitorrinco','equidna','pangolim','axolote','tardigrade'],1:['carambola','cupuaçu','pitanga','açaí','caju'],2:['turquesa','magenta','escarlate','carmesim','âmbar'],3:['azerbaijão','cazaquistão','quirguistão','tadjiquistão','uzbequistão'],4:['uberlândia','araraquara','ribeirão preto','franca','divinópolis'],5:['oftalmologista','dermatologista','gastroenterologista','pneumologista','nefrologista'],6:['ceviche','escargot','foie gras','ramen','tempura'],7:['esgrima','hipismo','polo','críquete','remo']},
-  4:{0:['quoll','numbat','tasmanian devil','potoroo','bandicoot'],1:['jabuticaba','umbu','murici','juçara','pequi'],2:['ultramarino','tumbaga','vermelhão','puce','gainsboro'],3:['timor-leste','nauru','palau','kiribati','tuvalu'],4:['governador valadares','sete lagoas','três corações','pouso alegre','varginha'],5:['fisiologista','oncologista','hepatologista','endocrinologista','reumatologista'],6:['baozi','khachapuri','injera','pierogi','pão de queijo mineiro'],7:['synchronized swimming','water polo','modern pentathlon','biathlon','luge']}
-};
-
-const LER_TXTS = {
+const LER_TXTS={
   1:'O gato dorme. O cão late. A casa é grande. O sol brilha forte hoje.',
   2:'João acordou cedo e foi à escola de bicicleta. Maria estava esperando na porta com um livro na mão.',
   3:'A biblioteca municipal oferecia uma coleção de livros fascinantes sobre história, ciência e literatura. Os frequentadores liam atentamente durante horas, absorvendo conhecimento.',
@@ -1031,843 +475,324 @@ const LER_TXTS = {
   8:'Synchroclástica vortex-inversiva desintegrando-congregam-se nos labirínticos tétanos da omnipotencialidade semântica vítrea quasiconsciência flogística reverberante hipercognoscitiva.'
 };
 
-const MEM_TEMAS = {}; // kept for compatibility
-
-// ==================== DESAFIOS EXTREMOS ====================
-
-const DESAFIOS = {
-  travlingua: {
-    1: [
-      'O rato roeu a roupa do rei de Roma.',
-      'Fui à Bahia e vi um bebê beber água.',
-      'Três tigres tristes trituram trigo.',
-      'Pedro pede para o padre parar o pato.',
-    ],
-    2: [
-      'O doce perguntou pro doce qual é o doce mais doce que o doce de batata doce.',
-      'Num ninho de mafagafos há sete mafagafinhos. Quem os desmafagafizou bom desmafagafizador será.',
-      'Sabendo que o sabiá sabia assobiar, o sabiá foi assobiar sem saber que o outro sabiá sabia assobiar melhor.',
-      'Quando digo digo, digo Diego. Quando não digo digo, não digo Diego. Digo Diogo.',
-    ],
-    3: [
-      'O tempo perguntou pro tempo quanto tempo o tempo tem. O tempo respondeu pro tempo que o tempo tem tanto tempo quanto tempo o tempo tem.',
-      'Che Guevara era um guerrilheiro que guerrilhava guerrilhando. Guerrilhou tanto que o guerrilheiro guerrilhado ficou sem guerrilha.',
-      'Fui à Finlândia e vi uma família de finlandeses falando finlandês fluidamente. Fluidez finlandesa é fascinante.',
-      'Paralelepípedo é uma palavra que o paralelepipedizador dificilmente desparalelepipedizará sem ajuda do desparalelepipedizador.',
-    ],
-    4: [
-      'O anti-constitucionalissimamente é a palavra mais longa da língua portuguesa. Pronuncie anti-constitucionalissimamente dez vezes sem errar anti-constitucionalissimamente.',
-      'Padaria, pão de ló, pamonha, pastel, pão de queijo, paçoca, pudim, pavê, panqueca, pirulito, pepino, pimenta, pitanga, pernil, panceta, pampepato, pão-de-mel.',
-      'Xerife xadrezista xingou o xará que xixi xeretava. O xará xeretão xelou o xerife xadrezista no xadrez xiita.',
-      'Frei Francolim foi a França, ficou faminto, falou francês, falhou francamente, fugiu ferido, forjou fiapos finos, fabricou frascos frágeis, fez fortuna.',
-    ]
+const DESAFIOS={
+  travlingua:{
+    1:['O rato roeu a roupa do rei de Roma.','Fui à Bahia e vi um bebê beber água.','Três tigres tristes trituram trigo.','Pedro pede para o padre parar o pato.'],
+    2:['O doce perguntou pro doce qual é o doce mais doce que o doce de batata doce.','Num ninho de mafagafos há sete mafagafinhos. Quem os desmafagafizou bom desmafagafizador será.','Quando digo digo, digo Diego. Quando não digo digo, não digo Diego. Digo Diogo.'],
+    3:['O tempo perguntou pro tempo quanto tempo o tempo tem. O tempo respondeu que o tempo tem tanto tempo quanto tempo o tempo tem.','Paralelepípedo é uma palavra que o paralelepipedizador dificilmente desparalelepipedizará sem ajuda do desparalelepipedizador.'],
+    4:['Pronuncie anti-constitucionalissimamente dez vezes sem errar anti-constitucionalissimamente.','Xerife xadrezista xingou o xará que xixi xeretava. O xará xeretão xelou o xerife xadrezista no xadrez xiita.','Frei Francolim foi a França, ficou faminto, falou francês, falhou francamente, fugiu ferido, forjou fiapos finos, fabricou frascos frágeis, fez fortuna.']
   },
-  acumulativo: {
-    1: [
-      ['O gato', 'O gato come', 'O gato come rato', 'O gato come rato todo dia'],
-      ['Ana fala', 'Ana fala muito', 'Ana fala muito bem', 'Ana fala muito bem português'],
-    ],
-    2: [
-      ['Lá vai', 'Lá vai Pedro', 'Lá vai Pedro pedindo', 'Lá vai Pedro pedindo pão', 'Lá vai Pedro pedindo pão para o padeiro', 'Lá vai Pedro pedindo pão para o padeiro português'],
-      ['Hoje eu vi', 'Hoje eu vi um pato', 'Hoje eu vi um pato pular', 'Hoje eu vi um pato pular no poço', 'Hoje eu vi um pato pular no poço fundo', 'Hoje eu vi um pato pular no poço fundo do quintal do Paulo'],
-    ],
-    3: [
-      ['Sete', 'Sete sábios', 'Sete sábios sérios', 'Sete sábios sérios sabem', 'Sete sábios sérios sabem sete', 'Sete sábios sérios sabem sete saberes', 'Sete sábios sérios sabem sete saberes supersabidos'],
-      ['Corre', 'Corre coelho', 'Corre coelho correndo', 'Corre coelho correndo célere', 'Corre coelho correndo célere com', 'Corre coelho correndo célere com cinco', 'Corre coelho correndo célere com cinco cenouras', 'Corre coelho correndo célere com cinco cenouras crocantes'],
-    ],
-    4: [
-      ['Anti', 'Anti-constitucional', 'Anti-constitucionalíssimo', 'Anti-constitucionalíssimamente', 'Anti-constitucionalíssimamente falando', 'Anti-constitucionalíssimamente falando sobre', 'Anti-constitucionalíssimamente falando sobre inconstitucionalidades', 'Anti-constitucionalíssimamente falando sobre inconstitucionalidades antidemocráticas'],
-      ['Psico', 'Psicóloga', 'Psicóloga pronuncia', 'Psicóloga pronuncia pneumonia', 'Psicóloga pronuncia pneumonia pterodáctilo', 'Psicóloga pronuncia pneumonia pterodáctilo pseudociência', 'Psicóloga pronuncia pneumonia pterodáctilo pseudociência psicossomático', 'Psicóloga pronuncia pneumonia pterodáctilo pseudociência psicossomático pterigóide'],
-    ]
+  acumulativo:{
+    1:[['O gato','O gato come','O gato come rato','O gato come rato todo dia'],['Ana fala','Ana fala muito','Ana fala muito bem português']],
+    2:[['Lá vai','Lá vai Pedro','Lá vai Pedro pedindo pão','Lá vai Pedro pedindo pão para o padeiro português']],
+    3:[['Sete','Sete sábios sérios','Sete sábios sérios sabem sete saberes','Sete sábios sérios sabem sete saberes supersabidos']],
+    4:[['Anti','Anti-constitucional','Anti-constitucionalíssimo','Anti-constitucionalíssimamente falando sobre inconstitucionalidades antidemocráticas']]
   },
-  inversao: {
-    1: ['amor → Roma', 'cama → amac', 'radar → radar', 'amas → sama'],
-    2: ['Leia esta frase de trás para frente: "a grama é verde e a vida é bela"', 'Leia de trás pra frente: "o sol nasce todo dia para iluminar"'],
-    3: [
-      'Soletree ao contrário: PNEUMONIA → A-I-N-O-M-U-E-N-P',
-      'Soletree ao contrário: PSICOLOGIA → A-I-G-O-L-O-C-I-S-P',
-      'Soletree ao contrário: CONSTITUIÇÃO → O-Ã-C-I-U-T-I-T-S-N-O-C',
-    ],
-    4: [
-      'Leia cada palavra desta frase ao contrário: "O sabiá cantava na copa da árvore verde" → O áibas avatnac an apoc ad erovra edrev',
-      'Soletree ao contrário sem parar: ANTICONSTITUCIONALISSIMAMENTE',
-      'Leia ao contrário silabando: "A borboleta borboleteou borboletando" → A / a-te-le-bor / uoe-te-le-bor / odna-te-le-bor',
-    ]
+  inversao:{
+    1:['Soletree ao contrário: AMOR → R-O-M-A','Soletree ao contrário: CASA → A-S-A-C','Soletree ao contrário: PATO → O-T-A-P'],
+    2:['Soletree ao contrário: PNEUMONIA → A-I-N-O-M-U-E-N-P','Soletree ao contrário: PSICOLOGIA → A-I-G-O-L-O-C-I-S-P'],
+    3:['Soletree ao contrário: CONSTITUICAO → O-A-C-I-U-T-I-T-S-N-O-C','Leia cada palavra ao contrário: "O sabiá cantava na copa" → O áibas avatnac an apoc'],
+    4:['Soletree ao contrário sem parar: ANTICONSTITUCIONALISSIMAMENTE','Leia ao contrário silabando: "A borboleta borboleteou borboletando"']
   },
-  ritmo: {
-    1: [
-      'Bata na mesa no ★ e fale: "Um ★ dois ★ três ★ quatro ★ cinco" (bata no ★)',
-      'Fale em 4 tempos marcados: "GA — TO — CO — ME" pausando igual em cada sílaba',
-    ],
-    2: [
-      'Fale acelerando a cada repetição (×3): "Trigo, tigre, três. Trigo, tigre, três. TRIGO-TIGRE-TRÊS!"',
-      'Fale uma sílaba por segundo batendo palma: "PA-RA-LE-LE-PÍ-PE-DO" (7 palmas, 7 sílabas, 7 segundos)',
-      'Sussurre as consoantes e grite as vogais: "g-A-t-O c-O-m-E r-A-t-O"',
-    ],
-    3: [
-      'Alterne grave/agudo a cada palavra: "O(↓) GATO(↑) come(↓) RATO(↑) todo(↓) DIA(↑)"',
-      'Fale 3x mais rápido a cada rodada: "O rato roeu a roupa" → "Oratoroeuaroupa" → "ORATOROEUAROUPADAREIRAROMANA"',
-      'Fale batendo os pés alternados: "ES-quer-DO DI-rei-TO ES-quer-DO" — sincronize pé e sílaba',
-    ],
-    4: [
-      'MODO DISCO: cada sílaba é uma batida. Fale "AN-TI-CONS-TI-TU-CI-O-NAL-ÍS-SI-MA-MEN-TE" como uma música eletrônica de 140 BPM',
-      'Fale a frase inteira somente com as vogais primeiro, depois somente com as consoantes: "A extraordinária fenomenologia transcendental" → "A E-A-O-I-Á-I-A E-O-E-O-O-I-A A-A-E-E-A" depois "X-TR-RD-N-R-F-N-M-N-L-G-TR-NS-C-ND-NT-L"',
-    ]
+  ritmo:{
+    1:['Fale em 4 tempos marcados batendo palma: "GA — TO — CO — ME"','Fale acelerando 3×: "Trigo, tigre, três" → cada vez mais rápido'],
+    2:['Fale uma sílaba por segundo: PA-RA-LE-LE-PÍ-PE-DO (7 palmas, 7 sílabas, 7 segundos)','Sussurre consoantes, grite vogais: "g-A-t-O c-O-m-E r-A-t-O"'],
+    3:['Alterne grave/agudo: "O(↓) GATO(↑) come(↓) RATO(↑) todo(↓) DIA(↑)"','Fale batendo os pés alternados: "ES-quer-DO DI-rei-TO" — pé e sílaba sincronizados'],
+    4:['MODO DISCO 140BPM: cada sílaba é uma batida → "AN-TI-CONS-TI-TU-CI-O-NAL-ÍS-SI-MA-MEN-TE"','Fale a frase só com vogais, depois só com consoantes: "A extraordinária fenomenologia transcendental"']
   },
-  homofono: {
-    1: [
-      'Diferença entre: CELA × SELA × SELLA. Use cada uma em uma frase.',
-      'Diferença entre: CONSERTO × CONCERTO. Fale: "O conserto do piano estava no concerto"',
-      'Diferença entre: ACENTO × ASSENTO. "O acento do ó está no assento da cadeira"',
-    ],
-    2: [
-      'Fale 5x sem errar: "O caçador caçou a caça na caça do castelo enquanto o casador casava na casa"',
-      'Leia com pronúncia diferente: SEXO × SECO × CEGO × CECO × SEXTO × SEXTETO',
-      'Diferença: COMPRIMENTO × CUMPRIMENTO × COMPRIMENTAR × CUMPRIMENTAR. Use todas em sequência.',
-    ],
-    3: [
-      'Fale distintos: "Mal o mau homem malhava o malho, a malha mal o mal o malfadado malhou"',
-      'Leia em sequência sem confundir: emigrar/imigrar, eminente/iminente, emergir/imergir, eminent/iminente, emigração/imigração',
-      'Pronúncia: SESSÃO × SECÇÃO × SEÇÃO × CESSÃO × CESSAÇÃO — todas diferentes, use em frases',
-    ],
-    4: [
-      'Fale sem gaguejar: "O comprimento do cumprimento foi comprimentado com cumprimento de comprimento incomensurável"',
-      'Leia: "O iminente eminente imigrou emigrando, imergindo emergindo, infligindo inflingindo a aflição inflação"',
-      'Diferença de pronúncia BR vs PT: ÔNIBUS/AUTOCARRO, GELADEIRA/FRIGORÍFICO, BANHEIRO/CASA-DE-BANHO — explique a diferença prosódica',
-    ]
+  homofono:{
+    1:['Diferença: CONSERTO × CONCERTO → "O conserto do piano estava no concerto"','Diferença: ACENTO × ASSENTO → "O acento do ó está no assento da cadeira"'],
+    2:['5× sem errar: "O caçador caçou a caça na caça do castelo enquanto o casador casava na casa"','Use em sequência: COMPRIMENTO × CUMPRIMENTO × COMPRIMENTAR × CUMPRIMENTAR'],
+    3:['Fale distintos: "Mal o mau homem malhava o malho, a malha mal o mal o malfadado malhou"','Pronúncia: SESSÃO × SECÇÃO × SEÇÃO × CESSÃO × CESSAÇÃO — todas diferentes'],
+    4:['Sem gaguejar: "O comprimento do cumprimento foi comprimentado com cumprimento de comprimento incomensurável"','Leia: "O iminente eminente imigrou emigrando, imergindo emergindo, infligindo a aflição inflação"']
   },
-  cientifico: {
-    1: [
-      'Pneumonia, diarreia, reumatismo, hemorragia, oftalmologista.',
-      'Miocárdio, neurônio, epitélio, ribossomo, mitocôndria.',
-    ],
-    2: [
-      'Esternocleidomastoideo — o músculo do pescoço. Repita 3 vezes.',
-      'Fale: Pneumotórax hipertensivo, hemopneumotórax, pneumomediastino, pleurodese.',
-      'Parasparasympathomimetics — fármaco. Fale: propiltiouracil, hidroxicloroquina, azatioprina.',
-    ],
-    3: [
-      'Leia em voz alta: "A pneumoultramicroscopicossilicovulcanoconióse é uma doença pulmonar causada pela inalação de cinzas vulcânicas ultramicroscópicas"',
-      'Fale sem travar: Esternocleidomastoideo, Laringotraqueobronquite, Hipopituitarismo, Retroperitoneal, Parafoliculotireoidiano.',
-      'Leia: "O eletroencefalograma eletrocardiográfico eletroestimulou o eletromiograma eletrocutâneo do eletroanalista"',
-    ],
-    4: [
-      'Leia 3x seguidas: "Pneumonoultramicroscopicsilicovolcanoconiosis é considerada a maior palavra do idioma inglês, enquanto pneumoultramicroscopicossilicovulcanoconióse é sua equivalente lusófona"',
-      'Soletree e depois leia: Desoxirribonucleico — D-E-S-O-X-I-R-R-I-B-O-N-U-C-L-E-I-C-O. Agora: ácido desoxirribonucleico polimerase.',
-      'Leia o nome completo do IUPAC da tiamina: 2-[3-[(4-amino-2-metilpirimidin-5-il)metil]-4-metil-5-(2-fosfoonoxietil)tiazol-3-io] — tente não rir.',
-    ]
+  cientifico:{
+    1:['Pneumonia, diarreia, reumatismo, hemorragia, oftalmologista.','Miocárdio, neurônio, epitélio, ribossomo, mitocôndria.'],
+    2:['Esternocleidomastoideo — repita 3 vezes.','Pneumotórax hipertensivo, hemopneumotórax, pneumomediastino, pleurodese.'],
+    3:['A pneumoultramicroscopicossilicovulcanoconióse é uma doença pulmonar causada pela inalação de cinzas vulcânicas ultramicroscópicas.','Esternocleidomastoideo, Laringotraqueobronquite, Hipopituitarismo, Retroperitoneal, Parafoliculotireoidiano.'],
+    4:['Leia 3×: "Pneumonoultramicroscopicsilicovolcanoconiosis é a maior palavra do inglês; pneumoultramicroscopicossilicovulcanoconióse é sua equivalente lusófona"','Soletree e leia: ácido desoxirribonucleico polimerase — D-E-S-O-X-I-R-R-I-B-O-N-U-C-L-E-I-C-O']
   },
-  caos: {
-    1: [
-      'Leia em voz alta o mais rápido possível: "zumbi, zíper, zinco, zodíaco, zoológico, zombar, zunir, zarpar, zigzague, zênite"',
-    ],
-    2: [
-      'Leia sem parar e sem engolir sílaba: "Seis zigzagues de zíper, seis zangões zunindo, seis zebras no zoológico zurzindo no zelador"',
-      'Alterne grave/agudo e rápido/lento: "PNEUMO·ultra·MICRO·scópico·SILICO·vulcano·CONIÓSE"',
-    ],
-    3: [
-      'Leia esta frase 3x seguidas sem errar uma sílaba: "A fenomenologia da existência transcendental perpassa os dedalíferos caminhos da ontologia heideggeriana, reverberando através dos estratos diafanicamente estruturados da consciência coletiva"',
-      'Leia alternando pt-BR e pt-PT: "O ônibus (autocarro) parou (parou) no banheiro (casa-de-banho) do aeroporto (aeroporto) para reabastecer (abastecer)"',
-    ],
-    4: [
-      'DESAFIO FINAL: Leia tudo em 10 segundos → "Pneumoultramicroscopicossilicovulcanoconióse anticonstitucionalíssimamente desoxirribonucleico esternocleidomastoideo laringotraqueobronquite"',
-      'Cante em ritmo de rap: "AN-TI-CONS-TI-TU-CI-O-NAL, PNEU-MO-UL-TRA, DES-O-XI-RRI-BO, ES-TER-NO-CLEI-DO, PA-RA-LE-LE-PÍ-PE-DO, IN-CONS-TI-TU-CI-O-NAL-MEN-TE" — 16 tempos, sem parar.',
-      'Leia ao contrário silabando, em ritmo de metrônomo a 100bpm: "A extraordinária fenomenologia transcendental da linguística fonoaudiológica brasileira contemporânea"',
-    ]
+  caos:{
+    1:['Rápido: "zumbi, zíper, zinco, zodíaco, zoológico, zombar, zunir, zarpar, zigzague, zênite"'],
+    2:['Sem parar: "Seis zigzagues de zíper, seis zangões zunindo, seis zebras no zoológico zurzindo no zelador"'],
+    3:['3× sem errar: "A fenomenologia da existência transcendental perpassa os dedalíferos caminhos da ontologia heideggeriana, reverberando através dos estratos diafanicamente estruturados da consciência coletiva"'],
+    4:['10 segundos — leia TUDO: "Pneumoultramicroscopicossilicovulcanoconióse anticonstitucionalíssimamente desoxirribonucleico esternocleidomastoideo laringotraqueobronquite"','RAP 16 tempos: "AN-TI-CONS-TI-TU-CI-O-NAL, PNEU-MO-UL-TRA, DES-O-XI-RRI-BO, ES-TER-NO-CLEI-DO, PA-RA-LE-LE-PÍ-PE-DO"']
   }
 };
 
-// ==================== DESAFIO VARS ====================
-
-let desafioAtivo = false, desafioTimerInt, desafioSecs, desafioErros, desafioRodadaAtual, desafioLista, desafioTempoTotal;
-
-function getDesafioLista() {
-  const tipo = document.getElementById('desafioTipo').value;
-  const dif = parseInt(document.getElementById('desafioDif').value);
-  const dados = DESAFIOS[tipo];
-  if (!dados) return [];
-  // Get texts for this difficulty (fallback to lower)
-  let lista = dados[dif] || dados[3] || dados[2] || dados[1] || [];
-  // For acumulativo, flatten the steps into individual strings
-  if (tipo === 'acumulativo') {
-    // pick one sequence randomly and use its steps
-    const seq = lista[Math.floor(Math.random()*lista.length)];
-    return Array.isArray(seq) ? seq : [seq];
-  }
-  return [...lista].sort(() => Math.random() - .5);
-}
-
-function atualizarDesafio() {
-  const tipo = document.getElementById('desafioTipo').value;
-  const dif = parseInt(document.getElementById('desafioDif').value);
-  const dados = DESAFIOS[tipo];
-  let lista = dados[dif] || dados[3] || dados[2] || dados[1] || [];
-  let exemplo = lista[0];
-  if (tipo === 'acumulativo') {
-    const seq = Array.isArray(lista[0]) ? lista[0] : lista;
-    exemplo = seq.join(' → ');
-  }
-  document.getElementById('desafioTexto').textContent = typeof exemplo === 'string' ? exemplo : exemplo[0];
-}
-
-function toggleDesafio() {
-  if (desafioAtivo) { finalizarDesafio(); return; }
-  iniciarDesafio();
-}
-
-function iniciarDesafio() {
-  desafioLista = getDesafioLista();
-  if (!desafioLista.length) { toast('Sem desafios para esta seleção'); return; }
-
-  desafioAtivo = true;
-  desafioErros = 0;
-  desafioRodadaAtual = 0;
-  desafioTempoTotal = parseInt(document.getElementById('desafioTempo').value);
-  desafioSecs = desafioTempoTotal;
-
-  document.getElementById('memConfig').style.display = 'none';
-  document.getElementById('memGame').style.display = '';
-  document.getElementById('memResultado').style.display = 'none';
-  document.getElementById('desafioErros').textContent = '0';
-  document.getElementById('desafioRodada').textContent = '1';
-  document.getElementById('memTimer').style.color = '';
-  document.getElementById('memProg').style.width = '100%';
-
-  clearInterval(desafioTimerInt);
-  desafioTimerInt = setInterval(() => {
-    desafioSecs--;
-    const m = Math.floor(desafioSecs/60), s = desafioSecs%60;
-    document.getElementById('memTimer').textContent = m+':'+(s<10?'0':'')+s;
-    document.getElementById('memProg').style.width = (desafioSecs/desafioTempoTotal*100)+'%';
-    if (desafioSecs <= 10) document.getElementById('memTimer').style.color = 'var(--red)';
-    if (desafioSecs <= 0) { clearInterval(desafioTimerInt); finalizarDesafio(true); }
-  }, 1000);
-
-  mostrarDesafioAtual();
-  toast('🔥 Desafio iniciado! Leia em voz alta.');
-}
-
-function mostrarDesafioAtual() {
-  const texto = desafioLista[desafioRodadaAtual % desafioLista.length];
-  const tipo = document.getElementById('desafioTipo').value;
-  const labels = {
-    travlingua: '👅 Repita 3x sem errar — clareza e velocidade',
-    acumulativo: '🔺 Leia a sequência acumulando uma palavra por vez',
-    inversao: '🔄 Leia ao contrário conforme indicado',
-    ritmo: '🥁 Siga o ritmo indicado com precisão',
-    homofono: '🔊 Pronuncie com distinção clara cada palavra',
-    cientifico: '🔬 Leia com pronúncia técnica correta',
-    caos: '💀 SOBREVIVA se conseguir'
-  };
-  document.getElementById('desafioGameLabel').textContent = labels[tipo] || 'Leia em voz alta';
-  document.getElementById('desafioGameTexto').textContent = texto;
-  document.getElementById('desafioFeedback').style.display = 'none';
-  document.getElementById('desafioRodada').textContent = desafioRodadaAtual + 1;
-}
-
-function marcarErro() {
-  desafioErros++;
-  document.getElementById('desafioErros').textContent = desafioErros;
-  const fb = document.getElementById('desafioFeedback');
-  fb.innerHTML = `<div class="result-row bad">❌ Erro marcado! Tente de novo com calma.</div>`;
-  fb.style.display = '';
-  setTimeout(() => { fb.style.display = 'none'; }, 1500);
-  toast('❌ +1 erro');
-}
-
-function proximoDesafio() {
-  desafioRodadaAtual++;
-  const fb = document.getElementById('desafioFeedback');
-  fb.innerHTML = `<div class="result-row ok">✅ Ótimo! Próximo desafio.</div>`;
-  fb.style.display = '';
-  setTimeout(() => {
-    fb.style.display = 'none';
-    mostrarDesafioAtual();
-  }, 600);
-  toast('✅ Perfeito!');
-}
-
-function finalizarDesafio(timeout = false) {
-  desafioAtivo = false;
-  clearInterval(desafioTimerInt);
-  document.getElementById('memGame').style.display = 'none';
-
-  const completados = desafioRodadaAtual;
-  const tempoUsado = desafioTempoTotal - desafioSecs;
-  const m = Math.floor(tempoUsado/60), s = tempoUsado%60;
-  // Score: completados * 10 - erros * 5, min 0
-  const score = Math.max(0, completados * 10 - desafioErros * 5);
-  const nota = score >= 50 ? 'S' : score >= 35 ? 'A' : score >= 20 ? 'B' : score >= 10 ? 'C' : 'D';
-  const msg = nota === 'S' ? 'Fonoaudiologista nato! 🏆' : nota === 'A' ? 'Excelente dicção! 💪' : nota === 'B' ? 'Bom treino! 👏' : nota === 'C' ? 'Precisa praticar mais 📚' : 'Não desista! 💡';
-  const timeoutMsg = timeout ? `<div style="color:var(--red);font-weight:700;margin-bottom:8px">⏰ TEMPO ESGOTADO!</div>` : '';
-
-  document.getElementById('memResultado').innerHTML = `
-    <div class="score-card">
-      ${timeoutMsg}
-      <div class="grade-badge grade-${nota}">${nota}</div>
-      <div class="score-big">${score}</div>
-      <div class="score-label">pontos · ${msg}</div>
-      <div class="stats-row" style="margin-top:16px">
-        <div class="stat-box"><div class="stat-val">${completados}</div><div class="stat-lbl">Completados</div></div>
-        <div class="stat-box"><div class="stat-val">${desafioErros}</div><div class="stat-lbl">Erros</div></div>
-        <div class="stat-box"><div class="stat-val">${m+':'+(s<10?'0':'')+s}</div><div class="stat-lbl">Tempo</div></div>
-      </div>
-      <button class="btn-primary" style="margin-top:16px;background:linear-gradient(135deg,#7c3aed,#e11d48)" onclick="iniciarDesafio()">↺ Tentar novamente</button>
-      <button class="btn-primary btn-outline" onclick="document.getElementById('memConfig').style.display='';document.getElementById('memResultado').style.display='none'" style="margin-top:8px">⚙️ Configurar</button>
-    </div>
-  `;
-  document.getElementById('memResultado').style.display = '';
-  toast(`🔥 Nota ${nota} — ${score} pontos!`);
-}
-
-// ==================== AUDITIVO ====================
-
-const AUD_PALAVRAS = {
+const AUD_PALAVRAS={
   1:[{p:'gato',s:2,i:'g',f:'o'},{p:'casa',s:2,i:'c',f:'a'},{p:'pato',s:2,i:'p',f:'o'},{p:'bolo',s:2,i:'b',f:'o'},{p:'cama',s:2,i:'c',f:'a'},{p:'dedo',s:2,i:'d',f:'o'},{p:'fada',s:2,i:'f',f:'a'},{p:'lata',s:2,i:'l',f:'a'},{p:'medo',s:2,i:'m',f:'o'},{p:'nata',s:2,i:'n',f:'a'},{p:'rato',s:2,i:'r',f:'o'},{p:'suco',s:2,i:'s',f:'o'},{p:'tapa',s:2,i:'t',f:'a'},{p:'vaca',s:2,i:'v',f:'a'},{p:'xale',s:2,i:'x',f:'e'}],
   2:[{p:'banana',s:3,i:'b',f:'a'},{p:'cavalo',s:3,i:'c',f:'o'},{p:'janela',s:3,i:'j',f:'a'},{p:'tomate',s:3,i:'t',f:'e'},{p:'caçula',s:3,i:'c',f:'a'},{p:'palito',s:3,i:'p',f:'o'},{p:'melão',s:2,i:'m',f:'o'},{p:'gavião',s:3,i:'g',f:'o'},{p:'bordado',s:3,i:'b',f:'o'},{p:'garoto',s:3,i:'g',f:'o'},{p:'tapete',s:3,i:'t',f:'e'},{p:'cabelo',s:3,i:'c',f:'o'},{p:'laranja',s:3,i:'l',f:'a'},{p:'macaco',s:3,i:'m',f:'o'},{p:'sapato',s:3,i:'s',f:'o'}],
   3:[{p:'elefante',s:4,i:'e',f:'e'},{p:'macarrão',s:3,i:'m',f:'o'},{p:'biblioteca',s:5,i:'b',f:'a'},{p:'computador',s:4,i:'c',f:'r'},{p:'chocolate',s:4,i:'c',f:'e'},{p:'refrigerante',s:5,i:'r',f:'e'},{p:'extraordinário',s:7,i:'e',f:'o'},{p:'televisão',s:4,i:'t',f:'o'},{p:'fotografia',s:5,i:'f',f:'a'},{p:'arquitetura',s:5,i:'a',f:'a'},{p:'comunicação',s:5,i:'c',f:'o'},{p:'psicologia',s:5,i:'p',f:'a'},{p:'universidade',s:6,i:'u',f:'e'},{p:'administração',s:6,i:'a',f:'o'},{p:'responsabilidade',s:7,i:'r',f:'e'}]
 };
 
-// ==================== UTILS ====================
-
-let _toast;
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(_toast);
-  _toast = setTimeout(() => t.classList.remove('show'), 2800);
-}
-
-function mudarAba(id, el) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-}
-
-// ==================== STOP ====================
-
-let stopTimerInterval, stopSecsTotal, stopSecsLeft;
-
-function iniciarStop() {
-  const dif = document.getElementById('stopDif').value;
-  const dados = STOP_DADOS[dif];
-  const ltrs = 'ABCDEFGIJLMNOPQRSTUVXZ';
-  const letra = ltrs[Math.floor(Math.random() * ltrs.length)];
-  const tempo = parseInt(document.getElementById('stopTempo').value);
-
-  stopSecsTotal = tempo || 9999;
-  stopSecsLeft = stopSecsTotal;
-
-  document.getElementById('stopLetra').textContent = letra;
-  document.getElementById('stopLetraRef').textContent = letra;
-  document.getElementById('stopConfig').style.display = 'none';
-  document.getElementById('stopGame').style.display = '';
-  document.getElementById('stopResultado').style.display = 'none';
+// ── STOP ──────────────────────────────────────────────────
+let stopT,stopTotal,stopLeft;
+function iniciarStop(){
+  const dif=document.getElementById('stopDif').value;
+  const dados=STOP_DADOS[dif];
+  const ltrs='ABCDEFGIJLMNOPQRSTUVXZ';
+  const letra=ltrs[Math.floor(Math.random()*ltrs.length)];
+  const tempo=parseInt(document.getElementById('stopTempo').value);
+  stopTotal=tempo||99999;stopLeft=stopTotal;
+  $set('stopLetra',letra);$set('stopLetraRef',letra);
+  $hide('stopConfig');$show('stopGame');$hide('stopResultado');
   document.getElementById('stopTimer').classList.remove('urgent');
-
-  const form = document.getElementById('stopForm');
-  form.innerHTML = '';
-  dados.cats.forEach((cat, i) => {
-    const d = document.createElement('div');
-    d.className = 'stop-field';
-    d.innerHTML = `<div class="stop-field-label">${cat}</div><input type="text" id="si${i}" placeholder="${letra}..." data-cat="${normStr(cat)}">`;
+  const form=document.getElementById('stopForm');form.innerHTML='';
+  dados.cats.forEach((cat,i)=>{
+    const d=document.createElement('div');d.className='stop-field';
+    d.innerHTML=`<div class="stop-field-label">${cat}</div><input type="text" id="si${i}" placeholder="${letra}..." data-cat="${norm(cat)}">`;
     form.appendChild(d);
   });
   document.getElementById('si0').focus();
-
-  clearInterval(stopTimerInterval);
-  if (tempo > 0) {
-    stopTimerInterval = setInterval(() => {
-      stopSecsLeft--;
-      const m = Math.floor(stopSecsLeft/60);
-      const s = stopSecsLeft%60;
-      document.getElementById('stopTimer').textContent = m+':'+(s<10?'0':'')+s;
-      const pct = (stopSecsLeft/stopSecsTotal)*100;
-      document.getElementById('stopProg').style.width = pct+'%';
-      if (stopSecsLeft<=15) document.getElementById('stopTimer').classList.add('urgent');
-      if (stopSecsLeft<=0) { clearInterval(stopTimerInterval); finalizarStop(); }
-    }, 1000);
-  } else {
-    document.getElementById('stopTimer').textContent = '∞';
-  }
+  clearInterval(stopT);
+  if(tempo>0){
+    stopT=setInterval(()=>{
+      stopLeft--;
+      const m=Math.floor(stopLeft/60),s=stopLeft%60;
+      $set('stopTimer',m+':'+(s<10?'0':'')+s);
+      document.getElementById('stopProg').style.width=(stopLeft/stopTotal*100)+'%';
+      if(stopLeft<=15)document.getElementById('stopTimer').classList.add('urgent');
+      if(stopLeft<=0){clearInterval(stopT);finalizarStop();}
+    },1000);
+  }else{$set('stopTimer','∞')}
 }
-
-function normStr(s) {
-  return s.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'');
-}
-
-function finalizarStop() {
-  clearInterval(stopTimerInterval);
-  const dif = document.getElementById('stopDif').value;
-  const dados = STOP_DADOS[dif];
-  const letra = document.getElementById('stopLetra').textContent.toLowerCase();
-
-  document.getElementById('stopGame').style.display = 'none';
-  document.getElementById('stopConfig').style.display = 'none';
-
-  let pts = 0, html = '<div style="margin-bottom:16px">';
-  const inputs = document.querySelectorAll('#stopForm input');
-  inputs.forEach((inp, i) => {
-    const catKey = inp.getAttribute('data-cat');
-    const val = normStr(inp.value);
-    // Find best matching key in pals — exact match first, then starts-with
-    const palKeys = Object.keys(dados.pals);
-    const matchKey = palKeys.find(k => normStr(k) === catKey)
-                  || palKeys.find(k => normStr(k).startsWith(catKey.slice(0,4)))
-                  || palKeys.find(k => catKey.startsWith(normStr(k).slice(0,4)));
-    const palList = matchKey ? dados.pals[matchKey] : [];
-    // Valid if: non-empty, starts with the round letter, AND is in the word list (or generous: just starts with letter)
-    const startsOk = val.length >= 2 && val[0] === normStr(letra)[0];
-    const inList = palList.some(p => normStr(p) === val);
-    const ok = startsOk && inList;
-    pts += ok ? 10 : 0;
-    html += `<div class="result-row ${ok?'ok':'bad'}">
-      <span class="result-icon">${ok?'✅':'❌'}</span>
-      <span class="result-cat">${inp.previousElementSibling.textContent}</span>
-      <span class="result-val">${inp.value||'—'}</span>
-    </div>`;
+function finalizarStop(){
+  clearInterval(stopT);
+  const dif=document.getElementById('stopDif').value;
+  const dados=STOP_DADOS[dif];
+  const letra=norm(document.getElementById('stopLetra').textContent)[0];
+  $hide('stopGame');$hide('stopConfig');
+  let pts=0,html='<div style="margin-bottom:16px">';
+  document.querySelectorAll('#stopForm input').forEach(inp=>{
+    const catKey=inp.getAttribute('data-cat');
+    const val=norm(inp.value);
+    const palKeys=Object.keys(dados.pals);
+    const mk=palKeys.find(k=>norm(k)===catKey)||palKeys.find(k=>norm(k).startsWith(catKey.slice(0,5)))||palKeys.find(k=>catKey.startsWith(norm(k).slice(0,5)));
+    const lista=mk?dados.pals[mk]:[];
+    const ok=val.length>=1&&val[0]===letra&&lista.some(p=>norm(p)===val);
+    pts+=ok?10:0;
+    html+=`<div class="result-row ${ok?'ok':'bad'}"><span style="font-size:1.2rem">${ok?'✅':'❌'}</span><span class="result-cat">${inp.previousElementSibling.textContent}</span><span class="result-val">${inp.value||'—'}</span></div>`;
   });
-  html += '</div>';
-
-  const max = dados.cats.length * 10;
-  const pct = Math.round((pts/max)*100);
-  const grade = pct>=100?'S':pct>=90?'A':pct>=75?'B':pct>=50?'C':'D';
-  const msg = grade==='S'?'Perfeito! 🔥':grade==='A'?'Excelente! 💪':grade==='B'?'Muito bom! 👏':grade==='C'?'Continue praticando 📚':'Tente novamente 💡';
-
-  document.getElementById('stopResultado').innerHTML = `
-    <div class="score-card">
-      <div class="grade-badge grade-${grade}">${grade}</div>
-      <div class="score-big">${pts}/${max}</div>
-      <div class="score-label">${pct}% de acerto · ${msg}</div>
-      ${html}
-      <button class="btn-primary" onclick="iniciarStop()" style="margin-top:16px">↺ Jogar novamente</button>
-      <button class="btn-primary btn-outline" onclick="document.getElementById('stopConfig').style.display='';document.getElementById('stopResultado').style.display='none'" style="margin-top:8px">⚙️ Configurar</button>
-    </div>
-  `;
-  document.getElementById('stopResultado').style.display = '';
-  toast(`✅ ${pts} pontos — Nota ${grade}!`);
+  html+='</div>';
+  const max=dados.cats.length*10,pct=Math.round(pts/max*100);
+  const g=pct>=100?'S':pct>=90?'A':pct>=75?'B':pct>=50?'C':'D';
+  const msg={S:'Perfeito! 🔥',A:'Excelente! 💪',B:'Muito bom! 👏',C:'Continue praticando 📚',D:'Tente novamente 💡'}[g];
+  document.getElementById('stopResultado').innerHTML=`<div class="score-card"><div class="grade-badge grade-${g}">${g}</div><div class="score-big">${pts}/${max}</div><div class="score-label">${pct}% · ${msg}</div>${html}<button class="btn btn-purple" onclick="iniciarStop()" style="margin-top:16px">↺ Jogar novamente</button><button class="btn btn-outline" onclick="$hide('stopResultado');$show('stopConfig')" style="margin-top:8px">⚙️ Configurar</button></div>`;
+  $show('stopResultado');toast(`✅ ${pts} pontos — Nota ${g}!`);
 }
 
-// ==================== FLUÊNCIA ====================
-
-let fluPlaying = false, fluTimerInt, fluRecObj, fluSecsLeft, fluSecsTotal;
-
-function toggleFlu() {
-  if (fluPlaying) { finalizarFlu(); return; }
-  iniciarFlu();
-}
-
-function setFluStatus(msg, cor) {
-  const el = document.getElementById('fluStatus');
-  if (el) { el.textContent = msg; el.style.color = cor||'var(--muted)'; }
-}
-
-function iniciarFlu() {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) { toast('❌ Use Chrome — Firefox não suporta microfone'); return; }
-
-  fluPlaying = true;
-  fluSecsTotal = parseInt(document.getElementById('fluTempo').value);
-  fluSecsLeft = fluSecsTotal;
-  const dif = parseInt(document.getElementById('fluDif').value);
-  const cat = parseInt(document.getElementById('fluCat').value);
-  // Build allowed word set for this category (all difficulties)
-  const allowed = new Set();
-  [1,2,3,4].forEach(d => { if (FLU_DADOS[d] && FLU_DADOS[d][cat]) FLU_DADOS[d][cat].forEach(w => allowed.add(normStr(w))); });
-
-  document.getElementById('fluBtn').textContent = '🛑 Parar';
-  document.getElementById('fluConfig').style.display = 'none';
-  document.getElementById('fluAtivo').style.display = '';
-  document.getElementById('fluChips').innerHTML = '';
-  document.getElementById('fluCount').textContent = '0';
-  document.getElementById('fluResultado').style.display = 'none';
+// ── FLUÊNCIA ──────────────────────────────────────────────
+let fluEng=null,fluT,fluLeft,fluTotal,fluPals=new Set();
+function iniciarFlu(){
+  if(fluEng){finalizarFlu();return;}
+  fluPals=new Set();
+  fluTotal=parseInt(document.getElementById('fluTempo').value);
+  fluLeft=fluTotal;
+  fluEng=new MicEngine(
+    (word,fin)=>{
+      const ch=norm(word);if(ch.length<2)return;
+      const id='chip-'+ch;
+      if(fin){
+        const prev=document.getElementById(id);
+        if(prev&&prev.classList.contains('interim'))prev.remove();
+        if(!fluPals.has(ch)){
+          fluPals.add(ch);
+          const c=document.createElement('span');c.className='chip';c.id=id;c.textContent=word;
+          document.getElementById('fluChips').appendChild(c);
+          $set('fluCount',fluPals.size);
+        }
+      }else{
+        if(!fluPals.has(ch)&&!document.getElementById(id)){
+          const c=document.createElement('span');c.className='chip interim';c.id=id;c.textContent=word;
+          document.getElementById('fluChips').appendChild(c);
+        }
+      }
+    },
+    (msg,t)=>setBanner('fluBanner',msg,t)
+  );
+  document.getElementById('fluBtn').textContent='🛑 Parar';
+  $hide('fluConfig');$show('fluAtivo');$hide('fluResultado');
+  document.getElementById('fluChips').innerHTML='';
+  $set('fluCount','0');
   document.getElementById('fluTimer').classList.remove('urgent');
-
-  const pals = new Set();
-
-  clearInterval(fluTimerInt);
-  fluTimerInt = setInterval(() => {
-    fluSecsLeft--;
-    const m = Math.floor(fluSecsLeft/60), s = fluSecsLeft%60;
-    document.getElementById('fluTimer').textContent = m+':'+(s<10?'0':'')+s;
-    document.getElementById('fluProg').style.width = (fluSecsLeft/fluSecsTotal*100)+'%';
-    if (fluSecsLeft<=10) document.getElementById('fluTimer').classList.add('urgent');
-    if (fluSecsLeft<=0) { clearInterval(fluTimerInt); finalizarFlu(); }
-  }, 1000);
-
-  function criarRec() {
-    if (!fluPlaying) return;
-    const rec = new SR();
-    rec.lang = 'pt-BR';
-    rec.continuous = true;
-    rec.interimResults = true;  // captura palavras em tempo real, sem esperar pausa
-    rec.maxAlternatives = 1;
-
-    rec.onstart = () => setFluStatus('🔴 Ouvindo... fale!', 'var(--green)');
-
-    const interimVisto = new Set(); // evita duplicar enquanto a palavra ainda é interim
-
-    rec.onresult = e => {
-      for (let i = e.resultIndex; i < e.results.length; i++) {
-        const transcript = e.results[i][0].transcript.trim().toLowerCase();
-        const isFinal = e.results[i].isFinal;
-
-        transcript.split(/\s+/).forEach(w => {
-          const limpa = w.replace(/[^\wÀ-ÿ]/gi, '');
-          const chave = normStr(limpa);
-          if (limpa.length < 2) return;
-
-          // Para results finais: remove do set interim e registra definitivamente
-          if (isFinal) {
-            interimVisto.delete(chave);
-            if (!pals.has(chave)) {
-              const aceito = allowed.size === 0 || allowed.has(chave);
-              if (aceito) {
-                pals.add(chave);
-                const chip = document.createElement('span');
-                chip.className = 'chip';
-                chip.textContent = limpa;
-                document.getElementById('fluChips').appendChild(chip);
-                document.getElementById('fluCount').textContent = pals.size;
-              } else {
-                setFluStatus(`"${limpa}" não é da categoria`, 'var(--red)');
-                setTimeout(() => setFluStatus('🔴 Ouvindo... fale!', 'var(--green)'), 1000);
-              }
-            }
-          } else {
-            // Interim: mostra imediatamente na tela sem ainda fixar no set
-            if (!pals.has(chave) && !interimVisto.has(chave)) {
-              const aceito = allowed.size === 0 || allowed.has(chave);
-              if (aceito) {
-                interimVisto.add(chave);
-                // Adiciona chip provisório (será substituído pelo final)
-                const id = 'interim-' + chave;
-                if (!document.getElementById(id)) {
-                  const chip = document.createElement('span');
-                  chip.className = 'chip';
-                  chip.id = id;
-                  chip.textContent = limpa;
-                  chip.style.opacity = '0.5';
-                  chip.style.border = '1px dashed rgba(52,211,153,.5)';
-                  document.getElementById('fluChips').appendChild(chip);
-                }
-              }
-            }
-          }
-        });
-
-        // Quando finaliza, remove chips provisórios que não viraram definitivos
-        if (isFinal) {
-          interimVisto.forEach(ch => {
-            const el = document.getElementById('interim-' + ch);
-            if (el) el.remove();
-          });
-          interimVisto.clear();
-        }
-      }
-    };
-
-    rec.onerror = ev => {
-      if (ev.error==='not-allowed') { setFluStatus('🚫 Microfone bloqueado!','var(--red)'); fluPlaying=false; clearInterval(fluTimerInt); return; }
-      if (ev.error==='no-speech') setFluStatus('🎤 Não ouvi nada — fale mais perto','var(--accent3)');
-      else if (ev.error==='network') setFluStatus('⚠️ Erro de rede — reconectando...','var(--red)');
-      else setFluStatus('⚠️ '+ev.error+' — reconectando...','var(--accent3)');
-    };
-
-    rec.onend = () => { if (fluPlaying) setTimeout(criarRec, 150); else setFluStatus('',''); };
-
-    try { rec.start(); window.fluRec = rec; }
-    catch(e) { setTimeout(criarRec, 300); }
-  }
-
-  criarRec();
-  toast('🎤 Microfone ativo — fale!');
+  clearInterval(fluT);
+  fluT=setInterval(()=>{
+    fluLeft--;
+    const m=Math.floor(fluLeft/60),s=fluLeft%60;
+    $set('fluTimer',m+':'+(s<10?'0':'')+s);
+    document.getElementById('fluProg').style.width=(fluLeft/fluTotal*100)+'%';
+    if(fluLeft<=10)document.getElementById('fluTimer').classList.add('urgent');
+    if(fluLeft<=0){clearInterval(fluT);finalizarFlu();}
+  },1000);
+  if(!fluEng.start()){fluEng=null;$hide('fluAtivo');$show('fluConfig');}
+  else toast('🎤 Microfone ativo — fale!');
+}
+function finalizarFlu(){
+  clearInterval(fluT);
+  if(fluEng){fluEng.stop();fluEng=null;}
+  document.getElementById('fluBtn').textContent='🎤 COMEÇAR';
+  $hide('fluAtivo');$show('fluConfig');
+  setBanner('fluBanner','🔴 Aguardando microfone...');
+  const total=fluPals.size;
+  const nota=total>=30?'S':total>=22?'A':total>=15?'B':total>=8?'C':'D';
+  const ppm=fluTotal>0?Math.round(total/(fluTotal/60)):0;
+  document.getElementById('fluResultado').innerHTML=`<div class="score-card"><div class="grade-badge grade-${nota}">${nota}</div><div class="score-big">${total}</div><div class="score-label">palavras únicas em ${fluTotal}s</div><div class="stats-row" style="margin-top:16px"><div class="stat-box"><div class="stat-val">${total}</div><div class="stat-lbl">Palavras</div></div><div class="stat-box"><div class="stat-val">${ppm}</div><div class="stat-lbl">Por minuto</div></div><div class="stat-box"><div class="stat-val">${nota}</div><div class="stat-lbl">Nota</div></div></div><button class="btn btn-cyan" onclick="iniciarFlu()" style="margin-top:16px">↺ Tentar novamente</button><button class="btn btn-outline" onclick="$hide('fluResultado')" style="margin-top:8px">⚙️ Configurar</button></div>`;
+  $show('fluResultado');toast(`✅ ${total} palavras — Nota ${nota}!`);
 }
 
-function finalizarFlu() {
-  fluPlaying = false;
-  clearInterval(fluTimerInt);
-  if (window.fluRec) window.fluRec.stop();
-  document.getElementById('fluBtn').textContent = '🎤 COMEÇAR';
-  document.getElementById('fluConfig').style.display = '';
-  document.getElementById('fluAtivo').style.display = 'none';
+// ── LEITURA ───────────────────────────────────────────────
+let lerEng=null,lerT,lerSecs,lerPals,lerTotalSecs;
+function toggleLer(){if(lerEng){finalizarLer();}else{iniciarLer();}}
+function iniciarLer(){
+  lerEng=new MicEngine(
+    (word,fin)=>{if(fin){lerPals++;$set('lerPals',lerPals);}},
+    (msg,t)=>setBanner('lerBanner',msg,t)
+  );
+  lerSecs=0;lerPals=0;lerTotalSecs=parseInt(document.getElementById('lerTempoCfg').value);
+  document.getElementById('lerBtn').textContent='🛑 Parar';
+  $show('lerAtivo');$hide('lerResultado');$set('lerPals','0');$set('lerPPM','—');
+  clearInterval(lerT);
+  lerT=setInterval(()=>{
+    lerSecs++;
+    const m=Math.floor(lerSecs/60),s=lerSecs%60;
+    $set('lerTempo',m+':'+(s<10?'0':'')+s);
+    if(lerSecs>0)$set('lerPPM',Math.round(lerPals/lerSecs*60));
+    if(lerSecs>=lerTotalSecs){clearInterval(lerT);finalizarLer();}
+  },1000);
+  if(!lerEng.start()){lerEng=null;$hide('lerAtivo');document.getElementById('lerBtn').textContent='▶ COMEÇAR LEITURA';}
+  else toast('📖 Comece a ler!');
+}
+function finalizarLer(){
+  clearInterval(lerT);
+  if(lerEng){lerEng.stop();lerEng=null;}
+  document.getElementById('lerBtn').textContent='▶ COMEÇAR LEITURA';
+  $hide('lerAtivo');setBanner('lerBanner','🔴 Aguardando microfone...');
+  const ppm=lerSecs>0?Math.round(lerPals/lerSecs*60):0;
+  const nota=ppm>=160?'S':ppm>=140?'A':ppm>=110?'B':ppm>=80?'C':'D';
+  const fb={S:'Leitura excepcional! 🚀',A:'Excelente fluência! 💪',B:'Boa velocidade! 👏',C:'Pratique mais 📚',D:'Continue treinando 💡'}[nota];
+  document.getElementById('lerResultado').innerHTML=`<div class="score-card"><div class="grade-badge grade-${nota}">${nota}</div><div class="score-big">${ppm}</div><div class="score-label">palavras por minuto · ${fb}</div><div class="stats-row" style="margin-top:16px"><div class="stat-box"><div class="stat-val">${lerPals}</div><div class="stat-lbl">Total palavras</div></div><div class="stat-box"><div class="stat-val">${lerSecs}s</div><div class="stat-lbl">Duração</div></div><div class="stat-box"><div class="stat-val">${ppm}</div><div class="stat-lbl">Pal/min</div></div></div><button class="btn btn-amber" onclick="iniciarLer()" style="margin-top:16px">↺ Tentar novamente</button></div>`;
+  $show('lerResultado');toast(`✅ ${ppm} palavras/min!`);
+}
+function atualizarTextoLeitura(){$set('lerTexto',LER_TXTS[document.getElementById('lerNivel').value]||'')}
 
-  const total = document.querySelectorAll('#fluChips .chip').length;
-  const nota = total>=30?'S':total>=22?'A':total>=15?'B':total>=8?'C':'D';
-  document.getElementById('fluResultado').innerHTML = `
-    <div class="score-card">
-      <div class="grade-badge grade-${nota}">${nota}</div>
-      <div class="score-big">${total}</div>
-      <div class="score-label">palavras diferentes em ${fluSecsTotal}s</div>
-      <div class="stats-row" style="margin-top:16px">
-        <div class="stat-box"><div class="stat-val">${total}</div><div class="stat-lbl">Palavras</div></div>
-        <div class="stat-box"><div class="stat-val">${Math.round(total/(fluSecsTotal/60))}</div><div class="stat-lbl">Por minuto</div></div>
-        <div class="stat-box"><div class="stat-val">${nota}</div><div class="stat-lbl">Nota</div></div>
-      </div>
-      <button class="btn-primary btn-cyan" onclick="iniciarFlu()" style="margin-top:16px">↺ Tentar novamente</button>
-    </div>
-  `;
-  document.getElementById('fluResultado').style.display = '';
-  toast(`✅ ${total} palavras!`);
+// ── DESAFIOS ──────────────────────────────────────────────
+let desAtivo=false,desT,desSecs,desTempoTotal,desErros,desRodada,desLista;
+function getDesLista(){
+  const tipo=document.getElementById('desTipo').value;
+  const dif=parseInt(document.getElementById('desDif').value);
+  const banco=DESAFIOS[tipo];
+  let lista=banco[dif]||banco[3]||banco[2]||banco[1]||[];
+  if(tipo==='acumulativo'){const seq=lista[Math.floor(Math.random()*lista.length)];return Array.isArray(seq)?[...seq]:[seq]}
+  return [...lista].sort(()=>Math.random()-.5);
+}
+function atualizarDesafio(){
+  const tipo=document.getElementById('desTipo').value;
+  const dif=parseInt(document.getElementById('desDif').value);
+  const banco=DESAFIOS[tipo];
+  let lista=banco[dif]||banco[3]||banco[2]||banco[1]||[];
+  let ex=lista[0];
+  if(tipo==='acumulativo'&&Array.isArray(ex))ex=ex.join(' → ');
+  $set('desPrevia',typeof ex==='string'?ex:String(ex));
+}
+function iniciarDesafio(){
+  desLista=getDesLista();if(!desLista.length){toast('Sem desafios');return;}
+  desAtivo=true;desErros=0;desRodada=0;
+  desTempoTotal=parseInt(document.getElementById('desTempo').value);desSecs=desTempoTotal;
+  $hide('desConfig');$show('desGame');$hide('desResultado');
+  $set('desErros','0');$set('desRodada','1');
+  document.getElementById('desTimer').classList.remove('urgent');
+  document.getElementById('desProg').style.width='100%';
+  clearInterval(desT);
+  desT=setInterval(()=>{
+    desSecs--;
+    const m=Math.floor(desSecs/60),s=desSecs%60;
+    $set('desTimer',m+':'+(s<10?'0':'')+s);
+    document.getElementById('desProg').style.width=(desSecs/desTempoTotal*100)+'%';
+    if(desSecs<=10)document.getElementById('desTimer').classList.add('urgent');
+    if(desSecs<=0){clearInterval(desT);finalizarDesafio(true);}
+  },1000);
+  mostrarDesAtual();toast('🔥 Leia em voz alta!');
+}
+function mostrarDesAtual(){
+  const texto=desLista[desRodada%desLista.length];
+  const labels={travlingua:'👅 Repita 3× sem errar — clareza e velocidade',acumulativo:'🔺 Leia acumulando cada etapa',inversao:'🔄 Leia ao contrário conforme indicado',ritmo:'🥁 Siga o ritmo com precisão',homofono:'🔊 Pronuncie com distinção clara',cientifico:'🔬 Pronúncia técnica correta',caos:'💀 SOBREVIVA se conseguir'};
+  $set('desInstrucao',labels[document.getElementById('desTipo').value]||'Leia em voz alta');
+  $set('desTextoGame',texto);$hide('desFeedback');$set('desRodada',desRodada+1);
+}
+function desMarcarErro(){desErros++;$set('desErros',desErros);document.getElementById('desFeedback').innerHTML='<div class="result-row bad">❌ Erro! Tente de novo.</div>';$show('desFeedback');setTimeout(()=>$hide('desFeedback'),1500);toast('❌ +1 erro');}
+function desProximo(){desRodada++;document.getElementById('desFeedback').innerHTML='<div class="result-row ok">✅ Ótimo! Próximo.</div>';$show('desFeedback');setTimeout(()=>{$hide('desFeedback');mostrarDesAtual();},600);toast('✅ Perfeito!');}
+function finalizarDesafio(timeout=false){
+  desAtivo=false;clearInterval(desT);$hide('desGame');
+  const used=desTempoTotal-desSecs,m=Math.floor(used/60),s=used%60;
+  const score=Math.max(0,desRodada*10-desErros*5);
+  const nota=score>=50?'S':score>=35?'A':score>=20?'B':score>=10?'C':'D';
+  const msg={S:'Fonoaudiólogo nato! 🏆',A:'Excelente dicção! 💪',B:'Bom treino! 👏',C:'Precisa praticar 📚',D:'Não desista! 💡'}[nota];
+  document.getElementById('desResultado').innerHTML=`<div class="score-card">${timeout?'<div style="color:var(--red);font-weight:700;margin-bottom:8px">⏰ TEMPO ESGOTADO!</div>':''}<div class="grade-badge grade-${nota}">${nota}</div><div class="score-big">${score}</div><div class="score-label">pontos · ${msg}</div><div class="stats-row" style="margin-top:16px"><div class="stat-box"><div class="stat-val">${desRodada}</div><div class="stat-lbl">Completados</div></div><div class="stat-box"><div class="stat-val">${desErros}</div><div class="stat-lbl">Erros</div></div><div class="stat-box"><div class="stat-val">${m+':'+(s<10?'0':'')+s}</div><div class="stat-lbl">Tempo</div></div></div><button class="btn btn-fire" onclick="iniciarDesafio()" style="margin-top:16px">↺ Tentar novamente</button><button class="btn btn-outline" onclick="$hide('desResultado');$show('desConfig')" style="margin-top:8px">⚙️ Configurar</button></div>`;
+  $show('desResultado');toast(`🔥 Nota ${nota} — ${score} pontos!`);
 }
 
-// ==================== LEITURA ====================
-
-let lerPlaying = false, lerTimerInt, lerRecObj, lerSecs, lerPalavras, lerTempoTotal;
-
-function toggleLer() {
-  if (lerPlaying) { finalizarLer(); return; }
-  iniciarLer();
+// ── AUDITIVO ──────────────────────────────────────────────
+let audQ,audAt,audAc,audSecs,audT,audTotal;
+function iniciarAud(){
+  const modo=document.getElementById('audModo').value;
+  const dif=parseInt(document.getElementById('audDif').value);
+  audTotal=parseInt(document.getElementById('audQtd').value);
+  const pool=[...AUD_PALAVRAS[dif]].sort(()=>Math.random()-.5).slice(0,audTotal);
+  audQ=pool.map(it=>gerarQ(it,modo,dif));
+  audAt=0;audAc=0;audSecs=0;
+  clearInterval(audT);
+  audT=setInterval(()=>{audSecs++;const m=Math.floor(audSecs/60),s=audSecs%60;$set('audTimer',m+':'+(s<10?'0':'')+s);},1000);
+  $hide('audConfig');$show('audGame');$hide('audResultado');
+  mostrarQ();
 }
-
-function iniciarLer() {
-  try {
-    if (lerPlaying) { finalizarLer(); return; }
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { toast('Microfone não suportado'); return; }
-    lerPlaying = true;
-    lerSecs = 0;
-    lerPalavras = 0;
-    lerTempoTotal = parseInt(document.getElementById('lerTempoCfg').value);
-
-    document.getElementById('lerBtn').textContent = '🛑 Parar';
-    document.getElementById('lerAtivo').style.display = '';
-    document.getElementById('lerResultado').style.display = 'none';
-    document.getElementById('lerPals').textContent = '0';
-    document.getElementById('lerPPM').textContent = '—';
-
-    clearInterval(lerTimerInt);
-    lerTimerInt = setInterval(() => {
-      lerSecs++;
-      const m = Math.floor(lerSecs/60);
-      const s = lerSecs%60;
-      document.getElementById('lerTempo').textContent = m+':'+(s<10?'0':'')+s;
-      if (lerSecs>0) document.getElementById('lerPPM').textContent = Math.round((lerPalavras/lerSecs)*60);
-      if (lerSecs>=lerTempoTotal) { clearInterval(lerTimerInt); finalizarLer(); }
-    }, 1000);
-
-    const rec = new SR();
-    rec.lang = 'pt-BR';
-    rec.continuous = true;
-    rec.onresult = e => {
-      for (let i = e.resultIndex; i < e.results.length; i++) {
-        if (e.results[i].isFinal) {
-          lerPalavras += e.results[i][0].transcript.split(/\s+/).filter(w=>w).length;
-          document.getElementById('lerPals').textContent = lerPalavras;
-        }
-      }
-    };
-    rec.onend = () => { if (lerPlaying) { try { rec.start(); } catch(e){} } };
-    window.lerRec = rec;
-    rec.start();
-    toast('📖 Comece a ler!');
-  } catch(e) { lerPlaying = false; toast('Erro: '+e.message); }
+function gerarQ(item,modo,dif){
+  if(modo==='sil'){const c=item.s;const ops=new Set([c]);while(ops.size<4)ops.add(Math.max(1,c+Math.floor(Math.random()*3)-1));return{perg:'Quantas sílabas tem a palavra?',pal:item.p,certa:c,ops:[...ops].sort(()=>Math.random()-.5)};}
+  if(modo==='ini'){const c=item.i.toUpperCase();const all='ABCDEFGHIJKLMNOPRSTV'.split('');const ops=new Set([c]);while(ops.size<4)ops.add(all[Math.floor(Math.random()*all.length)]);return{perg:'Qual é a letra inicial?',pal:item.p,certa:c,ops:[...ops].sort(()=>Math.random()-.5)};}
+  if(modo==='fim'){const c=item.f.toUpperCase();const all='AEIOURLMNS'.split('');const ops=new Set([c]);while(ops.size<4)ops.add(all[Math.floor(Math.random()*all.length)]);return{perg:'Qual é a letra final?',pal:item.p,certa:c,ops:[...ops].sort(()=>Math.random()-.5)};}
+  const p2=AUD_PALAVRAS[dif];const ops=new Set([item.p]);while(ops.size<4)ops.add(p2[Math.floor(Math.random()*p2.length)].p);return{perg:'Qual palavra você ouviu?',pal:item.p,certa:item.p,ops:[...ops].sort(()=>Math.random()-.5)};
 }
-
-function finalizarLer() {
-  lerPlaying = false;
-  clearInterval(lerTimerInt);
-  if (window.lerRec) window.lerRec.stop();
-  document.getElementById('lerBtn').textContent = '▶ COMEÇAR LEITURA';
-  document.getElementById('lerAtivo').style.display = 'none';
-
-  const ppm = lerSecs>0?Math.round((lerPalavras/lerSecs)*60):0;
-  const nota = ppm>=160?'S':ppm>=140?'A':ppm>=110?'B':ppm>=80?'C':'D';
-  const feedback = nota==='S'?'Leitura excepcional! 🚀':nota==='A'?'Excelente fluência! 💪':nota==='B'?'Boa velocidade! 👏':nota==='C'?'Pratique mais para melhorar 📚':'Continue treinando 💡';
-
-  document.getElementById('lerResultado').innerHTML = `
-    <div class="score-card">
-      <div class="grade-badge grade-${nota}">${nota}</div>
-      <div class="score-big">${ppm}</div>
-      <div class="score-label">palavras por minuto · ${feedback}</div>
-      <div class="stats-row" style="margin-top:16px">
-        <div class="stat-box"><div class="stat-val">${lerPalavras}</div><div class="stat-lbl">Total palavras</div></div>
-        <div class="stat-box"><div class="stat-val">${lerSecs}s</div><div class="stat-lbl">Duração</div></div>
-        <div class="stat-box"><div class="stat-val">${ppm}</div><div class="stat-lbl">Pal/min</div></div>
-      </div>
-      <button class="btn-primary btn-amber" onclick="iniciarLer()" style="margin-top:16px">↺ Tentar novamente</button>
-    </div>
-  `;
-  document.getElementById('lerResultado').style.display = '';
-  toast(`✅ ${ppm} palavras/min!`);
-}
-
-function atualizarTextoLeitura() {
-  const niv = document.getElementById('lerNivel').value;
-  document.getElementById('lerTexto').textContent = LER_TXTS[niv];
-}
-
-// ==================== AUDITIVO ====================
-
-let audQuestoes, audAtual, audAcertos, audSecs, audTimerInt, audTotal;
-
-function iniciarAud() {
-  const modo = document.getElementById('audModo').value;
-  const dif = parseInt(document.getElementById('audDif').value);
-  audTotal = parseInt(document.getElementById('audQtd').value);
-  const pool = [...AUD_PALAVRAS[dif]].sort(()=>Math.random()-.5).slice(0, audTotal);
-
-  audQuestoes = pool.map(item => gerarQuestao(item, modo, dif));
-  audAtual = 0;
-  audAcertos = 0;
-  audSecs = 0;
-
-  clearInterval(audTimerInt);
-  audTimerInt = setInterval(() => {
-    audSecs++;
-    const m=Math.floor(audSecs/60), s=audSecs%60;
-    document.getElementById('audTimer').textContent = m+':'+(s<10?'0':'')+s;
-  }, 1000);
-
-  document.getElementById('audConfig').style.display = 'none';
-  document.getElementById('audGame').style.display = '';
-  document.getElementById('audResultado').style.display = 'none';
-
-  mostrarQuestao();
-}
-
-function gerarQuestao(item, modo, dif) {
-  if (modo==='sil') {
-    const respostaCerta = item.s;
-    const opcoes = new Set([respostaCerta]);
-    while (opcoes.size<4) opcoes.add(Math.max(1,respostaCerta+Math.floor(Math.random()*3)-1));
-    return { pergunta:'Quantas sílabas tem a palavra?', palavra:item.p, silabas:null, certa:respostaCerta, opcoes:[...opcoes].sort(()=>Math.random()-.5) };
-  } else if (modo==='ini') {
-    const certa = item.i.toUpperCase();
-    const all = 'ABCDEFGHIJKLMNOPRSTV'.split('');
-    const opcoes = new Set([certa]);
-    while (opcoes.size<4) opcoes.add(all[Math.floor(Math.random()*all.length)]);
-    return { pergunta:'Qual é a letra inicial da palavra?', palavra:item.p, silabas:null, certa, opcoes:[...opcoes].sort(()=>Math.random()-.5) };
-  } else if (modo==='fim') {
-    const certa = item.f.toUpperCase();
-    const all = 'AEIOURLMNS'.split('');
-    const opcoes = new Set([certa]);
-    while (opcoes.size<4) opcoes.add(all[Math.floor(Math.random()*all.length)]);
-    return { pergunta:'Qual é a letra final da palavra?', palavra:item.p, silabas:null, certa, opcoes:[...opcoes].sort(()=>Math.random()-.5) };
-  } else {
-    // Identidade
-    const pool2 = AUD_PALAVRAS[dif];
-    const opcoes = new Set([item.p]);
-    while (opcoes.size<4) opcoes.add(pool2[Math.floor(Math.random()*pool2.length)].p);
-    return { pergunta:'Você ouviu esta palavra?', palavra:item.p, silabas:null, certa:item.p, opcoes:[...opcoes].sort(()=>Math.random()-.5) };
-  }
-}
-
-function repetirPalavraAud() {
-  if (!audQuestoes || audAtual >= audQuestoes.length) return;
-  const palavra = audQuestoes[audAtual].palavra;
-  if (window.speechSynthesis) {
-    speechSynthesis.cancel();
-    const utt = new SpeechSynthesisUtterance(palavra);
-    utt.lang = 'pt-BR';
-    utt.rate = 0.9; // slightly slower on replay
-    speechSynthesis.speak(utt);
-  }
-}
-
-function mostrarQuestao() {
-  const q = audQuestoes[audAtual];
-  const pct = (audAtual/audTotal*100);
-  const isIdentity = (document.getElementById('audModo').value === 'pal');
-
-  document.getElementById('audQ').textContent = (audAtual+1)+'/'+audTotal;
-  document.getElementById('audAcertos').textContent = audAcertos;
-  document.getElementById('audPergunta').textContent = q.pergunta;
-  document.getElementById('audPalavra').textContent = q.palavra;
-  document.getElementById('audProg').style.width = pct+'%';
-
-  // In identity mode, blur the word so it's a real audio challenge
-  const wordDisplay = document.getElementById('audWordDisplay');
-  if (isIdentity) {
-    wordDisplay.classList.add('word-blur');
-  } else {
-    wordDisplay.classList.remove('word-blur');
-  }
-
-  // TTS
-  if (window.speechSynthesis) {
-    speechSynthesis.cancel();
-    const utt = new SpeechSynthesisUtterance(q.palavra);
-    utt.lang = 'pt-BR';
-    utt.rate = 1.15;
-    speechSynthesis.speak(utt);
-  }
-
-  document.getElementById('audFeedback').style.display = 'none';
-  const opcDiv = document.getElementById('audOpcoes');
-  opcDiv.innerHTML = '';
-  q.opcoes.forEach(op => {
-    const btn = document.createElement('button');
-    btn.className = 'btn-primary btn-outline';
-    btn.style.flex = '1';
-    btn.style.minWidth = '80px';
-    btn.textContent = op;
-    btn.onclick = () => responderAud(op, btn);
-    opcDiv.appendChild(btn);
+function falar(pal,rate){if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(pal);u.lang='pt-BR';u.rate=rate||1.0;speechSynthesis.speak(u);}
+function repetirPalavraAud(){if(audQ&&audAt<audQ.length)falar(audQ[audAt].pal,0.85);}
+function mostrarQ(){
+  const q=audQ[audAt];
+  const isId=document.getElementById('audModo').value==='pal';
+  $set('audQ',(audAt+1)+'/'+audTotal);$set('audAcertos',audAc);
+  $set('audPergunta',q.perg);$set('audPalavra',q.pal);
+  document.getElementById('audProg').style.width=(audAt/audTotal*100)+'%';
+  const wd=document.getElementById('audWordDisplay');
+  isId?wd.classList.add('word-blur'):wd.classList.remove('word-blur');
+  falar(q.pal,1.1);
+  $hide('audFeedback');
+  const od=document.getElementById('audOpcoes');od.innerHTML='';
+  q.ops.forEach(op=>{
+    const b=document.createElement('button');b.className='btn btn-outline btn-sm';b.style.flex='1';b.textContent=op;
+    b.onclick=()=>responderAud(op,b);od.appendChild(b);
   });
 }
-
-function responderAud(resposta, btnEl) {
-  const q = audQuestoes[audAtual];
-  const certa = String(q.certa);
-  const ok = String(resposta)===certa;
-  if (ok) audAcertos++;
-
-  // Reveal blurred word on answer
+function responderAud(resp,btn){
+  const q=audQ[audAt];const certa=String(q.certa);const ok=String(resp)===certa;
+  if(ok)audAc++;
   document.getElementById('audWordDisplay').classList.remove('word-blur');
-
-  document.querySelectorAll('#audOpcoes button').forEach(b => b.onclick = null);
-  btnEl.style.background = ok?'linear-gradient(135deg,#059669,#10b981)':'linear-gradient(135deg,#dc2626,#ef4444)';
-  btnEl.style.boxShadow = ok?'0 4px 16px rgba(16,185,129,.4)':'0 4px 16px rgba(239,68,68,.4)';
-  if (!ok) {
-    document.querySelectorAll('#audOpcoes button').forEach(b=>{
-      if (b.textContent===certa) { b.style.background='linear-gradient(135deg,#059669,#10b981)'; b.style.boxShadow='0 4px 16px rgba(16,185,129,.4)'; }
-    });
-  }
-
-  const fb = document.getElementById('audFeedback');
-  fb.innerHTML = `<div class="result-row ${ok?'ok':'bad'}">${ok?'✅ Correto!':'❌ Incorreto — A resposta era: '+certa}</div>`;
-  fb.style.display = '';
-
-  audAtual++;
-  document.getElementById('audAcertos').textContent = audAcertos;
-
-  if (audAtual>=audTotal) {
-    setTimeout(mostrarResultadoAud, 600);
-  } else {
-    setTimeout(mostrarQuestao, 900);
-  }
+  document.querySelectorAll('#audOpcoes button').forEach(b=>{
+    b.onclick=null;
+    if(b.textContent===certa){b.style.background='linear-gradient(135deg,#059669,#10b981)';b.style.color='#fff';b.style.boxShadow='0 4px 16px rgba(16,185,129,.4)';}
+  });
+  if(!ok){btn.style.background='linear-gradient(135deg,#dc2626,#ef4444)';btn.style.color='#fff';btn.style.boxShadow='0 4px 16px rgba(239,68,68,.4)';}
+  document.getElementById('audFeedback').innerHTML=`<div class="result-row ${ok?'ok':'bad'}">${ok?'✅ Correto!':'❌ Incorreto — era: '+certa}</div>`;
+  $show('audFeedback');$set('audAcertos',audAc);audAt++;
+  setTimeout(audAt>=audTotal?mostrarResultadoAud:mostrarQ,900);
+}
+function mostrarResultadoAud(){
+  clearInterval(audT);$hide('audGame');
+  const pct=Math.round(audAc/audTotal*100);
+  const nota=pct>=95?'S':pct>=85?'A':pct>=70?'B':pct>=55?'C':'D';
+  const m=Math.floor(audSecs/60),s=audSecs%60;
+  document.getElementById('audResultado').innerHTML=`<div class="score-card"><div class="grade-badge grade-${nota}">${nota}</div><div class="score-big">${audAc}/${audTotal}</div><div class="score-label">${pct}% de acertos em ${m+':'+(s<10?'0':'')+s}</div><div class="stats-row" style="margin-top:16px"><div class="stat-box"><div class="stat-val">${audAc}</div><div class="stat-lbl">Acertos</div></div><div class="stat-box"><div class="stat-val">${audTotal-audAc}</div><div class="stat-lbl">Erros</div></div><div class="stat-box"><div class="stat-val">${nota}</div><div class="stat-lbl">Nota</div></div></div><button class="btn btn-rose" onclick="iniciarAud()" style="margin-top:16px">↺ Tentar novamente</button><button class="btn btn-outline" onclick="$hide('audResultado');$show('audConfig')" style="margin-top:8px">⚙️ Configurar</button></div>`;
+  $show('audResultado');toast(`👂 ${audAc}/${audTotal} — Nota ${nota}!`);
 }
 
-function mostrarResultadoAud() {
-  clearInterval(audTimerInt);
-  document.getElementById('audGame').style.display = 'none';
-
-  const pct = Math.round(audAcertos/audTotal*100);
-  const nota = pct>=95?'S':pct>=85?'A':pct>=70?'B':pct>=55?'C':'D';
-  const m=Math.floor(audSecs/60), s=audSecs%60;
-
-  document.getElementById('audResultado').innerHTML = `
-    <div class="score-card">
-      <div class="grade-badge grade-${nota}">${nota}</div>
-      <div class="score-big">${audAcertos}/${audTotal}</div>
-      <div class="score-label">${pct}% de acertos em ${m+':'+(s<10?'0':'')+s}</div>
-      <div class="stats-row" style="margin-top:16px">
-        <div class="stat-box"><div class="stat-val">${audAcertos}</div><div class="stat-lbl">Acertos</div></div>
-        <div class="stat-box"><div class="stat-val">${audTotal-audAcertos}</div><div class="stat-lbl">Erros</div></div>
-        <div class="stat-box"><div class="stat-val">${nota}</div><div class="stat-lbl">Nota</div></div>
-      </div>
-      <button class="btn-primary btn-rose" onclick="iniciarAud()" style="margin-top:16px">↺ Tentar novamente</button>
-      <button class="btn-primary btn-outline" onclick="document.getElementById('audConfig').style.display='';document.getElementById('audResultado').style.display='none'" style="margin-top:8px">⚙️ Configurar</button>
-    </div>
-  `;
-  document.getElementById('audResultado').style.display = '';
-  toast(`👂 ${audAcertos}/${audTotal} corretas — Nota ${nota}!`);
-}
-
-// Init
+// ── INIT ──────────────────────────────────────────────────
 atualizarTextoLeitura();
 atualizarDesafio();
 </script>
