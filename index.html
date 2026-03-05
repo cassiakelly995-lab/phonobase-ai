@@ -233,6 +233,7 @@ body{background:var(--bg);color:var(--ink);font-family:system-ui,'Segoe UI',sans
     <button class="nav-btn active" onclick="goPage('fono',this)">🧠 Atividades</button>
     <button class="nav-btn" onclick="goPage('stop',this)">🎤 Stop de Fala</button>
     <button class="nav-btn" onclick="goPage('escrito',this)">✍️ Stop Escrito</button>
+    <button class="nav-btn" onclick="goPage('stopgame',this)">🎲 STOP</button>
     <button class="nav-btn" onclick="goPage('karaoke',this)">🎵 Karaokê</button>
   </div>
 </div>
@@ -433,20 +434,18 @@ body{background:var(--bg);color:var(--ink);font-family:system-ui,'Segoe UI',sans
 </div>
 
 <!-- ════════════════════════════════════════ -->
-<!-- PAGE: KARAOKÊ                            -->
-<!-- ════════════════════════════════════════ -->
+<!-- PAGE: KARAOKÊ -->
 <div class="page" id="page-karaoke">
 <div class="wrap">
   <div style="margin-bottom:14px;padding-top:2px">
     <div style="font-family:Georgia,serif;font-size:1.2rem;font-weight:700;margin-bottom:2px">🎵 Karaokê Fonoaudiológico</div>
-    <div style="font-size:.76rem;color:var(--ink3)">Sertanejo e MPB — 20 músicas para praticar dicção, ritmo e prosódia</div>
+    <div style="font-size:.76rem;color:var(--ink3)">Sertanejo, MPB e Forró — veja a letra, cante com o microfone e receba sua nota!</div>
   </div>
-
   <div class="panel">
-    <div class="panel-head"><span class="panel-icon">🎶</span><div class="panel-title">Lista de Músicas</div><div class="panel-meta">20 músicas</div></div>
+    <div class="panel-head"><span class="panel-icon">🎶</span><div class="panel-title">Escolha a música</div><div class="panel-meta">20 músicas</div></div>
     <div class="panel-body" style="padding:12px">
       <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
-        <button class="btn btn-ghost" id="kf-todas" onclick="karaFilterGenre('todas')" style="font-size:.7rem;padding:5px 10px">🎵 Todas</button>
+        <button class="btn btn-main" id="kf-todas" onclick="karaFilterGenre('todas')" style="font-size:.7rem;padding:5px 10px">🎵 Todas</button>
         <button class="btn btn-ghost" id="kf-sertanejo" onclick="karaFilterGenre('sertanejo')" style="font-size:.7rem;padding:5px 10px">🤠 Sertanejo</button>
         <button class="btn btn-ghost" id="kf-mpb" onclick="karaFilterGenre('mpb')" style="font-size:.7rem;padding:5px 10px">🌟 MPB</button>
         <button class="btn btn-ghost" id="kf-forro" onclick="karaFilterGenre('forro')" style="font-size:.7rem;padding:5px 10px">🪗 Forró</button>
@@ -454,33 +453,100 @@ body{background:var(--bg);color:var(--ink);font-family:system-ui,'Segoe UI',sans
       <div class="song-list" id="songList"></div>
     </div>
   </div>
-
   <div id="kara-player" style="display:none">
-    <div class="kara-wrap">
-      <div class="kara-header">
-        <div class="kara-title" id="kara-song-title">—</div>
-        <div class="kara-artist" id="kara-song-artist">—</div>
-        <span class="kara-genre-badge" id="kara-song-genre">—</span>
+    <div style="background:linear-gradient(160deg,#130826,#0a0f1e);border-radius:16px;overflow:hidden;margin-bottom:14px;box-shadow:0 8px 32px rgba(0,0,0,.4)">
+      <div style="padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:12px">
+        <div style="flex:1">
+          <div style="font-family:Georgia,serif;font-size:1.05rem;font-weight:700;color:#fff" id="kSongTitle">—</div>
+          <div style="font-size:.7rem;color:#a78bfa;margin-top:2px" id="kSongArtist">—</div>
+        </div>
+        <span id="kSongGenre" style="font-size:.56rem;font-weight:700;padding:3px 9px;border-radius:10px;background:rgba(107,33,168,.5);color:#c4b5fd;font-family:monospace">—</span>
+        <div style="text-align:center;min-width:48px">
+          <div style="font-family:Georgia,serif;font-size:1.5rem;font-weight:900;color:#c4b5fd;line-height:1" id="kScoreLive">—</div>
+          <div style="font-size:.48rem;color:#7c6aad;text-transform:uppercase;letter-spacing:.05em">NOTA</div>
+        </div>
       </div>
-      <div class="kara-lyrics" id="kara-lyrics"></div>
-      <div class="kara-progress" onclick="karaSeek(event)">
-        <div class="kara-progress-fill" id="kara-prog-fill" style="width:0%"></div>
+      <!-- LETRA em destaque -->
+      <div id="kLyricsBox" style="padding:22px 20px;min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px">
+        <div style="font-size:.8rem;color:rgba(255,255,255,.3);text-align:center;font-style:italic">Selecione uma música e clique em CANTAR 🎤</div>
       </div>
-      <div class="kara-controls">
-        <button class="kara-btn kara-play" id="kara-play-btn" onclick="karaToggle()">▶ INICIAR</button>
-        <button class="kara-btn" onclick="karaRestart()">↺ Reiniciar</button>
-        <button class="kara-btn" onclick="karaSlower()">🐢 -</button>
-        <button class="kara-btn" onclick="karaFaster()">⚡ +</button>
-        <div class="kara-time" id="kara-time-display">0:00</div>
+      <div style="height:3px;background:rgba(255,255,255,.1);margin:0 18px 10px;border-radius:2px;cursor:pointer" onclick="karaSeek(event)" id="kProgressBar">
+        <div id="kProgressFill" style="height:100%;width:0%;background:linear-gradient(90deg,#6b21a8,#c4b5fd);border-radius:2px;transition:width .4s"></div>
+      </div>
+      <div style="padding:0 18px 8px;display:flex;align-items:center;gap:8px">
+        <div id="kMicDot" style="width:8px;height:8px;border-radius:50%;background:#555;flex-shrink:0"></div>
+        <div id="kMicText" style="font-size:.63rem;color:#666;font-family:monospace;flex:1">microfone inativo</div>
+        <div style="font-family:monospace;font-size:.7rem;color:#7c6aad" id="kTimeDisp">0:00</div>
+      </div>
+      <div style="padding:10px 18px 16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <button id="kBtnPlay" onclick="karaToggle()" style="background:#6b21a8;color:#fff;border:none;border-radius:10px;padding:11px 24px;font-size:.86rem;font-weight:700;cursor:pointer;font-family:inherit;flex:1;transition:all .18s">🎤 CANTAR</button>
+        <button onclick="karaRestart()" style="background:rgba(255,255,255,.08);color:#fff;border:none;border-radius:8px;padding:10px 13px;font-size:.72rem;cursor:pointer;font-family:inherit">↺</button>
+        <button onclick="karaSlower()" style="background:rgba(255,255,255,.08);color:#fff;border:none;border-radius:8px;padding:10px 12px;font-size:.72rem;cursor:pointer" title="Mais devagar">🐢</button>
+        <button onclick="karaFaster()" style="background:rgba(255,255,255,.08);color:#fff;border:none;border-radius:8px;padding:10px 12px;font-size:.72rem;cursor:pointer" title="Mais rápido">⚡</button>
+        <span id="kSpeedLabel" style="font-size:.6rem;color:#7c6aad;font-family:monospace">1.0×</span>
       </div>
     </div>
-    <div class="panel" style="margin-top:10px">
+    <div id="kResultBox" style="display:none"></div>
+    <div class="panel">
       <div class="panel-head"><span class="panel-icon">💡</span><div class="panel-title">Dica Fonoaudiológica</div></div>
+      <div class="panel-body"><div id="kFonoTip" style="font-size:.82rem;line-height:1.6;color:var(--ink2)">Selecione uma música.</div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- PAGE: STOP GAME -->
+<div class="page" id="page-stopgame">
+<div class="wrap">
+  <div style="margin-bottom:14px;padding-top:2px">
+    <div style="font-family:Georgia,serif;font-size:1.2rem;font-weight:700;margin-bottom:2px">🎲 Jogo STOP</div>
+    <div style="font-size:.76rem;color:var(--ink3)">Sorteie uma letra, preencha todas as categorias, grite STOP e ganhe pontos!</div>
+  </div>
+  <div class="panel" id="stopConfigPanel">
+    <div class="panel-head"><span class="panel-icon">⚙️</span><div class="panel-title">Configurar Rodada</div></div>
+    <div class="panel-body">
+      <div style="font-size:.75rem;font-weight:700;color:var(--ink2);margin-bottom:7px">⏱ Tempo por rodada:</div>
+      <div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap">
+        <button class="vel-btn" id="sg-t60" onclick="sgSetTempo(60)">⚡ 60s</button>
+        <button class="vel-btn on" id="sg-t90" onclick="sgSetTempo(90)">🎯 90s</button>
+        <button class="vel-btn" id="sg-t120" onclick="sgSetTempo(120)">🏆 2min</button>
+        <button class="vel-btn" id="sg-tinf" onclick="sgSetTempo(0)">∞ Sem limite</button>
+      </div>
+      <div style="font-size:.75rem;font-weight:700;color:var(--ink2);margin-bottom:8px">📋 Categorias (selecione as que quer jogar):</div>
+      <div id="sgCatGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px"></div>
+      <div style="font-size:.75rem;font-weight:700;color:var(--ink2);margin-bottom:6px">➕ Criar categoria personalizada:</div>
+      <div style="display:flex;gap:6px;margin-bottom:16px">
+        <input id="sgCustomInput" placeholder="Ex: Personagem de desenho" style="flex:1;border:1.5px solid var(--line);border-radius:7px;padding:7px 10px;font-family:inherit;font-size:.8rem;outline:none;background:var(--paper);transition:border-color .2s" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--line)'">
+        <button class="btn btn-ghost" onclick="sgAddCustom()">+ Criar</button>
+      </div>
+      <button class="btn btn-main" style="width:100%;padding:13px;font-size:.95rem;justify-content:center;border-radius:10px" onclick="sgStart()">🎲 SORTEAR LETRA E COMEÇAR!</button>
+    </div>
+  </div>
+
+  <div id="stopGamePanel" style="display:none">
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-icon">🎲</span>
+        <div class="panel-title">Rodada em andamento!</div>
+        <div style="font-family:monospace;font-size:.85rem;font-weight:700" id="sgTimerDisp">1:30</div>
+      </div>
       <div class="panel-body">
-        <div id="kara-fono-tip" style="font-size:.82rem;line-height:1.6;color:var(--ink2)"></div>
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+          <div id="sgLetraBox" style="width:78px;height:78px;border-radius:50%;background:var(--ink);color:#fff;font-family:Georgia,serif;font-size:3rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 20px rgba(0,0,0,.25);animation:pop .4s cubic-bezier(.34,1.56,.64,1)">?</div>
+          <div style="flex:1">
+            <div style="font-size:.72rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em">Letra sorteada — preencha com palavras começando com:</div>
+            <div class="timer-bar-wrap" style="margin-top:10px;margin-bottom:0"><div class="timer-bar" id="sgTimerBar" style="width:100%"></div></div>
+          </div>
+        </div>
+        <div id="sgCatsForm" style="display:flex;flex-direction:column;gap:9px;margin-bottom:14px"></div>
+        <div class="btn-row">
+          <button class="btn btn-main" style="background:var(--red);flex:1;justify-content:center;font-size:.9rem;padding:12px" onclick="sgStop()">🛑 S T O P !</button>
+          <button class="btn btn-ghost" onclick="sgAbort()">✕ Abandonar</button>
+        </div>
       </div>
     </div>
   </div>
+  <div id="stopResultPanel" style="display:none"></div>
 </div>
 </div>
 
@@ -591,303 +657,6 @@ const FLUENCIA_CATS=[
 ];
 
 // ════════════════════════════════════════════════
-// MÚSICAS KARAOKÊ (20 músicas)
-// ════════════════════════════════════════════════
-const SONGS=[
-  {
-    id:1,title:"Evidências",artist:"Chitãozinho & Xororó",genre:"sertanejo",
-    tip:"Foque no prolongamento das vogais. Sertanejo exige controle do vibrato e apoio diafragmático.",
-    lines:[
-      {t:2,text:"Eu quero falar de amor"},
-      {t:5,text:"Falar de alegria"},
-      {t:8,text:"Falar do momento em que tudo aconteceu"},
-      {t:12,text:"Desde o dia em que te vi"},
-      {t:15,text:"O tempo parou por ti"},
-      {t:18,text:"Não tem como negar o que eu sinto"},
-      {t:22,text:"Evidências... me dizem que você"},
-      {t:26,text:"Gosta de mim, gosta de mim"},
-      {t:30,text:"Eu sei que você quer me dizer"},
-      {t:34,text:"Que me ama, que me ama"},
-      {t:38,text:"Mas as circunstâncias do destino"},
-      {t:42,text:"Às vezes nos separam"},
-      {t:46,text:"Mas o amor que sinto por você"},
-      {t:50,text:"É maior que tudo isso"},
-      {t:54,text:"Evidências..."},
-    ]
-  },
-  {
-    id:2,title:"Aquarela",artist:"Toquinho",genre:"mpb",
-    tip:"MPB exige dicção limpa e ritmo sincopado. Articule bem as consoantes finais de cada verso.",
-    lines:[
-      {t:2,text:"Numa folha qualquer eu desenho um sol amarelo"},
-      {t:6,text:"E com cinco ou seis retas é fácil fazer um castelo"},
-      {t:11,text:"Corro o lápis em torno da mão e me dou uma luva"},
-      {t:16,text:"E se faço chover, com dois riscos tenho um guarda-chuva"},
-      {t:21,text:"Se um pinguinho de tinta cai num pedaço de papel"},
-      {t:26,text:"Num instante imagino uma linda tarde de sol"},
-      {t:31,text:"Lá fora é tempo nublado, pode chover"},
-      {t:36,text:"Mas se quiser, o sol vai brilhar também"},
-    ]
-  },
-  {
-    id:3,title:"Tocando em Frente",artist:"Almir Sater",genre:"mpb",
-    tip:"Atenção às consoantes fricativas. Mantenha o ar nos prolongamentos sem forçar a voz.",
-    lines:[
-      {t:2,text:"Ando devagar porque já tive pressa"},
-      {t:6,text:"E levo esse sorriso porque já chorei demais"},
-      {t:11,text:"Hoje me sinto mais forte, mais feliz, quem sabe"},
-      {t:16,text:"Só levo a certeza de que muito pouco sei"},
-      {t:21,text:"Ou que nada sei"},
-      {t:25,text:"Conhecer as manhas e as manhãs"},
-      {t:29,text:"O sabor das massas e das maçãs"},
-      {t:33,text:"É preciso amor pra poder pulsar"},
-      {t:37,text:"É preciso paz pra poder sorrir"},
-      {t:41,text:"É preciso a chuva para florir"},
-    ]
-  },
-  {
-    id:4,title:"Luar do Sertão",artist:"Catulo da Paixão Cearense",genre:"sertanejo",
-    tip:"Vogais abertas do sertanejo. Abra bem a boca nas vogais 'a' e 'o' para projeção máxima.",
-    lines:[
-      {t:2,text:"Não há, ó gente, ó não"},
-      {t:5,text:"Luar como esse do sertão"},
-      {t:9,text:"Não há, ó gente, ó não"},
-      {t:13,text:"Luar como esse do sertão"},
-      {t:17,text:"Oh! que saudade do luar da minha terra"},
-      {t:22,text:"Lá na serra branquejando folhas secas pelo chão"},
-      {t:27,text:"Este luar cá da cidade tão escuro"},
-      {t:32,text:"Não tem aquela saudade do luar do meu sertão"},
-    ]
-  },
-  {
-    id:5,title:"Garota de Ipanema",artist:"Tom Jobim & Vinícius de Moraes",genre:"mpb",
-    tip:"Bossa Nova exige precisão rítmica. Não arraste as notas — cada sílaba tem seu lugar exato no tempo.",
-    lines:[
-      {t:2,text:"Olha que coisa mais linda"},
-      {t:5,text:"Mais cheia de graça"},
-      {t:8,text:"É ela menina que vem e que passa"},
-      {t:13,text:"Num doce balanço a caminho do mar"},
-      {t:18,text:"Moça do corpo dourado"},
-      {t:22,text:"Do sol de Ipanema"},
-      {t:25,text:"O seu balançado é mais que um poema"},
-      {t:30,text:"É a coisa mais linda que eu já vi passar"},
-    ]
-  },
-  {
-    id:6,title:"Asa Branca",artist:"Luiz Gonzaga",genre:"forro",
-    tip:"Forró nordestino: vogais abertas e ritmo marcado. Cada acento tônico deve ser bem audível.",
-    lines:[
-      {t:2,text:"Quando o verde dos teus olhos"},
-      {t:6,text:"Se espalhar na plantação"},
-      {t:10,text:"Eu te asseguro não chores não, viu"},
-      {t:15,text:"Que eu voltarei, viu"},
-      {t:18,text:"Meu coração"},
-      {t:21,text:"Hoje longe, muitas léguas"},
-      {t:25,text:"Numa triste solidão"},
-      {t:29,text:"Espero a chuva cair de novo"},
-      {t:33,text:"Pra mim voltar pro meu sertão"},
-    ]
-  },
-  {
-    id:7,title:"O Leãozinho",artist:"Caetano Veloso",genre:"mpb",
-    tip:"MPB tropicalista: dicção cristalina. Cada consoante deve ser articulada com precisão.",
-    lines:[
-      {t:2,text:"Hoje eu quero a rosa mais linda"},
-      {t:6,text:"Que existe no jardim"},
-      {t:9,text:"Pra dar ao meu leãozinho"},
-      {t:13,text:"Que mora em mim"},
-      {t:16,text:"Hoje eu quero entrar no mar"},
-      {t:20,text:"E mergulhar fundo"},
-      {t:23,text:"Pra ver meu leãozinho"},
-      {t:27,text:"No fundo do mundo"},
-    ]
-  },
-  {
-    id:8,title:"Cowboy de Aço",artist:"Luan Santana",genre:"sertanejo",
-    tip:"Sertanejo moderno: atenção ao registro de voz. Não empurre o agudo — projete com apoio abdominal.",
-    lines:[
-      {t:2,text:"Cowboy de aço"},
-      {t:5,text:"No peito uma estrela"},
-      {t:8,text:"Bandido ou mocinho"},
-      {t:11,text:"O amor é a querela"},
-      {t:14,text:"Às vezes de relho"},
-      {t:17,text:"Às vezes de brasa"},
-      {t:20,text:"O coração dói"},
-      {t:23,text:"Mas nunca se cansa"},
-    ]
-  },
-  {
-    id:9,title:"Como Nossos Pais",artist:"Elis Regina",genre:"mpb",
-    tip:"Clássico da MPB: atenção às consoantes nasais. 'ã', 'em', 'im' devem ressoar no nariz.",
-    lines:[
-      {t:2,text:"Não quero lembrar"},
-      {t:5,text:"Não quero falar"},
-      {t:8,text:"De tempo passado"},
-      {t:12,text:"Meu pai me dizia"},
-      {t:15,text:"Que a gente esquecia"},
-      {t:18,text:"O que não foi dado"},
-      {t:22,text:"Deixa isso pra lá"},
-      {t:25,text:"Já deu, já passou"},
-      {t:28,text:"Já vai ser diferente"},
-      {t:32,text:"Quem disse que vai"},
-    ]
-  },
-  {
-    id:10,title:"Trem Bala",artist:"Ana Vilela",genre:"mpb",
-    tip:"Pop MPB contemporâneo: respiração antes de cada frase longa. Não comece sem ar.",
-    lines:[
-      {t:2,text:"Não é sobre ter toda riqueza do mundo"},
-      {t:7,text:"É sobre ter paz onde a alegria cabe"},
-      {t:12,text:"É sobre ter a certeza de que vale a pena"},
-      {t:17,text:"Lutar pelo que se ama"},
-      {t:21,text:"É sobre ser completo"},
-      {t:24,text:"E não depender de nada"},
-      {t:27,text:"Pra sentir que a vida tem sentido"},
-      {t:31,text:"É sobre acordar sorrindo"},
-    ]
-  },
-  {
-    id:11,title:"Amor Perfeito",artist:"Jorge & Mateus",genre:"sertanejo",
-    tip:"Sertanejo universitário: o vibrato é natural, não forçado. Deixe a voz vibrar no final dos prolongamentos.",
-    lines:[
-      {t:2,text:"É tão difícil te esquecer"},
-      {t:6,text:"Quando você existe em mim"},
-      {t:10,text:"A vida sem você"},
-      {t:13,text:"É incompleta assim"},
-      {t:17,text:"Mais que perfeito é nosso amor"},
-      {t:21,text:"Mais que especial é você"},
-      {t:25,text:"Que cuida do meu coração"},
-      {t:29,text:"E transforma o que eu sou"},
-    ]
-  },
-  {
-    id:12,title:"Construção",artist:"Chico Buarque",genre:"mpb",
-    tip:"Clássico complexo: palavras agudas no final de cada verso. Mantenha a tessitura vocal estável.",
-    lines:[
-      {t:2,text:"Amou daquela vez como se fosse a última"},
-      {t:7,text:"Beijou sua mulher como se fosse a última"},
-      {t:12,text:"E cada filho seu como se fosse o único"},
-      {t:17,text:"E atravessou a rua com seu passo bêbado"},
-      {t:22,text:"Subiu a construção como se fosse máquina"},
-      {t:27,text:"Ergueu no patamar quatro paredes sólidas"},
-      {t:32,text:"Tijolo com tijolo num desenho mágico"},
-    ]
-  },
-  {
-    id:13,title:"Balada do Amor Inabalável",artist:"Chitãozinho & Xororó",genre:"sertanejo",
-    tip:"Dueto sertanejo: imagine que você é as duas vozes. Alterne o timbre — uma voz mais grave, outra mais clara.",
-    lines:[
-      {t:2,text:"Amor inabalável"},
-      {t:5,text:"É o que eu tenho por você"},
-      {t:9,text:"Não tem nada nesse mundo"},
-      {t:13,text:"Que me faça te esquecer"},
-      {t:17,text:"Inabalável esse amor"},
-      {t:21,text:"Que o tempo não desfaz"},
-      {t:25,text:"Quanto mais o tempo passa"},
-      {t:29,text:"Mais eu quero ficar"},
-    ]
-  },
-  {
-    id:14,title:"Corcovado",artist:"Tom Jobim",genre:"mpb",
-    tip:"Bossa Nova suave: voz de câmara. Volume baixo mas dicção perfeita. Murmúrio articulado.",
-    lines:[
-      {t:2,text:"Um cantinho e um violão"},
-      {t:6,text:"Este amor uma canção"},
-      {t:10,text:"Pra fazer feliz a quem se ama"},
-      {t:15,text:"Muita calma pra pensar"},
-      {t:19,text:"E ter tempo pra sonhar"},
-      {t:23,text:"Da janela vê-se o Corcovado"},
-      {t:28,text:"O Redentor que lindo"},
-      {t:32,text:"Quero a vida sempre assim"},
-    ]
-  },
-  {
-    id:15,title:"Cabelo de Fogo",artist:"Gusttavo Lima",genre:"sertanejo",
-    tip:"Sertanejo pop: R inicial deve ser sonoro e marcado. Não reduza o 'r' em início de verso.",
-    lines:[
-      {t:2,text:"Você me enlouquece"},
-      {t:5,text:"Com esse cabelo de fogo"},
-      {t:9,text:"Esses olhos de brasa"},
-      {t:13,text:"Que acendem o meu amor"},
-      {t:17,text:"Não precisa de nada"},
-      {t:21,text:"Só chega e me abraça"},
-      {t:25,text:"Que o resto do mundo"},
-      {t:29,text:"Para diante de nós"},
-    ]
-  },
-  {
-    id:16,title:"O Que É O Que É",artist:"Gonzaguinha",genre:"mpb",
-    tip:"MPB filosófico: cada palavra carrega peso. Articule os finais de verso com intensidade decrescente.",
-    lines:[
-      {t:2,text:"O que é, o que é"},
-      {t:5,text:"A vida meu irmão"},
-      {t:8,text:"É a arte do encontro"},
-      {t:12,text:"Embora haja tanto desencontro pela vida"},
-      {t:17,text:"É a promessa de amor"},
-      {t:21,text:"Na vida e na sorte"},
-      {t:25,text:"É o beijo da vida"},
-      {t:29,text:"No rosto da morte"},
-    ]
-  },
-  {
-    id:17,title:"Sanfoneiro Maluquinho",artist:"Luiz Gonzaga",genre:"forro",
-    tip:"Forró pé-de-serra: ritmo binário marcado. Bata o pé discretamente para manter o tempo interno.",
-    lines:[
-      {t:2,text:"Sanfoneiro maluquinho"},
-      {t:5,text:"Que tocava noite e dia"},
-      {t:9,text:"No xaxado, na valsinha"},
-      {t:13,text:"E no baião de alegria"},
-      {t:17,text:"Ei, toca forró"},
-      {t:20,text:"Toca baião"},
-      {t:23,text:"Que eu quero dançar"},
-      {t:26,text:"Com meu coração"},
-    ]
-  },
-  {
-    id:18,title:"Viola Caipira",artist:"Renato Teixeira",genre:"sertanejo",
-    tip:"Sertanejo raiz: ritmo de moda de viola. Valorize a última sílaba de cada verso — é a cadência caipira.",
-    lines:[
-      {t:2,text:"Minha terra tem palmeiras"},
-      {t:6,text:"Onde canta o sabiá"},
-      {t:10,text:"As aves que aqui gorjeiam"},
-      {t:14,text:"Não gorjeiam como lá"},
-      {t:18,text:"Não permita Deus que eu morra"},
-      {t:22,text:"Sem que eu volte para lá"},
-      {t:26,text:"Sem que desfrute os primores"},
-      {t:30,text:"Que não encontro por cá"},
-    ]
-  },
-  {
-    id:19,title:"Pais e Filhos",artist:"Legião Urbana",genre:"mpb",
-    tip:"Rock MPB: dicção próxima da fala. Cada palavra deve ser compreensível mesmo com o ritmo rock.",
-    lines:[
-      {t:2,text:"Deixa eu dizer que te amei"},
-      {t:6,text:"E que hoje me arrependo"},
-      {t:10,text:"Pois foi você que partiu"},
-      {t:14,text:"E agora eu me perco"},
-      {t:18,text:"Mas toda criança tem direito"},
-      {t:22,text:"Ao amor que merece"},
-      {t:26,text:"E um dia a vida cresce"},
-      {t:30,text:"E esse amor permanece"},
-    ]
-  },
-  {
-    id:20,title:"Amor Sem Limite",artist:"Zezé di Camargo & Luciano",genre:"sertanejo",
-    tip:"Sertanejo dramático: emoção sem perda de técnica. A voz pode tremer de emoção, mas a dicção mantém-se clara.",
-    lines:[
-      {t:2,text:"Amor sem limite"},
-      {t:5,text:"Assim te quero"},
-      {t:8,text:"Nem que o mundo inteiro"},
-      {t:12,text:"Me diga não"},
-      {t:15,text:"Esse amor que sinto"},
-      {t:19,text:"Não tem medida"},
-      {t:22,text:"É a força da vida"},
-      {t:26,text:"No meu coração"},
-    ]
-  },
-];
-
-// ════════════════════════════════════════════════
 // TEXTOS LEITURA (voz e escrito)
 // ════════════════════════════════════════════════
 const READ_TEXTS={
@@ -916,7 +685,8 @@ function goPage(p,btn){
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
   if(p==='stop') checkSpeechAPI();
-  if(p==='karaoke') karaRenderSongList('todas');
+  if(p==='karaoke') karaFilterGenre('todas');
+  if(p==='stopgame') sgInit();
 }
 
 // ════════════════════════════════════════════════
@@ -1747,130 +1517,624 @@ function seCompararTextos(original, escrito){
 }
 
 // ════════════════════════════════════════════════
-// KARAOKÊ — ENGINE
+// KARAOKÊ — ENGINE COM LETRA + NOTA POR VOZ
 // ════════════════════════════════════════════════
-let karaCurrentSong=null;
-let karaTimer=null;
-let karaElapsed=0;
-let karaPlaying=false;
-let karaSpeed=1.0;
-let karaTotalTime=0;
+const SONGS=[
+  {id:1,title:"Evidências",artist:"Chitãozinho & Xororó",genre:"sertanejo",tip:"Vogais prolongadas do sertanejo: sustente o som sem apertar a garganta. Use o apoio abdominal para os agudos.",
+   lyrics:[
+    {t:3,w:"O impossível do amor"},
+    {t:7,w:"É o que nos faz querer mais"},
+    {t:11,w:"A saudade que dói"},
+    {t:15,w:"E a dor que nos faz feliz"},
+    {t:20,w:"Evidências que me dizem"},
+    {t:24,w:"Que você ainda me quer"},
+    {t:28,w:"Mas orgulho não deixa"},
+    {t:32,w:"Você me dizer que me quer"},
+    {t:37,w:"Não aguento mais fingir"},
+    {t:41,w:"Que já me esqueci de você"},
+    {t:45,w:"Nem consigo mais mentir"},
+    {t:49,w:"Que já não penso mais em você"},
+  ]},
+  {id:2,title:"Tocando em Frente",artist:"Almir Sater / Renato Teixeira",genre:"mpb",tip:"MPB contemplativa: dicção limpa e ritmo interno. Cada consoante final deve ser articulada com precisão.",
+   lyrics:[
+    {t:3,w:"Ando devagar porque já tive pressa"},
+    {t:8,w:"E levo esse sorriso porque já chorei demais"},
+    {t:14,w:"Hoje me sinto mais forte, mais feliz"},
+    {t:18,w:"Quem sabe, só levo a certeza"},
+    {t:22,w:"De que muito pouco eu sei"},
+    {t:26,w:"Ou que nada sei"},
+    {t:30,w:"Cada um de nós compõe a sua história"},
+    {t:35,w:"Cada ser em si carrega o dom de ser capaz"},
+    {t:40,w:"E ser feliz"},
+  ]},
+  {id:3,title:"Asa Branca",artist:"Luiz Gonzaga",genre:"forro",tip:"Forró nordestino: vogais abertas e bem projetadas. O sotaque regional é parte da expressão — abra bem a boca!",
+   lyrics:[
+    {t:3,w:"Quando o verde dos teus olhos"},
+    {t:7,w:"Se espalhar na plantação"},
+    {t:11,w:"Eu te asseguro não chores não"},
+    {t:16,w:"Que eu voltarei meu coração"},
+    {t:21,w:"Hoje longe muitas léguas"},
+    {t:25,w:"Numa triste solidão"},
+    {t:29,w:"Espero a chuva cair de novo"},
+    {t:33,w:"Pra mim voltar pro meu sertão"},
+  ]},
+  {id:4,title:"Aquarela",artist:"Toquinho",genre:"mpb",tip:"Clássico infantil MPB: articulação perfeita. Cada consoante é uma pincelada — não engula nenhuma!",
+   lyrics:[
+    {t:3,w:"Numa folha qualquer eu desenho um sol amarelo"},
+    {t:8,w:"E com cinco ou seis retas é fácil fazer um castelo"},
+    {t:13,w:"Corro o lápis em torno da mão"},
+    {t:17,w:"E me dou uma luva"},
+    {t:21,w:"E se faço chover com dois riscos"},
+    {t:25,w:"Tenho um guarda-chuva"},
+    {t:29,w:"Se um pinguinho de tinta cai num pedaço de papel"},
+    {t:34,w:"Num instante imagino uma linda tarde de sol"},
+  ]},
+  {id:5,title:"Garota de Ipanema",artist:"Tom Jobim / Vinícius de Moraes",genre:"mpb",tip:"Bossa Nova: precisão rítmica acima de tudo. Cada sílaba tem lugar exato no tempo — não antecipe nem atrase.",
+   lyrics:[
+    {t:3,w:"Olha que coisa mais linda"},
+    {t:7,w:"Mais cheia de graça"},
+    {t:10,w:"É ela menina que vem e que passa"},
+    {t:15,w:"Num doce balanço a caminho do mar"},
+    {t:20,w:"Moça do corpo dourado"},
+    {t:24,w:"Do sol de Ipanema"},
+    {t:27,w:"O seu balançado é mais que um poema"},
+    {t:32,w:"É a coisa mais linda que eu já vi passar"},
+  ]},
+  {id:6,title:"O Leãozinho",artist:"Caetano Veloso",genre:"mpb",tip:"Tropicalismo suave: voz de câmara, volume baixo mas dicção perfeita. Murmúrio bem articulado.",
+   lyrics:[
+    {t:3,w:"Hoje eu quero a rosa mais linda"},
+    {t:7,w:"Que existe no jardim"},
+    {t:10,w:"Pra dar ao meu leãozinho"},
+    {t:14,w:"Que mora em mim"},
+    {t:17,w:"Hoje eu quero entrar no mar"},
+    {t:21,w:"E mergulhar fundo"},
+    {t:24,w:"Pra ver meu leãozinho"},
+    {t:28,w:"No fundo do mundo"},
+  ]},
+  {id:7,title:"Luar do Sertão",artist:"Catulo da Paixão Cearense",genre:"sertanejo",tip:"Raízes do sertanejo: vogais abertas e ressonância nasal. Sinta a vibração nas maçãs do rosto.",
+   lyrics:[
+    {t:3,w:"Não há, ó gente, ó não"},
+    {t:7,w:"Luar como esse do sertão"},
+    {t:11,w:"Não há, ó gente, ó não"},
+    {t:15,w:"Luar como esse do sertão"},
+    {t:19,w:"Oh que saudade do luar da minha terra"},
+    {t:24,w:"Lá na serra branquejando folhas secas pelo chão"},
+    {t:30,w:"Este luar cá da cidade tão escuro"},
+    {t:35,w:"Não tem a saudade do luar lá do sertão"},
+  ]},
+  {id:8,title:"Trem Bala",artist:"Ana Vilela",genre:"mpb",tip:"Pop MPB contemporâneo: respire antes de cada verso longo. Nunca comece uma frase sem ter ar suficiente.",
+   lyrics:[
+    {t:3,w:"Não é sobre ter toda riqueza do mundo"},
+    {t:8,w:"É sobre ter paz onde a alegria cabe"},
+    {t:13,w:"É sobre ter a certeza de que vale a pena"},
+    {t:18,w:"Lutar pelo que se ama"},
+    {t:22,w:"É sobre ser completo"},
+    {t:25,w:"E não depender de nada"},
+    {t:28,w:"Pra sentir que a vida tem sentido"},
+    {t:33,w:"É sobre acordar sorrindo"},
+  ]},
+  {id:9,title:"Como Nossos Pais",artist:"Elis Regina",genre:"mpb",tip:"Clássico MPB: atenção às consoantes nasais 'ã', 'em', 'im'. A ressonância nasal deve vibrar no nariz.",
+   lyrics:[
+    {t:3,w:"Não quero lembrar"},
+    {t:6,w:"Não quero falar"},
+    {t:9,w:"De tempo passado"},
+    {t:13,w:"Meu pai me dizia"},
+    {t:16,w:"Que a gente esquecia"},
+    {t:19,w:"O que não foi dado"},
+    {t:23,w:"Deixa isso pra lá"},
+    {t:26,w:"Já deu, já passou"},
+    {t:29,w:"Já vai ser diferente"},
+  ]},
+  {id:10,title:"Construção",artist:"Chico Buarque",genre:"mpb",tip:"Poesia musical: cada palavra aguda no final do verso é intencional. Sustente a última sílaba tônica com força.",
+   lyrics:[
+    {t:3,w:"Amou daquela vez como se fosse a última"},
+    {t:8,w:"Beijou sua mulher como se fosse a última"},
+    {t:13,w:"E cada filho seu como se fosse o único"},
+    {t:18,w:"E atravessou a rua com seu passo bêbado"},
+    {t:23,w:"Subiu a construção como se fosse máquina"},
+    {t:28,w:"Ergueu no patamar quatro paredes sólidas"},
+    {t:33,w:"Tijolo com tijolo num desenho mágico"},
+  ]},
+  {id:11,title:"O Que É, O Que É",artist:"Gonzaguinha",genre:"mpb",tip:"MPB filosófico: cada palavra carrega peso emocional. Articule com intensidade crescente do início ao fim do verso.",
+   lyrics:[
+    {t:3,w:"O que é, o que é"},
+    {t:6,w:"A vida meu irmão"},
+    {t:9,w:"É a arte do encontro"},
+    {t:13,w:"Embora haja tanto desencontro pela vida"},
+    {t:18,w:"É a promessa de amor"},
+    {t:22,w:"Na vida e na sorte"},
+    {t:26,w:"É o beijo da vida"},
+    {t:30,w:"No rosto da morte"},
+  ]},
+  {id:12,title:"Pais e Filhos",artist:"Legião Urbana",genre:"mpb",tip:"Rock MPB: dicção próxima da fala natural. Cada palavra deve ser compreensível mesmo no ritmo rock.",
+   lyrics:[
+    {t:3,w:"Deixa eu dizer que te amei"},
+    {t:7,w:"E que hoje me arrependo"},
+    {t:11,w:"Pois foi você que partiu"},
+    {t:15,w:"E agora eu me perco"},
+    {t:19,w:"Mas toda criança tem direito"},
+    {t:23,w:"Ao amor que merece"},
+    {t:27,w:"E um dia a vida cresce"},
+    {t:31,w:"E esse amor permanece"},
+  ]},
+  {id:13,title:"Viola Caipira",artist:"Renato Teixeira",genre:"sertanejo",tip:"Sertanejo raiz: valorize a última sílaba de cada verso. Essa cadência é a identidade da moda de viola.",
+   lyrics:[
+    {t:3,w:"Minha terra tem palmeiras"},
+    {t:7,w:"Onde canta o sabiá"},
+    {t:11,w:"As aves que aqui gorjeiam"},
+    {t:15,w:"Não gorjeiam como lá"},
+    {t:19,w:"Não permita Deus que eu morra"},
+    {t:23,w:"Sem que eu volte para lá"},
+    {t:27,w:"Sem que desfrute os primores"},
+    {t:31,w:"Que não encontro por cá"},
+  ]},
+  {id:14,title:"Sanfoneiro Maluquinho",artist:"Luiz Gonzaga",genre:"forro",tip:"Forró pé-de-serra: ritmo binário forte. Bata o pé para manter o tempo e não arrastar o andamento.",
+   lyrics:[
+    {t:3,w:"Sanfoneiro maluquinho"},
+    {t:6,w:"Que tocava noite e dia"},
+    {t:10,w:"No xaxado na valsinha"},
+    {t:14,w:"E no baião de alegria"},
+    {t:18,w:"Ei toca forró"},
+    {t:21,w:"Toca baião"},
+    {t:24,w:"Que eu quero dançar"},
+    {t:27,w:"Com meu coração"},
+  ]},
+  {id:15,title:"Corcovado",artist:"Tom Jobim",genre:"mpb",tip:"Bossa Nova íntima: voz de câmara. Pense em sussurrar com perfeita articulação — menos é mais.",
+   lyrics:[
+    {t:3,w:"Um cantinho e um violão"},
+    {t:7,w:"Este amor uma canção"},
+    {t:11,w:"Pra fazer feliz a quem se ama"},
+    {t:16,w:"Muita calma pra pensar"},
+    {t:20,w:"E ter tempo pra sonhar"},
+    {t:24,w:"Da janela vê-se o Corcovado"},
+    {t:29,w:"O Redentor que lindo"},
+    {t:33,w:"Quero a vida sempre assim"},
+  ]},
+  {id:16,title:"Asas da Liberdade",artist:"João Paulo e Daniel",genre:"sertanejo",tip:"Dueto sertanejo: imagine duas vozes alternando. Varie levemente o timbre entre as estrofes.",
+   lyrics:[
+    {t:3,w:"Eu quero ter asas"},
+    {t:6,w:"Para poder voar"},
+    {t:9,w:"Subir muito alto"},
+    {t:12,w:"E nunca mais parar"},
+    {t:16,w:"Liberdade é o bem maior"},
+    {t:20,w:"Que Deus nos deu"},
+    {t:23,w:"Asas da liberdade"},
+    {t:27,w:"É o que eu sou"},
+  ]},
+  {id:17,title:"Interior de Minas",artist:"Sérgio Reis",genre:"sertanejo",tip:"Sertanejo narrativo: conta uma história. Use variação de volume para marcar os momentos dramáticos.",
+   lyrics:[
+    {t:3,w:"Lá no interior de Minas"},
+    {t:7,w:"Numa cidadezinha"},
+    {t:10,w:"Existe uma saudade"},
+    {t:14,w:"Que me persegue fresquinha"},
+    {t:18,w:"Do cheiro do café"},
+    {t:21,w:"Da fogueira na varanda"},
+    {t:25,w:"Da voz da minha mãe"},
+    {t:29,w:"Que ainda me chama"},
+  ]},
+  {id:18,title:"Xote das Meninas",artist:"Luiz Gonzaga",genre:"forro",tip:"Xote animado: consoantes oclusivas (B, P, D, T) devem ser precisas e ritmadas. Sinta o repique!",
+   lyrics:[
+    {t:3,w:"Moça bonita do interior"},
+    {t:7,w:"De olhos verdes cor de anil"},
+    {t:11,w:"Pele morena coração de flor"},
+    {t:15,w:"A mais bonita do Brasil"},
+    {t:19,w:"Dança comigo meu bem"},
+    {t:22,w:"Vem dançar o xote"},
+    {t:25,w:"Que a sanfona toca"},
+    {t:28,w:"E o coração bate forte"},
+  ]},
+  {id:19,title:"Terra Seca",artist:"Zé Ramalho",genre:"mpb",tip:"MPB nordestina: mistura de rock e sertanejo. Dicção forte nas consoantes e vogais bem abertas.",
+   lyrics:[
+    {t:3,w:"Terra seca nordestina"},
+    {t:7,w:"Castigada pelo sol"},
+    {t:10,w:"Mas que guarda uma força"},
+    {t:14,w:"Que supera a dor"},
+    {t:18,w:"No inverno que não vem"},
+    {t:22,w:"Na espera interminável"},
+    {t:26,w:"O povo do sertão"},
+    {t:30,w:"Resiste incontornável"},
+  ]},
+  {id:20,title:"Quem Me Dera",artist:"Almir Sater",genre:"mpb",tip:"Viola caipira MPB: equilíbrio entre emoção e técnica. A voz pode ter vibração emocional sem perder a dicção.",
+   lyrics:[
+    {t:3,w:"Quem me dera ao menos uma vez"},
+    {t:8,w:"Ter de volta todo o ouro que entreguei"},
+    {t:13,w:"A quem de mim não quis"},
+    {t:17,w:"Mas que eu assim mesmo amei"},
+    {t:22,w:"Quem me dera ao menos uma vez"},
+    {t:27,w:"Provar que quem tem mais amor"},
+    {t:32,w:"É quem sofre mais"},
+    {t:36,w:"E chora mais também"},
+  ]},
+];
 
-function karaRenderSongList(genreFilter){
-  ['todas','sertanejo','mpb','forro'].forEach(g=>{
-    const b=document.getElementById('kf-'+g);
-    if(b)b.classList.toggle('btn-main',g===genreFilter);
-    if(b)b.classList.toggle('btn-ghost',g!==genreFilter);
+// estado karaokê
+let kSong=null, kTimer=null, kElapsed=0, kPlaying=false, kSpeed=1, kTotal=0;
+let kRec=null, kRecActive=false, kSpokenWords=[], kScoreWords=0, kTotalWords=0;
+
+function karaFilterGenre(g){
+  ['todas','sertanejo','mpb','forro'].forEach(id=>{
+    const b=document.getElementById('kf-'+id);
+    if(!b)return;
+    b.className=id===g?'btn btn-main':'btn btn-ghost';
+    b.style.fontSize='.7rem'; b.style.padding='5px 10px';
   });
   const list=document.getElementById('songList');
-  const filtered=genreFilter==='todas'?SONGS:SONGS.filter(s=>s.genre===genreFilter);
-  list.innerHTML=filtered.map((s,i)=>`
-    <div class="song-item ${karaCurrentSong&&karaCurrentSong.id===s.id?'active':''}" onclick="karaLoad(${s.id})">
-      <div class="song-num">${i+1}</div>
-      <div class="song-info">
-        <div class="song-name">${s.title}</div>
-        <div class="song-by">${s.artist}</div>
-      </div>
-      <span class="song-genre ${s.genre}">${s.genre==='sertanejo'?'🤠 Sertanejo':s.genre==='mpb'?'🌟 MPB':'🪗 Forró'}</span>
+  const songs=g==='todas'?SONGS:SONGS.filter(s=>s.genre===g);
+  list.innerHTML=songs.map((s,i)=>`
+    <div style="display:flex;align-items:center;gap:9px;padding:9px 11px;background:var(--paper);border:1.5px solid ${kSong&&kSong.id===s.id?'var(--kara)':'var(--line)'};border-radius:8px;cursor:pointer;transition:all .15s" onclick="karaLoad(${s.id})" onmouseover="this.style.borderColor='var(--kara)'" onmouseout="this.style.borderColor='${kSong&&kSong.id===s.id?'var(--kara)':'var(--line)'}'">
+      <div style="width:20px;height:20px;border-radius:50%;background:var(--ink);color:#fff;font-size:.58rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</div>
+      <div style="flex:1"><div style="font-weight:700;font-size:.8rem">${s.title}</div><div style="font-size:.63rem;color:var(--ink3)">${s.artist}</div></div>
+      <span style="font-size:.56rem;font-weight:700;padding:2px 7px;border-radius:8px;${s.genre==='sertanejo'?'background:#fff3e0;color:#a05a00':s.genre==='mpb'?'background:#e8f2ff;color:#0066bb':'background:#e8f7ea;color:#2a7a38'}">${s.genre==='sertanejo'?'🤠 Sertanejo':s.genre==='mpb'?'🌟 MPB':'🪗 Forró'}</span>
     </div>`).join('');
 }
 
-function karaFilterGenre(g){karaRenderSongList(g);}
-
 function karaLoad(id){
-  if(karaTimer){clearInterval(karaTimer);karaTimer=null;}
-  karaPlaying=false;karaElapsed=0;
-  karaCurrentSong=SONGS.find(s=>s.id===id);
-  if(!karaCurrentSong)return;
-  karaRenderSongList('todas');
+  if(kTimer){clearInterval(kTimer);kTimer=null;}
+  if(kRec){try{kRec.stop();}catch(e){} kRec=null;}
+  kPlaying=false; kElapsed=0; kRecActive=false; kSpokenWords=[]; kScoreWords=0;
+  kSong=SONGS.find(s=>s.id===id);
+  if(!kSong)return;
+  kTotal=(kSong.lyrics[kSong.lyrics.length-1].t||60)+6;
+  kTotalWords=kSong.lyrics.reduce((a,l)=>a+l.w.split(/\s+/).length,0);
+
   document.getElementById('kara-player').style.display='';
-  document.getElementById('kara-song-title').textContent=karaCurrentSong.title;
-  document.getElementById('kara-song-artist').textContent=karaCurrentSong.artist;
+  document.getElementById('kSongTitle').textContent=kSong.title;
+  document.getElementById('kSongArtist').textContent=kSong.artist;
   const gLabel={sertanejo:'🤠 Sertanejo',mpb:'🌟 MPB',forro:'🪗 Forró'};
-  document.getElementById('kara-song-genre').textContent=gLabel[karaCurrentSong.genre]||karaCurrentSong.genre;
-  document.getElementById('kara-fono-tip').textContent=karaCurrentSong.tip;
-  // calc total time
-  const last=karaCurrentSong.lines[karaCurrentSong.lines.length-1];
-  karaTotalTime=(last.t||60)+5;
-  // render lyrics
-  const lyricsEl=document.getElementById('kara-lyrics');
-  lyricsEl.innerHTML=karaCurrentSong.lines.map((l,i)=>`<div class="kara-line" id="kl${i}">${l.text}</div>`).join('');
-  document.getElementById('kara-play-btn').textContent='▶ CANTAR';
-  document.getElementById('kara-prog-fill').style.width='0%';
-  document.getElementById('kara-time-display').textContent='0:00';
+  document.getElementById('kSongGenre').textContent=gLabel[kSong.genre]||kSong.genre;
+  document.getElementById('kFonoTip').textContent=kSong.tip;
+  document.getElementById('kScoreLive').textContent='—';
+  document.getElementById('kBtnPlay').textContent='🎤 CANTAR';
+  document.getElementById('kProgressFill').style.width='0%';
+  document.getElementById('kTimeDisp').textContent='0:00';
+  document.getElementById('kResultBox').style.display='none';
+  document.getElementById('kMicDot').style.background='#555';
+  document.getElementById('kMicText').textContent='microfone inativo';
+  kRenderLyrics();
+  karaFilterGenre('todas');
   document.getElementById('kara-player').scrollIntoView({behavior:'smooth',block:'start'});
-  toast('🎵 '+karaCurrentSong.title+' — '+karaCurrentSong.artist);
+  toast('🎵 '+kSong.title+' — '+kSong.artist);
+}
+
+function kRenderLyrics(){
+  const box=document.getElementById('kLyricsBox');
+  if(!kSong){box.innerHTML='<div style="color:rgba(255,255,255,.3);font-style:italic;font-size:.8rem;text-align:center">Selecione uma música</div>';return;}
+  box.innerHTML=kSong.lyrics.map((l,i)=>`<div id="kl${i}" style="font-family:Georgia,serif;font-size:${i===0?'1.3rem':'.9rem'};font-weight:${i===0?700:400};color:${i===0?'#fff':'rgba(255,255,255,.25)'};text-align:center;line-height:1.6;transition:all .3s;padding:2px 0">${l.w}</div>`).join('');
 }
 
 function karaToggle(){
-  if(karaPlaying){
-    karaPlaying=false;
-    clearInterval(karaTimer);
-    document.getElementById('kara-play-btn').textContent='▶ CONTINUAR';
+  if(!kSong){toast('Escolha uma música primeiro!');return;}
+  if(kPlaying){
+    kPlaying=false; kRecActive=false;
+    clearInterval(kTimer);
+    if(kRec){try{kRec.stop();}catch(e){}}
+    document.getElementById('kBtnPlay').textContent='▶ CONTINUAR';
+    document.getElementById('kMicDot').style.background='#555';
+    document.getElementById('kMicText').textContent='pausado';
   } else {
-    karaPlaying=true;
-    document.getElementById('kara-play-btn').textContent='⏸ PAUSAR';
-    karaTimer=setInterval(karaStep,1000/karaSpeed);
+    kPlaying=true; kRecActive=true;
+    document.getElementById('kBtnPlay').textContent='⏸ PAUSAR';
+    document.getElementById('kMicDot').style.background='#ef4444';
+    document.getElementById('kMicText').textContent='🔴 ouvindo sua voz...';
+    kStartRec();
+    kTimer=setInterval(kStep, 1000/kSpeed);
   }
 }
 
-function karaStep(){
-  karaElapsed+=1;
-  const pct=Math.min(100,(karaElapsed/karaTotalTime)*100);
-  document.getElementById('kara-prog-fill').style.width=pct+'%';
-  const m=Math.floor(karaElapsed/60),s=karaElapsed%60;
-  document.getElementById('kara-time-display').textContent=m+':'+String(s).padStart(2,'0');
-  // update lines
-  const lines=karaCurrentSong.lines;
-  lines.forEach((l,i)=>{
+function kStep(){
+  kElapsed++;
+  // progress
+  const pct=Math.min(100,(kElapsed/kTotal)*100);
+  document.getElementById('kProgressFill').style.width=pct+'%';
+  const m=Math.floor(kElapsed/60),s=kElapsed%60;
+  document.getElementById('kTimeDisp').textContent=m+':'+String(s).padStart(2,'0');
+  // highlight lyrics
+  const L=kSong.lyrics;
+  L.forEach((l,i)=>{
     const el=document.getElementById('kl'+i);
     if(!el)return;
-    const nextT=lines[i+1]?lines[i+1].t:karaTotalTime;
-    if(karaElapsed>=l.t&&karaElapsed<nextT){
-      el.className='kara-line kara-active';
+    const nextT=L[i+1]?L[i+1].t:kTotal;
+    if(kElapsed>=l.t && kElapsed<nextT){
+      el.style.fontSize='1.35rem'; el.style.fontWeight='700';
+      el.style.color='#fff'; el.style.textShadow='0 0 20px rgba(196,181,253,.9)';
       el.scrollIntoView({behavior:'smooth',block:'center'});
-    } else if(karaElapsed>=nextT){
-      el.className='kara-line kara-done';
+    } else if(kElapsed>=nextT){
+      el.style.fontSize='.82rem'; el.style.fontWeight='400';
+      el.style.color='rgba(196,181,253,.4)'; el.style.textShadow='none';
     } else {
-      el.className='kara-line'+(i===lines.findIndex(ll=>ll.t>karaElapsed)?' kara-next':'');
+      el.style.fontSize='.9rem'; el.style.fontWeight='400';
+      el.style.color='rgba(255,255,255,.22)'; el.style.textShadow='none';
     }
   });
-  if(karaElapsed>=karaTotalTime){
-    clearInterval(karaTimer);karaTimer=null;karaPlaying=false;
-    document.getElementById('kara-play-btn').textContent='▶ CANTAR NOVAMENTE';
-    toast('🎉 Parabéns! Música concluída!');
+  // live score
+  if(kTotalWords>0){
+    const sc=Math.round((kScoreWords/kTotalWords)*100);
+    const g=sc>=90?'S':sc>=80?'A':sc>=70?'B':sc>=60?'C':sc>=50?'D':'F';
+    document.getElementById('kScoreLive').textContent=g;
   }
+  if(kElapsed>=kTotal){
+    clearInterval(kTimer); kTimer=null; kPlaying=false; kRecActive=false;
+    if(kRec){try{kRec.stop();}catch(e){}}
+    document.getElementById('kBtnPlay').textContent='🔁 CANTAR NOVAMENTE';
+    document.getElementById('kMicDot').style.background='#22c55e';
+    document.getElementById('kMicText').textContent='✅ música concluída!';
+    kShowResult();
+    toast('🎉 Parabéns! Veja sua nota!');
+  }
+}
+
+function kStartRec(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR)return;
+  try{
+    kRec=new SR(); kRec.lang='pt-BR'; kRec.continuous=true; kRec.interimResults=false;
+    kRec.onresult=e=>{
+      for(let i=e.resultIndex;i<e.results.length;i++){
+        if(e.results[i].isFinal){
+          const txt=e.results[i][0].transcript.toLowerCase();
+          txt.split(/\s+/).forEach(w=>{
+            const clean=w.replace(/[^a-záàâãéèêíïóôõúüç]/gi,'');
+            if(clean.length>1){kSpokenWords.push(clean); kCheckWord(clean);}
+          });
+        }
+      }
+    };
+    kRec.onerror=e=>{if(e.error==='no-speech')return; if(kRecActive)setTimeout(kStartRec,300);};
+    kRec.onend=()=>{if(kRecActive)setTimeout(kStartRec,200);};
+    kRec.start();
+  }catch(e){}
+}
+
+function kCheckWord(spoken){
+  if(!kSong)return;
+  // busca qual verso está ativo
+  const L=kSong.lyrics;
+  let activeVerse=null;
+  for(let i=0;i<L.length;i++){
+    const nextT=L[i+1]?L[i+1].t:kTotal;
+    if(kElapsed>=L[i].t && kElapsed<nextT){activeVerse=L[i].w;break;}
+  }
+  if(!activeVerse)return;
+  const verseWords=activeVerse.toLowerCase().replace(/[^a-záàâãéèêíïóôõúüç\s]/gi,'').split(/\s+/).filter(Boolean);
+  for(const vw of verseWords){
+    if(lev(spoken,vw)<=Math.max(1,Math.floor(vw.length/4))){kScoreWords++;break;}
+  }
+}
+
+function kShowResult(){
+  const sc=kTotalWords>0?Math.round((kScoreWords/kTotalWords)*100):0;
+  const grade=sc>=90?'S':sc>=80?'A+':sc>=70?'A':sc>=60?'B':sc>=50?'C':sc>=35?'D':'F';
+  const cor=sc>=70?'var(--green)':sc>=50?'var(--amber)':'var(--red)';
+  const msgs={S:'🏆 PERFEITO! Dicção impecável!',A:'⭐ Excelente! Quase perfeito!',"A+":'⭐ Muito bem! Ótima dicção!',B:'👍 Bom! Continue praticando!',C:'📈 Razoável. Tente mais uma vez!',D:'💪 Continue! Articulação precisa melhorar.',F:'🎯 Use o microfone e articule bem cada palavra!'};
+  const box=document.getElementById('kResultBox');
+  box.style.display='';
+  box.innerHTML=`<div style="background:linear-gradient(135deg,#130826,#0a0f1e);border-radius:12px;padding:20px;text-align:center;margin-bottom:14px">
+    <div style="font-size:.7rem;color:#a78bfa;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Sua Performance em ${kSong.title}</div>
+    <div style="font-family:Georgia,serif;font-size:4rem;font-weight:900;color:#c4b5fd;line-height:1;margin-bottom:4px">${grade}</div>
+    <div style="font-size:.9rem;color:#fff;margin-bottom:12px">${msgs[grade]||msgs.F}</div>
+    <div style="height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;margin:0 auto 8px;max-width:260px">
+      <div style="height:100%;width:${sc}%;background:linear-gradient(90deg,#6b21a8,#c4b5fd);border-radius:4px;transition:width .8s"></div>
+    </div>
+    <div style="font-size:.72rem;color:#a78bfa;margin-bottom:16px">${kScoreWords} de ${kTotalWords} palavras reconhecidas (${sc}%)</div>
+    <div style="font-size:.72rem;color:rgba(255,255,255,.5);margin-bottom:16px">🎤 Use Chrome/Edge com microfone para a nota funcionar</div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+      <button onclick="karaRestart()" style="background:#6b21a8;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit">↺ Tentar Novamente</button>
+      <button onclick="document.getElementById('kara-player').scrollIntoView({block:'start'})" style="background:rgba(255,255,255,.1);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit">🎵 Outra Música</button>
+    </div>
+  </div>`;
 }
 
 function karaRestart(){
-  if(karaTimer){clearInterval(karaTimer);karaTimer=null;}
-  karaPlaying=false;karaElapsed=0;
-  if(karaCurrentSong){
-    karaCurrentSong.lines.forEach((_,i)=>{const el=document.getElementById('kl'+i);if(el)el.className='kara-line';});
-  }
-  document.getElementById('kara-play-btn').textContent='▶ CANTAR';
-  document.getElementById('kara-prog-fill').style.width='0%';
-  document.getElementById('kara-time-display').textContent='0:00';
+  if(kTimer){clearInterval(kTimer);kTimer=null;}
+  if(kRec){try{kRec.stop();}catch(e){} kRec=null;}
+  kPlaying=false; kElapsed=0; kRecActive=false; kSpokenWords=[]; kScoreWords=0;
+  document.getElementById('kBtnPlay').textContent='🎤 CANTAR';
+  document.getElementById('kProgressFill').style.width='0%';
+  document.getElementById('kTimeDisp').textContent='0:00';
+  document.getElementById('kScoreLive').textContent='—';
+  document.getElementById('kResultBox').style.display='none';
+  document.getElementById('kMicDot').style.background='#555';
+  document.getElementById('kMicText').textContent='microfone inativo';
+  kRenderLyrics();
 }
 
 function karaFaster(){
-  karaSpeed=Math.min(2,karaSpeed+0.25);
-  if(karaPlaying){clearInterval(karaTimer);karaTimer=setInterval(karaStep,1000/karaSpeed);}
-  toast(`Velocidade: ${karaSpeed.toFixed(2)}×`);
+  kSpeed=Math.min(2.0,parseFloat((kSpeed+0.25).toFixed(2)));
+  if(kPlaying){clearInterval(kTimer);kTimer=setInterval(kStep,1000/kSpeed);}
+  document.getElementById('kSpeedLabel').textContent=kSpeed.toFixed(2)+'×';
+  toast('Velocidade: '+kSpeed.toFixed(2)+'×');
 }
-
 function karaSlower(){
-  karaSpeed=Math.max(0.5,karaSpeed-0.25);
-  if(karaPlaying){clearInterval(karaTimer);karaTimer=setInterval(karaStep,1000/karaSpeed);}
-  toast(`Velocidade: ${karaSpeed.toFixed(2)}×`);
+  kSpeed=Math.max(0.5,parseFloat((kSpeed-0.25).toFixed(2)));
+  if(kPlaying){clearInterval(kTimer);kTimer=setInterval(kStep,1000/kSpeed);}
+  document.getElementById('kSpeedLabel').textContent=kSpeed.toFixed(2)+'×';
+  toast('Velocidade: '+kSpeed.toFixed(2)+'×');
+}
+function karaSeek(ev){
+  if(!kSong)return;
+  const bar=document.getElementById('kProgressBar');
+  const ratio=ev.offsetX/bar.offsetWidth;
+  kElapsed=Math.floor(ratio*kTotal);
+  kStep();
 }
 
-function karaSeek(ev){
-  if(!karaCurrentSong)return;
-  const bar=ev.currentTarget;
-  const ratio=ev.offsetX/bar.offsetWidth;
-  karaElapsed=Math.floor(ratio*karaTotalTime);
-  karaStep();
+// ════════════════════════════════════════════════
+// JOGO STOP — ENGINE
+// ════════════════════════════════════════════════
+const SG_CATS_DEFAULT=[
+  {name:'Nome',on:true},{name:'Fruta',on:true},{name:'Cor',on:true},
+  {name:'Animal',on:true},{name:'País',on:true},{name:'Cidade',on:true},
+  {name:'Marca de carro',on:true},{name:'Time de futebol',on:false},
+  {name:'Comida',on:true},{name:'Profissão',on:false},
+  {name:'Objeto da casa',on:false},{name:'Roupa',on:false},
+  {name:'Artista/Cantor',on:false},{name:'Filme',on:false},
+  {name:'Personagem famoso',on:false},{name:'Planta/Flor',on:false},
+];
+let sgCats=[...SG_CATS_DEFAULT.map(c=>({...c}))];
+let sgTempo=90, sgLetra='', sgTimer=null, sgSecs=0;
+
+function sgInit(){
+  const grid=document.getElementById('sgCatGrid');
+  if(!grid)return;
+  grid.innerHTML=sgCats.map((c,i)=>`
+    <label style="display:flex;align-items:center;gap:7px;padding:7px 10px;border:1.5px solid ${c.on?'var(--ink)':'var(--line)'};border-radius:7px;cursor:pointer;background:${c.on?'var(--ink)':'var(--paper)'};color:${c.on?'#fff':'var(--ink2)'};font-size:.76rem;font-weight:600;transition:all .15s;user-select:none" onclick="sgToggleCat(${i},this)">
+      <span>${c.on?'✓':''}</span>${c.name}
+    </label>`).join('');
+}
+
+function sgToggleCat(i,el){
+  sgCats[i].on=!sgCats[i].on;
+  el.style.background=sgCats[i].on?'var(--ink)':'var(--paper)';
+  el.style.color=sgCats[i].on?'#fff':'var(--ink2)';
+  el.style.borderColor=sgCats[i].on?'var(--ink)':'var(--line)';
+  el.querySelector('span').textContent=sgCats[i].on?'✓':'';
+}
+
+function sgSetTempo(t){
+  sgTempo=t;
+  ['60','90','120','inf'].forEach(n=>{
+    const b=document.getElementById('sg-t'+n);
+    if(b)b.classList.toggle('on',String(t)===(n==='inf'?'0':n));
+  });
+}
+
+function sgAddCustom(){
+  const inp=document.getElementById('sgCustomInput');
+  const val=inp.value.trim();
+  if(!val){toast('Digite o nome da categoria!');return;}
+  sgCats.push({name:val,on:true});
+  inp.value='';
+  sgInit();
+  toast('✅ Categoria "'+val+'" adicionada!');
+}
+
+function sgStart(){
+  const ativas=sgCats.filter(c=>c.on);
+  if(ativas.length<2){toast('Selecione ao menos 2 categorias!');return;}
+  // sorteia letra (sem K, W, Y, H — raras em pt-BR)
+  const letras='ABCDEFGIJLMNOPQRSTUVXZ'.split('');
+  sgLetra=letras[Math.floor(Math.random()*letras.length)];
+  sgSecs=sgTempo||999;
+
+  document.getElementById('stopConfigPanel').style.display='none';
+  document.getElementById('stopGamePanel').style.display='';
+  document.getElementById('stopResultPanel').style.display='none';
+  document.getElementById('sgLetraBox').textContent=sgLetra;
+  document.getElementById('sgLetraBox').style.animation='none';
+  setTimeout(()=>document.getElementById('sgLetraBox').style.animation='',10);
+
+  // timer display
+  if(sgTempo>0){
+    const m=Math.floor(sgSecs/60),s=sgSecs%60;
+    document.getElementById('sgTimerDisp').textContent=m+':'+String(s).padStart(2,'0');
+    document.getElementById('sgTimerBar').style.width='100%';
+    sgTimer=setInterval(()=>{
+      sgSecs--;
+      const m2=Math.floor(sgSecs/60),s2=sgSecs%60;
+      document.getElementById('sgTimerDisp').textContent=m2+':'+String(s2).padStart(2,'0');
+      const pct=sgSecs/sgTempo;
+      document.getElementById('sgTimerBar').style.width=(pct*100)+'%';
+      document.getElementById('sgTimerBar').style.background=pct>.5?'var(--green)':pct>.2?'#e9a000':'var(--red)';
+      if(sgSecs<=10)document.getElementById('sgTimerDisp').style.color='var(--red)';
+      if(sgSecs<=0){clearInterval(sgTimer);sgTimer=null;sgStop();}
+    },1000);
+  } else {
+    document.getElementById('sgTimerDisp').textContent='∞';
+    document.getElementById('sgTimerBar').style.width='100%';
+  }
+
+  // form de categorias
+  const form=document.getElementById('sgCatsForm');
+  form.innerHTML=ativas.map((c,i)=>`
+    <div style="display:flex;align-items:center;gap:8px">
+      <div style="font-size:.73rem;font-weight:700;min-width:130px;color:var(--ink2);text-align:right">${c.name}</div>
+      <input id="sg-inp-${i}" placeholder="Palavra com ${sgLetra}..." style="flex:1;border:2px solid var(--line);border-radius:7px;padding:8px 11px;font-family:inherit;font-size:.85rem;outline:none;background:var(--paper);transition:border-color .2s;text-transform:capitalize" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--line)'" oninput="sgCheckLetter(this,'${sgLetra}')">
+    </div>`).join('');
+
+  // foca primeiro campo
+  setTimeout(()=>{const f=document.getElementById('sg-inp-0');if(f)f.focus();},200);
+}
+
+function sgCheckLetter(inp,letra){
+  const v=inp.value.trim();
+  if(v.length===0){inp.style.borderColor='var(--line)';return;}
+  const ok=v.toUpperCase().startsWith(letra);
+  inp.style.borderColor=ok?'var(--green)':'var(--red)';
+  inp.style.background=ok?'var(--green-bg)':'var(--red-bg)';
+}
+
+function sgStop(){
+  if(sgTimer){clearInterval(sgTimer);sgTimer=null;}
+  document.getElementById('stopGamePanel').style.display='none';
+  document.getElementById('stopResultPanel').style.display='';
+
+  const ativas=sgCats.filter(c=>c.on);
+  let pontos=0, resultRows='';
+  ativas.forEach((c,i)=>{
+    const inp=document.getElementById('sg-inp-'+i);
+    const val=inp?inp.value.trim():'';
+    const ok=val.length>0 && val.toUpperCase().startsWith(sgLetra);
+    const pts=ok?10:0;
+    pontos+=pts;
+    resultRows+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;background:${ok?'var(--green-bg)':'var(--red-bg)'};margin-bottom:5px">
+      <span style="font-size:1rem">${ok?'✅':'❌'}</span>
+      <div style="flex:1">
+        <span style="font-size:.73rem;font-weight:700;color:var(--ink3)">${c.name}</span>
+        <span style="font-size:.82rem;font-weight:700;margin-left:6px;color:${ok?'var(--green)':'var(--red)'}">${val||'— em branco'}</span>
+      </div>
+      <span style="font-size:.72rem;font-weight:700;color:${ok?'var(--green)':'var(--red)'}">${pts>0?'+'+pts:'0'} pts</span>
+    </div>`;
+  });
+
+  const max=ativas.length*10;
+  const pct=Math.round((pontos/max)*100);
+  const grade=pct>=90?'S':pct>=80?'A':pct>=70?'B':pct>=60?'C':pct>=40?'D':'F';
+  const cor=pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+
+  document.getElementById('stopResultPanel').innerHTML=`
+    <div class="panel">
+      <div class="panel-head"><span class="panel-icon">🎲</span><div class="panel-title">Resultado — Letra ${sgLetra}</div></div>
+      <div class="panel-body">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap">
+          <div style="text-align:center;min-width:70px">
+            <div style="font-family:Georgia,serif;font-size:3rem;font-weight:900;color:${cor};line-height:1">${grade}</div>
+            <div style="font-size:.58rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em">Nota</div>
+          </div>
+          <div style="text-align:center;min-width:60px">
+            <div style="font-family:Georgia,serif;font-size:2.2rem;font-weight:900;color:var(--ink);line-height:1">${pontos}</div>
+            <div style="font-size:.58rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em">Pontos</div>
+          </div>
+          <div style="flex:1;min-width:140px">
+            <div style="height:10px;background:var(--line);border-radius:5px;overflow:hidden;margin-bottom:4px">
+              <div style="height:100%;width:${pct}%;background:${cor};border-radius:5px;transition:width .6s"></div>
+            </div>
+            <div style="font-size:.65rem;color:var(--ink3)">${pontos} de ${max} pontos possíveis</div>
+          </div>
+        </div>
+        <div style="margin-bottom:14px">${resultRows}</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <button class="btn btn-main" onclick="sgNewRound()">🎲 Nova Rodada</button>
+          <button class="btn btn-ghost" onclick="sgBackConfig()">⚙️ Configurar</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function sgAbort(){
+  if(sgTimer){clearInterval(sgTimer);sgTimer=null;}
+  sgBackConfig();
+}
+function sgBackConfig(){
+  document.getElementById('stopConfigPanel').style.display='';
+  document.getElementById('stopGamePanel').style.display='none';
+  document.getElementById('stopResultPanel').style.display='none';
+  document.getElementById('sgTimerDisp').style.color='';
+  sgInit();
+}
+function sgNewRound(){
+  document.getElementById('stopResultPanel').style.display='none';
+  document.getElementById('stopConfigPanel').style.display='';
+  sgInit();
 }
 
 // ════════════════════════════════════════════════
@@ -1890,6 +2154,8 @@ function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t
 // INIT
 selectAct('trava');
 checkSpeechAPI();
+sgInit();
+karaFilterGenre('todas');
 </script>
 </body>
 </html>
