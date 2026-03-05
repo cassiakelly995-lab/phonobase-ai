@@ -569,17 +569,25 @@ const RITMO=[
 ];
 
 const FLUENCIA_CATS=[
-  {c:"Animais",ref:5,tempo:60},{c:"Frutas",ref:6,tempo:60},{c:"Profissões",ref:5,tempo:60},
-  {c:"Verbos de movimento",ref:5,tempo:60},{c:"Palavras com R",ref:5,tempo:60},
-  {c:"Objetos num bolso",ref:5,tempo:60},{c:"Palavras com 4+ sílabas",ref:4,tempo:60},
-  {c:"Coisas num hospital",ref:6,tempo:60},{c:"Rimas com amor",ref:5,tempo:60},
-  {c:"Ações da manhã",ref:5,tempo:60},{c:"Cores",ref:6,tempo:60},
-  {c:"Cidades brasileiras",ref:5,tempo:60},{c:"Instrumentos musicais",ref:5,tempo:60},
-  // NOVOS — com tempos variados
-  {c:"Partes do corpo",ref:7,tempo:30},{c:"Países da América",ref:5,tempo:30},
-  {c:"Alimentos com 3+ sílabas",ref:5,tempo:60},{c:"Verbos no infinitivo",ref:8,tempo:60},
-  {c:"Objetos de escritório",ref:6,tempo:60},{c:"Palavras com NH",ref:4,tempo:90},
-  {c:"Nomes próprios femininos",ref:7,tempo:90},{c:"Adjetivos para descrever uma pessoa",ref:6,tempo:90},
+  {c:"Animais",ref:8},{c:"Frutas",ref:8},{c:"Profissões",ref:7},
+  {c:"Verbos de movimento",ref:6},{c:"Palavras com R",ref:6},
+  {c:"Objetos num bolso",ref:6},{c:"Palavras com 4+ sílabas",ref:5},
+  {c:"Coisas num hospital",ref:7},{c:"Ações da manhã",ref:7},
+  {c:"Cores",ref:8},{c:"Cidades brasileiras",ref:7},{c:"Instrumentos musicais",ref:6},
+  {c:"Partes do corpo",ref:9},{c:"Países da América",ref:6},
+  {c:"Alimentos com 3+ sílabas",ref:6},{c:"Verbos no infinitivo",ref:9},
+  {c:"Objetos de escritório",ref:7},{c:"Palavras com NH",ref:5},
+  {c:"Nomes femininos",ref:8},{c:"Adjetivos positivos",ref:7},
+  {c:"Meios de transporte",ref:7},{c:"Animais marinhos",ref:6},
+  {c:"Palavras com CH",ref:5},{c:"Esportes",ref:8},
+  {c:"Vegetais e legumes",ref:7},{c:"Marcas de carro",ref:6},
+  {c:"Países da Europa",ref:7},{c:"Roupas e acessórios",ref:8},
+  {c:"Verbos de comunicação",ref:6},{c:"Flores e plantas",ref:6},
+  {c:"Palavras com LH",ref:5},{c:"Bebidas",ref:7},
+  {c:"Objetos da cozinha",ref:8},{c:"Nomes masculinos",ref:8},
+  {c:"Palavras com Z",ref:5},{c:"Animais da fazenda",ref:7},
+  {c:"Emoções e sentimentos",ref:6},{c:"Materiais escolares",ref:7},
+  {c:"Coisas redondas",ref:6},{c:"Palavras com X",ref:5},
 ];
 
 // ════════════════════════════════════════════════
@@ -915,11 +923,12 @@ function goPage(p,btn){
 // ACTIVITY SWITCHER
 // ════════════════════════════════════════════════
 let curAct='trava', st={};
-let fluTimer=null, fluSecs=60, fluTotalSecs=60;
 
 function selectAct(a){
   curAct=a; st={};
   if(fluTimer){clearInterval(fluTimer);fluTimer=null;}
+  if(fluRec){try{fluRec.stop();}catch(e){} fluRec=null;}
+  fluActive=false;
   document.querySelectorAll('.act-card').forEach(c=>c.classList.remove('on'));
   document.getElementById('card-'+a).classList.add('on');
   const panel=document.getElementById('actPanel');
@@ -1121,62 +1130,227 @@ function enfatizar(el,frase,palavra){document.querySelectorAll('.enfase-btn').fo
 function ri2Next(){st.ri2=((st.ri2||0)+1)%RITMO.length;if(st.ri2===0)toast('🎉 Completou todos!');renderRitmo();}
 
 // ─── FLUÊNCIA VERBAL ───────────────────────────────
+// variáveis de estado fluência
+let fluRec=null, fluWords=[], fluTimer=null, fluSecs=60, fluTotalSecs=60, fluActive=false;
+
 function buildFluencia(){
   st.fci=Math.floor(Math.random()*FLUENCIA_CATS.length);
+  fluWords=[]; fluActive=false;
+  if(fluTimer){clearInterval(fluTimer);fluTimer=null;}
+  if(fluRec){try{fluRec.stop();}catch(e){} fluRec=null;}
   setTimeout(fRenderCat,10);
   return`<div class="panel">
-    <div class="panel-head"><span class="panel-icon">💬</span><div class="panel-title">Fluência Verbal — Evocação Semântica</div><div class="panel-meta" id="fcatmeta">—</div></div>
+    <div class="panel-head"><span class="panel-icon">💬</span><div class="panel-title">Fluência Verbal — Evocação com Voz</div><div class="panel-meta" id="fcatmeta">—</div></div>
     <div class="panel-body">
-      <div style="font-size:.8rem;color:var(--ink2);margin-bottom:10px;line-height:1.5">Diga em voz alta o <strong>máximo de palavras da categoria</strong> no tempo. 3 tempos disponíveis.</div>
+      <div style="font-size:.8rem;color:var(--ink2);margin-bottom:10px;line-height:1.5">Clique em <strong>▶ Iniciar</strong>, aguarde o sinal e fale o máximo de palavras da categoria. O sistema escuta, lista e dá a nota! 🎙️<br><small style="color:var(--ink3)">Funciona no Chrome/Edge com microfone.</small></div>
       <div style="margin-bottom:12px">
         <div style="font-size:.68rem;font-weight:600;color:var(--ink3);margin-bottom:6px">DURAÇÃO:</div>
         <div class="vel-row">
-          <button class="vel-btn" id="ft30" onclick="fSetTempo(30)">⚡ 30s — Aquecimento</button>
-          <button class="vel-btn on" id="ft60" onclick="fSetTempo(60)">🎯 60s — Padrão</button>
-          <button class="vel-btn" id="ft90" onclick="fSetTempo(90)">🏆 90s — Avançado</button>
+          <button class="vel-btn" id="ft30" onclick="fSetTempo(30)">⚡ 30s</button>
+          <button class="vel-btn on" id="ft60" onclick="fSetTempo(60)">🎯 60s</button>
+          <button class="vel-btn" id="ft90" onclick="fSetTempo(90)">🏆 90s</button>
         </div>
       </div>
-      <div class="display">
-        <div style="font-size:.68rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Categoria</div>
-        <div class="fluencia-cat" id="fcat"></div>
-        <div style="font-size:.72rem;color:var(--ink3)" id="fref"></div>
+      <div class="display" style="margin-bottom:10px">
+        <div style="font-size:.62rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Categoria sorteada</div>
+        <div class="fluencia-cat" id="fcat" style="font-size:1.8rem"></div>
+        <div style="font-size:.7rem;color:var(--ink3);margin-top:4px" id="fref"></div>
       </div>
       <div class="timer-big" id="ftimer">1:00</div>
       <div class="timer-bar-wrap"><div class="timer-bar" id="fbar" style="width:100%"></div></div>
+
+      <div style="background:var(--bg);border:1.5px solid var(--line);border-radius:9px;padding:12px;min-height:56px;margin-bottom:12px">
+        <div style="font-size:.62rem;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">🎙 PALAVRAS DETECTADAS</div>
+        <div id="fWordsList" style="display:flex;flex-wrap:wrap;gap:5px;min-height:28px">
+          <span style="font-size:.76rem;color:var(--ink3);font-style:italic">Aguardando início...</span>
+        </div>
+      </div>
+      <div id="fMicStatus" style="font-size:.68rem;font-family:monospace;color:var(--ink3);text-align:center;margin-bottom:8px">● microfone inativo</div>
+
       <div class="btn-row">
         <button class="btn btn-main" id="fstartbtn" onclick="fStart()">▶ Iniciar</button>
         <button class="btn btn-ghost" id="fstopbtn" style="display:none" onclick="fStop()">■ Parar</button>
         <button class="btn btn-ghost" onclick="fNova()">🔀 Nova Categoria</button>
       </div>
-      <div id="fresult" style="display:none;margin-top:10px"></div>
+      <div id="fresult" style="display:none;margin-top:12px"></div>
     </div></div>`;
 }
+
 function fSetTempo(s){
-  fluTotalSecs=s;fluSecs=s;
+  if(fluActive)return;
+  fluTotalSecs=s; fluSecs=s;
   ['30','60','90'].forEach(n=>{const b=document.getElementById('ft'+n);if(b)b.classList.toggle('on',parseInt(n)===s);});
   const m=Math.floor(s/60),sec=s%60;
   document.getElementById('ftimer').textContent=m+':'+(sec<10?'0':'')+sec;
-  toast('Duração: '+s+'s');
 }
-function fRenderCat(){const c=FLUENCIA_CATS[st.fci||0];document.getElementById('fcat').textContent=c.c;document.getElementById('fref').textContent='Referência: adulto típico nomeia '+c.ref+'+ palavras';document.getElementById('fcatmeta').textContent=(c.tempo||60)+'s recomendado';}
+
+function fRenderCat(){
+  const c=FLUENCIA_CATS[st.fci||0];
+  document.getElementById('fcat').textContent=c.c;
+  document.getElementById('fref').textContent='Meta: '+c.ref+'+ palavras • Adulto típico';
+  document.getElementById('fcatmeta').textContent='#'+(st.fci+1)+' de '+FLUENCIA_CATS.length;
+}
+
 function fNova(){
-  if(fluTimer){clearInterval(fluTimer);fluTimer=null;}
+  if(fluActive){fStop();}
+  fluWords=[];
   st.fci=Math.floor(Math.random()*FLUENCIA_CATS.length);
   fluSecs=fluTotalSecs||60;
   const m=Math.floor(fluSecs/60),s=fluSecs%60;
   document.getElementById('ftimer').textContent=m+':'+(s<10?'0':'')+s;
   document.getElementById('ftimer').className='timer-big';
-  document.getElementById('fbar').style.width='100%';document.getElementById('fbar').style.background='var(--green)';
-  document.getElementById('fstartbtn').style.display='';document.getElementById('fstopbtn').style.display='none';
-  document.getElementById('fresult').style.display='none';fRenderCat();
+  document.getElementById('fbar').style.width='100%';
+  document.getElementById('fbar').style.background='var(--green)';
+  document.getElementById('fstartbtn').style.display='';
+  document.getElementById('fstopbtn').style.display='none';
+  document.getElementById('fresult').style.display='none';
+  document.getElementById('fWordsList').innerHTML='<span style="font-size:.76rem;color:var(--ink3);font-style:italic">Aguardando início...</span>';
+  document.getElementById('fMicStatus').textContent='● microfone inativo';
+  document.getElementById('fMicStatus').style.color='var(--ink3)';
+  fRenderCat();
 }
+
 function fStart(){
-  fluSecs=fluTotalSecs||60;
-  document.getElementById('fstartbtn').style.display='none';document.getElementById('fstopbtn').style.display='';document.getElementById('fresult').style.display='none';
-  toast('🎙 Fale agora! '+fluSecs+' segundos...');
-  fluTimer=setInterval(()=>{fluSecs--;const m=Math.floor(fluSecs/60),s=fluSecs%60;document.getElementById('ftimer').textContent=m+':'+String(s).padStart(2,'0');const pct=fluSecs/(fluTotalSecs||60);document.getElementById('fbar').style.width=(pct*100)+'%';document.getElementById('fbar').style.background=pct>.5?'var(--green)':pct>.2?'#e9a000':'var(--red)';if(fluSecs<=10)document.getElementById('ftimer').className='timer-big urgent';if(fluSecs<=0){clearInterval(fluTimer);fluTimer=null;fStop();}},1000);
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){toast('⚠ Use Chrome ou Edge para usar o microfone!');return;}
+  fluWords=[]; fluActive=true; fluSecs=fluTotalSecs||60;
+  document.getElementById('fstartbtn').style.display='none';
+  document.getElementById('fstopbtn').style.display='';
+  document.getElementById('fresult').style.display='none';
+  document.getElementById('fWordsList').innerHTML='';
+  document.getElementById('fMicStatus').textContent='🔴 GRAVANDO — fale agora!';
+  document.getElementById('fMicStatus').style.color='var(--red)';
+  toast('🎙 GO! Fale palavras da categoria: '+FLUENCIA_CATS[st.fci||0].c);
+
+  // STT
+  fluRec=new SR();
+  fluRec.lang='pt-BR'; fluRec.continuous=true; fluRec.interimResults=true;
+  fluRec.onresult=e=>{
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal){
+        const raw=e.results[i][0].transcript.trim();
+        // cada palavra separada
+        raw.split(/\s+/).forEach(w=>{
+          const clean=w.toLowerCase().replace(/[^a-záàâãéèêíïóôõúüçñ]/gi,'').trim();
+          if(clean.length>1 && !fluWords.includes(clean)){
+            fluWords.push(clean);
+            fAddWordChip(clean);
+          }
+        });
+      }
+    }
+  };
+  fluRec.onerror=e=>{if(e.error==='no-speech')return; if(fluActive)setTimeout(fRestartRec,300);};
+  fluRec.onend=()=>{if(fluActive)setTimeout(fRestartRec,200);};
+  try{fluRec.start();}catch(e){}
+
+  // timer
+  fluTimer=setInterval(()=>{
+    fluSecs--;
+    const m=Math.floor(fluSecs/60),s=fluSecs%60;
+    document.getElementById('ftimer').textContent=m+':'+String(s).padStart(2,'0');
+    const pct=fluSecs/(fluTotalSecs||60);
+    document.getElementById('fbar').style.width=(pct*100)+'%';
+    document.getElementById('fbar').style.background=pct>.5?'var(--green)':pct>.2?'#e9a000':'var(--red)';
+    if(fluSecs<=10) document.getElementById('ftimer').className='timer-big urgent';
+    if(fluSecs<=0){clearInterval(fluTimer);fluTimer=null;fStop();}
+  },1000);
 }
-function fStop(){if(fluTimer){clearInterval(fluTimer);fluTimer=null;}document.getElementById('fstartbtn').style.display='';document.getElementById('fstopbtn').style.display='none';document.getElementById('ftimer').textContent='0:00';document.getElementById('ftimer').className='timer-big';document.getElementById('fbar').style.width='0%';const cat=FLUENCIA_CATS[st.fci||0];const used=(fluTotalSecs||60)-fluSecs;const res=document.getElementById('fresult');res.style.display='';res.innerHTML=`<div class="result-box"><strong>📊 ${cat.c}</strong> — você usou ${used}s de ${fluTotalSecs||60}s disponíveis.<br><br>✅ ${cat.ref}+ itens = fluência preservada<br>⚠️ ${Math.ceil(cat.ref*.7)}–${cat.ref-1} = atenção ao vocabulário ativo<br>🔴 Menos de ${Math.ceil(cat.ref*.6)} = recomenda avaliação fonoaudiológica<br><br><span style="font-size:.74rem;color:var(--amber)">💡 Pratique 3× por semana com categorias diferentes!</span></div>`;}
+
+function fRestartRec(){
+  if(!fluActive)return;
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR)return;
+  try{fluRec=new SR();fluRec.lang='pt-BR';fluRec.continuous=true;fluRec.interimResults=true;
+    fluRec.onresult=e=>{for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal){const raw=e.results[i][0].transcript.trim();raw.split(/\s+/).forEach(w=>{const clean=w.toLowerCase().replace(/[^a-záàâãéèêíïóôõúüçñ]/gi,'').trim();if(clean.length>1&&!fluWords.includes(clean)){fluWords.push(clean);fAddWordChip(clean);}});}}};
+    fluRec.onerror=e=>{if(e.error==='no-speech')return;if(fluActive)setTimeout(fRestartRec,300);};
+    fluRec.onend=()=>{if(fluActive)setTimeout(fRestartRec,200);};
+    fluRec.start();
+  }catch(e){}
+}
+
+function fAddWordChip(w){
+  const el=document.getElementById('fWordsList');
+  const chip=document.createElement('span');
+  chip.style.cssText='display:inline-block;background:var(--blue-bg);border:1.5px solid var(--blue);border-radius:6px;padding:3px 9px;font-size:.78rem;font-weight:700;font-family:monospace;animation:pop .2s ease;color:var(--ink)';
+  chip.textContent=w;
+  el.appendChild(chip);
+}
+
+function fStop(){
+  fluActive=false;
+  if(fluTimer){clearInterval(fluTimer);fluTimer=null;}
+  if(fluRec){try{fluRec.stop();}catch(e){} fluRec=null;}
+  document.getElementById('fstartbtn').style.display='';
+  document.getElementById('fstopbtn').style.display='none';
+  document.getElementById('ftimer').textContent='0:00';
+  document.getElementById('ftimer').className='timer-big';
+  document.getElementById('fbar').style.width='0%';
+  document.getElementById('fMicStatus').textContent='● microfone inativo';
+  document.getElementById('fMicStatus').style.color='var(--ink3)';
+
+  const cat=FLUENCIA_CATS[st.fci||0];
+  const total=fluWords.length;
+  const used=(fluTotalSecs||60)-fluSecs;
+
+  // nota
+  let score, grade, cor, emoji;
+  const ratio=total/cat.ref;
+  if(ratio>=2){score=100;grade='S';cor='var(--green)';emoji='🏆';}
+  else if(ratio>=1.5){score=90;grade='A+';cor='var(--green)';emoji='⭐';}
+  else if(ratio>=1){score=80;grade='A';cor='var(--green)';emoji='✅';}
+  else if(ratio>=0.8){score=70;grade='B';cor='var(--blue)';emoji='👍';}
+  else if(ratio>=0.6){score=60;grade='C';cor='var(--amber)';emoji='📈';}
+  else if(ratio>=0.4){score=45;grade='D';cor='var(--amber)';emoji='⚠️';}
+  else{score=25;grade='F';cor='var(--red)';emoji='📉';}
+
+  const listaHTML=fluWords.length>0
+    ? fluWords.map((w,i)=>`<span style="display:inline-block;background:var(--paper);border:1px solid var(--green);border-radius:4px;padding:2px 8px;margin:2px 3px;font-size:.75rem;font-family:monospace;color:var(--ink)"><b>${i+1}.</b> ${w}</span>`).join('')
+    : '<span style="color:var(--ink3);font-style:italic;font-size:.78rem">Nenhuma palavra detectada. Verifique o microfone.</span>';
+
+  const feedback=ratio>=1?'Ótima fluência! Vocabulário ativo bem preservado.':ratio>=0.6?'Desempenho adequado. Pratique mais para ampliar o vocabulário ativo.':'Abaixo da referência. Pratique 3× por semana com categorias variadas.';
+
+  const res=document.getElementById('fresult');
+  res.style.display='';
+  res.innerHTML=`
+    <div class="panel">
+      <div class="panel-head"><span class="panel-icon">${emoji}</span><div class="panel-title">Resultado — ${cat.c}</div></div>
+      <div class="panel-body">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px;flex-wrap:wrap">
+          <div style="text-align:center;min-width:70px">
+            <div style="font-family:Georgia,serif;font-size:2.8rem;font-weight:900;color:${cor};line-height:1">${grade}</div>
+            <div style="font-size:.6rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em">Nota</div>
+          </div>
+          <div style="text-align:center;min-width:60px">
+            <div style="font-family:Georgia,serif;font-size:2.4rem;font-weight:900;color:var(--ink);line-height:1">${total}</div>
+            <div style="font-size:.6rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em">Palavras</div>
+          </div>
+          <div style="text-align:center;min-width:60px">
+            <div style="font-family:Georgia,serif;font-size:2.4rem;font-weight:900;color:var(--ink);line-height:1">${used}s</div>
+            <div style="font-size:.6rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em">Usado</div>
+          </div>
+          <div style="flex:1;min-width:140px">
+            <div style="height:10px;background:var(--line);border-radius:5px;overflow:hidden;margin-bottom:4px">
+              <div style="height:100%;width:${Math.min(100,Math.round(ratio*100))}%;background:${cor};border-radius:5px;transition:width .6s"></div>
+            </div>
+            <div style="font-size:.66rem;color:var(--ink3)">${total} de ${cat.ref} palavras de referência (${Math.round(ratio*100)}%)</div>
+          </div>
+        </div>
+        <div style="font-size:.78rem;font-weight:700;color:var(--ink2);margin-bottom:8px">📋 Palavras detectadas (${total}):</div>
+        <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:10px;line-height:2">${listaHTML}</div>
+        <div style="background:var(--blue-bg);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:9px 12px;font-size:.76rem;color:var(--ink2);line-height:1.5">
+          <strong>📊 Avaliação:</strong> ${feedback}<br>
+          <strong>🎯 Meta:</strong> ${cat.ref}+ palavras em ${fluTotalSecs}s = fluência preservada.<br>
+          <strong>💡 Dica:</strong> Se alguma palavra que você falou não apareceu, fale mais devagar e articulando bem.
+        </div>
+        <div style="display:flex;gap:7px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn btn-main" onclick="fNova()">🔀 Nova Categoria</button>
+          <button class="btn btn-ghost" onclick="fStart()">↺ Tentar Novamente</button>
+        </div>
+      </div>
+    </div>`;
+  res.scrollIntoView({behavior:'smooth',block:'start'});
+}
 
 // ════════════════════════════════════════════════
 // STOP DE FALA — ENGINE
